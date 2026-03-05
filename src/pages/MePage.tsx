@@ -50,6 +50,7 @@ export default function MePage() {
         gap: 16,
         minHeight: '100vh',
         justifyContent: 'center',
+        paddingBottom: 80,
       }}
     >
       {user ? (

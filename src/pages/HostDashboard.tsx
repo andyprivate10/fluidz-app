@@ -16,6 +16,7 @@ export default function HostDashboard() {
   const [selected, setSelected] = useState<Application | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     const load = async () => {
@@ -26,10 +27,30 @@ export default function HostDashboard() {
       setSession(sess)
       const { data: apps } = await supabase.from('applications').select('*').eq('session_id', id).order('created_at', { ascending: false })
       setApplications(apps || [])
+      // Fetch unread notification count for this session
+      const { count } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('session_id', id)
+        .eq('user_id', user.id)
+        .eq('read', false)
+      setUnreadCount(count ?? 0)
       setLoading(false)
     }
     load()
   }, [id])
+
+  const markNotificationsRead = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    await supabase
+      .from('notifications')
+      .update({ read: true })
+      .eq('session_id', id)
+      .eq('user_id', user.id)
+      .eq('read', false)
+    setUnreadCount(0)
+  }
 
   const handleAction = async (appId: string, newStatus: 'accepted' | 'rejected') => {
     setActionLoading(true)
@@ -116,7 +137,17 @@ export default function HostDashboard() {
             {copied ? '✓ Copi\u00e9 !' : '📋 Copier le lien'}
           </button>
         </div>
-        <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', padding: '4px 0' }}>CANDIDATURES</div>
+        <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', padding: '4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+          CANDIDATURES
+          {unreadCount > 0 && (
+            <span
+              onClick={(e) => { e.stopPropagation(); markNotificationsRead() }}
+              style={{ background: '#F47272', color: 'white', fontSize: 11, fontWeight: 700, borderRadius: 50, padding: '2px 8px', cursor: 'pointer' }}
+            >
+              {unreadCount} new
+            </span>
+          )}
+        </div>
         {applications.length === 0 && <div style={{ textAlign: 'center', padding: 32, color: '#7E7694', fontSize: 14 }}>Aucune candidature.<br />Partage le lien !</div>}
         {applications.map(app => {
           const eps = app.eps_json || {}

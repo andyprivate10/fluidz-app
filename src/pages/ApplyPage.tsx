@@ -115,6 +115,7 @@ export default function ApplyPage() {
         flexDirection: 'column',
         gap: 20,
         paddingTop: 48,
+        paddingBottom: 80,
       }}
     >
       <header style={{ marginBottom: 0 }}>

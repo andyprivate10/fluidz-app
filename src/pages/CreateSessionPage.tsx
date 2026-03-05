@@ -63,6 +63,7 @@ export default function CreateSessionPage() {
         flexDirection: 'column',
         gap: 16,
         paddingTop: 48,
+        paddingBottom: 80,
       }}
     >
       <h1

@@ -96,6 +96,7 @@ export default function SessionPage() {
         flexDirection: 'column',
         gap: 20,
         paddingTop: 48,
+        paddingBottom: 80,
       }}
     >
       <span
