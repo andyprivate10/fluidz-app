@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg0: #0C0A14;
+  --bg1: #16141F;
+  --bg2: #1F1D2B;
+  --bg3: #2A2740;
+  --tx: #F0EDFF;
+  --tx2: #B8B2CC;
+  --tx3: #7E7694;
+  --peach300: #F9A8A8;
+  --peach400: #F47272;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg0);
+  color: var(--tx);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #F9A8A8, #F47272);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-secondary {
+  background: #16141F;
+  border: 1px solid #2A2740;
+  color: #F0EDFF;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.card {
+  background: var(--bg1);
+  border: 1px solid var(--bg3);
+  border-radius: 16px;
+  padding: 16px;
+}
