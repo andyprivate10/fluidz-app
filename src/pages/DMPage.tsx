@@ -58,8 +58,7 @@ export default function DMPage() {
       .select('*')
       .eq('session_id', id)
       .order('created_at')
-      .then(({ data }) => setMessages((data as Message[]) ?? []))
-      .finally(() => setLoading(false))
+      .then(({ data }) => { setMessages((data as Message[]) ?? []); setLoading(false) })
 
     const channel = supabase
       .channel('messages:' + id)
