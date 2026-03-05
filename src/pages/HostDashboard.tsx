@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-type Application = { id: string; applicant_id: string; eps_json: Record<string, string>; status: string; created_at: string }
+type Application = { id: string; applicant_id: string; eps_json: Record<string, string>; status: string; checkin_status: string; created_at: string }
 
 const statusColor = (s: string) => s === 'accepted' ? '#4ADE80' : s === 'rejected' ? '#F87171' : '#B8B2CC'
 const statusLabel = (s: string) => s === 'accepted' ? 'Accept&eacute; ✓' : s === 'rejected' ? 'Refus&eacute; ✗' : 'En attente'
@@ -25,7 +25,7 @@ export default function HostDashboard() {
       const { data: sess } = await supabase.from('sessions').select('title,status').eq('id', id).single()
       if (!sess) { setLoading(false); return }
       setSession(sess)
-      const { data: apps } = await supabase.from('applications').select('*').eq('session_id', id).order('created_at', { ascending: false })
+      const { data: apps } = await supabase.from('applications').select('id,applicant_id,eps_json,status,checkin_status,created_at').eq('session_id', id).order('created_at', { ascending: false })
       setApplications(apps || [])
       // Fetch unread notification count for this session
       const { count } = await supabase
