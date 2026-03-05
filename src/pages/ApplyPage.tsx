@@ -94,6 +94,13 @@ export default function ApplyPage() {
     if (insertError) {
       setError(insertError.message)
     } else {
+      // Upsert display name to user_profiles
+      if (displayName && currentUser) {
+        await supabase.from('user_profiles').upsert(
+          { id: currentUser.id, display_name: displayName },
+          { onConflict: 'id' }
+        ).then(() => {}) // graceful — ignore errors
+      }
       navigate('/session/' + id + '/dm')
     }
     setLoading(false)

@@ -1,0 +1,9 @@
+{
+  "name": "fluidz",
+  "short_name": "fluidz",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0C0A14",
+  "background_color": "#0C0A14",
+  "icons": []
+}

@@ -170,6 +170,7 @@ export default function SessionPage() {
             type="button"
             className="btn-secondary"
             style={{ padding: 14, borderRadius: 12 }}
+            onClick={() => navigate(`/session/${id}/host`)}
           >
             Gérer la session
           </button>

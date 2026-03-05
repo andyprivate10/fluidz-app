@@ -11,7 +11,7 @@ type Message = {
   sender_name: string
 }
 
-type Session = { title: string }
+type SessionInfo = { title: string; exact_address: string | null }
 
 export default function DMPage() {
   const { id } = useParams<{ id: string }>()
@@ -19,7 +19,8 @@ export default function DMPage() {
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
+  const [session, setSession] = useState<SessionInfo | null>(null)
+  const [isAccepted, setIsAccepted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -27,15 +28,31 @@ export default function DMPage() {
       setLoading(false)
       return
     }
+
     supabase.auth.getUser().then(({ data: { user } }) => {
       setCurrentUser(user ?? null)
+      if (user) {
+        // Check if this user's application was accepted
+        supabase
+          .from('applications')
+          .select('status')
+          .eq('session_id', id)
+          .eq('applicant_id', user.id)
+          .eq('status', 'accepted')
+          .maybeSingle()
+          .then(({ data }) => {
+            if (data) setIsAccepted(true)
+          })
+      }
     })
+
     supabase
       .from('sessions')
-      .select('title')
+      .select('title,exact_address')
       .eq('id', id)
       .single()
-      .then(({ data }) => setSession(data as Session | null))
+      .then(({ data }) => setSession(data as SessionInfo | null))
+
     supabase
       .from('messages')
       .select('*')
@@ -111,9 +128,28 @@ export default function DMPage() {
           {session?.title ?? 'DM'}
         </h1>
         <p style={{ color: '#7E7694', fontSize: 12, margin: 0 }}>
-          Message privé
+          Message priv&eacute;
         </p>
       </header>
+
+      {isAccepted && session?.exact_address && (
+        <div
+          style={{
+            margin: '12px 16px 0',
+            padding: 14,
+            background: '#14532d',
+            border: '1px solid #4ADE80',
+            borderRadius: 12,
+          }}
+        >
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#4ADE80', marginBottom: 4 }}>
+            Adresse r&eacute;v&eacute;l&eacute;e
+          </div>
+          <div style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600 }}>
+            {session.exact_address}
+          </div>
+        </div>
+      )}
 
       <div
         style={{
@@ -213,7 +249,7 @@ export default function DMPage() {
             cursor: 'pointer',
           }}
         >
-          →
+          &rarr;
         </button>
       </div>
     </div>

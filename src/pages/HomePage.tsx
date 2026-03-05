@@ -54,6 +54,7 @@ export default function HomePage() {
           padding: 14,
           borderRadius: 12,
         }}
+        onClick={() => navigate('/join')}
       >
         Rejoindre avec un lien
       </button>
