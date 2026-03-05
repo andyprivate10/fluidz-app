@@ -3,111 +3,162 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
-type Session = { id: string; title: string; description: string; approx_area: string; status: string; host_id: string }
-type Member = { applicant_id: string; eps_json: Record<string, unknown> }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string }
+type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
+
+const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }
+const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
 
 export default function SessionPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [myApp, setMyApp] = useState<{ status: string } | null>(null)
   const [members, setMembers] = useState<Member[]>([])
-  const [myStatus, setMyStatus] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [checkInLoading, setCheckInLoading] = useState(false)
+  const [checkInDone, setCheckInDone] = useState(false)
+
+  const isHost = currentUser?.id === session?.host_id
 
   useEffect(() => {
-    async function load() {
-      if (!id) { setError('Session introuvable'); setLoading(false); return }
+    const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setCurrentUser(user ?? null)
-      const { data, error: se } = await supabase.from('sessions').select('*').eq('id', id).single()
-      if (se || !data) { setError('Session introuvable'); setLoading(false); return }
-      setSession(data as Session)
-      const { data: accepted } = await supabase.from('applications').select('applicant_id, eps_json').eq('session_id', id).eq('status', 'accepted')
-      setMembers((accepted as Member[]) ?? [])
+
+      const { data: sess } = await supabase.from('sessions').select('*').eq('id', id).single()
+      setSession(sess)
+
+      const { data: accepted } = await supabase
+        .from('applications')
+        .select('applicant_id, eps_json, status')
+        .eq('session_id', id)
+        .eq('status', 'accepted')
+      setMembers(accepted ?? [])
+
       if (user) {
-        const { data: myApp } = await supabase.from('applications').select('status').eq('session_id', id).eq('applicant_id', user.id).maybeSingle()
-        setMyStatus(myApp?.status ?? null)
+        const { data: app } = await supabase
+          .from('applications')
+          .select('status')
+          .eq('session_id', id)
+          .eq('applicant_id', user.id)
+          .maybeSingle()
+        setMyApp(app)
+        if (app?.status === 'checked_in') setCheckInDone(true)
       }
+
       setLoading(false)
     }
     load()
   }, [id])
 
-  const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }
-  const isHost = currentUser && session && currentUser.id === session.host_id
+  const handleCheckIn = async () => {
+    if (!currentUser) return
+    setCheckInLoading(true)
+    await supabase
+      .from('applications')
+      .update({ status: 'checked_in' })
+      .eq('session_id', id)
+      .eq('applicant_id', currentUser.id)
+    setMyApp(prev => prev ? { ...prev, status: 'checked_in' } : null)
+    setCheckInDone(true)
+    setCheckInLoading(false)
+  }
 
-  if (loading) return <div style={{ ...st, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: '#B8B2CC' }}>Chargement...</p></div>
-  if (error || !session) return <div style={{ ...st, padding: 24 }}><p style={{ color: '#F87171' }}>{error || 'Erreur'}</p></div>
+  if (loading) return <div style={{ ...st, display: 'flex', justifyContent: 'center', alignItems: 'center' }}><p style={{ color: '#B8B2CC' }}>Chargement...</p></div>
+  if (!session) return <div style={{ ...st, padding: 24, color: '#F87171' }}>Session introuvable.</div>
 
-  const statusColor = session.status === 'open' ? '#4ADE80' : '#FBBF24'
   const statusLabel = session.status === 'open' ? 'Ouverte' : 'Brouillon'
+  const statusColor = session.status === 'open' ? '#4ADE80' : '#7E7694'
 
   return (
     <div style={st}>
-      <div style={{ padding: '24px 24px 16px', borderBottom: '1px solid #2A2740', background: '#16141F' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: '#2A2740', padding: '3px 10px', borderRadius: 50 }}>{statusLabel}</span>
-          {session.approx_area && <span style={{ fontSize: 12, color: '#7E7694' }}>📍 {session.approx_area}</span>}
+      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #2A2740', background: '#16141F' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#F0EDFF', flex: 1 }}>{session.title}</h1>
+          <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#F0EDFF', margin: '0 0 8px' }}>{session.title}</h1>
-        {session.description && <p style={{ fontSize: 14, color: '#B8B2CC', margin: 0, lineHeight: 1.5 }}>{session.description}</p>}
+        {session.approx_area && <div style={{ fontSize: 13, color: '#7E7694', marginTop: 6 }}>Autour de {session.approx_area}</div>}
+        {isHost && <div style={{ fontSize: 12, color: '#F9A8A8', marginTop: 4, fontWeight: 600 }}>Tu es le host</div>}
       </div>
 
-      {members.length > 0 && (
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid #2A2740' }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP — {members.length} membre{members.length > 1 ? 's' : ''}</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {members.map((m, i) => {
-              const eps = m.eps_json as Record<string, string>
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, padding: '10px 14px' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: 'white', flexShrink: 0 }}>
-                    {(eps.displayName || '?')[0].toUpperCase()}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{eps.displayName || 'Membre'}{eps.age ? ', ' + eps.age + ' ans' : ''}</div>
-                    <div style={{ fontSize: 12, color: '#7E7694' }}>{eps.role || ''}{eps.morphology ? ' · ' + eps.morphology : ''}{eps.location ? ' · ' + eps.location : ''}</div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
+      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {session.description && (
+          <div style={card}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>DESCRIPTION</div>
+            <div style={{ fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>{session.description}</div>
+          </div>
+        )}
+
+        {members.length > 0 && (
+          <div style={card}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP ({members.length})</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {members.map(m => {
+                const eps = m.eps_json || {}
+                return (
+                  <div key={m.applicant_id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+                      {(eps.displayName || '?')[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{eps.displayName || 'Anonyme'}{eps.age ? ', ' + eps.age : ''}</div>
+                      {eps.role && <div style={{ fontSize: 12, color: '#F9A8A8' }}>{eps.role}{eps.morphology ? ' · ' + eps.morphology : ''}</div>}
+                    </div>
+                    {m.status === 'checked_in' && <div style={{ marginLeft: 'auto', fontSize: 11, color: '#4ADE80', fontWeight: 600 }}>Check-in</div>}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {myApp?.status === 'accepted' && !checkInDone && (
+          <button
+            onClick={handleCheckIn}
+            disabled={checkInLoading}
+            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#4ADE80,#16a34a)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
+          >
+            {checkInLoading ? 'Enregistrement...' : 'Je suis arrive ! Check-in'}
+          </button>
+        )}
+
+        {checkInDone && (
+          <div style={{ ...card, background: '#14532d', borderColor: '#4ADE80', textAlign: 'center' }}>
+            <div style={{ fontSize: 20 }}>Bienvenue !</div>
+            <div style={{ fontSize: 14, color: '#4ADE80', marginTop: 4 }}>Check-in confirme</div>
+            {session.exact_address && <div style={{ fontSize: 14, color: '#F0EDFF', marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
+          </div>
+        )}
+
         {isHost && (
-          <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 12, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-            Gerer la session →
+          <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, color: '#F0EDFF', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+            Gerer la session
           </button>
         )}
-        {!isHost && myStatus === 'accepted' && (
-          <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 12, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-            Ouvrir le DM host 💬
+
+        {!isHost && !myApp && session.status === 'open' && (
+          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : navigate('/me')} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+            Postuler a cette session
           </button>
         )}
-        {!isHost && myStatus === 'pending' && (
-          <div style={{ padding: 14, background: '#16141F', border: '1px solid #FBBF24', borderRadius: 12, textAlign: 'center', color: '#FBBF24', fontSize: 14, fontWeight: 600 }}>
-            Candidature en attente ⏳
+
+        {myApp && myApp.status !== 'accepted' && myApp.status !== 'checked_in' && (
+          <div style={{ ...card, textAlign: 'center' }}>
+            <div style={{ fontSize: 14, color: '#B8B2CC' }}>
+              {myApp.status === 'pending' ? 'Candidature en attente...' : myApp.status === 'rejected' ? 'Candidature refusee' : 'Candidature envoyee'}
+            </div>
           </div>
         )}
-        {!isHost && myStatus === 'rejected' && (
-          <div style={{ padding: 14, background: '#16141F', border: '1px solid #F87171', borderRadius: 12, textAlign: 'center', color: '#F87171', fontSize: 14, fontWeight: 600 }}>
-            Candidature non retenue
-          </div>
-        )}
-        {!isHost && !myStatus && session.status === 'open' && (
-          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : navigate('/me')} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 12, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-            Postuler a cette session 🔥
+
+        {myApp?.status === 'accepted' && (
+          <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+            Ouvrir le DM avec le host
           </button>
         )}
-        {!isHost && !myStatus && session.status !== 'open' && (
-          <div style={{ padding: 14, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, textAlign: 'center', color: '#7E7694', fontSize: 14 }}>
-            Session pas encore ouverte
-          </div>
-        )}
+
       </div>
     </div>
   )
