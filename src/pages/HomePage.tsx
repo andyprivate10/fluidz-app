@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom'
+
 export default function HomePage() {
+  const navigate = useNavigate()
   return (
     <div
       style={{
@@ -39,6 +42,7 @@ export default function HomePage() {
           padding: 14,
           borderRadius: 12,
         }}
+        onClick={() => navigate('/session/create')}
       >
         Créer une session
       </button>
