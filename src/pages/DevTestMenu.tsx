@@ -43,11 +43,11 @@ export default function DevTestMenu() {
       return
     }
     if (!data.user) return
-    if (email === 'host@fluidz.test' && eventIdTest) {
+    if (email === 'host@fluidz.app' && eventIdTest) {
       navigate('/session/' + eventIdTest + '/host')
       return
     }
-    if ((email === 'member@fluidz.test' || email === 'guest@fluidz.test') && eventIdTest) {
+    if ((email === 'member@fluidz.app' || email === 'guest@fluidz.app') && eventIdTest) {
       navigate('/session/' + eventIdTest)
       return
     }
@@ -96,13 +96,13 @@ export default function DevTestMenu() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ fontSize: 12, fontWeight: 600, color: S.tx3, marginBottom: 8 }}>Connexion rapide</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button onClick={() => loginAs('host@fluidz.test')} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
+          <button onClick={() => loginAs('host@fluidz.app')} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
             Se connecter en HOST (Marcus)
           </button>
-          <button onClick={() => loginAs('member@fluidz.test')} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
+          <button onClick={() => loginAs('member@fluidz.app')} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
             Se connecter en MEMBER (Karim)
           </button>
-          <button onClick={() => loginAs('guest@fluidz.test')} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
+          <button onClick={() => loginAs('guest@fluidz.app')} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
             Se connecter en GUEST (Yann)
           </button>
           <button onClick={() => navigate('/join/' + TEST_INVITE_CODE)} style={{ padding: 12, borderRadius: 12, border: '1px solid ' + S.border, background: S.bg1, color: S.tx, fontSize: 14, cursor: 'pointer', textAlign: 'left' }}>
