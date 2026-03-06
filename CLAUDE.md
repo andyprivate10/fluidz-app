@@ -21,3 +21,9 @@
 - user_profiles: id, display_name, profile_json
 - messages: id, session_id, sender_id, text, sender_name, created_at
 - notifications: id, user_id, session_id, type, message, read, created_at
+
+## Loop / Bridge (CRITIQUE)
+Apres chaque batch (apres les git push), appeler le bridge pour signaler la fin :
+`curl -s -X POST http://localhost:3333/feedback -H 'Content-Type: application/json' -d '{"done":"RESUME_ICI","commits":"COMMITS_ICI"}'`
+- RESUME_ICI = resume court de ce qui a ete fait
+- COMMITS_ICI = hash des commits (separes par des virgules)

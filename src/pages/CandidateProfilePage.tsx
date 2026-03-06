@@ -133,7 +133,7 @@ export default function CandidateProfilePage() {
       </div>
 
       <div className="px-5 space-y-5">
-        {/* Bio */}
+        {/* Bio (basics) */}
         {eps.bio && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border">
             <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Bio</p>
@@ -141,11 +141,11 @@ export default function CandidateProfilePage() {
           </div>
         )}
 
-        {/* Pour cette session */}
-        {eps.sessionNote && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border" style={{ borderColor: '#F9A8A840' }}>
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#F9A8A8' }}>Pour cette session</p>
-            <p className="text-tx text-sm leading-relaxed">{eps.sessionNote}</p>
+        {/* Rôle */}
+        {eps.role && (
+          <div className="bg-bg2 rounded-2xl p-4 border border-border">
+            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Rôle</p>
+            <p className="text-tx text-sm font-semibold" style={{ color: '#F9A8A8' }}>{eps.role}</p>
           </div>
         )}
 
@@ -193,7 +193,7 @@ export default function CandidateProfilePage() {
         {/* Santé */}
         {eps.prep && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-3">Santé</p>
+            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Santé / PrEP</p>
             <div className="flex items-center gap-2">
               <span className={`w-2.5 h-2.5 rounded-full ${eps.prep === 'Actif' ? 'bg-green-400' : 'bg-yellow-400'}`} />
               <span className="text-tx text-sm font-medium">PrEP {eps.prep}</span>
@@ -204,8 +204,16 @@ export default function CandidateProfilePage() {
         {/* Limites */}
         {eps.limits && (
           <div className="bg-bg2 rounded-2xl p-4 border-2 border-red-800">
-            <p className="text-red-400 text-xs uppercase tracking-wider mb-2">⚠️ Hard limits</p>
+            <p className="text-red-400 text-xs uppercase tracking-wider mb-2">Limites</p>
             <p className="text-tx text-sm leading-relaxed">{eps.limits}</p>
+          </div>
+        )}
+
+        {/* Pour cette session */}
+        {(eps.sessionNote || (eps as Record<string, unknown>).occasion_note) && (
+          <div className="bg-bg2 rounded-2xl p-4 border border-border" style={{ borderColor: '#F9A8A840' }}>
+            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#F9A8A8' }}>Pour cette session</p>
+            <p className="text-tx text-sm leading-relaxed">{(eps.sessionNote || (eps as Record<string, unknown>).occasion_note) as string}</p>
           </div>
         )}
 

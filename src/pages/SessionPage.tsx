@@ -21,6 +21,7 @@ export default function SessionPage() {
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [pendingCount, setPendingCount] = useState(0)
 
   const isHost = currentUser?.id === session?.host_id
 
@@ -59,6 +60,11 @@ export default function SessionPage() {
         setMyApp(app)
         if (app?.status === 'checked_in') setCheckInDone(true)
       }
+
+      if (user && sess?.host_id === user.id) {
+        const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).eq('status', 'pending')
+        setPendingCount(count ?? 0)
+      } else setPendingCount(0)
 
       setLoading(false)
     }
@@ -153,7 +159,7 @@ export default function SessionPage() {
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, color: '#F0EDFF', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              Gerer la session
+              {pendingCount > 0 ? `Gerer (${pendingCount} en attente)` : 'Gerer la session'}
             </button>
             {session.invite_code && (
               <button onClick={() => {
