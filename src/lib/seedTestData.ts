@@ -3,6 +3,8 @@ import { supabase } from './supabase'
 const TEST_PASSWORD = 'testpass123'
 export const TEST_INVITE_CODE = 'testplan1'
 
+const PICSUM = (seed: string, w = 200, h = 200) => `https://picsum.photos/seed/${seed}/${w}/${h}`
+
 const HOST_PROFILE = {
   display_name: 'Marcus',
   profile_json: {
@@ -15,7 +17,7 @@ const HOST_PROFILE = {
     morphology: 'Athlétique',
     kinks: ['SM léger', 'Group', 'Voyeur'],
     limits: 'Rien de non consensuel.',
-    avatar_url: undefined as string | undefined,
+    avatar_url: PICSUM('marcus'),
     health: { prep_status: 'Actif', dernier_test: new Date().toISOString().slice(0, 10), sero_status: '' },
   },
 }
@@ -32,7 +34,7 @@ const MEMBER_PROFILE = {
     morphology: 'Sportif',
     kinks: ['SM léger', 'Voyeur'],
     limits: '',
-    avatar_url: undefined as string | undefined,
+    avatar_url: PICSUM('karim'),
     health: { prep_status: 'Actif', dernier_test: '', sero_status: '' },
   },
 }
@@ -80,13 +82,13 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
     .insert({
       host_id: hostId,
       title: 'Plan ce soir 🔥',
-      description: 'Session test pour dev.',
+      description: 'Session test pour dev. Directions et infos dans l’app.',
       approx_area: 'Paris 4ème',
       exact_address: null,
       status: 'open',
       tags: ['Top', 'Bottom'],
       invite_code: TEST_INVITE_CODE,
-      lineup_json: {},
+      lineup_json: { directions: ['Métro Odéon', 'Code 4521'] },
     })
     .select('id')
     .single()
