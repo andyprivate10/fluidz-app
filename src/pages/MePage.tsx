@@ -77,6 +77,8 @@ export default function MePage() {
   const [kinks, setKinks] = useState<string[]>([])
   const [prep, setPrep] = useState('')
   const [limits, setLimits] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const [avatarUploading, setAvatarUploading] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -101,6 +103,7 @@ export default function MePage() {
     if (data) {
       setDisplayName(data.display_name || '')
       const p = data.profile_json || {}
+      setAvatarUrl(p.avatar_url || '')
       setAge(p.age || '')
       setBio(p.bio || '')
       setLocation(p.location || '')
@@ -134,7 +137,7 @@ export default function MePage() {
   async function saveProfile() {
     if (!user) return
     setLoading(true)
-    const profile_json = { age, bio, location, role, height, weight, morphology, kinks, prep, limits }
+    const profile_json = { age, bio, location, role, height, weight, morphology, kinks, prep, limits, avatar_url: avatarUrl || undefined }
     await supabase.from('user_profiles').upsert({
       id: user.id,
       display_name: displayName || 'Anonyme',
@@ -147,6 +150,24 @@ export default function MePage() {
 
   function toggleKink(k: string) {
     setKinks(prev => prev.includes(k) ? prev.filter(x => x !== k) : [...prev, k])
+  }
+
+  async function onAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !user) return
+    if (!file.type.startsWith('image/')) return
+    setAvatarUploading(true)
+    const ext = file.name.split('.').pop() || 'jpg'
+    const path = `${user.id}/avatar.${ext}`
+    const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
+    if (error) {
+      setAvatarUploading(false)
+      return
+    }
+    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+    setAvatarUrl(publicUrl)
+    setAvatarUploading(false)
+    e.target.value = ''
   }
 
   // ── Non connecté ─────────────────────────────────────────────────────────
@@ -247,6 +268,25 @@ export default function MePage() {
       {/* ── Profil ── */}
       {activeTab === 'profil' && (
         <div style={{ padding:'16px 20px' }}>
+
+          <Section title="Photo de profil">
+            <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+              <label style={{ cursor: avatarUploading ? 'wait' : 'pointer', position: 'relative' }}>
+                <input type="file" accept="image/*" onChange={onAvatarChange} disabled={avatarUploading} style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer' }} />
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Avatar" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: 80, height: 80, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 700, color: 'white' }}>
+                    {(displayName || '?')[0].toUpperCase()}
+                  </div>
+                )}
+              </label>
+              <div>
+                <p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{avatarUploading ? 'Upload...' : 'Clique pour changer'}</p>
+                <p style={{ fontSize: 11, color: S.tx3, marginTop: 4 }}>JPG, PNG. Affiché sur ton profil.</p>
+              </div>
+            </div>
+          </Section>
 
           <Section title="Basics">
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>

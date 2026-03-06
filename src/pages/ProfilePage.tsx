@@ -53,9 +53,13 @@ export default function ProfilePage() {
       <div style={{ padding:'40px 20px 20px', borderBottom:'1px solid '+S.border }}>
         <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', padding:0, marginBottom:16 }}>← Retour</button>
         <div style={{ display:'flex', alignItems:'center', gap:14 }}>
-          <div style={{ width:56, height:56, borderRadius:'28%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, fontWeight:700, color:'white', flexShrink:0 }}>
-            {(profile.display_name || '?')[0].toUpperCase()}
-          </div>
+          {p.avatar_url ? (
+            <img src={p.avatar_url} alt="" style={{ width:56, height:56, borderRadius:'50%', objectFit:'cover', flexShrink:0 }} />
+          ) : (
+            <div style={{ width:56, height:56, borderRadius:'28%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, fontWeight:700, color:'white', flexShrink:0 }}>
+              {(profile.display_name || '?')[0].toUpperCase()}
+            </div>
+          )}
           <div>
             <h1 style={{ margin:0, fontSize:24, fontWeight:800, color:S.tx }}>{profile.display_name || 'Anonyme'}</h1>
             <div style={{ display:'flex', gap:8, marginTop:4 }}>

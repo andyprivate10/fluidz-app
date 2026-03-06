@@ -16,6 +16,7 @@ export default function SessionPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [myApp, setMyApp] = useState<{ status: string } | null>(null)
   const [members, setMembers] = useState<Member[]>([])
+  const [memberAvatars, setMemberAvatars] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
@@ -37,6 +38,16 @@ export default function SessionPage() {
         .eq('session_id', id)
         .eq('status', 'accepted')
       setMembers(accepted ?? [])
+
+      const ids = (accepted ?? []).map((a: { applicant_id: string }) => a.applicant_id)
+      if (ids.length > 0) {
+        const { data: profiles } = await supabase.from('user_profiles').select('id, profile_json').in('id', ids)
+        const map: Record<string, string> = {}
+        ;(profiles ?? []).forEach((r: { id: string; profile_json?: { avatar_url?: string } }) => {
+          if (r.profile_json?.avatar_url) map[r.id] = r.profile_json.avatar_url
+        })
+        setMemberAvatars(map)
+      } else setMemberAvatars({})
 
       if (user) {
         const { data: app } = await supabase
@@ -99,11 +110,16 @@ export default function SessionPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {members.map(m => {
                 const eps = m.eps_json || {}
+                const avatarUrl = memberAvatars[m.applicant_id]
                 return (
                   <Link key={m.applicant_id} to={'/profile/' + m.applicant_id} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: 'inherit' }}>
-                    <div style={{ width: 36, height: 36, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', flexShrink: 0 }}>
-                      {(eps.displayName || '?')[0].toUpperCase()}
-                    </div>
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                    ) : (
+                      <div style={{ width: 36, height: 36, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+                        {(eps.displayName || '?')[0].toUpperCase()}
+                      </div>
+                    )}
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{eps.displayName || 'Anonyme'}{eps.age ? ', ' + eps.age : ''}</div>
                       {eps.role && <div style={{ fontSize: 12, color: '#F9A8A8' }}>{eps.role}{eps.morphology ? ' · ' + eps.morphology : ''}</div>}
