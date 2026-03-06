@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import BottomNav from '../components/BottomNav'
@@ -64,6 +65,8 @@ function Section({ title, badge, children }: { title:string; badge?:string; chil
 }
 
 export default function MePage() {
+  const [searchParams] = useSearchParams()
+  const devMode = searchParams.get('dev') === '1'
   const [user, setUser] = useState<User | null>(null)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -434,6 +437,9 @@ export default function MePage() {
             {saved ? '✓ Profil sauvegardé !' : loading ? 'Sauvegarde...' : 'Sauvegarder'}
           </button>
 
+          {devMode && (
+            <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>🧪 Test menu</Link>
+          )}
         </div>
       )}
 
