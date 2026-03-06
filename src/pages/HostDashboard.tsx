@@ -19,6 +19,7 @@ export default function HostDashboard() {
   const [tab, setTab] = useState<'pending'|'accepted'|'rejected'>('pending')
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string|null>(null)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -79,6 +80,20 @@ export default function HostDashboard() {
           </button>
         </div>
 
+        {sess?.invite_code && (
+          <button
+            onClick={() => {
+              const url = window.location.origin + '/join/' + sess.invite_code
+              navigator.clipboard.writeText(url).then(() => {
+                setLinkCopied(true)
+                setTimeout(() => setLinkCopied(false), 2000)
+              })
+            }}
+            style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:linkCopied ? S.green+'22' : 'transparent',color:linkCopied ? S.green : S.p300,cursor:'pointer',width:'100%'}}
+          >
+            {linkCopied ? 'Lien copié' : 'Partager'}
+          </button>
+        )}
         <div style={{display:'flex',gap:8,marginTop:16}}>
           {([['pending','⏳ En attente',S.yellow],['accepted','✅ Acceptés',S.green],['rejected','❌ Refusés',S.red]] as const).map(([t,l,c]) => (
             <button key={t} onClick={() => setTab(t as any)} style={{
