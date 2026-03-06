@@ -1,170 +1,170 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import BottomNav from '../components/BottomNav'
 
-type Application = { id: string; applicant_id: string; eps_json: Record<string, string>; status: string; checkin_status: string; created_at: string }
-
-const statusColor = (s: string) => s === 'accepted' ? '#4ADE80' : s === 'rejected' ? '#F87171' : '#B8B2CC'
-const statusLabel = (s: string) => s === 'accepted' ? 'Accept&eacute; ✓' : s === 'rejected' ? 'Refus&eacute; ✗' : 'En attente'
+const S = {
+  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
+  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
+  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',green:'#4ADE80',yellow:'#FBBF24',
+  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+}
 
 export default function HostDashboard() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [applications, setApplications] = useState<Application[]>([])
-  const [session, setSession] = useState<{ title: string; status: string } | null>(null)
+  const [user, setUser] = useState<any>(null)
+  const [sess, setSess] = useState<any>(null)
+  const [apps, setApps] = useState<any[]>([])
+  const [tab, setTab] = useState<'pending'|'accepted'|'rejected'>('pending')
   const [loading, setLoading] = useState(true)
-  const [selected, setSelected] = useState<Application | null>(null)
-  const [actionLoading, setActionLoading] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(0)
+  const [actionLoading, setActionLoading] = useState<string|null>(null)
 
   useEffect(() => {
-    const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { navigate('/me'); return }
-      const { data: sess } = await supabase.from('sessions').select('title,status').eq('id', id).single()
-      if (!sess) { setLoading(false); return }
-      setSession(sess)
-      const { data: apps } = await supabase.from('applications').select('id,applicant_id,eps_json,status,checkin_status,created_at').eq('session_id', id).order('created_at', { ascending: false })
-      setApplications(apps || [])
-      // Fetch unread notification count for this session
-      const { count } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('session_id', id)
-        .eq('user_id', user.id)
-        .eq('read', false)
-      setUnreadCount(count ?? 0)
-      setLoading(false)
-    }
-    load()
+    supabase.auth.getSession().then(({ data }) => {
+      const u = data.session?.user ?? null
+      setUser(u)
+      if (u) load()
+    })
   }, [id])
 
-  const markNotificationsRead = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    await supabase
-      .from('notifications')
-      .update({ read: true })
-      .eq('session_id', id)
-      .eq('user_id', user.id)
-      .eq('read', false)
-    setUnreadCount(0)
+  async function load() {
+    setLoading(true)
+    const [{ data: s }, { data: a }] = await Promise.all([
+      supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
+      supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
+    ])
+    setSess(s)
+    setApps(a || [])
+    setLoading(false)
   }
 
-  const handleAction = async (appId: string, newStatus: 'accepted' | 'rejected') => {
-    setActionLoading(true)
-    await supabase.from('applications').update({ status: newStatus }).eq('id', appId)
-    setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a))
-    if (selected?.id === appId) setSelected(prev => prev ? { ...prev, status: newStatus } : null)
-    setActionLoading(false)
+  async function decide(appId: string, status: 'accepted'|'rejected') {
+    setActionLoading(appId)
+    await supabase.from('applications').update({ status }).eq('id', appId)
+    setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
+    setActionLoading(null)
   }
 
-  const handleOpenSession = async () => {
-    await supabase.from('sessions').update({ status: 'open' }).eq('id', id)
-    setSession(prev => prev ? { ...prev, status: 'open' } : null)
+  async function toggleStatus() {
+    const newStatus = sess.status === 'open' ? 'closed' : 'open'
+    await supabase.from('sessions').update({ status: newStatus }).eq('id', id)
+    setSess((s: any) => ({...s, status: newStatus}))
   }
 
-  const shareLink = window.location.origin + '/session/' + id
-  const copyLink = () => { navigator.clipboard.writeText(shareLink); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+  const filtered = apps.filter(a => a.status === tab)
+  const counts = { pending: apps.filter(a=>a.status==='pending').length, accepted: apps.filter(a=>a.status==='accepted').length, rejected: apps.filter(a=>a.status==='rejected').length }
 
-  const s: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 80 }
-  const hdr: React.CSSProperties = { padding: '16px 24px', borderBottom: '1px solid #2A2740', background: '#16141F' }
-  const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16, cursor: 'pointer' }
-
-  if (loading) return <div style={{ ...s, display: 'flex', justifyContent: 'center', alignItems: 'center' }}><p style={{ color: '#B8B2CC' }}>Chargement...</p></div>
-
-  if (selected) {
-    const eps = selected.eps_json || {}
-    return (
-      <div style={s}>
-        <div style={hdr}>
-          <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#B8B2CC', fontSize: 14, cursor: 'pointer', padding: 0, marginBottom: 4 }}>← Retour</button>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#F0EDFF' }}>
-            {eps.displayName || 'Candidat'}{eps.age ? ', ' + eps.age + ' ans' : ''}
-          </div>
-          <div style={{ fontSize: 12, color: statusColor(selected.status) }}>{statusLabel(selected.status)}</div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16 }}>
-          <div style={{ ...card, cursor: 'default' }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>BASICS</div>
-            {eps.location && <div style={{ fontSize: 13, color: '#7E7694', marginBottom: 6 }}>📍 {eps.location}</div>}
-            {eps.bio && <div style={{ fontSize: 14, color: '#B8B2CC', lineHeight: 1.5 }}>{eps.bio}</div>}
-          </div>
-          <div style={{ ...card, cursor: 'default' }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>PHYSIQUE & R&Ocirc;LE</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {eps.role && <span style={{ fontSize: 13, color: '#F9A8A8', background: '#3D1A1A', border: '1px solid #F9A8A8', padding: '4px 12px', borderRadius: 50, fontWeight: 600 }}>{eps.role}</span>}
-              {eps.morphology && <span style={{ fontSize: 13, color: '#B8B2CC', background: '#2A2740', padding: '4px 12px', borderRadius: 50 }}>{eps.morphology}</span>}
-              {eps.height && <span style={{ fontSize: 13, color: '#B8B2CC', background: '#2A2740', padding: '4px 12px', borderRadius: 50 }}>{eps.height} cm</span>}
-              {eps.weight && <span style={{ fontSize: 13, color: '#B8B2CC', background: '#2A2740', padding: '4px 12px', borderRadius: 50 }}>{eps.weight} kg</span>}
-            </div>
-          </div>
-          {eps.sessionNote && (
-            <div style={{ ...card, cursor: 'default' }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>POUR CETTE SESSION</div>
-              <div style={{ fontSize: 14, color: '#F0EDFF', lineHeight: 1.5, fontStyle: 'italic' }}>"{eps.sessionNote}"</div>
-            </div>
-          )}
-          {selected.status === 'pending' && (
-            <div style={{ display: 'flex', gap: 12 }}>
-              <button onClick={() => handleAction(selected.id, 'rejected')} disabled={actionLoading} style={{ flex: 1, padding: 14, background: '#1F1D2B', border: '1px solid #F87171', borderRadius: 12, color: '#F87171', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>Refuser ✗</button>
-              <button onClick={() => handleAction(selected.id, 'accepted')} disabled={actionLoading} style={{ flex: 1, padding: 14, background: 'linear-gradient(135deg, #F9A8A8, #F47272)', border: 'none', borderRadius: 12, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>Accepter ✓</button>
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  }
+  if (loading) return (
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'Inter,system-ui,sans-serif'}}>
+      <div style={{color:S.tx3}}>Chargement...</div>
+    </div>
+  )
 
   return (
-    <div style={s}>
-      <div style={hdr}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#F0EDFF' }}>{session?.title}</div>
-        <div style={{ fontSize: 12, color: '#7E7694', marginTop: 2 }}>{applications.length} candidature{applications.length !== 1 ? 's' : ''}</div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16 }}>
-        {session?.status === 'draft' && (
-          <div style={{ background: '#16141F', border: '1px solid #F47272', borderRadius: 16, padding: 16 }}>
-            <div style={{ fontSize: 13, color: '#B8B2CC', marginBottom: 12 }}>Session en brouillon. Ouvre-la pour recevoir des candidatures.</div>
-            <button onClick={handleOpenSession} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg, #F9A8A8, #F47272)', border: 'none', borderRadius: 12, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>Ouvrir la session 🚀</button>
+    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
+      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.border}}>
+        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+          <div>
+            <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>{sess?.title}</h1>
+            <p style={{fontSize:13,color:S.tx3,margin:0}}>📍 {sess?.approx_area}</p>
           </div>
-        )}
-        <div style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>LIEN GRINDR</div>
-          <div style={{ fontSize: 12, color: '#B8B2CC', marginBottom: 10, wordBreak: 'break-all' }}>{shareLink}</div>
-          <button onClick={copyLink} style={{ width: '100%', padding: 12, background: copied ? '#14532d' : '#2A2740', border: '1px solid #453F5C', borderRadius: 12, color: copied ? '#4ADE80' : '#F0EDFF', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-            {copied ? '✓ Copi\u00e9 !' : '📋 Copier le lien'}
+          <button onClick={toggleStatus} style={{
+            padding:'6px 14px',borderRadius:99,fontSize:12,fontWeight:700,border:'none',cursor:'pointer',
+            background: sess?.status==='open' ? S.green+'22' : S.bg3,
+            color: sess?.status==='open' ? S.green : S.tx3,
+          }}>
+            {sess?.status==='open' ? '🟢 Ouvert' : '⚫ Fermé'}
           </button>
         </div>
-        <div style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', padding: '4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-          CANDIDATURES
-          {unreadCount > 0 && (
-            <span
-              onClick={(e) => { e.stopPropagation(); markNotificationsRead() }}
-              style={{ background: '#F47272', color: 'white', fontSize: 11, fontWeight: 700, borderRadius: 50, padding: '2px 8px', cursor: 'pointer' }}
-            >
-              {unreadCount} new
-            </span>
-          )}
+
+        <div style={{display:'flex',gap:8,marginTop:16}}>
+          {([['pending','⏳ En attente',S.yellow],['accepted','✅ Acceptés',S.green],['rejected','❌ Refusés',S.red]] as const).map(([t,l,c]) => (
+            <button key={t} onClick={() => setTab(t as any)} style={{
+              flex:1,padding:'8px 4px',borderRadius:10,fontSize:12,fontWeight:600,cursor:'pointer',
+              border:'1px solid '+(tab===t ? c+'55' : S.border),
+              background: tab===t ? c+'14' : S.bg2,
+              color: tab===t ? c : S.tx3,
+            }}>
+              {l} {counts[t as keyof typeof counts] > 0 && <span style={{fontWeight:800}}>({counts[t as keyof typeof counts]})</span>}
+            </button>
+          ))}
         </div>
-        {applications.length === 0 && <div style={{ textAlign: 'center', padding: 32, color: '#7E7694', fontSize: 14 }}>Aucune candidature.<br />Partage le lien !</div>}
-        {applications.map(app => {
-          const eps = app.eps_json || {}
+      </div>
+
+      <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
+        {filtered.length === 0 && (
+          <div style={{textAlign:'center',padding:'40px 20px',color:S.tx3,fontSize:14}}>
+            {tab==='pending' ? 'Aucune candidature en attente' : tab==='accepted' ? 'Aucun membre accepté' : 'Aucun refus'}
+          </div>
+        )}
+
+        {filtered.map(app => {
+          const prof = app.user_profiles
+          const pj = prof?.profile_json || {}
+          const sections = app.eps_json?.shared_sections || []
           return (
-            <div key={app.id} style={card} onClick={() => setSelected(app)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#F0EDFF' }}>{eps.displayName || 'Anonyme'}{eps.age ? ', ' + eps.age + ' ans' : ''}</div>
-                  {eps.role && <div style={{ fontSize: 13, color: '#F9A8A8', marginTop: 2 }}>{eps.role}</div>}
-                  {eps.location && <div style={{ fontSize: 12, color: '#7E7694', marginTop: 2 }}>📍 {eps.location}</div>}
+            <div key={app.id} style={{background:S.bg1,borderRadius:18,border:'1px solid '+S.border,overflow:'hidden'}}>
+              <div style={{padding:'16px'}}>
+                <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:10}}>
+                  <div>
+                    <p style={{margin:'0 0 2px',fontSize:16,fontWeight:800,color:S.tx}}>{prof?.display_name || 'Anonyme'}</p>
+                    {pj.role && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p300+'18',color:S.p300,border:'1px solid '+S.p300+'33'}}>{pj.role}</span>}
+                  </div>
+                  <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Voir profil</button>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 600, color: statusColor(app.status), background: '#2A2740', padding: '2px 10px', borderRadius: 50 }}>{statusLabel(app.status)}</span>
+
+                {pj.age && <p style={{fontSize:13,color:S.tx3,margin:'0 0 4px'}}>{pj.age} ans · {pj.location}</p>}
+                {pj.bio && <p style={{fontSize:13,color:S.tx2,margin:'0 0 8px',lineHeight:1.4}}>{pj.bio}</p>}
+
+                {pj.morphology && (
+                  <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:8}}>
+                    {[pj.morphology, ...(pj.kinks||[]).slice(0,3)].filter(Boolean).map((t:string,i:number) => (
+                      <span key={i} style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:S.bg2,color:S.tx3,border:'1px solid '+S.border}}>{t}</span>
+                    ))}
+                    {(pj.kinks||[]).length > 3 && <span style={{fontSize:11,color:S.tx4}}>+{pj.kinks.length-3}</span>}
+                  </div>
+                )}
+
+                {app.eps_json?.occasion_note && (
+                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p300+'33',marginBottom:8}}>
+                    <p style={{fontSize:11,color:S.p300,fontWeight:700,margin:'0 0 2px'}}>⚡ Note pour cette session</p>
+                    <p style={{fontSize:13,color:S.tx2,margin:0}}>{app.eps_json.occasion_note}</p>
+                  </div>
+                )}
+
+                {pj.limits && (
+                  <div style={{padding:'8px 12px',background:S.red+'10',borderRadius:10,border:'1px solid '+S.red+'33',marginBottom:8}}>
+                    <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>🚫 Limites</p>
+                    <p style={{fontSize:12,color:S.tx3,margin:0}}>{pj.limits}</p>
+                  </div>
+                )}
+
+                {app.status === 'pending' && (
+                  <div style={{display:'flex',gap:8,marginTop:10}}>
+                    <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
+                      ✕ Refuser
+                    </button>
+                    <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.p400+'44'}}>
+                      {actionLoading===app.id ? '...' : '✓ Accepter'}
+                    </button>
+                  </div>
+                )}
+
+                {app.status === 'accepted' && (
+                  <div style={{display:'flex',gap:8,marginTop:10}}>
+                    <span style={{fontSize:12,color:S.green,fontWeight:600}}>✅ Accepté — adresse débloquée</span>
+                    <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
+                  </div>
+                )}
               </div>
             </div>
           )
         })}
       </div>
+
+      <BottomNav active='sessions' />
     </div>
   )
 }

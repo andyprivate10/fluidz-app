@@ -4,6 +4,9 @@ export default function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Hide on DM pages (full-screen chat)
+  if (location.pathname.includes('/dm')) return null
+
   const tabs = [
     { path: '/', icon: '🏠', label: 'Home' },
     { path: '/sessions', icon: '⚡', label: 'Sessions' },

@@ -1,0 +1,23 @@
+# Fluidz - Claude Code Config
+
+## Supabase
+- SUPABASE_ACCESS_TOKEN=sbp_afa56e8c72fe3dda15572bd28055f5ced7221bca
+- Project ref: kxbrfjqxufvskcxmliak
+- Pour toute migration SQL : npx supabase db push ou npx supabase migration new puis npx supabase db push --project-ref kxbrfjqxufvskcxmliak
+- Lier le projet : SUPABASE_ACCESS_TOKEN=sbp_afa56e8c72fe3dda15572bd28055f5ced7221bca npx supabase link --project-ref kxbrfjqxufvskcxmliak
+
+## App
+- Dev: localhost:5173
+- Netlify: stalwart-lamington-4d8649.netlify.app
+
+## Stack
+- React + TypeScript + Vite + Tailwind
+- Supabase (auth, db, realtime)
+- Inline styles with S = {} color tokens
+
+## DB Column Names
+- sessions: id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, created_at
+- applications: id, session_id, applicant_id (NOT user_id), status, eps_json, created_at
+- user_profiles: id, display_name, profile_json
+- messages: id, session_id, sender_id, text, sender_name, created_at
+- notifications: id, user_id, session_id, type, message, read, created_at

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
@@ -11,74 +11,74 @@ type Message = {
   sender_name: string
 }
 
-type SessionInfo = { title: string; exact_address: string | null }
+const S = {
+  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
+  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',
+  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
+  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+}
 
 export default function DMPage() {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [session, setSession] = useState<SessionInfo | null>(null)
-  const [isAccepted, setIsAccepted] = useState(false)
+  const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
+  const [appStatus, setAppStatus] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!id) {
-      setLoading(false)
-      return
-    }
+  const isHost = currentUser?.id === session?.host_id
+  const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
 
-    supabase.auth.getUser().then(({ data: { user } }) => {
+  useEffect(() => {
+    if (!id) { setLoading(false); return }
+
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
       setCurrentUser(user ?? null)
+
+      const { data: sess } = await supabase
+        .from('sessions')
+        .select('title,exact_address,host_id')
+        .eq('id', id)
+        .single()
+      setSession(sess)
+
       if (user) {
-        // Check if this user's application was accepted
-        supabase
+        const { data: app } = await supabase
           .from('applications')
           .select('status')
           .eq('session_id', id)
           .eq('applicant_id', user.id)
-          .eq('status', 'accepted')
           .maybeSingle()
-          .then(({ data }) => {
-            if (data) setIsAccepted(true)
-          })
+        if (app) setAppStatus(app.status)
       }
-    })
 
-    supabase
-      .from('sessions')
-      .select('title,exact_address')
-      .eq('id', id)
-      .single()
-      .then(({ data }) => setSession(data as SessionInfo | null))
-
-    supabase
-      .from('messages')
-      .select('*')
-      .eq('session_id', id)
-      .order('created_at')
-      .then(({ data }) => { setMessages((data as Message[]) ?? []); setLoading(false) })
+      const { data: msgs } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('session_id', id)
+        .order('created_at')
+      setMessages((msgs as Message[]) ?? [])
+      setLoading(false)
+    }
+    init()
 
     const channel = supabase
       .channel('messages:' + id)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: 'session_id=eq.' + id,
-        },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new as Message])
-        }
-      )
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: 'session_id=eq.' + id,
+      }, (payload) => {
+        setMessages((prev) => [...prev, payload.new as Message])
+      })
       .subscribe()
 
-    return () => {
-      supabase.removeChannel(channel)
-    }
+    return () => { supabase.removeChannel(channel) }
   }, [id])
 
   useEffect(() => {
@@ -98,108 +98,82 @@ export default function DMPage() {
   }
 
   return (
-    <div
-      style={{
-        background: '#0C0A14',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 0,
-        maxWidth: 390,
-        margin: '0 auto',
-      }}
-    >
-      <header
-        style={{
-          padding: '16px 24px',
-          borderBottom: '1px solid #2A2740',
-          background: '#16141F',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            color: '#F0EDFF',
-            margin: '0 0 2px 0',
-          }}
-        >
-          {session?.title ?? 'DM'}
-        </h1>
-        <p style={{ color: '#7E7694', fontSize: 12, margin: 0 }}>
-          Message priv&eacute;
-        </p>
+    <div style={{
+      background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column',
+      padding: 0, maxWidth: 390, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif',
+    }}>
+      {/* Header */}
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}>&larr;</button>
+          <div>
+            <h1 style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>
+              {session?.title ?? 'DM'}
+            </h1>
+            <p style={{ color: S.tx3, fontSize: 12, margin: 0 }}>
+              {isHost ? 'Tu es le host' : 'Message avec le host'}
+            </p>
+          </div>
+        </div>
       </header>
 
-      {isAccepted && session?.exact_address && (
-        <div
-          style={{
-            margin: '12px 16px 0',
-            padding: 14,
-            background: '#14532d',
-            border: '1px solid #4ADE80',
-            borderRadius: 12,
-          }}
-        >
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#4ADE80', marginBottom: 4 }}>
-            Adresse r&eacute;v&eacute;l&eacute;e
+      {/* Status banner */}
+      {!isHost && appStatus === 'pending' && (
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.yellow+'14', border: '1px solid '+S.yellow+'44', borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.yellow, fontWeight: 600, textAlign: 'center' }}>
+            Candidature en attente...
           </div>
-          <div style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600 }}>
+        </div>
+      )}
+
+      {!isHost && appStatus === 'rejected' && (
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#F8717114', border: '1px solid #F8717144', borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: '#F87171', fontWeight: 600, textAlign: 'center' }}>
+            Candidature refusee
+          </div>
+        </div>
+      )}
+
+      {/* Address revealed */}
+      {isAccepted && session?.exact_address && (
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.green, borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: S.green, marginBottom: 4 }}>
+            Adresse revelee
+          </div>
+          <div style={{ fontSize: 14, color: S.tx, fontWeight: 600 }}>
             {session.exact_address}
           </div>
         </div>
       )}
 
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-          padding: '16px 0',
-        }}
-      >
+      {/* Messages area */}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, padding: '16px 0' }}>
         {loading ? (
-          <p style={{ color: '#B8B2CC', margin: 0, padding: '0 24px' }}>
-            Chargement...
+          <p style={{ color: S.tx2, margin: 0, padding: '0 24px' }}>Chargement...</p>
+        ) : messages.length === 0 ? (
+          <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
+            Aucun message. Envoie le premier !
           </p>
         ) : (
           messages.map((message) => {
             const isMine = message.sender_id === currentUser?.id
             return (
-              <div
-                key={message.id}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: isMine ? 'flex-end' : 'flex-start',
-                  padding: '0 24px',
-                }}
-              >
+              <div key={message.id} style={{
+                display: 'flex', flexDirection: 'column',
+                alignItems: isMine ? 'flex-end' : 'flex-start',
+                padding: '0 24px',
+              }}>
                 {!isMine && (
-                  <span
-                    style={{
-                      color: '#7E7694',
-                      fontSize: 11,
-                      marginBottom: 2,
-                    }}
-                  >
+                  <span style={{ color: S.tx3, fontSize: 11, marginBottom: 2 }}>
                     {message.sender_name}
                   </span>
                 )}
-                <div
-                  style={{
-                    padding: '10px 14px',
-                    fontSize: 15,
-                    maxWidth: '80%',
-                    background: isMine ? '#F47272' : '#1F1D2B',
-                    color: isMine ? 'white' : '#F0EDFF',
-                    borderRadius: isMine
-                      ? '16px 16px 4px 16px'
-                      : '16px 16px 16px 4px',
-                  }}
-                >
+                <div style={{
+                  padding: '10px 14px', fontSize: 15, maxWidth: '80%',
+                  background: isMine ? S.p400 : S.bg2,
+                  color: isMine ? 'white' : S.tx,
+                  borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                }}>
                   {message.text}
                 </div>
               </div>
@@ -209,15 +183,11 @@ export default function DMPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div
-        style={{
-          background: '#16141F',
-          padding: 16,
-          borderTop: '1px solid #2A2740',
-          display: 'flex',
-          gap: 8,
-        }}
-      >
+      {/* Input bar */}
+      <div style={{
+        background: S.bg1, padding: 16, borderTop: '1px solid '+S.border,
+        display: 'flex', gap: 8, flexShrink: 0,
+      }}>
         <input
           type="text"
           value={newMessage}
@@ -225,27 +195,18 @@ export default function DMPage() {
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Ton message..."
           style={{
-            flex: 1,
-            padding: 12,
-            background: '#1F1D2B',
-            border: '1px solid #2A2740',
-            borderRadius: 12,
-            color: '#F0EDFF',
-            fontSize: 15,
-            outline: 'none',
+            flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.border,
+            borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
+            fontFamily: 'inherit',
           }}
         />
         <button
           type="button"
           onClick={handleSend}
           style={{
-            padding: '12px 16px',
-            background: 'linear-gradient(135deg, #F9A8A8, #F47272)',
-            color: 'white',
-            border: 'none',
-            borderRadius: 12,
-            fontWeight: 700,
-            cursor: 'pointer',
+            padding: '12px 16px', background: S.grad, color: 'white',
+            border: 'none', borderRadius: 12, fontWeight: 700, cursor: 'pointer',
+            fontSize: 16,
           }}
         >
           &rarr;

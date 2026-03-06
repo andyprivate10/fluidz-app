@@ -10,6 +10,7 @@ import HostDashboard from './pages/HostDashboard'
 import SessionsPage from './pages/SessionsPage'
 import JoinPage from './pages/JoinPage'
 import NotFoundPage from './pages/NotFoundPage'
+import CandidateProfilePage from './pages/CandidateProfilePage'
 import BottomNav from './components/BottomNav'
 
 export default function App() {
@@ -24,8 +25,9 @@ export default function App() {
           <Route path="/session/:id/apply" element={<ApplyPage />} />
           <Route path="/session/:id/dm" element={<DMPage />} />
           <Route path="/session/:id/host" element={<HostDashboard />} />
-          <Route path="/join" element={<JoinPage />} />
+          <Route path="/join/:code" element={<JoinPage />} />
           <Route path="/me" element={<MePage />} />
+          <Route path="/session/:id/candidate/:applicantId" element={<CandidateProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <BottomNav />

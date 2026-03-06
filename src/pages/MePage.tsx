@@ -1,138 +1,340 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
+import BottomNav from '../components/BottomNav'
+
+const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
+const ROLES = ['Top','Bottom','Versa','Side']
+const PREP_OPTIONS = ['Actif','Inactif','Non']
+const KINKS_LIST = [
+  'Fist','SM léger','SM hard','Jeux de rôle','Fétichisme',
+  'Exhib','Voyeur','Bareback','Gang bang','Cuir','Latex','Groupe','Watersports'
+]
+
+const S = {
+  bg0:'#0C0A14', bg1:'#16141F', bg2:'#1F1D2B', bg3:'#2A2740',
+  tx:'#F0EDFF', tx2:'#B8B2CC', tx3:'#7E7694', tx4:'#453F5C',
+  border:'#2A2740', p300:'#F9A8A8', p400:'#F47272', red:'#F87171',
+  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+}
+
+const inputStyle: React.CSSProperties = {
+  width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
+  padding:'12px 16px', border:`1px solid ${S.border}`, outline:'none',
+  fontSize:14, fontFamily:'inherit', boxSizing:'border-box',
+}
+
+function Chip({ label, active, onClick }: { label:string; active:boolean; onClick:()=>void }) {
+  return (
+    <button onClick={onClick} style={{
+      padding:'6px 14px', borderRadius:99, fontSize:13, fontWeight:600,
+      border: active ? 'none' : `1px solid ${S.border}`,
+      background: active ? S.grad : S.bg2,
+      color: active ? '#fff' : S.tx3,
+      cursor:'pointer', transition:'all 0.15s',
+      boxShadow: active ? `0 2px 12px ${S.p400}44` : 'none',
+    }}>
+      {label}
+    </button>
+  )
+}
+
+function Section({ title, badge, children }: { title:string; badge?:string; children:React.ReactNode }) {
+  return (
+    <div style={{ background:S.bg1, borderRadius:20, padding:'16px', border:`1px solid ${S.border}`, marginBottom:12 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
+        <span style={{ fontSize:11, fontWeight:700, color:S.tx3, textTransform:'uppercase', letterSpacing:'0.08em' }}>
+          {title}
+        </span>
+        {badge && (
+          <span style={{ fontSize:11, fontWeight:600, padding:'2px 8px', borderRadius:99,
+            background:`${S.p300}18`, color:S.p300, border:`1px solid ${S.p300}33` }}>
+            {badge}
+          </span>
+        )}
+      </div>
+      {children}
+    </div>
+  )
+}
 
 export default function MePage() {
+  const [user, setUser] = useState<User | null>(null)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [user, setUser] = useState<User | null>(null)
+  const [msg, setMsg] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
+
   const [displayName, setDisplayName] = useState('')
-  const [profileSaved, setProfileSaved] = useState(false)
+  const [age, setAge] = useState('')
+  const [bio, setBio] = useState('')
+  const [location, setLocation] = useState('')
+  const [role, setRole] = useState('')
+  const [height, setHeight] = useState('')
+  const [weight, setWeight] = useState('')
+  const [morphology, setMorphology] = useState('')
+  const [kinks, setKinks] = useState<string[]>([])
+  const [prep, setPrep] = useState('')
+  const [limits, setLimits] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null)
+      const u = data.session?.user ?? null
+      setUser(u)
+      if (u) loadProfile(u.id)
     })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       const u = session?.user ?? null
       setUser(u)
-      if (u) {
-        supabase.from('user_profiles').select('display_name').eq('id', u.id).maybeSingle()
-          .then(({ data }) => { if (data?.display_name) setDisplayName(data.display_name) })
-      }
+      if (u) loadProfile(u.id)
     })
     return () => subscription.unsubscribe()
   }, [])
 
-  async function handleSendLink() {
-    setLoading(true)
-    setMessage('')
+  async function loadProfile(uid: string) {
+    const { data } = await supabase
+      .from('user_profiles')
+      .select('display_name,profile_json')
+      .eq('id', uid)
+      .maybeSingle()
+    if (data) {
+      setDisplayName(data.display_name || '')
+      const p = data.profile_json || {}
+      setAge(p.age || '')
+      setBio(p.bio || '')
+      setLocation(p.location || '')
+      setRole(p.role || '')
+      setHeight(p.height || '')
+      setWeight(p.weight || '')
+      setMorphology(p.morphology || '')
+      setKinks(p.kinks || [])
+      setPrep(p.prep || '')
+      setLimits(p.limits || '')
+    }
+  }
+
+  async function sendMagicLink() {
+    if (!email) return
+    setLoading(true); setMsg('')
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin + '/me' },
+      options: { emailRedirectTo: window.location.origin + '/me' }
     })
-    if (error) {
-      setMessage('Erreur : ' + error.message)
-    } else {
-      setMessage('Lien envoyé ! Vérifie ta boîte mail.')
-    }
+    setMsg(error ? error.message : 'Lien envoyé ! Vérifie ta boîte mail.')
     setLoading(false)
   }
 
-  async function handleSignOut() {
+  async function signOut() {
     await supabase.auth.signOut()
     setUser(null)
+    setActiveTab('auth')
   }
 
+  async function saveProfile() {
+    if (!user) return
+    setLoading(true)
+    const profile_json = { age, bio, location, role, height, weight, morphology, kinks, prep, limits }
+    await supabase.from('user_profiles').upsert({
+      id: user.id,
+      display_name: displayName || 'Anonyme',
+      profile_json
+    })
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+    setLoading(false)
+  }
+
+  function toggleKink(k: string) {
+    setKinks(prev => prev.includes(k) ? prev.filter(x => x !== k) : [...prev, k])
+  }
+
+  // ── Non connecté ─────────────────────────────────────────────────────────
+  if (!user) {
+    return (
+      <div style={{
+        minHeight:'100vh', background:S.bg0, display:'flex', flexDirection:'column',
+        alignItems:'center', justifyContent:'center', padding:'0 24px 96px',
+        fontFamily:'Inter,system-ui,sans-serif'
+      }}>
+        <div style={{ marginBottom:32, textAlign:'center' }}>
+          <h1 style={{ fontSize:32, fontWeight:800, background:S.grad,
+            WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', margin:'0 0 8px' }}>
+            fluidz
+          </h1>
+          <p style={{ color:S.tx3, fontSize:14 }}>Entre ton email pour te connecter</p>
+        </div>
+        <input
+          type="email" value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="ton@email.com"
+          style={{ ...inputStyle, maxWidth:360, marginBottom:12 }}
+          onKeyDown={e => e.key === 'Enter' && sendMagicLink()}
+        />
+        <button
+          onClick={sendMagicLink} disabled={loading}
+          style={{
+            width:'100%', maxWidth:360, padding:'14px', borderRadius:14,
+            fontWeight:700, fontSize:15, color:'#fff', background:S.grad,
+            border:'none', cursor:'pointer', opacity: loading ? 0.7 : 1,
+            boxShadow:`0 4px 20px ${S.p400}44`,
+          }}>
+          {loading ? 'Envoi...' : '✉️ Envoyer le lien magique'}
+        </button>
+        {msg && <p style={{ marginTop:16, fontSize:13, color:S.tx2, textAlign:'center' }}>{msg}</p>}
+        <BottomNav active="me" />
+      </div>
+    )
+  }
+
+  // ── Connecté ─────────────────────────────────────────────────────────────
   return (
-    <div
-      style={{
-        background: '#0C0A14',
-        padding: 24,
-        maxWidth: 390,
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        minHeight: '100vh',
-        justifyContent: 'center',
-        paddingBottom: 80,
-      }}
-    >
-      {user ? (
-        <>
-          <p style={{ color: '#B8B2CC', margin: 0 }}>
-            Connect&eacute; en tant que {user.email}
-          </p>
-          <input
-            type="text"
-            placeholder="Ton pseudo"
-            value={displayName}
-            onChange={(e) => { setDisplayName(e.target.value); setProfileSaved(false) }}
-            style={{
-              background: '#16141F',
-              border: '1px solid #2A2740',
-              borderRadius: 12,
-              padding: 14,
-              color: '#F0EDFF',
-              fontSize: 16,
-              width: '100%',
-            }}
-          />
-          <button
-            type="button"
-            className="btn-primary"
-            style={{ padding: 14, borderRadius: 12 }}
-            onClick={async () => {
-              if (!displayName.trim()) return
-              await supabase.from('user_profiles').upsert(
-                { id: user.id, display_name: displayName.trim() },
-                { onConflict: 'id' }
-              )
-              setProfileSaved(true)
-            }}
-          >
-            {profileSaved ? 'Enregistr\u00e9 !' : 'Enregistrer le pseudo'}
+    <div style={{ minHeight:'100vh', background:S.bg0, paddingBottom:96, fontFamily:'Inter,system-ui,sans-serif' }}>
+
+      {/* Header */}
+      <div style={{
+        padding:'40px 20px 16px', borderBottom:`1px solid ${S.border}`,
+        display:'flex', alignItems:'center', justifyContent:'space-between'
+      }}>
+        <div>
+          <h1 style={{ fontSize:24, fontWeight:800, color:S.tx, margin:0 }}>
+            {displayName || 'Mon profil'}
+          </h1>
+          <p style={{ fontSize:12, color:S.tx3, marginTop:3 }}>{user.email}</p>
+        </div>
+        <button onClick={signOut} style={{
+          padding:'7px 14px', borderRadius:10, fontSize:12, color:S.tx3,
+          border:`1px solid ${S.border}`, background:'transparent', cursor:'pointer',
+        }}>
+          Déco
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display:'flex', padding:'12px 20px 0', gap:8 }}>
+        {(['auth','profil'] as const).map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)} style={{
+            flex:1, padding:'10px', borderRadius:12, fontSize:13,
+            fontWeight:600, cursor:'pointer',
+            border: `1px solid ${activeTab===tab ? `${S.p300}66` : S.border}`,
+            background: activeTab===tab ? `${S.p300}14` : S.bg2,
+            color: activeTab===tab ? S.p300 : S.tx3,
+            transition:'all 0.2s',
+          }}>
+            {tab === 'auth' ? '🔐 Compte' : '👤 Profil'}
           </button>
-          <button type="button" className="btn-secondary" onClick={handleSignOut}>
-            Se d&eacute;connecter
+        ))}
+      </div>
+
+      {/* ── Compte ── */}
+      {activeTab === 'auth' && (
+        <div style={{ padding:'16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
+          <div style={{ background:S.bg1, borderRadius:16, padding:'14px 16px', border:`1px solid ${S.border}` }}>
+            <p style={{ fontSize:11, color:S.tx3, marginBottom:4, fontWeight:600,
+              textTransform:'uppercase', letterSpacing:'0.06em' }}>Email</p>
+            <p style={{ fontSize:14, color:S.tx, fontWeight:500 }}>{user.email}</p>
+          </div>
+          <button onClick={signOut} style={{
+            width:'100%', padding:'13px', borderRadius:14, fontWeight:600,
+            fontSize:14, color:S.tx2, border:`1px solid ${S.border}`,
+            background:S.bg2, cursor:'pointer',
+          }}>
+            Se déconnecter
           </button>
-        </>
-      ) : (
-        <>
-          <input
-            type="email"
-            placeholder="ton@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-            style={{
-              background: '#16141F',
-              border: '1px solid #2A2740',
-              borderRadius: 12,
-              padding: 14,
-              color: '#F0EDFF',
-              fontSize: 16,
-              width: '100%',
-            }}
-          />
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={handleSendLink}
-            disabled={loading}
-            style={{ padding: 14, borderRadius: 12 }}
-          >
-            {loading ? 'Envoi…' : 'Envoyer le lien magique'}
-          </button>
-          {message && (
-            <p style={{ color: '#B8B2CC', fontSize: 14, margin: 0 }}>
-              {message}
-            </p>
-          )}
-        </>
+        </div>
       )}
+
+      {/* ── Profil ── */}
+      {activeTab === 'profil' && (
+        <div style={{ padding:'16px 20px' }}>
+
+          <Section title="Basics">
+            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+              <input
+                value={displayName} onChange={e => setDisplayName(e.target.value)}
+                placeholder="Pseudo *" style={inputStyle}
+              />
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                <input value={age} onChange={e => setAge(e.target.value)}
+                  placeholder="Âge" type="number" style={inputStyle} />
+                <input value={location} onChange={e => setLocation(e.target.value)}
+                  placeholder="Paris 11e, Bastille..." style={inputStyle} />
+              </div>
+              <textarea
+                value={bio} onChange={e => setBio(e.target.value)}
+                placeholder="Bio courte..." rows={3}
+                style={{ ...inputStyle, resize:'none', lineHeight:1.5 }}
+              />
+            </div>
+          </Section>
+
+          <Section title="Rôle">
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {ROLES.map(r => (
+                <Chip key={r} label={r} active={role===r} onClick={() => setRole(role===r?'':r)} />
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Physique">
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:10 }}>
+              <input value={height} onChange={e => setHeight(e.target.value)}
+                placeholder="Taille (cm)" type="number" style={inputStyle} />
+              <input value={weight} onChange={e => setWeight(e.target.value)}
+                placeholder="Poids (kg)" type="number" style={inputStyle} />
+            </div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {MORPHOLOGIES.map(m => (
+                <Chip key={m} label={m} active={morphology===m}
+                  onClick={() => setMorphology(morphology===m?'':m)} />
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Pratiques" badge={kinks.length > 0 ? `${kinks.length} sélectionnées` : undefined}>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {KINKS_LIST.map(k => (
+                <Chip key={k} label={k} active={kinks.includes(k)} onClick={() => toggleKink(k)} />
+              ))}
+            </div>
+          </Section>
+
+          <Section title="PrEP">
+            <div style={{ display:'flex', gap:8 }}>
+              {PREP_OPTIONS.map(p => (
+                <Chip key={p} label={p} active={prep===p} onClick={() => setPrep(prep===p?'':p)} />
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Limites">
+            <textarea
+              value={limits} onChange={e => setLimits(e.target.value)}
+              placeholder="Hard limits, no-go..." rows={3}
+              style={{ ...inputStyle, resize:'none', lineHeight:1.5, borderColor:S.red }}
+            />
+            <p style={{ fontSize:11, color:S.red, marginTop:6, opacity:0.7 }}>
+              Visible par le host et les membres votants
+            </p>
+          </Section>
+
+          <button
+            onClick={saveProfile} disabled={loading || !displayName}
+            style={{
+              width:'100%', padding:'15px', borderRadius:16, fontWeight:700,
+              fontSize:15, color:'#fff', background:S.grad, border:'none',
+              cursor: loading||!displayName ? 'not-allowed' : 'pointer',
+              opacity: loading||!displayName ? 0.5 : 1,
+              boxShadow:`0 4px 24px ${S.p400}44`,
+              transition:'opacity 0.2s',
+            }}>
+            {saved ? '✓ Profil sauvegardé !' : loading ? 'Sauvegarde...' : 'Sauvegarder le profil'}
+          </button>
+
+        </div>
+      )}
+
+      <BottomNav active="me" />
     </div>
   )
 }
