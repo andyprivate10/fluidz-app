@@ -15,6 +15,8 @@ interface EpsJson {
   prep?: string
   limits?: string
   sessionNote?: string
+  message?: string
+  profile_snapshot?: { display_name?: string; role?: string }
 }
 
 interface Application {
@@ -113,6 +115,19 @@ export default function CandidateProfilePage() {
 
   const eps = app.eps_json || {}
   const kinks = eps.kinks || []
+  const snapshot = eps.profile_snapshot || {}
+  const p = (app.eps_json as Record<string, unknown>) || {}
+  const health = ((p.health || (snapshot as Record<string, unknown>).health) as { prep_status?: string; dernier_test?: string }) || {}
+  const prepStatus = health.prep_status || eps.prep
+  const dernierTest = health.dernier_test
+  const messageText = eps.message || eps.sessionNote || (p.occasion_note as string)
+
+  function monthsAgo(iso: string): number {
+    const d = new Date(iso)
+    if (isNaN(d.getTime())) return 0
+    const now = new Date()
+    return Math.max(0, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()))
+  }
 
   return (
     <div className="min-h-screen bg-bg0 pb-36">
@@ -122,24 +137,22 @@ export default function CandidateProfilePage() {
           ← Retour
         </button>
 
-        {/* Name + badge */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-tx">{eps.displayName || 'Anonyme'}</h1>
+            <h1 className="text-3xl font-bold text-tx">{eps.displayName || snapshot.display_name || 'Anonyme'}</h1>
             <div className="flex items-center gap-2 mt-1">
               {eps.age && <span className="text-tx3 text-sm">{eps.age} ans</span>}
               {eps.location && <span className="text-tx3 text-sm">· {eps.location}</span>}
             </div>
           </div>
-          {eps.role && (
+          {(eps.role || snapshot.role) && (
             <span className="px-3 py-1.5 rounded-full text-sm font-semibold text-white mt-1"
               style={{ background: 'linear-gradient(135deg,#F9A8A8,#F47272)' }}>
-              {eps.role}
+              {eps.role || snapshot.role}
             </span>
           )}
         </div>
 
-        {/* Status badge */}
         <div className="mt-3">
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
             app.status === 'accepted' ? 'bg-green-900 text-green-300' :
@@ -153,7 +166,6 @@ export default function CandidateProfilePage() {
       </div>
 
       <div className="px-5 space-y-5">
-        {/* Bio (basics) */}
         {eps.bio && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border">
             <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Bio</p>
@@ -161,33 +173,33 @@ export default function CandidateProfilePage() {
           </div>
         )}
 
-        {/* Rôle */}
-        {eps.role && (
+        {(eps.role || snapshot.role) && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border">
             <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Rôle</p>
-            <p className="text-tx text-sm font-semibold" style={{ color: '#F9A8A8' }}>{eps.role}</p>
+            <span className="inline-block px-3 py-1.5 rounded-full text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg,#F9A8A8,#F47272)' }}>
+              {eps.role || snapshot.role}
+            </span>
           </div>
         )}
 
-        {/* Physique */}
         {(eps.height || eps.weight || eps.morphology) && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border">
             <p className="text-tx3 text-xs uppercase tracking-wider mb-3">Physique</p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {eps.height && (
-                <div className="text-center">
-                  <p className="text-xl font-bold text-tx">{eps.height}</p>
+                <div className="text-center p-2 rounded-xl bg-bg1">
+                  <p className="text-lg font-bold text-tx">{eps.height}</p>
                   <p className="text-tx3 text-xs">cm</p>
                 </div>
               )}
               {eps.weight && (
-                <div className="text-center">
-                  <p className="text-xl font-bold text-tx">{eps.weight}</p>
+                <div className="text-center p-2 rounded-xl bg-bg1">
+                  <p className="text-lg font-bold text-tx">{eps.weight}</p>
                   <p className="text-tx3 text-xs">kg</p>
                 </div>
               )}
               {eps.morphology && (
-                <div className="text-center">
+                <div className="text-center p-2 rounded-xl bg-bg1">
                   <p className="text-sm font-semibold text-tx">{eps.morphology}</p>
                   <p className="text-tx3 text-xs">morpho</p>
                 </div>
@@ -196,62 +208,63 @@ export default function CandidateProfilePage() {
           </div>
         )}
 
-        {/* Pratiques */}
+        {(prepStatus || dernierTest) && (
+          <div className="bg-bg2 rounded-2xl p-4 border border-border">
+            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Santé</p>
+            <div className="flex flex-wrap gap-2">
+              {prepStatus === 'Actif' && (
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-900/40 text-green-300 border border-green-500/40">PrEP actif ✓</span>
+              )}
+              {dernierTest && (
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-900/40 text-blue-300 border border-blue-500/40">Testé il y a {monthsAgo(dernierTest)} mois</span>
+              )}
+              {prepStatus && prepStatus !== 'Actif' && (
+                <span className="px-3 py-1 rounded-full text-xs text-tx2">PrEP {prepStatus}</span>
+              )}
+            </div>
+          </div>
+        )}
+
         {kinks.length > 0 && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-3">Pratiques ({kinks.length})</p>
+            <p className="text-tx3 text-xs uppercase tracking-wider mb-3">Kinks</p>
             <div className="flex flex-wrap gap-2">
               {kinks.map((k: string) => (
-                <span key={k} className="px-3 py-1 rounded-full text-xs font-medium text-tx2 border border-border bg-bg3">
-                  {k}
+                <span key={k} className="px-3 py-1 rounded-full text-xs font-medium text-tx2 border border-border bg-bg3 inline-flex items-center gap-1">
+                  <span className="text-green-400">✓</span> {k}
                 </span>
               ))}
             </div>
           </div>
         )}
 
-        {/* Santé */}
-        {eps.prep && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Santé / PrEP</p>
-            <div className="flex items-center gap-2">
-              <span className={`w-2.5 h-2.5 rounded-full ${eps.prep === 'Actif' ? 'bg-green-400' : 'bg-yellow-400'}`} />
-              <span className="text-tx text-sm font-medium">PrEP {eps.prep}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Limites */}
         {eps.limits && (
-          <div className="bg-bg2 rounded-2xl p-4 border-2 border-red-800">
+          <div className="rounded-2xl p-4 border-2 border-red-500/60 bg-red-950/20">
             <p className="text-red-400 text-xs uppercase tracking-wider mb-2">Limites</p>
             <p className="text-tx text-sm leading-relaxed">{eps.limits}</p>
           </div>
         )}
 
-        {/* Pour cette session */}
-        {(eps.sessionNote || (eps as Record<string, unknown>).occasion_note) && (
+        {messageText && (
           <div className="bg-bg2 rounded-2xl p-4 border border-border" style={{ borderColor: '#F9A8A840' }}>
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#F9A8A8' }}>Pour cette session</p>
-            <p className="text-tx text-sm leading-relaxed">{(eps.sessionNote || (eps as Record<string, unknown>).occasion_note) as string}</p>
+            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#F9A8A8' }}>Message au host</p>
+            <p className="text-tx text-sm leading-relaxed">{messageText}</p>
           </div>
         )}
 
-        {/* Candidature info */}
-        <div className="text-center text-tx3 text-xs">
+        <div className="text-center text-tx3 text-xs pb-2">
           Candidature reçue le {new Date(app.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' })}
         </div>
       </div>
 
-      {/* CTA fixe si host + pending */}
       {isHost && app.status === 'pending' && (
-        <div className="fixed bottom-0 left-0 right-0 p-5 bg-bg0 border-t border-border flex gap-3">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-bg0 border-t border-border flex gap-3 max-w-md mx-auto">
           <button
             onClick={() => handleDecision('rejected')}
             disabled={actioning}
-            className="flex-1 py-4 rounded-2xl font-bold text-tx border border-border bg-bg2"
+            className="flex-1 py-4 rounded-2xl font-bold text-red-400 border-2 border-red-500/60 bg-red-950/20"
           >
-            Refuser
+            Refuser ✗
           </button>
           <button
             onClick={() => handleDecision('accepted')}
