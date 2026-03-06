@@ -12,7 +12,7 @@ import SessionsPage from './pages/SessionsPage'
 import JoinPage from './pages/JoinPage'
 import NotFoundPage from './pages/NotFoundPage'
 import CandidateProfilePage from './pages/CandidateProfilePage'
-import ProfilePage from './pages/ProfilePage'
+import PublicProfile from './pages/PublicProfile'
 import NotificationsPage from './pages/NotificationsPage'
 import DevLoopPage from './pages/DevLoopPage'
 import BottomNav from './components/BottomNav'
@@ -28,7 +28,7 @@ const routes = [
   { path: '/join/:code', element: <JoinPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/notifications', element: <NotificationsPage /> },
-  { path: '/profile/:userId', element: <ProfilePage /> },
+  { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },
   { path: '/dev-loop', element: <DevLoopPage /> },
   { path: '*', element: <NotFoundPage /> },
