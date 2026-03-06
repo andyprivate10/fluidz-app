@@ -201,18 +201,28 @@ export default function SessionPage() {
           </div>
         )}
 
-        {myApp && myApp.status !== 'accepted' && myApp.status !== 'checked_in' && (
-          <div style={{ ...card, textAlign: 'center' }}>
-            <div style={{ fontSize: 14, color: '#B8B2CC' }}>
-              {myApp.status === 'pending' ? 'Candidature en attente...' : myApp.status === 'rejected' ? 'Candidature refusee' : 'Candidature envoyee'}
-            </div>
+        {myApp && (
+          <div style={{ ...card }}>
+            {myApp.status === 'pending' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#FBBF24', padding: '6px 12px', borderRadius: 99, background: '#FBBF2418', border: '1px solid #FBBF2444' }}>En attente de réponse...</span>
+              </div>
+            )}
+            {myApp.status === 'accepted' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Accepté ✓</span>
+                <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                  Ouvrir le DM
+                </button>
+              </div>
+            )}
+            {myApp.status === 'rejected' && (
+              <span style={{ fontSize: 14, fontWeight: 600, color: '#F87171', padding: '6px 12px', borderRadius: 99, background: '#F8717118', border: '1px solid #F8717144' }}>Non retenu</span>
+            )}
+            {myApp.status === 'checked_in' && (
+              <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
+            )}
           </div>
-        )}
-
-        {myApp?.status === 'accepted' && (
-          <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-            Ouvrir le DM avec le host
-          </button>
         )}
 
       </div>
