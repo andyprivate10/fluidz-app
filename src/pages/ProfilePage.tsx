@@ -5,8 +5,14 @@ import { supabase } from '../lib/supabase'
 const S = {
   bg0:'#0C0A14', bg1:'#16141F', bg2:'#1F1D2B', bg3:'#2A2740',
   tx:'#F0EDFF', tx2:'#B8B2CC', tx3:'#7E7694',
-  border:'#2A2740', p300:'#F9A8A8', p400:'#F47272', red:'#F87171', green:'#4ADE80',
+  border:'#2A2740', p300:'#F9A8A8', p400:'#F47272', red:'#F87171', green:'#4ADE80', blue:'#3B82F6',
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+}
+
+function monthsAgo(isoDate: string): number {
+  const d = new Date(isoDate)
+  const now = new Date()
+  return Math.max(0, Math.floor((now.getTime() - d.getTime()) / (30.44 * 24 * 60 * 60 * 1000)))
 }
 
 const card: React.CSSProperties = { background:S.bg1, borderRadius:20, padding:16, border:'1px solid '+S.border, marginBottom:12 }
@@ -140,13 +146,25 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Sante */}
-        {p.prep && (
+        {/* Sante / PrEP */}
+        {(p.sante || p.prep) && (
           <div style={card}>
-            <div style={label}>Sante</div>
-            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <div style={{ width:10, height:10, borderRadius:'50%', background: p.prep === 'Actif' ? S.green : '#FBBF24' }} />
-              <span style={{ fontSize:14, fontWeight:600, color:S.tx }}>PrEP {p.prep}</span>
+            <div style={label}>💊 Santé</div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, alignItems:'center' }}>
+              {p.sante?.prep_status === 'Actif' && (
+                <span style={{ fontSize:13, fontWeight:600, color:S.green, padding:'4px 12px', borderRadius:99, background:S.green+'22', border:'1px solid '+S.green+'44' }}>PrEP Actif ✓</span>
+              )}
+              {p.sante?.dernier_test && (
+                <span style={{ fontSize:13, fontWeight:600, color:S.blue, padding:'4px 12px', borderRadius:99, background:S.blue+'22', border:'1px solid '+S.blue+'44' }}>
+                  Testé il y a {monthsAgo(p.sante.dernier_test)} mois
+                </span>
+              )}
+              {p.prep && !p.sante?.prep_status && (
+                <span style={{ fontSize:13, fontWeight:600, color: p.prep === 'Actif' ? S.green : S.tx3, padding:'4px 12px', borderRadius:99, background:(p.prep === 'Actif' ? S.green : S.tx3)+'22', border:'1px solid '+(p.prep === 'Actif' ? S.green : S.tx3)+'44' }}>PrEP {p.prep}</span>
+              )}
+              {(!p.sante?.prep_status && !p.sante?.dernier_test && !p.prep) && (
+                <span style={{ fontSize:13, fontWeight:600, color:S.tx3, padding:'4px 12px', borderRadius:99, background:S.bg2, border:'1px solid '+S.border }}>Non renseigné</span>
+              )}
             </div>
           </div>
         )}
