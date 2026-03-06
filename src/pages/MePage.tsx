@@ -6,10 +6,7 @@ import BottomNav from '../components/BottomNav'
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
 const ROLES = ['Top','Bottom','Versa','Side']
 const PREP_OPTIONS = ['Actif','Inactif','Non']
-const KINKS_LIST = [
-  'Fist','SM léger','SM hard','Jeux de rôle','Fétichisme',
-  'Exhib','Voyeur','Bareback','Gang bang','Cuir','Latex','Groupe','Watersports'
-]
+const KINKS_LIST = ['Fist', 'SM léger', 'SM hard', 'Bareback', 'Group', 'Exhib', 'Voyeur', 'Fétichisme', 'Jeux de rôle']
 
 const S = {
   bg0:'#0C0A14', bg1:'#16141F', bg2:'#1F1D2B', bg3:'#2A2740',
@@ -385,7 +382,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Pratiques" badge={kinks.length > 0 ? `${kinks.length} sélectionnées` : undefined}>
+          <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''} sélectionnée${kinks.length > 1 ? 's' : ''}` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {KINKS_LIST.map(k => (
                 <Chip key={k} label={k} active={kinks.includes(k)} onClick={() => toggleKink(k)} />
