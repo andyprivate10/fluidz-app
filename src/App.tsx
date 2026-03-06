@@ -13,6 +13,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import CandidateProfilePage from './pages/CandidateProfilePage'
 import ProfilePage from './pages/ProfilePage'
 import NotificationsPage from './pages/NotificationsPage'
+import DevLoopPage from './pages/DevLoopPage'
 import BottomNav from './components/BottomNav'
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/session/:id/candidate/:applicantId" element={<CandidateProfilePage />} />
+          <Route path="/dev-loop" element={<DevLoopPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <BottomNav />
