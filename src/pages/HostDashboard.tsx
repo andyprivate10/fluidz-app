@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import BottomNav from '../components/BottomNav'
 
@@ -109,7 +109,9 @@ export default function HostDashboard() {
               <div style={{padding:'16px'}}>
                 <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:10}}>
                   <div>
-                    <p style={{margin:'0 0 2px',fontSize:16,fontWeight:800,color:S.tx}}>{prof?.display_name || 'Anonyme'}</p>
+                    <p style={{margin:'0 0 2px',fontSize:16,fontWeight:800,color:S.tx}}>
+                      <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{prof?.display_name || 'Anonyme'}</Link>
+                    </p>
                     {pj.role && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p300+'18',color:S.p300,border:'1px solid '+S.p300+'33'}}>{pj.role}</span>}
                   </div>
                   <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Voir profil</button>
