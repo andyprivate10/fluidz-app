@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-3ae3bfb — feat: ProfilePage health PrEP section display (batch 9)
+fe4d3bf — feat: HostDashboard show ghost candidate badge (batch 12)
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -28,7 +28,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - PWA manifest + OG tags
 - user_profiles table + persistence pseudo
 - Check-in flow + status candidat
-- Ghost flow : postuler sans compte via /join/:code (auth anonyme Supabase + profil « Invité », puis redirect DM)
+- Ghost flow : /join/:code « Continuer sans compte » (guest_token + redirect ApplyPage) ou « Postuler direct en invité » ; ApplyPage accepte guest_token et crée anon à la soumission ; MePage bannière + claim après signup
 - Photos profil : MePage upload vers bucket Storage « avatars » (public), affichage sur ProfilePage et lineup SessionPage (cercle 32px)
 - Page Notifications /notifications : liste des notifs (table notifications), marquer lu au clic
 - Rate limiting ApplyPage : blocage si postulation dans les 5 dernières minutes
@@ -36,6 +36,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - HomePage : si connecté et host d’au moins une session, lien rapide vers la plus récente ; si pas connecté, message de bienvenue Fluidz
 
 - BottomNav : badge nombre notifs ; SessionPage Postuler 2s ; ProfilePage copier lien. NotificationsPage : title/body/href/read_at. HostDashboard : Grindr/WhatsApp, confirmer check-in. SessionPage : statut dynamique. ProfilePage : Santé 💊.
+- Batch 12 : JoinPage « Continuer sans compte » → guest_token + redirect ApplyPage ; ApplyPage mode ghost (pseudo + formulaire, création anon à la soumission). MePage : bannière si guest_token + « Créer mon compte » ; après auth appel rpc_claim_phantom. HostDashboard : badge « 👻 Ghost » et affichage display_name / eps_json pour candidatures ghost.
 
 ## DB SCHEMA
 - sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), created_at
@@ -79,4 +80,4 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
 ## PROCHAINS CHANTIERS
-- (à définir — batches 7–9 terminées)
+- (à définir — batch 12 terminée)
