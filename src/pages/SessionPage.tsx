@@ -17,6 +17,7 @@ export default function SessionPage() {
   const [myApp, setMyApp] = useState<{ status: string } | null>(null)
   const [members, setMembers] = useState<Member[]>([])
   const [memberAvatars, setMemberAvatars] = useState<Record<string, string>>({})
+  const [memberRoles, setMemberRoles] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
@@ -43,12 +44,15 @@ export default function SessionPage() {
       const ids = (accepted ?? []).map((a: { applicant_id: string }) => a.applicant_id)
       if (ids.length > 0) {
         const { data: profiles } = await supabase.from('user_profiles').select('id, profile_json').in('id', ids)
-        const map: Record<string, string> = {}
-        ;(profiles ?? []).forEach((r: { id: string; profile_json?: { avatar_url?: string } }) => {
-          if (r.profile_json?.avatar_url) map[r.id] = r.profile_json.avatar_url
+        const avatarMap: Record<string, string> = {}
+        const roleMap: Record<string, string> = {}
+        ;(profiles ?? []).forEach((r: { id: string; profile_json?: { avatar_url?: string; role?: string } }) => {
+          if (r.profile_json?.avatar_url) avatarMap[r.id] = r.profile_json.avatar_url
+          if (r.profile_json?.role) roleMap[r.id] = r.profile_json.role
         })
-        setMemberAvatars(map)
-      } else setMemberAvatars({})
+        setMemberAvatars(avatarMap)
+        setMemberRoles(roleMap)
+      } else { setMemberAvatars({}); setMemberRoles({}) }
 
       if (user) {
         const { data: app } = await supabase
@@ -117,6 +121,7 @@ export default function SessionPage() {
               {members.map(m => {
                 const eps = m.eps_json || {}
                 const avatarUrl = memberAvatars[m.applicant_id]
+                const role = memberRoles[m.applicant_id] || eps.role
                 return (
                   <Link key={m.applicant_id} to={'/profile/' + m.applicant_id} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: 'inherit' }}>
                     {avatarUrl ? (
@@ -128,7 +133,7 @@ export default function SessionPage() {
                     )}
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{eps.displayName || 'Anonyme'}{eps.age ? ', ' + eps.age : ''}</div>
-                      {eps.role && <div style={{ fontSize: 12, color: '#F9A8A8' }}>{eps.role}{eps.morphology ? ' · ' + eps.morphology : ''}</div>}
+                      {role && <div style={{ fontSize: 11, color: '#7E7694' }}>{role}</div>}
                     </div>
                     {m.status === 'checked_in' && <div style={{ fontSize: 11, color: '#4ADE80', fontWeight: 600 }}>Check-in</div>}
                   </Link>
