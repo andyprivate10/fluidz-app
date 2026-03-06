@@ -24,6 +24,7 @@ export default function SessionPage() {
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [inviteLinkCopied, setInviteLinkCopied] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
   const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
 
@@ -236,6 +237,20 @@ export default function SessionPage() {
             <div style={{ fontSize: 20 }}>Bienvenue !</div>
             <div style={{ fontSize: 14, color: '#4ADE80', marginTop: 4 }}>Check-in confirme</div>
             {session.exact_address && <div style={{ fontSize: 14, color: '#F0EDFF', marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
+            {session.invite_code && (
+              <button
+                onClick={() => {
+                  const url = window.location.origin + '/join/' + session.invite_code
+                  navigator.clipboard.writeText(url).then(() => {
+                    setInviteLinkCopied(true)
+                    setTimeout(() => setInviteLinkCopied(false), 2000)
+                  })
+                }}
+                style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid #4ADE80', background: inviteLinkCopied ? '#14532d' : 'transparent', color: '#4ADE80', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+              >
+                {inviteLinkCopied ? 'Lien copié !' : 'Partager le lien d\'invitation'}
+              </button>
+            )}
           </div>
         )}
 
