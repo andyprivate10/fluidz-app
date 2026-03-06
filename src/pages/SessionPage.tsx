@@ -88,7 +88,11 @@ export default function SessionPage() {
     setCheckInLoading(false)
   }
 
-  if (loading) return <div style={{ ...st, display: 'flex', justifyContent: 'center', alignItems: 'center' }}><p style={{ color: '#B8B2CC' }}>Chargement...</p></div>
+  if (loading) return (
+    <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+      <div className="spinner-loading" />
+    </div>
+  )
   if (!session) return <div style={{ ...st, padding: 24, color: '#F87171' }}>Session introuvable.</div>
 
   const statusLabel = session.status === 'open' ? 'Ouverte' : 'Brouillon'

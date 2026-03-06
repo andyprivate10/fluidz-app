@@ -66,30 +66,30 @@ export default function DMPage() {
         .single()
       setSession(sess)
 
-      if (user) {
-        const { data: app } = await supabase
-          .from('applications')
-          .select('status')
+        if (user) {
+          const { data: app } = await supabase
+            .from('applications')
+            .select('status')
+            .eq('session_id', id)
+            .eq('applicant_id', user.id)
+            .maybeSingle()
+          if (app) setAppStatus(app.status)
+        }
+
+        if (sess) {
+          if (user?.id === sess.host_id) {
+            const { data: appRow } = await supabase.from('applications').select('applicant_id').eq('session_id', id).limit(1)
+            const row = Array.isArray(appRow) ? appRow[0] : appRow
+            if (row?.applicant_id) setPeerId(row.applicant_id)
+          } else setPeerId(sess.host_id)
+        }
+
+        const { data: msgs } = await supabase
+          .from('messages')
+          .select('*')
           .eq('session_id', id)
-          .eq('applicant_id', user.id)
-          .maybeSingle()
-        if (app) setAppStatus(app.status)
-      }
-
-      if (sess) {
-        if (user?.id === sess.host_id) {
-          const { data: appRow } = await supabase.from('applications').select('applicant_id').eq('session_id', id).limit(1)
-          const row = Array.isArray(appRow) ? appRow[0] : appRow
-          if (row?.applicant_id) setPeerId(row.applicant_id)
-        } else setPeerId(sess.host_id)
-      }
-
-      const { data: msgs } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('session_id', id)
-        .order('created_at')
-      setMessages((msgs as Message[]) ?? [])
+          .order('created_at')
+        setMessages((msgs as Message[]) ?? [])
       setLoading(false)
     }
     init()
@@ -182,7 +182,9 @@ export default function DMPage() {
       {/* Messages area */}
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, padding: '16px 0' }}>
         {loading ? (
-          <p style={{ color: S.tx2, margin: 0, padding: '0 24px' }}>Chargement...</p>
+          <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+            <div className="spinner-loading" />
+          </div>
         ) : messages.length === 0 ? (
           <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
             Aucun message. Envoie le premier !

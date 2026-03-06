@@ -31,6 +31,7 @@ export default function ApplyPage() {
   const [note, setNote] = useState('')
   const [step, setStep] = useState<'pack'|'note'|'done'>('pack')
   const [loading, setLoading] = useState(false)
+  const [dataLoading, setDataLoading] = useState(true)
   const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null)
 
   const RATE_LIMIT_MIN = 5
@@ -41,7 +42,10 @@ export default function ApplyPage() {
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user ?? null
       setUser(u)
-      if (u) load(u.id)
+      if (u) {
+        setDataLoading(true)
+        load(u.id)
+      } else setDataLoading(false)
     })
   }, [])
 
@@ -59,6 +63,7 @@ export default function ApplyPage() {
       const until = new Date(created.getTime() + RATE_LIMIT_MIN * 60 * 1000)
       if (until > new Date()) setRateLimitedUntil(until)
     }
+    setDataLoading(false)
   }
 
   function toggle(sid: string) {
@@ -84,7 +89,11 @@ export default function ApplyPage() {
       </div>
     </div>
   )
-
+  if (dataLoading) return (
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+      <div className="spinner-loading" />
+    </div>
+  )
   return (
     <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid ' + S.border}}>

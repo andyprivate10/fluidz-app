@@ -26,6 +26,7 @@ export default function HostDashboard() {
       const u = data.session?.user ?? null
       setUser(u)
       if (u) load()
+      else setLoading(false)
     })
   }, [id])
 
@@ -57,11 +58,10 @@ export default function HostDashboard() {
   const counts = { pending: apps.filter(a=>a.status==='pending').length, accepted: apps.filter(a=>a.status==='accepted').length, rejected: apps.filter(a=>a.status==='rejected').length }
 
   if (loading) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'Inter,system-ui,sans-serif'}}>
-      <div style={{color:S.tx3}}>Chargement...</div>
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+      <div className="spinner-loading" />
     </div>
   )
-
   return (
     <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.border}}>
