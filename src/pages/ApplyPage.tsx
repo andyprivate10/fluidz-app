@@ -35,6 +35,7 @@ export default function ApplyPage() {
 
   const RATE_LIMIT_MIN = 5
   const isRateLimited = rateLimitedUntil ? new Date() < rateLimitedUntil : false
+  const invalidPseudo = !profile?.display_name || (profile.display_name as string).trim().length < 2
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -149,10 +150,11 @@ export default function ApplyPage() {
               )
             })}
           </div>
+          {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>Ton pseudo est requis</p>}
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} disabled={isRateLimited} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited?'not-allowed':'pointer',opacity:isRateLimited?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
+          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
             Continuer →
           </button>
         </div>
