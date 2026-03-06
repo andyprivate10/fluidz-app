@@ -27,6 +27,7 @@ export default function DMPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
+  const [peerId, setPeerId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const isHost = currentUser?.id === session?.host_id
@@ -54,6 +55,14 @@ export default function DMPage() {
           .eq('applicant_id', user.id)
           .maybeSingle()
         if (app) setAppStatus(app.status)
+      }
+
+      if (sess) {
+        if (user?.id === sess.host_id) {
+          const { data: appRow } = await supabase.from('applications').select('applicant_id').eq('session_id', id).limit(1)
+          const row = Array.isArray(appRow) ? appRow[0] : appRow
+          if (row?.applicant_id) setPeerId(row.applicant_id)
+        } else setPeerId(sess.host_id)
       }
 
       const { data: msgs } = await supabase
@@ -103,7 +112,7 @@ export default function DMPage() {
       padding: 0, maxWidth: 390, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif',
     }}>
       {/* Header */}
-      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0 }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}>&larr;</button>
           <div>
@@ -115,6 +124,11 @@ export default function DMPage() {
             </p>
           </div>
         </div>
+        {peerId && (
+          <button onClick={() => navigate('/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.border, background: 'transparent', cursor: 'pointer' }}>
+            Voir profil
+          </button>
+        )}
       </header>
 
       {/* Status banner */}
