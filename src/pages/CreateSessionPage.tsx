@@ -37,12 +37,20 @@ export default function CreateSessionPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'template'|'details'|'address'>('template')
+  const [savedAddresses, setSavedAddresses] = useState<{ approx_area?: string; exact_address?: string }[]>([])
+  const [savingAddress, setSavingAddress] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user ?? null
       setUser(u)
       if (!u) navigate('/me')
+      else {
+        supabase.from('user_profiles').select('profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
+          const addrs = (prof?.profile_json as any)?.saved_addresses
+          setSavedAddresses(Array.isArray(addrs) ? addrs : [])
+        })
+      }
     })
   }, [])
 
@@ -78,6 +86,27 @@ export default function CreateSessionPage() {
       return
     }
     if (data) navigate('/session/' + data.id + '/host')
+  }
+
+  async function saveAddress() {
+    if (!user || (!approxArea && !exactAddress)) return
+    setSavingAddress(true)
+    const { data: row } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
+    const pj = (row?.profile_json as any) || {}
+    const addrs = Array.isArray(pj.saved_addresses) ? [...pj.saved_addresses] : []
+    addrs.push({ approx_area: approxArea || undefined, exact_address: exactAddress || undefined })
+    await supabase.from('user_profiles').upsert({
+      id: user.id,
+      display_name: row?.display_name ?? '',
+      profile_json: { ...pj, saved_addresses: addrs },
+    })
+    setSavedAddresses(addrs)
+    setSavingAddress(false)
+  }
+
+  function pickSavedAddress(addr: { approx_area?: string; exact_address?: string }) {
+    if (addr.approx_area) setApproxArea(addr.approx_area)
+    if (addr.exact_address) setExactAddress(addr.exact_address)
   }
 
   const steps = ['template','details','address']
@@ -152,6 +181,20 @@ export default function CreateSessionPage() {
 
       {step === 'address' && (
         <div style={{padding:'20px 20px',display:'flex',flexDirection:'column',gap:12}}>
+          {savedAddresses.length > 0 && (
+            <div>
+              <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresses sauvegardées</p>
+              <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
+                {savedAddresses.map((addr, i) => (
+                  <button key={i} type="button" onClick={() => pickSavedAddress(addr)} style={{
+                    padding:'6px 12px',borderRadius:99,fontSize:12,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer',
+                  }}>
+                    {(addr.exact_address || addr.approx_area || 'Adresse').slice(0, 24)}{(addr.exact_address || addr.approx_area || '').length > 24 ? '…' : ''}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Zone approximative <span style={{color:S.p300}}>*</span></p>
             <input value={approxArea} onChange={e=>setApproxArea(e.target.value)} placeholder='Paris 11ème, Métro Bastille' style={inp} />
@@ -162,6 +205,9 @@ export default function CreateSessionPage() {
             <input value={exactAddress} onChange={e=>setExactAddress(e.target.value)} placeholder='14 rue de la Roquette, code 1234' style={inp} />
             <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Révélée uniquement après ton acceptation</p>
           </div>
+          <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
+            {savingAddress ? 'Sauvegarde...' : 'Sauvegarder cette adresse'}
+          </button>
           <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}>🔒 L'adresse exacte n'est jamais visible avant acceptation</p>
           </div>
