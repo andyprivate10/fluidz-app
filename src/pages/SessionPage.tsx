@@ -97,7 +97,7 @@ export default function SessionPage() {
 
   if (loading) return (
     <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <div className="spinner-loading" />
+      <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
   if (loadError) return (
