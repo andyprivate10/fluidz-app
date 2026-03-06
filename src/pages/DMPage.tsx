@@ -117,6 +117,7 @@ export default function DMPage() {
     return () => { supabase.removeChannel(channel) }
   }, [id])
 
+  // Auto-scroll to bottom when a new message is sent or received
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
