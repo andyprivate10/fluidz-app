@@ -31,6 +31,10 @@ export default function ApplyPage() {
   const [note, setNote] = useState('')
   const [step, setStep] = useState<'pack'|'note'|'done'>('pack')
   const [loading, setLoading] = useState(false)
+  const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null)
+
+  const RATE_LIMIT_MIN = 5
+  const isRateLimited = rateLimitedUntil ? new Date() < rateLimitedUntil : false
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -41,12 +45,19 @@ export default function ApplyPage() {
   }, [])
 
   async function load(uid: string) {
-    const [{ data: prof }, { data: sess }] = await Promise.all([
+    const [{ data: prof }, { data: sess }, { data: lastApp }] = await Promise.all([
       supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
       supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
+      supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
     ])
     if (prof) setProfile(prof)
     if (sess) setSession(sess)
+    const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
+    if (lastRow?.created_at) {
+      const created = new Date(lastRow.created_at)
+      const until = new Date(created.getTime() + RATE_LIMIT_MIN * 60 * 1000)
+      if (until > new Date()) setRateLimitedUntil(until)
+    }
   }
 
   function toggle(sid: string) {
@@ -54,7 +65,7 @@ export default function ApplyPage() {
   }
 
   async function submit() {
-    if (!user) return
+    if (!user || isRateLimited) return
     setLoading(true)
     await supabase.from('applications').upsert({
       session_id: id, applicant_id: user.id, status: 'pending',
@@ -80,6 +91,13 @@ export default function ApplyPage() {
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Postuler</h1>
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.title} · {session.approx_area}</p>}
       </div>
+
+      {isRateLimited && rateLimitedUntil && (
+        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.red+'18',border:'1px solid '+S.red+'44'}}>
+          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Tu as déjà postulé récemment.</p>
+          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Réessaye dans {Math.ceil((rateLimitedUntil.getTime() - Date.now()) / 60000)} min.</p>
+        </div>
+      )}
 
       <div style={{display:'flex',padding:'12px 20px',gap:6}}>
         {(['pack','note','done'] as const).map((s, i) => (
@@ -120,7 +138,7 @@ export default function ApplyPage() {
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
+          <button onClick={() => setStep('note')} disabled={isRateLimited} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited?'not-allowed':'pointer',opacity:isRateLimited?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
             Continuer →
           </button>
         </div>
@@ -133,8 +151,8 @@ export default function ApplyPage() {
           <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30, je connais le quartier...' rows={4} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.border,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           <div style={{display:'flex',gap:10,marginTop:12}}>
             <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.border,background:S.bg2,cursor:'pointer'}}>← Retour</button>
-            <button onClick={submit} disabled={loading} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',opacity:loading?0.7:1}}>
-              {loading ? 'Envoi...' : 'Envoyer ma candidature 🔥'}
+            <button onClick={submit} disabled={loading || isRateLimited} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1}}>
+              {loading ? 'Envoi...' : isRateLimited ? 'Attends quelques minutes' : 'Envoyer ma candidature 🔥'}
             </button>
           </div>
         </div>
