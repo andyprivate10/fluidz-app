@@ -114,9 +114,9 @@ export default function SessionPage() {
                 return (
                   <Link key={m.applicant_id} to={'/profile/' + m.applicant_id} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: 'inherit' }}>
                     {avatarUrl ? (
-                      <img src={avatarUrl} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                      <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                     ) : (
-                      <div style={{ width: 36, height: 36, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
                         {(eps.displayName || '?')[0].toUpperCase()}
                       </div>
                     )}
