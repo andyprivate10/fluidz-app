@@ -23,26 +23,32 @@ export default function HostDashboard() {
   const [linkCopied, setLinkCopied] = useState(false)
   const [messageCopied, setMessageCopied] = useState(false)
   const [grinderCopied, setGrinderCopied] = useState(false)
+  const [broadcastText, setBroadcastText] = useState('')
+  const [broadcastSending, setBroadcastSending] = useState(false)
+  const [hostDisplayName, setHostDisplayName] = useState<string>('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user ?? null
       setUser(u)
-      if (u) load()
+      if (u) load(u)
       else setLoading(false)
     })
   }, [id])
 
-  async function load() {
+  async function load(currentUser?: { id: string }) {
     setLoading(true)
     setLoadError(false)
+    const uid = currentUser?.id ?? user?.id
     try {
-      const [{ data: s }, { data: a }] = await Promise.all([
+      const [{ data: s }, { data: a }, { data: prof }] = await Promise.all([
         supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
         supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
+        uid ? supabase.from('user_profiles').select('display_name').eq('id', uid).maybeSingle() : Promise.resolve({ data: null }),
       ])
       setSess(s)
       setApps(a || [])
+      if (prof?.display_name) setHostDisplayName(prof.display_name)
     } catch {
       setLoadError(true)
     } finally {
@@ -74,6 +80,20 @@ export default function HostDashboard() {
     if (!window.confirm('Fermer définitivement cette session ? Elle ne sera plus modifiable.')) return
     await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
     setSess((s: any) => ({...s, status: 'ended'}))
+  }
+
+  async function sendBroadcast() {
+    const text = broadcastText.trim()
+    if (!text || !user || !id) return
+    setBroadcastSending(true)
+    await supabase.from('messages').insert({
+      session_id: id,
+      sender_id: user.id,
+      text,
+      sender_name: hostDisplayName || (user as any).email || 'Host',
+    })
+    setBroadcastText('')
+    setBroadcastSending(false)
   }
 
   const filtered = tab === 'accepted'
@@ -177,6 +197,13 @@ export default function HostDashboard() {
       </div>
 
       <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
+        <div style={{padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
+          <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Broadcast</div>
+          <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder="Message à envoyer à tous les membres..." rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.border,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
+          <button onClick={sendBroadcast} disabled={broadcastSending || !broadcastText.trim()} style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'none',background:S.grad,color:'#fff',cursor: broadcastSending || !broadcastText.trim() ? 'not-allowed' : 'pointer',opacity: broadcastSending || !broadcastText.trim() ? 0.7 : 1}}>
+            {broadcastSending ? 'Envoi...' : 'Envoyer à tous'}
+          </button>
+        </div>
         {filtered.length === 0 && (
           <div style={{textAlign:'center',padding:'40px 20px',color:S.tx3,fontSize:14}}>
             {tab==='pending' ? 'Aucune candidature en attente' : tab==='accepted' ? 'Aucun membre accepté' : 'Aucun refus'}
