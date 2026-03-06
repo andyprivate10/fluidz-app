@@ -76,8 +76,28 @@ export default function CandidateProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-bg0 flex items-center justify-center">
-        <p className="text-tx3">Chargement...</p>
+      <div className="min-h-screen bg-bg0 pb-36">
+        <div className="px-5 pt-10 pb-6">
+          <div className="h-4 w-16 bg-[#2A2740] rounded animate-pulse mb-4" />
+          <div className="h-8 w-48 bg-[#2A2740] rounded animate-pulse mb-2" />
+          <div className="h-4 w-32 bg-[#2A2740] rounded animate-pulse" />
+        </div>
+        <div className="px-5 space-y-4">
+          <div className="card p-4">
+            <div className="h-4 w-full max-w-[180px] bg-[#2A2740] rounded animate-pulse mb-3" />
+            <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
+            <div className="h-3 w-3/4 bg-[#2A2740] rounded animate-pulse" />
+          </div>
+          <div className="card p-4">
+            <div className="h-4 w-28 bg-[#2A2740] rounded animate-pulse mb-3" />
+            <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
+            <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse" />
+          </div>
+          <div className="card p-4">
+            <div className="h-4 w-24 bg-[#2A2740] rounded animate-pulse mb-3" />
+            <div className="h-20 w-full bg-[#2A2740] rounded animate-pulse" />
+          </div>
+        </div>
       </div>
     )
   }

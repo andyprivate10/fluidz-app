@@ -106,8 +106,23 @@ export default function SessionPage() {
   }
 
   if (loading) return (
-    <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
+    <div style={st}>
+      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #2A2740', background: '#16141F' }}>
+        <div className="h-5 w-32 bg-[#2A2740] rounded animate-pulse mb-3" />
+        <div className="h-4 w-48 bg-[#2A2740] rounded animate-pulse" />
+      </div>
+      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ ...card }}>
+          <div className="h-4 w-full max-w-[200px] bg-[#2A2740] rounded animate-pulse mb-3" />
+          <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
+          <div className="h-3 w-4/5 bg-[#2A2740] rounded animate-pulse" />
+        </div>
+        <div style={{ ...card }}>
+          <div className="h-4 w-24 bg-[#2A2740] rounded animate-pulse mb-3" />
+          <div className="h-10 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
+          <div className="h-10 w-full bg-[#2A2740] rounded animate-pulse" />
+        </div>
+      </div>
     </div>
   )
   if (loadError) return (
