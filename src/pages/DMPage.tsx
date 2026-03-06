@@ -43,6 +43,7 @@ export default function DMPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
@@ -56,15 +57,18 @@ export default function DMPage() {
     if (!id) { setLoading(false); return }
 
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setCurrentUser(user ?? null)
+      setLoadError(false)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setCurrentUser(user ?? null)
 
-      const { data: sess } = await supabase
-        .from('sessions')
-        .select('title,exact_address,host_id')
-        .eq('id', id)
-        .single()
-      setSession(sess)
+        const { data: sess, error: sessErr } = await supabase
+          .from('sessions')
+          .select('title,exact_address,host_id')
+          .eq('id', id)
+          .single()
+        if (sessErr) throw sessErr
+        setSession(sess)
 
         if (user) {
           const { data: app } = await supabase
@@ -90,7 +94,11 @@ export default function DMPage() {
           .eq('session_id', id)
           .order('created_at')
         setMessages((msgs as Message[]) ?? [])
-      setLoading(false)
+      } catch {
+        setLoadError(true)
+      } finally {
+        setLoading(false)
+      }
     }
     init()
 
@@ -185,6 +193,8 @@ export default function DMPage() {
           <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
             <div className="spinner-loading" />
           </div>
+        ) : loadError ? (
+          <p style={{ color: '#F87171', margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>Impossible de charger les données. Réessaie.</p>
         ) : messages.length === 0 ? (
           <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
             Aucun message. Envoie le premier !

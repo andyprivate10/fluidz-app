@@ -19,6 +19,7 @@ export default function SessionPage() {
   const [memberAvatars, setMemberAvatars] = useState<Record<string, string>>({})
   const [memberRoles, setMemberRoles] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -27,12 +28,15 @@ export default function SessionPage() {
   const isHost = currentUser?.id === session?.host_id
 
   useEffect(() => {
+    setLoadError(false)
     const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setCurrentUser(user ?? null)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setCurrentUser(user ?? null)
 
-      const { data: sess } = await supabase.from('sessions').select('*').eq('id', id).single()
-      setSession(sess)
+        const { data: sess, error: sessErr } = await supabase.from('sessions').select('*').eq('id', id).single()
+        if (sessErr) throw sessErr
+        setSession(sess)
 
       const { data: accepted } = await supabase
         .from('applications')
@@ -69,8 +73,11 @@ export default function SessionPage() {
         const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).eq('status', 'pending')
         setPendingCount(count ?? 0)
       } else setPendingCount(0)
-
-      setLoading(false)
+      } catch {
+        setLoadError(true)
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [id])
@@ -91,6 +98,11 @@ export default function SessionPage() {
   if (loading) return (
     <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
       <div className="spinner-loading" />
+    </div>
+  )
+  if (loadError) return (
+    <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+      <p style={{ color: '#F87171', textAlign: 'center' }}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   if (!session) return <div style={{ ...st, padding: 24, color: '#F87171' }}>Session introuvable.</div>

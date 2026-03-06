@@ -32,6 +32,7 @@ export default function ApplyPage() {
   const [step, setStep] = useState<'pack'|'note'|'done'>('pack')
   const [loading, setLoading] = useState(false)
   const [dataLoading, setDataLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null)
 
   const RATE_LIMIT_MIN = 5
@@ -50,20 +51,26 @@ export default function ApplyPage() {
   }, [])
 
   async function load(uid: string) {
-    const [{ data: prof }, { data: sess }, { data: lastApp }] = await Promise.all([
-      supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
-      supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
-      supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
-    ])
-    if (prof) setProfile(prof)
-    if (sess) setSession(sess)
-    const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
-    if (lastRow?.created_at) {
-      const created = new Date(lastRow.created_at)
-      const until = new Date(created.getTime() + RATE_LIMIT_MIN * 60 * 1000)
-      if (until > new Date()) setRateLimitedUntil(until)
+    setLoadError(false)
+    try {
+      const [{ data: prof }, { data: sess }, { data: lastApp }] = await Promise.all([
+        supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
+        supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
+        supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
+      ])
+      if (prof) setProfile(prof)
+      if (sess) setSession(sess)
+      const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
+      if (lastRow?.created_at) {
+        const created = new Date(lastRow.created_at)
+        const until = new Date(created.getTime() + RATE_LIMIT_MIN * 60 * 1000)
+        if (until > new Date()) setRateLimitedUntil(until)
+      }
+    } catch {
+      setLoadError(true)
+    } finally {
+      setDataLoading(false)
     }
-    setDataLoading(false)
   }
 
   function toggle(sid: string) {
@@ -92,6 +99,11 @@ export default function ApplyPage() {
   if (dataLoading) return (
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
       <div className="spinner-loading" />
+    </div>
+  )
+  if (loadError) return (
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+      <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   return (

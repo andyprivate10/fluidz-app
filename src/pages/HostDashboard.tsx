@@ -18,6 +18,7 @@ export default function HostDashboard() {
   const [apps, setApps] = useState<any[]>([])
   const [tab, setTab] = useState<'pending'|'accepted'|'rejected'>('pending')
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [actionLoading, setActionLoading] = useState<string|null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
 
@@ -32,13 +33,19 @@ export default function HostDashboard() {
 
   async function load() {
     setLoading(true)
-    const [{ data: s }, { data: a }] = await Promise.all([
-      supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
-      supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
-    ])
-    setSess(s)
-    setApps(a || [])
-    setLoading(false)
+    setLoadError(false)
+    try {
+      const [{ data: s }, { data: a }] = await Promise.all([
+        supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
+        supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
+      ])
+      setSess(s)
+      setApps(a || [])
+    } catch {
+      setLoadError(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function decide(appId: string, status: 'accepted'|'rejected') {
@@ -60,6 +67,11 @@ export default function HostDashboard() {
   if (loading) return (
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
       <div className="spinner-loading" />
+    </div>
+  )
+  if (loadError) return (
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+      <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   return (
