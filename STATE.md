@@ -11,15 +11,15 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-2de594c — feat: HomePage quick link to latest host session, welcome message when not connected
+e59ef09 — feat: DMPage Voir profil button in header to /profile/:peerId
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
 - HomePage, SessionsPage, CreateSessionPage (3 etapes: template/details/adresse)
-- SessionPage (vue host + vue candidat + lineup + bouton Partager le lien)
-- ApplyPage 3 etapes : basics / physique+role+kinks+PrEP+limites / note session
+- SessionPage : vue host/candidat, lineup, bouton Partager le lien ; bouton Postuler fixe en bas (position fixed)
+- ApplyPage : apercu profil candidat (display_name, bio, role) en haut avant les 3 etapes ; 3 etapes pack/note/done
 - HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
-- DMPage : chat realtime, banniere status (pending/rejected), adresse revelee si accepted
+- DMPage : chat realtime, banniere status, adresse si accepted ; bouton Voir profil (header) vers /profile/:peerId (host → applicant, candidat → host_id)
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
 - BottomNav (Home/Sessions/Notifs/Moi) — masquee sur DMPage ; onglet Notifs (cloche) vers /notifications avec badge si non lues ; badge Moi si nouvelle candidature (realtime)
 - CandidateProfilePage (vue profil candidat depuis HostDashboard)
