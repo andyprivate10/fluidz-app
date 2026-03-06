@@ -14,8 +14,16 @@ const KINKS_LIST = [
 const S = {
   bg0:'#0C0A14', bg1:'#16141F', bg2:'#1F1D2B', bg3:'#2A2740',
   tx:'#F0EDFF', tx2:'#B8B2CC', tx3:'#7E7694', tx4:'#453F5C',
-  border:'#2A2740', p300:'#F9A8A8', p400:'#F47272', red:'#F87171',
+  border:'#2A2740', p300:'#F9A8A8', p400:'#F47272', red:'#F87171', green:'#4ADE80', blue:'#3B82F6',
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+}
+
+function monthsAgo(isoDate: string): number | null {
+  if (!isoDate) return null
+  const d = new Date(isoDate)
+  if (isNaN(d.getTime())) return null
+  const now = new Date()
+  return Math.max(0, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()))
 }
 
 const inputStyle: React.CSSProperties = {
@@ -76,6 +84,8 @@ export default function MePage() {
   const [morphology, setMorphology] = useState('')
   const [kinks, setKinks] = useState<string[]>([])
   const [prep, setPrep] = useState('')
+  const [dernierTest, setDernierTest] = useState('')
+  const [seroStatus, setSeroStatus] = useState('')
   const [limits, setLimits] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
   const [avatarUploading, setAvatarUploading] = useState(false)
@@ -132,6 +142,7 @@ export default function MePage() {
     if (data) {
       setDisplayName(data.display_name || '')
       const p = data.profile_json || {}
+      const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')
       setAge(p.age || '')
       setBio(p.bio || '')
@@ -141,7 +152,9 @@ export default function MePage() {
       setWeight(p.weight || '')
       setMorphology(p.morphology || '')
       setKinks(p.kinks || [])
-      setPrep(p.prep || '')
+      setPrep(h.prep_status || p.prep || '')
+      setDernierTest(h.dernier_test || '')
+      setSeroStatus(h.sero_status || '')
       setLimits(p.limits || '')
     }
   }
@@ -166,7 +179,10 @@ export default function MePage() {
   async function saveProfile() {
     if (!user) return
     setLoading(true)
-    const profile_json = { age, bio, location, role, height, weight, morphology, kinks, prep, limits, avatar_url: avatarUrl || undefined }
+    const profile_json = {
+      age, bio, location, role, height, weight, morphology, kinks, prep, limits, avatar_url: avatarUrl || undefined,
+      health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined },
+    }
     await supabase.from('user_profiles').upsert({
       id: user.id,
       display_name: displayName || 'Anonyme',
@@ -377,11 +393,23 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="PrEP">
-            <div style={{ display:'flex', gap:8 }}>
+          <Section title="Santé" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Testé il y a ${monthsAgo(dernierTest)} mois` : undefined}>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
+              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.green+'22', color:S.green, border:'1px solid '+S.green+'44' }}>PrEP actif</span>}
+              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Testé il y a {monthsAgo(dernierTest)} mois</span>}
+            </div>
+            <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               {PREP_OPTIONS.map(p => (
                 <Chip key={p} label={p} active={prep===p} onClick={() => setPrep(prep===p?'':p)} />
               ))}
+            </div>
+            <div style={{ marginBottom:10 }}>
+              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Date dernier test</label>
+              <input type="date" value={dernierTest} onChange={e => setDernierTest(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Statut séro (optionnel)</label>
+              <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder="Optionnel" style={inputStyle} />
             </div>
           </Section>
 
