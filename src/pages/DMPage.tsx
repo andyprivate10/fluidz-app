@@ -48,10 +48,12 @@ export default function DMPage() {
   const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
   const [peerId, setPeerId] = useState<string | null>(null)
+  const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const isHost = currentUser?.id === session?.host_id
   const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
+  const showCheckInBanner = !isHost && appStatus === 'accepted'
 
   useEffect(() => {
     if (!id) { setLoading(false); return }
@@ -122,6 +124,18 @@ export default function DMPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  async function handleCheckIn() {
+    if (!id || !currentUser) return
+    await supabase
+      .from('applications')
+      .update({ status: 'checked_in' })
+      .eq('session_id', id)
+      .eq('applicant_id', currentUser.id)
+    setAppStatus('checked_in')
+    setShowCheckInConfirmed(true)
+    setTimeout(() => setShowCheckInConfirmed(false), 3000)
+  }
+
   async function handleSend() {
     if (!newMessage.trim() || !id || !currentUser) return
     const text = newMessage.trim()
@@ -165,6 +179,23 @@ export default function DMPage() {
           <div style={{ fontSize: 13, color: S.yellow, fontWeight: 600, textAlign: 'center' }}>
             Candidature en attente...
           </div>
+        </div>
+      )}
+
+      {showCheckInBanner && !showCheckInConfirmed && (
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.green, borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.green, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
+            Tu as été accepté(e) ! 🎉 Clique quand tu arrives.
+          </div>
+          <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', cursor: 'pointer' }}>
+            Je suis là ✓
+          </button>
+        </div>
+      )}
+
+      {showCheckInConfirmed && (
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.green, borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.green, fontWeight: 600, textAlign: 'center' }}>Check-in confirmé ✓</div>
         </div>
       )}
 
