@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import BottomNav from '../components/BottomNav'
 
@@ -23,9 +23,14 @@ const SECTIONS = [
   {id:'occasion',label:'Pour cette session',emoji:'⚡',desc:'message + contenu spécifique'},
 ]
 
+const GUEST_TOKEN_KEY = 'guest_token'
+const GUEST_SESSION_KEY = 'guest_session_id'
+
 export default function ApplyPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const guestTokenParam = searchParams.get('guest_token')
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
@@ -37,10 +42,12 @@ export default function ApplyPage() {
   const [dataLoading, setDataLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null)
+  const [guestMode, setGuestMode] = useState(false)
+  const [guestDisplayName, setGuestDisplayName] = useState('')
 
   const RATE_LIMIT_MIN = 5
   const isRateLimited = rateLimitedUntil ? new Date() < rateLimitedUntil : false
-  const invalidPseudo = !profile?.display_name || (profile.display_name as string).trim().length < 2
+  const invalidPseudo = guestMode ? (guestDisplayName.trim().length < 2) : (!profile?.display_name || (profile.display_name as string).trim().length < 2)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -49,9 +56,24 @@ export default function ApplyPage() {
       if (u) {
         setDataLoading(true)
         load(u.id)
-      } else setDataLoading(false)
+      } else {
+        try {
+          const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(GUEST_TOKEN_KEY) : null
+          const storedSession = typeof localStorage !== 'undefined' ? localStorage.getItem(GUEST_SESSION_KEY) : null
+          if (guestTokenParam && stored === guestTokenParam && storedSession === id) {
+            setGuestMode(true)
+            setDataLoading(true)
+            supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle().then(({ data: sess }) => {
+              setSession(sess ?? null)
+              setDataLoading(false)
+            })
+          } else setDataLoading(false)
+        } catch {
+          setDataLoading(false)
+        }
+      }
     })
-  }, [])
+  }, [id, guestTokenParam])
 
   async function load(uid: string) {
     setLoadError(false)
@@ -81,7 +103,31 @@ export default function ApplyPage() {
   }
 
   async function submit() {
-    if (!user || isRateLimited) return
+    if (isRateLimited) return
+    if (guestMode) {
+      if (guestDisplayName.trim().length < 2) return
+      setLoading(true)
+      const { data: anonData, error: anonErr } = await supabase.auth.signInAnonymously()
+      if (anonErr) { setLoading(false); return }
+      const anonUser = anonData?.user
+      if (!anonUser) { setLoading(false); return }
+      await supabase.from('user_profiles').upsert({
+        id: anonUser.id,
+        display_name: guestDisplayName.trim(),
+        profile_json: { role: selectedRole || undefined },
+      })
+      await supabase.from('applications').upsert({
+        session_id: id,
+        applicant_id: anonUser.id,
+        status: 'pending',
+        eps_json: { shared_sections: enabled, occasion_note: note, profile_snapshot: { display_name: guestDisplayName.trim(), role: selectedRole || undefined }, role: selectedRole || undefined },
+      })
+      try { localStorage.removeItem(GUEST_TOKEN_KEY); localStorage.removeItem(GUEST_SESSION_KEY) } catch (_) {}
+      setLoading(false)
+      navigate('/session/' + id + '/dm')
+      return
+    }
+    if (!user) return
     setLoading(true)
     await supabase.from('applications').upsert({
       session_id: id, applicant_id: user.id, status: 'pending',
@@ -91,7 +137,7 @@ export default function ApplyPage() {
     navigate('/session/' + id + '/dm')
   }
 
-  if (!user) return (
+  if (!user && !guestMode) return (
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'Inter,system-ui,sans-serif'}}>
       <div style={{textAlign:'center',padding:24}}>
         <p style={{color:S.tx3,marginBottom:16}}>Connecte-toi pour postuler</p>
@@ -117,18 +163,28 @@ export default function ApplyPage() {
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.title} · {session.approx_area}</p>}
       </div>
 
-      {profile && (
+      {(profile || guestMode) && (
         <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.border}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>Aperçu de ton profil (ce qui sera partagé)</div>
-          <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile.display_name || 'Anonyme'}</div>
-          {(selectedRole || profile.profile_json?.role || profile.profile_json?.bio) && (
+          {guestMode ? (
+            <input value={guestDisplayName} onChange={e=>setGuestDisplayName(e.target.value)} placeholder="Ton pseudo *" style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:10,padding:'10px 14px',border:'1px solid '+S.border,fontSize:14,marginBottom:8,boxSizing:'border-box'}} />
+          ) : (
+            <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile?.display_name || 'Anonyme'}</div>
+          )}
+          {(selectedRole || (profile?.profile_json as any)?.role || (profile?.profile_json as any)?.bio) && !guestMode && (
             <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
-              {(selectedRole || profile.profile_json?.role) && (
+              {(selectedRole || (profile?.profile_json as any)?.role) && (
                 <span style={{color:S.p300,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p300+'22',border:'1px solid '+S.p300+'44',marginRight:6}}>
-                  {selectedRole || profile.profile_json?.role}
+                  {selectedRole || (profile?.profile_json as any)?.role}
                 </span>
               )}
-              {profile.profile_json?.bio && (profile.profile_json.bio as string).slice(0, 80)}{(profile.profile_json?.bio as string)?.length > 80 ? '…' : ''}
+              {(profile?.profile_json as any)?.bio && ((profile?.profile_json as any).bio as string).slice(0, 80)}{((profile?.profile_json as any)?.bio as string)?.length > 80 ? '…' : ''}
+            </div>
+          )}
+          {guestMode && (selectedRole || guestDisplayName) && (
+            <div style={{fontSize:13,color:S.tx2}}>
+              {guestDisplayName && <span style={{fontWeight:600,color:S.tx}}>{guestDisplayName}</span>}
+              {selectedRole && <span style={{color:S.p300,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p300+'22',marginLeft:6}}>{selectedRole}</span>}
             </div>
           )}
         </div>
@@ -196,7 +252,7 @@ export default function ApplyPage() {
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
+          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
             Continuer →
           </button>
         </div>
@@ -209,7 +265,7 @@ export default function ApplyPage() {
           <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30, je connais le quartier...' rows={4} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.border,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           <div style={{display:'flex',gap:10,marginTop:12}}>
             <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.border,background:S.bg2,cursor:'pointer'}}>← Retour</button>
-            <button onClick={submit} disabled={loading || isRateLimited} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1}}>
+            <button onClick={submit} disabled={loading || isRateLimited || (guestMode && guestDisplayName.trim().length < 2)} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1}}>
               {loading ? 'Envoi...' : isRateLimited ? 'Attends quelques minutes' : 'Envoyer ma candidature 🔥'}
             </button>
           </div>

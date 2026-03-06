@@ -103,8 +103,15 @@ export default function JoinPage() {
               <button onClick={()=>navigate('/me')} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
                 Se connecter pour postuler
               </button>
-              <button onClick={joinAsGuest} disabled={status==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:S.tx,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>
-                {status==='joining' ? 'Envoi...' : 'Postuler sans compte (invité)'}
+              <button onClick={() => {
+                const token = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
+                try { localStorage.setItem('guest_token', token); localStorage.setItem('guest_session_id', session.id) } catch (_) {}
+                navigate('/session/' + session.id + '/apply?guest_token=' + encodeURIComponent(token))
+              }} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:S.tx,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>
+                Continuer sans compte
+              </button>
+              <button onClick={joinAsGuest} disabled={status==='joining'} style={{width:'100%',padding:'12px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx3,border:'1px solid '+S.border,background:S.bg1,cursor:'pointer'}}>
+                {status==='joining' ? 'Envoi...' : 'Postuler direct en invité'}
               </button>
               {joinError && <p style={{fontSize:13,color:S.red,textAlign:'center',margin:0}}>{joinError}</p>}
             </div>
