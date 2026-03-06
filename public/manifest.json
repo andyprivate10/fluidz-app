@@ -1,9 +1,12 @@
 {
-  "name": "fluidz",
-  "short_name": "fluidz",
+  "name": "Fluidz",
+  "short_name": "Fluidz",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#0C0A14",
+  "theme_color": "#F9A8A8",
   "background_color": "#0C0A14",
-  "icons": []
+  "icons": [
+    { "src": "/vite.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/vite.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
 }
