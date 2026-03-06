@@ -79,17 +79,46 @@ export default function MePage() {
   const [limits, setLimits] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
   const [avatarUploading, setAvatarUploading] = useState(false)
+  const [hasGuestToken, setHasGuestToken] = useState(false)
+
+  useEffect(() => {
+    try {
+      setHasGuestToken(!!(typeof localStorage !== 'undefined' && localStorage.getItem('guest_token')))
+    } catch (_) {}
+  }, [])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user ?? null
       setUser(u)
-      if (u) loadProfile(u.id)
+      if (u) {
+        loadProfile(u.id)
+        try {
+          const token = localStorage.getItem('guest_token')
+          if (token) {
+            supabase.rpc('claim_phantom', { p_guest_token: token }).catch(() => {})
+            localStorage.removeItem('guest_token')
+            localStorage.removeItem('guest_session_id')
+            setHasGuestToken(false)
+          }
+        } catch (_) {}
+      }
     })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       const u = session?.user ?? null
       setUser(u)
-      if (u) loadProfile(u.id)
+      if (u) {
+        loadProfile(u.id)
+        try {
+          const token = localStorage.getItem('guest_token')
+          if (token) {
+            supabase.rpc('claim_phantom', { p_guest_token: token }).catch(() => {})
+            localStorage.removeItem('guest_token')
+            localStorage.removeItem('guest_session_id')
+            setHasGuestToken(false)
+          }
+        } catch (_) {}
+      }
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -178,6 +207,12 @@ export default function MePage() {
         alignItems:'center', justifyContent:'center', padding:'0 24px 96px',
         fontFamily:'Inter,system-ui,sans-serif'
       }}>
+        {hasGuestToken && (
+          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p300+'18', border:'1px solid '+S.p300+'44', maxWidth:360, width:'100%' }}>
+            <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>Vous avez une candidature en attente — créer un compte pour la conserver.</p>
+            <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>Connecte-toi avec ton email pour récupérer ta candidature.</p>
+          </div>
+        )}
         <div style={{ marginBottom:32, textAlign:'center' }}>
           <h1 style={{ fontSize:32, fontWeight:800, background:S.grad,
             WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', margin:'0 0 8px' }}>
@@ -200,7 +235,7 @@ export default function MePage() {
             border:'none', cursor:'pointer', opacity: loading ? 0.7 : 1,
             boxShadow:`0 4px 20px ${S.p400}44`,
           }}>
-          {loading ? 'Envoi...' : '✉️ Envoyer le lien magique'}
+          {loading ? 'Envoi...' : hasGuestToken ? 'Créer mon compte (lien magique)' : '✉️ Envoyer le lien magique'}
         </button>
         {msg && <p style={{ marginTop:16, fontSize:13, color:S.tx2, textAlign:'center' }}>{msg}</p>}
         <BottomNav active="me" />
