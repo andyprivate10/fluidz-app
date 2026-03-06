@@ -56,21 +56,20 @@ const GUEST_PROFILE = {
   },
 }
 
-async function getOrCreateUser(email: string, password: string): Promise<string> {
-  const { data: signIn } = await supabase.auth.signInWithPassword({ email, password })
-  if (signIn.user) return signIn.user.id
-  const { data: signUp, error } = await supabase.auth.signUp({ email, password })
-  if (error) throw new Error(`getOrCreateUser ${email}: ${error.message}`)
-  if (!signUp.user) throw new Error(`signUp ${email}: no user returned`)
-  return signUp.user.id
+/** Récupère l'id d'un compte existant via signIn. Ne crée pas de compte (évite rate limit). */
+async function getUserId(email: string, password: string): Promise<string> {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) throw new Error(`${email}: ${error.message}. Créez le compte dans Supabase Auth (Dashboard).`)
+  if (!data.user) throw new Error(`${email}: pas d'utilisateur retourné.`)
+  return data.user.id
 }
 
 export async function seedAll(): Promise<{ sessionId: string; inviteCode: string }> {
-  const hostId = await getOrCreateUser('host@fluidz.app', TEST_PASSWORD)
-  const memberId = await getOrCreateUser('member@fluidz.app', TEST_PASSWORD)
-  const guestId = await getOrCreateUser('guest@fluidz.app', TEST_PASSWORD)
+  const hostId = await getUserId('host@fluidz.test', TEST_PASSWORD)
+  const memberId = await getUserId('member@fluidz.test', TEST_PASSWORD)
+  const guestId = await getUserId('guest@fluidz.test', TEST_PASSWORD)
 
-  await supabase.auth.signInWithPassword({ email: 'host@fluidz.app', password: TEST_PASSWORD })
+  await supabase.auth.signInWithPassword({ email: 'host@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('user_profiles').upsert({
     id: hostId,
     display_name: HOST_PROFILE.display_name,
@@ -96,7 +95,7 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
   const sessionId = session.id
 
   await supabase.auth.signOut()
-  await supabase.auth.signInWithPassword({ email: 'member@fluidz.app', password: TEST_PASSWORD })
+  await supabase.auth.signInWithPassword({ email: 'member@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('user_profiles').upsert({
     id: memberId,
     display_name: MEMBER_PROFILE.display_name,
@@ -116,11 +115,11 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
   if (appErr) throw new Error(`application insert: ${appErr.message}`)
 
   await supabase.auth.signOut()
-  await supabase.auth.signInWithPassword({ email: 'host@fluidz.app', password: TEST_PASSWORD })
+  await supabase.auth.signInWithPassword({ email: 'host@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('applications').update({ status: 'accepted', checked_in: true }).eq('id', app.id)
 
   await supabase.auth.signOut()
-  await supabase.auth.signInWithPassword({ email: 'guest@fluidz.app', password: TEST_PASSWORD })
+  await supabase.auth.signInWithPassword({ email: 'guest@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('user_profiles').upsert({
     id: guestId,
     display_name: GUEST_PROFILE.display_name,
@@ -128,12 +127,13 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
   })
 
   await supabase.auth.signOut()
+  await supabase.auth.signInWithPassword({ email: 'host@fluidz.test', password: TEST_PASSWORD })
   return { sessionId, inviteCode: TEST_INVITE_CODE }
 }
 
 export async function clearAll(): Promise<void> {
   const { data: { user } } = await supabase.auth.signInWithPassword({
-    email: 'host@fluidz.app',
+    email: 'host@fluidz.test',
     password: TEST_PASSWORD,
   })
   if (!user) return
