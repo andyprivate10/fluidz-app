@@ -120,7 +120,7 @@ export default function ApplyPage() {
         session_id: id,
         applicant_id: anonUser.id,
         status: 'pending',
-        eps_json: { shared_sections: enabled, occasion_note: note, profile_snapshot: { display_name: guestDisplayName.trim(), role: selectedRole || undefined }, role: selectedRole || undefined },
+        eps_json: { shared_sections: enabled, occasion_note: note, profile_snapshot: { display_name: guestDisplayName.trim(), role: selectedRole || undefined }, role: selectedRole || undefined, is_phantom: true },
       })
       try { localStorage.removeItem(GUEST_TOKEN_KEY); localStorage.removeItem(GUEST_SESSION_KEY) } catch (_) {}
       setLoading(false)

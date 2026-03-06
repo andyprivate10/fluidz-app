@@ -172,29 +172,34 @@ export default function HostDashboard() {
         {filtered.map(app => {
           const prof = app.user_profiles
           const pj = prof?.profile_json || {}
+          const snapshot = app.eps_json?.profile_snapshot || {}
+          const isGhost = !!app.eps_json?.is_phantom || prof?.display_name === 'Invité'
+          const displayName = prof?.display_name || snapshot?.display_name || 'Anonyme'
+          const displayRole = pj.role || snapshot?.role
           const sections = app.eps_json?.shared_sections || []
           return (
             <div key={app.id} style={{background:S.bg1,borderRadius:18,border:'1px solid '+S.border,overflow:'hidden'}}>
               <div style={{padding:'16px'}}>
                 <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:10}}>
-                  <div>
+                  <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                     <p style={{margin:'0 0 2px',fontSize:16,fontWeight:800,color:S.tx}}>
-                      <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{prof?.display_name || 'Anonyme'}</Link>
+                      <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{displayName}</Link>
                     </p>
-                    {pj.role && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p300+'18',color:S.p300,border:'1px solid '+S.p300+'33'}}>{pj.role}</span>}
+                    {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.border}}>👻 Ghost</span>}
+                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p300+'18',color:S.p300,border:'1px solid '+S.p300+'33'}}>{displayRole}</span>}
                   </div>
                   <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Voir profil</button>
                 </div>
 
-                {pj.age && <p style={{fontSize:13,color:S.tx3,margin:'0 0 4px'}}>{pj.age} ans · {pj.location}</p>}
-                {pj.bio && <p style={{fontSize:13,color:S.tx2,margin:'0 0 8px',lineHeight:1.4}}>{pj.bio}</p>}
+                {(pj.age || snapshot?.age) && <p style={{fontSize:13,color:S.tx3,margin:'0 0 4px'}}>{(pj.age || snapshot.age)} ans{pj.location || snapshot?.location ? ' · ' + (pj.location || snapshot.location) : ''}</p>}
+                {(pj.bio || snapshot?.bio) && <p style={{fontSize:13,color:S.tx2,margin:'0 0 8px',lineHeight:1.4}}>{pj.bio || snapshot.bio}</p>}
 
-                {pj.morphology && (
+                {(pj.morphology || (isGhost && snapshot?.morphology)) && (
                   <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:8}}>
-                    {[pj.morphology, ...(pj.kinks||[]).slice(0,3)].filter(Boolean).map((t:string,i:number) => (
+                    {[pj.morphology || snapshot?.morphology, ...(pj.kinks||snapshot?.kinks||[]).slice(0,3)].filter(Boolean).map((t:string,i:number) => (
                       <span key={i} style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:S.bg2,color:S.tx3,border:'1px solid '+S.border}}>{t}</span>
                     ))}
-                    {(pj.kinks||[]).length > 3 && <span style={{fontSize:11,color:S.tx4}}>+{pj.kinks.length-3}</span>}
+                    {(pj.kinks||snapshot?.kinks||[]).length > 3 && <span style={{fontSize:11,color:S.tx4}}>+{(pj.kinks||snapshot?.kinks).length-3}</span>}
                   </div>
                 )}
 
@@ -205,10 +210,10 @@ export default function HostDashboard() {
                   </div>
                 )}
 
-                {pj.limits && (
+                {(pj.limits || (isGhost && snapshot?.limits)) && (
                   <div style={{padding:'8px 12px',background:S.red+'10',borderRadius:10,border:'1px solid '+S.red+'33',marginBottom:8}}>
                     <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>🚫 Limites</p>
-                    <p style={{fontSize:12,color:S.tx3,margin:0}}>{pj.limits}</p>
+                    <p style={{fontSize:12,color:S.tx3,margin:0}}>{pj.limits || snapshot?.limits}</p>
                   </div>
                 )}
 
