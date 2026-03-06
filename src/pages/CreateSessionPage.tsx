@@ -39,6 +39,8 @@ export default function CreateSessionPage() {
   const [step, setStep] = useState<'template'|'details'|'address'>('template')
   const [savedAddresses, setSavedAddresses] = useState<{ approx_area?: string; exact_address?: string }[]>([])
   const [savingAddress, setSavingAddress] = useState(false)
+  const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
+  const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -85,7 +87,17 @@ export default function CreateSessionPage() {
       setError(err.message)
       return
     }
-    if (data) navigate('/session/' + data.id + '/host')
+    if (data) setCreatedSession({ id: data.id, title: data.title, approx_area: data.approx_area, invite_code: data.invite_code })
+  }
+
+  function copyShareMessage(app: 'grindr'|'whatsapp'|'telegram') {
+    if (!createdSession) return
+    const url = typeof window !== 'undefined' ? window.location.origin + '/join/' + createdSession.invite_code : ''
+    const text = '🔥 ' + createdSession.title + ' – ' + createdSession.approx_area + ' – Postule: ' + url
+    navigator.clipboard.writeText(text).then(() => {
+      setCopyFeedback(app)
+      setTimeout(() => setCopyFeedback(null), 2000)
+    })
   }
 
   async function saveAddress() {
@@ -111,6 +123,32 @@ export default function CreateSessionPage() {
 
   const steps = ['template','details','address']
   const stepIdx = steps.indexOf(step)
+
+  if (createdSession) {
+    return (
+      <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
+        <div style={{padding:'40px 20px 24px'}}>
+          <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 8px'}}>Session créée !</h1>
+          <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>Partage le lien avec ton message</p>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {(['grindr','whatsapp','telegram'] as const).map(app => (
+              <button key={app} onClick={() => copyShareMessage(app)} style={{
+                padding:'14px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.border,
+                background: copyFeedback === app ? S.p300+'22' : S.bg1, color: copyFeedback === app ? S.p300 : S.tx2,
+                cursor:'pointer',textAlign:'left',
+              }}>
+                {copyFeedback === app ? 'Copié !' : (app === 'grindr' ? 'Copier pour Grindr' : app === 'whatsapp' ? 'Copier pour WhatsApp' : 'Copier pour Telegram')}
+              </button>
+            ))}
+          </div>
+          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+            Aller à la session
+          </button>
+        </div>
+        <BottomNav active='sessions' />
+      </div>
+    )
+  }
 
   return (
     <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
