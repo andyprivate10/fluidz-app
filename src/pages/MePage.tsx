@@ -323,46 +323,49 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Basics">
+          <Section title="Profil">
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              <input
-                value={displayName} onChange={e => setDisplayName(e.target.value)}
-                placeholder="Pseudo *" style={inputStyle}
-              />
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-                <input value={age} onChange={e => setAge(e.target.value)}
-                  placeholder="Âge" type="number" style={inputStyle} />
-                <input value={location} onChange={e => setLocation(e.target.value)}
-                  placeholder="Paris 11e, Bastille..." style={inputStyle} />
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
+                <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Ton pseudo" style={inputStyle} />
               </div>
-              <textarea
-                value={bio} onChange={e => setBio(e.target.value)}
-                placeholder="Bio courte..." rows={3}
-                style={{ ...inputStyle, resize:'none', lineHeight:1.5 }}
-              />
-            </div>
-          </Section>
-
-          <Section title="Rôle">
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {ROLES.map(r => (
-                <Chip key={r} label={r} active={role===r} onClick={() => setRole(role===r?'':r)} />
-              ))}
-            </div>
-          </Section>
-
-          <Section title="Physique">
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:10 }}>
-              <input value={height} onChange={e => setHeight(e.target.value)}
-                placeholder="Taille (cm)" type="number" style={inputStyle} />
-              <input value={weight} onChange={e => setWeight(e.target.value)}
-                placeholder="Poids (kg)" type="number" style={inputStyle} />
-            </div>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {MORPHOLOGIES.map(m => (
-                <Chip key={m} label={m} active={morphology===m}
-                  onClick={() => setMorphology(morphology===m?'':m)} />
-              ))}
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Bio</label>
+                <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Bio courte..." rows={3} style={{ ...inputStyle, resize:'none', lineHeight:1.5 }} />
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Âge</label>
+                <input value={age} onChange={e => setAge(e.target.value)} placeholder="Âge" type="number" style={inputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Localisation</label>
+                <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Paris 11e, Bastille..." style={inputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Taille (cm)</label>
+                <input value={height} onChange={e => setHeight(e.target.value)} placeholder="175" type="number" style={inputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Poids (kg)</label>
+                <input value={weight} onChange={e => setWeight(e.target.value)} placeholder="70" type="number" style={inputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Morphologie</label>
+                <select value={morphology} onChange={e => setMorphology(e.target.value)} style={inputStyle}>
+                  <option value="">— Choisir —</option>
+                  {MORPHOLOGIES.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Rôle</label>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                  {ROLES.map(r => (
+                    <Chip key={r} label={r} active={role===r} onClick={() => setRole(role===r?'':r)} />
+                  ))}
+                </div>
+              </div>
             </div>
           </Section>
 
@@ -403,7 +406,7 @@ export default function MePage() {
               boxShadow:`0 4px 24px ${S.p400}44`,
               transition:'opacity 0.2s',
             }}>
-            {saved ? '✓ Profil sauvegardé !' : loading ? 'Sauvegarde...' : 'Sauvegarder le profil'}
+            {saved ? '✓ Profil sauvegardé !' : loading ? 'Sauvegarde...' : 'Sauvegarder'}
           </button>
 
         </div>
