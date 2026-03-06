@@ -19,6 +19,12 @@ const TEMPLATES = [
 
 const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
 
+const QUICK_TEMPLATES = [
+  { label: 'Dark Room', emoji: '🖤', title: 'Dark Room ce soir', tags: ['Dark Room', 'Top', 'Bottom'] },
+  { label: 'Chemical', emoji: '⚗️', title: 'Chemical ce soir', tags: ['Chemical', 'Top', 'Bottom'] },
+  { label: 'Techno', emoji: '🎵', title: 'Techno ce soir', tags: ['Techno', 'Top', 'Bottom'] },
+]
+
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
   padding:'12px 16px',border:'1px solid '+S.border,outline:'none',
@@ -171,6 +177,16 @@ export default function CreateSessionPage() {
         <div style={{padding:'20px 20px'}}>
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Choisis un template</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>Il pré-remplira les tags et le titre</p>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
+            {QUICK_TEMPLATES.map(qt => (
+              <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setSelectedTags(qt.tags); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
+                padding:'12px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.border,background:S.bg1,color:S.tx,cursor:'pointer',display:'flex',alignItems:'center',gap:8,
+              }}>
+                <span>{qt.emoji}</span>
+                <span>{qt.label}</span>
+              </button>
+            ))}
+          </div>
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
             {TEMPLATES.map(t => (
               <div key={t.id} onClick={() => pickTemplate(t)} style={{
