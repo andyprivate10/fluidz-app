@@ -17,6 +17,7 @@ export default function ProfilePage() {
   const navigate = useNavigate()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   useEffect(() => {
     if (!userId) { setLoading(false); return }
@@ -74,6 +75,19 @@ export default function ProfilePage() {
             {p.role}
           </span>
         )}
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+              setLinkCopied(true)
+              setTimeout(() => setLinkCopied(false), 2000)
+            })
+          }}
+          style={{
+            display:'block', marginTop:16, padding:'10px 16px', borderRadius:12, border:'1px solid '+S.border, background: linkCopied ? '#14532d' : S.bg1, color: linkCopied ? S.green : S.tx2, fontSize:14, fontWeight:600, cursor:'pointer', width:'100%', maxWidth:280,
+          }}
+        >
+          {linkCopied ? 'Lien copie !' : 'Copier le lien du profil'}
+        </button>
       </div>
 
       <div style={{ padding:'16px 20px' }}>
