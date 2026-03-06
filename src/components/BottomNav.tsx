@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-export default function BottomNav() {
+type BottomNavProps = { active?: string }
+export default function BottomNav(props: BottomNavProps) {
+  const { active: activeTab } = props
   const navigate = useNavigate()
   const location = useLocation()
   const [userId, setUserId] = useState<string | null>(null)
@@ -72,7 +74,7 @@ export default function BottomNav() {
       }}
     >
       {tabs.map((tab) => {
-        const isActive = location.pathname === tab.path
+        const isActive = location.pathname === tab.path || (activeTab != null && (activeTab === 'home' ? tab.path === '/' : '/' + activeTab === tab.path))
         const showBadge = (tab.path === '/me' && hasNewApplication) || (tab.path === '/notifications' && unreadNotifCount > 0)
         return (
           <button
@@ -92,7 +94,7 @@ export default function BottomNav() {
           >
             <span style={{ fontSize: 20, position: 'relative' }}>
               {tab.icon}
-              {tab.path === '/notifications' && unreadNotifCount > 0 && (
+              {showBadge && tab.path === '/notifications' && (
                 <span
                   style={{
                     position: 'absolute',
@@ -116,7 +118,7 @@ export default function BottomNav() {
                   {unreadNotifCount > 99 ? '99+' : unreadNotifCount}
                 </span>
               )}
-              {tab.path === '/me' && hasNewApplication && (
+              {showBadge && tab.path === '/me' && (
                 <span
                   style={{
                     position: 'absolute',

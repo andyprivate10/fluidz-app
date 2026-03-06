@@ -106,7 +106,7 @@ export default function MePage() {
         try {
           const token = localStorage.getItem('guest_token')
           if (token) {
-            supabase.rpc('claim_phantom', { p_guest_token: token }).catch(() => {})
+            void supabase.rpc('claim_phantom', { p_guest_token: token }).then(() => {}, () => {})
             localStorage.removeItem('guest_token')
             localStorage.removeItem('guest_session_id')
             setHasGuestToken(false)
@@ -122,7 +122,7 @@ export default function MePage() {
         try {
           const token = localStorage.getItem('guest_token')
           if (token) {
-            supabase.rpc('claim_phantom', { p_guest_token: token }).catch(() => {})
+            void supabase.rpc('claim_phantom', { p_guest_token: token }).then(() => {}, () => {})
             localStorage.removeItem('guest_token')
             localStorage.removeItem('guest_session_id')
             setHasGuestToken(false)

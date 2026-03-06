@@ -23,7 +23,7 @@ export default function PublicProfile() {
   const navigate = useNavigate()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [allowed, setAllowed] = useState<boolean | null>(null)
+  const [allowed, setAllowed] = useState<boolean>(false)
 
   useEffect(() => {
     if (!userId) { setLoading(false); return }
@@ -36,7 +36,7 @@ export default function PublicProfile() {
         setLoading(false)
         return
       }
-      let canSee = false
+      let canSee: boolean = false
       if (user.id === userId) {
         canSee = true
       } else {
@@ -49,10 +49,10 @@ export default function PublicProfile() {
           const ids = Array.from(sessionIds)
           const { data: sessionsWithThem } = await supabase.from('sessions').select('id').eq('host_id', userId).in('id', ids)
           const { data: appsWithThem } = await supabase.from('applications').select('session_id').eq('applicant_id', userId).in('session_id', ids)
-          canSee = (sessionsWithThem && sessionsWithThem.length > 0) || (appsWithThem && appsWithThem.length > 0)
+          canSee = Boolean((sessionsWithThem && sessionsWithThem.length > 0) || (appsWithThem && appsWithThem.length > 0))
         }
       }
-      setAllowed(canSee)
+      setAllowed(!!canSee)
 
       if (canSee) {
         const { data: prof } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', userId).maybeSingle()

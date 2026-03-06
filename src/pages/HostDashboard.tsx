@@ -217,7 +217,6 @@ export default function HostDashboard() {
           const isGhost = !!app.eps_json?.is_phantom || prof?.display_name === 'Invité'
           const displayName = prof?.display_name || snapshot?.display_name || 'Anonyme'
           const displayRole = pj.role || snapshot?.role
-          const sections = app.eps_json?.shared_sections || []
           return (
             <div key={app.id} style={{background:S.bg1,borderRadius:18,border:'1px solid '+S.border,overflow:'hidden'}}>
               <div style={{padding:'16px'}}>

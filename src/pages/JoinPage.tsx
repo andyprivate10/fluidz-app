@@ -54,38 +54,6 @@ export default function JoinPage() {
     setTimeout(() => navigate('/session/' + session.id + '/dm'), 1200)
   }
 
-  async function joinAsGuest() {
-    if (!session) return
-    setStatus('joining')
-    setJoinError('')
-    const { data: anonData, error: anonError } = await supabase.auth.signInAnonymously()
-    if (anonError) {
-      setStatus('found')
-      setJoinError(anonError.message || 'Connexion anonyme indisponible. Connecte-toi pour postuler.')
-      return
-    }
-    const anonUser = anonData?.user
-    if (!anonUser) {
-      setStatus('found')
-      setJoinError('Erreur lors de la création du profil invité.')
-      return
-    }
-    await supabase.from('user_profiles').upsert({
-      id: anonUser.id,
-      display_name: 'Invité',
-      profile_json: {},
-    })
-    await supabase.from('applications').upsert({
-      session_id: session.id,
-      applicant_id: anonUser.id,
-      status: 'pending',
-      eps_json: {},
-    })
-    setUser(anonUser)
-    setMsg('Candidature envoyée ! Tu es connecté en tant qu\'invité.')
-    setTimeout(() => navigate('/session/' + session.id + '/dm'), 1200)
-  }
-
   return (
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'0 24px',fontFamily:'Inter,system-ui,sans-serif'}}>
       {status === 'loading' && <p style={{color:S.tx3}}>Vérification du lien...</p>}
@@ -150,8 +118,8 @@ export default function JoinPage() {
             </div>
           ) : (
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <button onClick={join} disabled={status==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
-                {status==='joining' ? 'Envoi...' : 'Postuler →'}
+              <button onClick={join} disabled={(status as string)==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+                {(status as string)==='joining' ? 'Envoi...' : 'Postuler →'}
               </button>
             </div>
           )}

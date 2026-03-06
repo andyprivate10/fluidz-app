@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, useRoutes } from 'react-router-dom'
+import { BrowserRouter, useLocation, useRoutes } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
 import HomePage from './pages/HomePage'

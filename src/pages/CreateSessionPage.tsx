@@ -6,7 +6,7 @@ import BottomNav from '../components/BottomNav'
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
   tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',
+  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
 
@@ -34,7 +34,7 @@ const inp: React.CSSProperties = {
 export default function CreateSessionPage() {
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
-  const [template, setTemplate] = useState('custom')
+  const [_template, setTemplate] = useState('custom')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [approxArea, setApproxArea] = useState('')

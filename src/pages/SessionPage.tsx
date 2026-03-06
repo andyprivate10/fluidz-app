@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
@@ -236,7 +236,7 @@ export default function SessionPage() {
                   return (
                     <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: '#B8B2CC', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}>{name}</button>
                   )
-                )}
+                })}
                 {members.length > 5 && <span style={{ fontSize: 12, color: '#7E7694' }}>+{members.length - 5}</span>}
               </div>
             </div>
