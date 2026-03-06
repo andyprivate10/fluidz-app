@@ -10,6 +10,8 @@ const S = {
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
 
+const ROLE_OPTIONS = ['Top', 'Bottom', 'Versa', 'Side']
+
 const SECTIONS = [
   {id:'basics',label:'Basics',emoji:'👤',desc:'pseudo, âge, bio, location'},
   {id:'role',label:'Rôle',emoji:'🎭',desc:'top, bottom, versa, side'},
@@ -28,6 +30,7 @@ export default function ApplyPage() {
   const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [enabled, setEnabled] = useState<string[]>(SECTIONS.map(s => s.id))
+  const [selectedRole, setSelectedRole] = useState<string>('')
   const [note, setNote] = useState('')
   const [step, setStep] = useState<'pack'|'note'|'done'>('pack')
   const [loading, setLoading] = useState(false)
@@ -82,7 +85,7 @@ export default function ApplyPage() {
     setLoading(true)
     await supabase.from('applications').upsert({
       session_id: id, applicant_id: user.id, status: 'pending',
-      eps_json: { shared_sections: enabled, occasion_note: note, profile_snapshot: profile?.profile_json || {} }
+      eps_json: { shared_sections: enabled, occasion_note: note, profile_snapshot: profile?.profile_json || {}, role: selectedRole || undefined }
     })
     setLoading(false)
     navigate('/session/' + id + '/dm')
@@ -118,10 +121,13 @@ export default function ApplyPage() {
         <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.border}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>Aperçu de ton profil (ce qui sera partagé)</div>
           <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile.display_name || 'Anonyme'}</div>
-          {(profile.profile_json?.role || profile.profile_json?.bio) && (
+          {(selectedRole || profile.profile_json?.role || profile.profile_json?.bio) && (
             <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
-              {profile.profile_json?.role && <span style={{color:S.p300,fontWeight:600}}>{profile.profile_json.role}</span>}
-              {profile.profile_json?.role && profile.profile_json?.bio && ' · '}
+              {(selectedRole || profile.profile_json?.role) && (
+                <span style={{color:S.p300,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p300+'22',border:'1px solid '+S.p300+'44',marginRight:6}}>
+                  {selectedRole || profile.profile_json?.role}
+                </span>
+              )}
               {profile.profile_json?.bio && (profile.profile_json.bio as string).slice(0, 80)}{(profile.profile_json?.bio as string)?.length > 80 ? '…' : ''}
             </div>
           )}
@@ -146,6 +152,21 @@ export default function ApplyPage() {
           <div style={{marginBottom:16}}>
             <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Ton Candidate Pack</h2>
             <p style={{fontSize:13,color:S.tx3,margin:0}}>Choisis ce que tu partages avec le host</p>
+          </div>
+          <div style={{marginBottom:16}}>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Votre rôle</p>
+            <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
+              {ROLE_OPTIONS.map(role => {
+                const on = selectedRole === role
+                return (
+                  <button key={role} type="button" onClick={() => setSelectedRole(on ? '' : role)} style={{
+                    padding:'6px 14px',borderRadius:99,fontSize:13,fontWeight:600,
+                    border:on?'none':'1px solid '+S.border,
+                    background:on?S.grad:S.bg2,color:on?'#fff':S.tx3,cursor:'pointer',
+                  }}>{role}</button>
+                )
+              })}
+            </div>
           </div>
           <div style={{display:'flex',flexDirection:'column',gap:8}}>
             {SECTIONS.map(sec => {
