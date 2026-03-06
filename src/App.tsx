@@ -15,6 +15,7 @@ import CandidateProfilePage from './pages/CandidateProfilePage'
 import PublicProfile from './pages/PublicProfile'
 import NotificationsPage from './pages/NotificationsPage'
 import DevLoopPage from './pages/DevLoopPage'
+import DevTestMenu from './pages/DevTestMenu'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -31,6 +32,7 @@ const routes = [
   { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },
   { path: '/dev-loop', element: <DevLoopPage /> },
+  { path: '/dev/test', element: <DevTestMenu /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 
