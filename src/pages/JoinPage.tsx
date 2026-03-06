@@ -16,6 +16,7 @@ export default function JoinPage() {
   const [session, setSession] = useState<any>(null)
   const [status, setStatus] = useState<'loading'|'found'|'error'|'joining'>('loading')
   const [msg, setMsg] = useState('')
+  const [joinError, setJoinError] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -34,8 +35,41 @@ export default function JoinPage() {
     if (!user) { navigate('/me'); return }
     if (!session) return
     setStatus('joining')
+    setJoinError('')
     await supabase.from('applications').upsert({ session_id: session.id, applicant_id: user.id, status: 'pending', eps_json: {} })
     setMsg('Candidature envoyée !')
+    setTimeout(() => navigate('/session/' + session.id + '/dm'), 1200)
+  }
+
+  async function joinAsGuest() {
+    if (!session) return
+    setStatus('joining')
+    setJoinError('')
+    const { data: anonData, error: anonError } = await supabase.auth.signInAnonymously()
+    if (anonError) {
+      setStatus('found')
+      setJoinError(anonError.message || 'Connexion anonyme indisponible. Connecte-toi pour postuler.')
+      return
+    }
+    const anonUser = anonData?.user
+    if (!anonUser) {
+      setStatus('found')
+      setJoinError('Erreur lors de la création du profil invité.')
+      return
+    }
+    await supabase.from('user_profiles').upsert({
+      id: anonUser.id,
+      display_name: 'Invité',
+      profile_json: {},
+    })
+    await supabase.from('applications').upsert({
+      session_id: session.id,
+      applicant_id: anonUser.id,
+      status: 'pending',
+      eps_json: {},
+    })
+    setUser(anonUser)
+    setMsg('Candidature envoyée ! Tu es connecté en tant qu\'invité.')
     setTimeout(() => navigate('/session/' + session.id + '/dm'), 1200)
   }
 
@@ -65,9 +99,15 @@ export default function JoinPage() {
           {msg ? (
             <p style={{color:S.green,textAlign:'center',fontWeight:700,fontSize:15}}>{msg}</p>
           ) : !user ? (
-            <button onClick={()=>navigate('/me')} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
-              Se connecter pour postuler
-            </button>
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              <button onClick={()=>navigate('/me')} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+                Se connecter pour postuler
+              </button>
+              <button onClick={joinAsGuest} disabled={status==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:S.tx,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>
+                {status==='joining' ? 'Envoi...' : 'Postuler sans compte (invité)'}
+              </button>
+              {joinError && <p style={{fontSize:13,color:S.red,textAlign:'center',margin:0}}>{joinError}</p>}
+            </div>
           ) : (
             <button onClick={join} disabled={status==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
               {status==='joining' ? 'Envoi...' : 'Postuler 🔥'}

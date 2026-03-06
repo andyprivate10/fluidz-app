@@ -154,7 +154,7 @@ export default function SessionPage() {
         )}
 
         {!isHost && !myApp && session.status === 'open' && (
-          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : navigate('/me')} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
             Postuler a cette session
           </button>
         )}
