@@ -7,8 +7,26 @@ type Notif = { id: string; session_id: string; type: string; message: string; re
 
 const S = {
   bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B',
-  tx: '#F0EDFF', tx2: '#B8B2CC', tx3: '#7E7694',
-  border: '#2A2740', p300: '#F9A8A8',
+  tx: '#F0EDFF', tx2: '#B8B2CC', tx3: '#7E7694', tx4: '#453F5C',
+  border: '#2A2740', p300: '#F9A8A8', orange: '#FBBF24',
+}
+
+function formatRelative(dateStr: string): string {
+  const d = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - d.getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const sameDay = d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const isYesterday = d.getDate() === yesterday.getDate() && d.getMonth() === yesterday.getMonth() && d.getFullYear() === yesterday.getFullYear()
+  if (diffMin < 1) return "à l'instant"
+  if (diffMin < 60) return `il y a ${diffMin} min`
+  if (sameDay) return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+  if (isYesterday) return 'hier ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+  if (diffHours < 24 * 7) return d.toLocaleDateString('fr-FR', { weekday: 'short', hour: '2-digit', minute: '2-digit' })
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 }
 
 export default function NotificationsPage() {
@@ -34,13 +52,11 @@ export default function NotificationsPage() {
     setLoading(false)
   }
 
-  async function markRead(id: string) {
-    await supabase.from('notifications').update({ read: true }).eq('id', id)
-    setList(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-  }
-
-  function goSession(sessionId: string) {
-    navigate('/session/' + sessionId + '/host')
+  async function handleNotifClick(n: Notif) {
+    await supabase.from('notifications').update({ read: true }).eq('id', n.id)
+    setList(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x))
+    const href = '/session/' + n.session_id + '/host'
+    if (href) navigate(href)
   }
 
   if (!user) {
@@ -62,24 +78,27 @@ export default function NotificationsPage() {
       <div style={{ padding: '16px 20px' }}>
         {loading && <p style={{ color: S.tx3 }}>Chargement...</p>}
         {!loading && list.length === 0 && (
-          <p style={{ color: S.tx3, textAlign: 'center', padding: 24 }}>Aucune notification.</p>
+          <p style={{ color: S.tx3, textAlign: 'center', padding: 24 }}>Aucune notification</p>
         )}
         {!loading && list.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {list.map(n => (
               <button
                 key={n.id}
-                onClick={() => { markRead(n.id); goSession(n.session_id) }}
+                onClick={() => handleNotifClick(n)}
                 style={{
                   width: '100%', textAlign: 'left', padding: 16, borderRadius: 14, border: '1px solid ' + S.border,
-                  background: n.read ? S.bg1 : S.bg2, cursor: 'pointer', fontFamily: 'inherit',
+                  background: S.bg1, cursor: 'pointer', fontFamily: 'inherit', position: 'relative',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  {!n.read && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.p300 }} />}
-                  <span style={{ fontSize: 11, color: S.tx3 }}>{new Date(n.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  {!n.read && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.orange, flexShrink: 0, marginTop: 6 }} aria-hidden />}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: 700 }}>{n.message}</p>
+                    <p style={{ margin: '4px 0 0', fontSize: 12, color: S.tx2 }}>{n.type === 'new_application' ? 'Nouvelle candidature' : n.type}</p>
+                    <p style={{ margin: '8px 0 0', fontSize: 11, color: S.tx4, textAlign: 'right' }}>{formatRelative(n.created_at)}</p>
+                  </div>
                 </div>
-                <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: n.read ? 500 : 600 }}>{n.message}</p>
               </button>
             ))}
           </div>
