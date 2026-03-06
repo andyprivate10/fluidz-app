@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-6cf4e86 — feat: CandidateProfilePage all eps_json sections in cards; SessionPage Gerer (N en attente); DMPage dates relatives
+0d0c927 — feat: DMPage auto-scroll to bottom on new message (batch 6)
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -19,7 +19,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - SessionPage : vue host/candidat, lineup, Partager le lien, Postuler fixe en bas ; bouton Gerer affiche (N en attente) si candidatures pending
 - ApplyPage : apercu profil candidat (display_name, bio, role) en haut avant les 3 etapes ; 3 etapes pack/note/done
 - HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
-- DMPage : chat realtime, banniere status, adresse si accepted, Voir profil header ; dates relatives sur messages (il y a 2 min, hier, 12h30)
+- DMPage : chat realtime, banniere status, adresse si accepted, Voir profil header ; dates relatives sur messages ; auto-scroll en bas a chaque nouveau message
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
 - BottomNav (Home/Sessions/Notifs/Moi) — masquee sur DMPage ; onglet Notifs (cloche) vers /notifications avec badge si non lues ; badge Moi si nouvelle candidature (realtime)
 - CandidateProfilePage : toutes les sections eps_json en cards (physique, role, pratiques, sante, limites)
@@ -32,6 +32,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Photos profil : MePage upload vers bucket Storage « avatars » (public), affichage sur ProfilePage et lineup SessionPage (cercle 32px)
 - Page Notifications /notifications : liste des notifs (table notifications), marquer lu au clic
 - Rate limiting ApplyPage : blocage si postulation dans les 5 dernières minutes
+- Loading spinner (SessionPage, HostDashboard, ApplyPage, DMPage) pendant le fetch ; message erreur si echec fetch
 - HomePage : si connecté et host d’au moins une session, lien rapide vers la plus récente ; si pas connecté, message de bienvenue Fluidz
 
 ## DB SCHEMA
@@ -76,4 +77,4 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
 ## PROCHAINS CHANTIERS
-- (à définir)
+- (à définir — batch 6 terminée)
