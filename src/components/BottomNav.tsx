@@ -92,7 +92,31 @@ export default function BottomNav() {
           >
             <span style={{ fontSize: 20, position: 'relative' }}>
               {tab.icon}
-              {showBadge && (
+              {tab.path === '/notifications' && unreadNotifCount > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: -6,
+                    right: -8,
+                    minWidth: 16,
+                    height: 16,
+                    padding: '0 4px',
+                    borderRadius: 8,
+                    background: '#F87171',
+                    border: '2px solid #16141F',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  aria-hidden
+                >
+                  {unreadNotifCount > 99 ? '99+' : unreadNotifCount}
+                </span>
+              )}
+              {tab.path === '/me' && hasNewApplication && (
                 <span
                   style={{
                     position: 'absolute',
