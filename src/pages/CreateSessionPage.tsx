@@ -11,13 +11,13 @@ const S = {
 }
 
 const TEMPLATES = [
-  { id:'darkroom', label:'Dark Room', emoji:'🌑', tags:['darkroom','anonymous','cruising'], desc:'Ambiance sombre, discret' },
-  { id:'chemical', label:'Chemical', emoji:'💊', tags:['chemical','pnp','intense'], desc:'Plan chem, entre adultes consentants' },
-  { id:'techno', label:'Techno', emoji:'🎧', tags:['techno','dance','euphoric'], desc:'Après club, énergie haute' },
+  { id:'darkroom', label:'Dark Room', emoji:'🌑', tags:['Dark Room'], desc:'Ambiance sombre, discret' },
+  { id:'chemical', label:'Chemical', emoji:'💊', tags:['Chemical'], desc:'Plan chem, entre adultes consentants' },
+  { id:'techno', label:'Techno', emoji:'🎧', tags:['Techno'], desc:'Après club, énergie haute' },
   { id:'custom', label:'Custom', emoji:'✨', tags:[], desc:'Crée ton propre vibe' },
 ]
 
-const ROLE_TAGS = ['Top','Bottom','Versa','Side','Dominant','Soumis','Bear','Daddy','Twink','Masc']
+const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
 
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
@@ -130,9 +130,9 @@ export default function CreateSessionPage() {
             <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder='Cherche 2-3 mecs pour ce soir. Ambiance détendue...' rows={3} style={{...inp,resize:'none',lineHeight:1.5}} />
           </div>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Ce que tu cherches</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Tags de session</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-              {ROLE_TAGS.map(tag => {
+              {SESSION_TAGS.map(tag => {
                 const on = selectedTags.includes(tag)
                 return (
                   <button key={tag} onClick={()=>toggleTag(tag)} style={{
