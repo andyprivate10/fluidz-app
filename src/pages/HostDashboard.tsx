@@ -6,7 +6,7 @@ import BottomNav from '../components/BottomNav'
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
   tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',green:'#4ADE80',yellow:'#FBBF24',
+  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',green:'#4ADE80',yellow:'#FBBF24',orange:'#F97316',
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
 
@@ -56,14 +56,27 @@ export default function HostDashboard() {
     setActionLoading(null)
   }
 
+  async function confirmCheckIn(appId: string) {
+    setActionLoading(appId)
+    await supabase.from('applications').update({ checked_in: true }).eq('id', appId)
+    setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true} : a))
+    setActionLoading(null)
+  }
+
   async function toggleStatus() {
     const newStatus = sess.status === 'open' ? 'closed' : 'open'
     await supabase.from('sessions').update({ status: newStatus }).eq('id', id)
     setSess((s: any) => ({...s, status: newStatus}))
   }
 
-  const filtered = apps.filter(a => a.status === tab)
-  const counts = { pending: apps.filter(a=>a.status==='pending').length, accepted: apps.filter(a=>a.status==='accepted').length, rejected: apps.filter(a=>a.status==='rejected').length }
+  const filtered = tab === 'accepted'
+    ? apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
+    : apps.filter(a => a.status === tab)
+  const counts = {
+    pending: apps.filter(a=>a.status==='pending').length,
+    accepted: apps.filter(a=>a.status==='accepted'||a.status==='checked_in').length,
+    rejected: apps.filter(a=>a.status==='rejected').length,
+  }
 
   if (loading) return (
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
@@ -199,9 +212,22 @@ export default function HostDashboard() {
                   </div>
                 )}
 
-                {app.status === 'accepted' && (
-                  <div style={{display:'flex',gap:8,marginTop:10}}>
-                    <span style={{fontSize:12,color:S.green,fontWeight:600}}>✅ Accepté — adresse débloquée</span>
+                {(app.status === 'accepted' || app.status === 'checked_in') && (
+                  <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:10,alignItems:'center'}}>
+                    {app.status === 'checked_in' && app.checked_in === false && (
+                      <>
+                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>Arrivée à confirmer</span>
+                        <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.green,border:'1px solid '+S.green,background:S.green+'22',cursor:'pointer'}}>
+                          {actionLoading===app.id ? '...' : 'Confirmer ✓'}
+                        </button>
+                      </>
+                        )}
+                    {app.status === 'checked_in' && app.checked_in === true && (
+                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>Arrivé ✓</span>
+                    )}
+                    {app.status === 'accepted' && (
+                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>✅ Accepté — adresse débloquée</span>
+                    )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>
                 )}
