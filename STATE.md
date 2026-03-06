@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-e90adcd — feat: rate limit ApplyPage - block if applied in last 5 minutes
+2de594c — feat: HomePage quick link to latest host session, welcome message when not connected
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -21,7 +21,7 @@ e90adcd — feat: rate limit ApplyPage - block if applied in last 5 minutes
 - HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
 - DMPage : chat realtime, banniere status (pending/rejected), adresse revelee si accepted
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
-- BottomNav (Home/Sessions/Moi) — masquee sur DMPage ; badge rouge sur Moi quand nouvelle candidature pour une session hostee (realtime applications)
+- BottomNav (Home/Sessions/Notifs/Moi) — masquee sur DMPage ; onglet Notifs (cloche) vers /notifications avec badge si non lues ; badge Moi si nouvelle candidature (realtime)
 - CandidateProfilePage (vue profil candidat depuis HostDashboard)
 - ProfilePage /profile/:userId (lecture profil public) ; liens depuis lineup SessionPage et noms HostDashboard vers /profile/:userId
 - MePage : auth magic link + edition complete profil (basics, role, physique, pratiques, PrEP, limites)
@@ -29,9 +29,10 @@ e90adcd — feat: rate limit ApplyPage - block if applied in last 5 minutes
 - user_profiles table + persistence pseudo
 - Check-in flow + status candidat
 - Ghost flow : postuler sans compte via /join/:code (auth anonyme Supabase + profil « Invité », puis redirect DM)
-- Photos profil : MePage upload vers bucket Storage « avatars » (public), affichage sur ProfilePage et lineup SessionPage
+- Photos profil : MePage upload vers bucket Storage « avatars » (public), affichage sur ProfilePage et lineup SessionPage (cercle 32px)
 - Page Notifications /notifications : liste des notifs (table notifications), marquer lu au clic
 - Rate limiting ApplyPage : blocage si postulation dans les 5 dernières minutes
+- HomePage : si connecté et host d’au moins une session, lien rapide vers la plus récente ; si pas connecté, message de bienvenue Fluidz
 
 ## DB SCHEMA
 - sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), created_at
