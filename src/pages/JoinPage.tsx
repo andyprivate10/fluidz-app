@@ -14,6 +14,7 @@ export default function JoinPage() {
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
+  const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string }[]>([])
   const [status, setStatus] = useState<'loading'|'found'|'error'|'joining'>('loading')
   const [msg, setMsg] = useState('')
   const [joinError, setJoinError] = useState('')
@@ -26,9 +27,21 @@ export default function JoinPage() {
   }, [code])
 
   async function lookupSession() {
-    const { data } = await supabase.from('sessions').select('id,title,approx_area,status,host_id').eq('invite_code', code).maybeSingle()
-    if (data) { setSession(data); setStatus('found') }
-    else setStatus('error')
+    const { data: sess } = await supabase.from('sessions').select('id,title,approx_area,status,host_id,tags').eq('invite_code', code).maybeSingle()
+    if (!sess) { setStatus('error'); return }
+    setSession(sess)
+    const { data: accepted } = await supabase.from('applications').select('applicant_id').eq('session_id', sess.id).in('status', ['accepted', 'checked_in'])
+    const ids = (accepted || []).map((a: { applicant_id: string }) => a.applicant_id)
+    if (ids.length > 0) {
+      const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ids)
+      const list = (profiles || []).map((p: { id: string; display_name?: string; profile_json?: { avatar_url?: string } }) => ({
+        applicant_id: p.id,
+        display_name: p.display_name,
+        avatar_url: p.profile_json?.avatar_url,
+      }))
+      setLineup(list)
+    }
+    setStatus('found')
   }
 
   async function join() {
@@ -91,7 +104,30 @@ export default function JoinPage() {
           <div style={{background:S.bg1,borderRadius:20,padding:'24px',border:'1px solid '+S.border,marginBottom:16}}>
             <p style={{fontSize:24,margin:'0 0 4px',textAlign:'center'}}>🔥</p>
             <h1 style={{fontSize:20,fontWeight:800,color:S.tx,textAlign:'center',margin:'0 0 8px'}}>{session.title}</h1>
-            <p style={{fontSize:13,color:S.tx3,textAlign:'center',margin:'0 0 16px'}}>📍 {session.approx_area}</p>
+            <p style={{fontSize:13,color:S.tx3,textAlign:'center',margin:'0 0 8px'}}>📍 {session.approx_area}</p>
+            {session.tags && session.tags.length > 0 && (
+              <div style={{display:'flex',flexWrap:'wrap',gap:6,justifyContent:'center',marginBottom:12}}>
+                {session.tags.map((tag: string) => (
+                  <span key={tag} style={{fontSize:12,fontWeight:600,color:S.p300,padding:'4px 10px',borderRadius:99,background:S.p300+'18',border:'1px solid '+S.p300+'44'}}>{tag}</span>
+                ))}
+              </div>
+            )}
+            {lineup.length > 0 && (
+              <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:0,marginBottom:12}}>
+                {lineup.slice(0, 5).map((m, i) => (
+                  <div key={m.applicant_id} style={{marginLeft: i === 0 ? 0 : -8}}>
+                    {m.avatar_url ? (
+                      <img src={m.avatar_url} alt="" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'2px solid '+S.bg1,boxSizing:'border-box'}} />
+                    ) : (
+                      <div style={{width:28,height:28,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'#fff',border:'2px solid '+S.bg1,boxSizing:'border-box'}}>
+                        {(m.display_name || '?')[0].toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {lineup.length > 5 && <span style={{marginLeft:6,fontSize:12,color:S.tx3,fontWeight:600}}>+{lineup.length - 5}</span>}
+              </div>
+            )}
             <div style={{padding:'10px 14px',background:S.bg0,borderRadius:12,border:'1px solid '+S.border}}>
               <p style={{fontSize:12,color:S.tx3,margin:0,textAlign:'center'}}>🔒 Adresse révélée après acceptation</p>
             </div>
@@ -100,25 +136,24 @@ export default function JoinPage() {
             <p style={{color:S.green,textAlign:'center',fontWeight:700,fontSize:15}}>{msg}</p>
           ) : !user ? (
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <button onClick={()=>navigate('/me')} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
-                Se connecter pour postuler
+              <button onClick={() => navigate('/me?next=/join/' + code)} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+                Postuler →
               </button>
               <button onClick={() => {
                 const token = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
                 try { localStorage.setItem('guest_token', token); localStorage.setItem('guest_session_id', session.id) } catch (_) {}
                 navigate('/session/' + session.id + '/apply?guest_token=' + encodeURIComponent(token))
               }} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:S.tx,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>
-                Continuer sans compte
-              </button>
-              <button onClick={joinAsGuest} disabled={status==='joining'} style={{width:'100%',padding:'12px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx3,border:'1px solid '+S.border,background:S.bg1,cursor:'pointer'}}>
-                {status==='joining' ? 'Envoi...' : 'Postuler direct en invité'}
+                👻 Sans compte
               </button>
               {joinError && <p style={{fontSize:13,color:S.red,textAlign:'center',margin:0}}>{joinError}</p>}
             </div>
           ) : (
-            <button onClick={join} disabled={status==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
-              {status==='joining' ? 'Envoi...' : 'Postuler 🔥'}
-            </button>
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              <button onClick={join} disabled={status==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+                {status==='joining' ? 'Envoi...' : 'Postuler →'}
+              </button>
+            </div>
           )}
         </div>
       )}
