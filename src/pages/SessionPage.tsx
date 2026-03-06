@@ -24,6 +24,7 @@ export default function SessionPage() {
   const [checkInDone, setCheckInDone] = useState(false)
   const [copied, setCopied] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
+  const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
 
   const isHost = currentUser?.id === session?.host_id
 
@@ -67,6 +68,10 @@ export default function SessionPage() {
           .maybeSingle()
         setMyApp(app)
         if (app?.status === 'checked_in') setCheckInDone(true)
+        if (app?.status === 'pending') {
+          setShowPostulerSuccess(true)
+          setTimeout(() => setShowPostulerSuccess(false), 2000)
+        }
       }
 
       if (user && sess?.host_id === user.id) {
@@ -212,11 +217,17 @@ export default function SessionPage() {
 
       </div>
 
-      {!isHost && !myApp && session.status === 'open' && (
+      {(!isHost && (showPostulerSuccess || (!myApp && session.status === 'open'))) && (
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>
-          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-            Postuler a cette session
-          </button>
+          {showPostulerSuccess ? (
+            <button disabled style={{ width: '100%', padding: 16, background: '#14532d', border: '1px solid #4ADE80', borderRadius: 14, color: '#4ADE80', fontSize: 16, fontWeight: 700 }}>
+              Candidature envoyee ✓
+            </button>
+          ) : (
+            <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+              Postuler a cette session
+            </button>
+          )}
         </div>
       )}
     </div>
