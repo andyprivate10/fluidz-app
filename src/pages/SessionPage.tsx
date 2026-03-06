@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 
 const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }
@@ -19,6 +19,7 @@ export default function SessionPage() {
   const [loading, setLoading] = useState(true)
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const isHost = currentUser?.id === session?.host_id
 
@@ -134,9 +135,22 @@ export default function SessionPage() {
         )}
 
         {isHost && (
-          <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, color: '#F0EDFF', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-            Gerer la session
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, color: '#F0EDFF', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+              Gerer la session
+            </button>
+            {session.invite_code && (
+              <button onClick={() => {
+                const url = window.location.origin + '/join/' + session.invite_code
+                navigator.clipboard.writeText(url).then(() => {
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                })
+              }} style={{ width: '100%', padding: 14, background: copied ? '#14532d' : '#16141F', border: '1px solid ' + (copied ? '#4ADE80' : '#F9A8A8'), borderRadius: 12, color: copied ? '#4ADE80' : '#F9A8A8', fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+                {copied ? 'Lien copie !' : 'Partager le lien'}
+              </button>
+            )}
+          </div>
         )}
 
         {!isHost && !myApp && session.status === 'open' && (
