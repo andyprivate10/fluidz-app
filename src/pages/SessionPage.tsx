@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
@@ -27,19 +27,19 @@ export default function SessionPage() {
   const [inviteLinkCopied, setInviteLinkCopied] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
   const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const touchStartY = useRef(0)
 
   const isHost = currentUser?.id === session?.host_id
 
-  useEffect(() => {
-    setLoadError(false)
-    const load = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        setCurrentUser(user ?? null)
+  const loadData = useCallback(async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      setCurrentUser(user ?? null)
 
-        const { data: sess, error: sessErr } = await supabase.from('sessions').select('*').eq('id', id).single()
-        if (sessErr) throw sessErr
-        setSession(sess)
+      const { data: sess, error: sessErr } = await supabase.from('sessions').select('*').eq('id', id).single()
+      if (sessErr) throw sessErr
+      setSession(sess)
 
       const { data: accepted } = await supabase
         .from('applications')
@@ -83,14 +83,29 @@ export default function SessionPage() {
         const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).eq('status', 'pending')
         setPendingCount(count ?? 0)
       } else setPendingCount(0)
-      } catch {
-        setLoadError(true)
-      } finally {
-        setLoading(false)
-      }
+    } catch {
+      setLoadError(true)
     }
-    load()
   }, [id])
+
+  useEffect(() => {
+    setLoadError(false)
+    setLoading(true)
+    loadData().finally(() => setLoading(false))
+  }, [loadData])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY
+  }
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const endY = e.changedTouches[0].clientY
+    const pullDistance = touchStartY.current - endY
+    const atTop = typeof window !== 'undefined' && (window.scrollY ?? document.documentElement.scrollTop) <= 5
+    if (atTop && pullDistance > 60 && !isRefreshing && !loading) {
+      setIsRefreshing(true)
+      loadData().finally(() => setIsRefreshing(false))
+    }
+  }
 
   const handleCheckIn = async () => {
     if (!currentUser) return
@@ -136,7 +151,12 @@ export default function SessionPage() {
   const statusColor = session.status === 'open' ? '#4ADE80' : '#7E7694'
 
   return (
-    <div style={st}>
+    <div style={st} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      {isRefreshing && (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 12, background: '#16141F', borderBottom: '1px solid #2A2740' }}>
+          <div className="w-6 h-6 border-2 border-peach300 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #2A2740', background: '#16141F' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#F0EDFF', flex: 1 }}>{session.title}</h1>
