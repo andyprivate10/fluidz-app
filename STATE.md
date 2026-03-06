@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-ce9ae58 — feat: ghost flow - postuler sans compte via /join/:code avec profil invité anonyme
+e90adcd — feat: rate limit ApplyPage - block if applied in last 5 minutes
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -29,13 +29,17 @@ ce9ae58 — feat: ghost flow - postuler sans compte via /join/:code avec profil 
 - user_profiles table + persistence pseudo
 - Check-in flow + status candidat
 - Ghost flow : postuler sans compte via /join/:code (auth anonyme Supabase + profil « Invité », puis redirect DM)
+- Photos profil : MePage upload vers bucket Storage « avatars » (public), affichage sur ProfilePage et lineup SessionPage
+- Page Notifications /notifications : liste des notifs (table notifications), marquer lu au clic
+- Rate limiting ApplyPage : blocage si postulation dans les 5 dernières minutes
 
 ## DB SCHEMA
 - sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), created_at
 - applications: id, session_id, applicant_id (FK -> user_profiles.id), status, eps_json, created_at
 - user_profiles: id, display_name, profile_json
 - messages: id, session_id, sender_id, text, sender_name, created_at
-- notifications: id, user_id, session_id, type, title, body, read_at, created_at
+- notifications: id, user_id, session_id, type, message, read, created_at
+- Storage: bucket avatars (public), policy upload par user (avatars/{user_id}/*)
 
 ## RLS POLICIES
 - sessions SELECT: tous les authenticated
@@ -58,6 +62,7 @@ ce9ae58 — feat: ghost flow - postuler sans compte via /join/:code avec profil 
 - /session/:id/candidate/:applicantId : CandidateProfilePage
 - /join/:code : JoinPage
 - /me : MePage (auth + edit profil)
+- /notifications : NotificationsPage (liste notifs, marquer lu)
 - /profile/:userId : ProfilePage (lecture profil public)
 
 ## DONNEES DE TEST
@@ -70,5 +75,4 @@ ce9ae58 — feat: ghost flow - postuler sans compte via /join/:code avec profil 
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
 ## PROCHAINS CHANTIERS
-- Photos profil
-- Rate limiting / anti-spam
+- (à définir)
