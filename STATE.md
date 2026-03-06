@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-0d0c927 — feat: DMPage auto-scroll to bottom on new message (batch 6)
+3ae3bfb — feat: ProfilePage health PrEP section display (batch 9)
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -35,12 +35,14 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Loading spinner (SessionPage, HostDashboard, ApplyPage, DMPage) pendant le fetch ; message erreur si echec fetch
 - HomePage : si connecté et host d’au moins une session, lien rapide vers la plus récente ; si pas connecté, message de bienvenue Fluidz
 
+- BottomNav : badge nombre notifs ; SessionPage Postuler 2s ; ProfilePage copier lien. NotificationsPage : title/body/href/read_at. HostDashboard : Grindr/WhatsApp, confirmer check-in. SessionPage : statut dynamique. ProfilePage : Santé 💊.
+
 ## DB SCHEMA
 - sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), created_at
-- applications: id, session_id, applicant_id (FK -> user_profiles.id), status, eps_json, created_at
+- applications: id, session_id, applicant_id (FK -> user_profiles.id), status, eps_json, checked_in (boolean), created_at
 - user_profiles: id, display_name, profile_json
 - messages: id, session_id, sender_id, text, sender_name, created_at
-- notifications: id, user_id, session_id, type, message, read, created_at
+- notifications: id, user_id, session_id, type, message, title, body, href, read_at, created_at
 - Storage: bucket avatars (public), policy upload par user (avatars/{user_id}/*)
 
 ## RLS POLICIES
@@ -77,4 +79,4 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
 ## PROCHAINS CHANTIERS
-- (à définir — batch 6 terminée)
+- (à définir — batches 7–9 terminées)
