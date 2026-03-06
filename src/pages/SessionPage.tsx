@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[] }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 
 const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
@@ -185,6 +185,17 @@ export default function SessionPage() {
             <div style={{ fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>{session.description}</div>
           </div>
         )}
+
+        {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
+          <div style={card}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>ACCÈS</div>
+            <ol style={{ margin: 0, paddingLeft: 20, fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>
+              {session.lineup_json.directions.map((step, i) => (
+                <li key={i} style={{ marginBottom: 6 }}>{step}</li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
 
         {members.length > 0 && (
           <div style={card}>

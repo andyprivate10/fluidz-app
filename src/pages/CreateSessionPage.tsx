@@ -39,6 +39,7 @@ export default function CreateSessionPage() {
   const [step, setStep] = useState<'template'|'details'|'address'>('template')
   const [savedAddresses, setSavedAddresses] = useState<{ approx_area?: string; exact_address?: string }[]>([])
   const [savingAddress, setSavingAddress] = useState(false)
+  const [directions, setDirections] = useState<string[]>([''])
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
 
@@ -71,6 +72,7 @@ export default function CreateSessionPage() {
     if (!user || !title || !approxArea) return
     setError('')
     setLoading(true)
+    const directionsFiltered = directions.filter(d => (d || '').trim().length > 0)
     const { data, error: err } = await supabase.from('sessions').insert({
       host_id: user.id,
       title,
@@ -80,6 +82,7 @@ export default function CreateSessionPage() {
       status: 'open',
       tags: selectedTags,
       invite_code: Math.random().toString(36).slice(2, 10),
+      lineup_json: directionsFiltered.length > 0 ? { directions: directionsFiltered } : {},
     }).select().single()
     setLoading(false)
     if (err) {
@@ -242,6 +245,21 @@ export default function CreateSessionPage() {
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresse exacte 🔒</p>
             <input value={exactAddress} onChange={e=>setExactAddress(e.target.value)} placeholder='14 rue de la Roquette, code 1234' style={inp} />
             <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Révélée uniquement après ton acceptation</p>
+          </div>
+          <div>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Accès</p>
+            <p style={{fontSize:12,color:S.tx4,marginBottom:8}}>Étapes pour arriver (visibles par les membres acceptés)</p>
+            {directions.map((step, i) => (
+              <div key={i} style={{display:'flex',gap:8,marginBottom:8,alignItems:'center'}}>
+                <input value={step} onChange={e=>{ const next=[...directions]; next[i]=e.target.value; setDirections(next) }} placeholder={'Étape ' + (i+1)} style={{...inp,flex:1}} />
+                {directions.length > 1 && (
+                  <button type="button" onClick={()=>setDirections(directions.filter((_,j)=>j!==i))} style={{padding:'10px 14px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>Suppr</button>
+                )}
+              </div>
+            ))}
+            <button type="button" onClick={()=>setDirections([...directions,''])} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
+              Ajouter une étape
+            </button>
           </div>
           <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
             {savingAddress ? 'Sauvegarde...' : 'Sauvegarder cette adresse'}
