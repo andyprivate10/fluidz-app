@@ -18,6 +18,7 @@ export default function SessionPage() {
   const [members, setMembers] = useState<Member[]>([])
   const [memberAvatars, setMemberAvatars] = useState<Record<string, string>>({})
   const [memberRoles, setMemberRoles] = useState<Record<string, string>>({})
+  const [memberNames, setMemberNames] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [checkInLoading, setCheckInLoading] = useState(false)
@@ -43,21 +44,24 @@ export default function SessionPage() {
         .from('applications')
         .select('applicant_id, eps_json, status')
         .eq('session_id', id)
-        .eq('status', 'accepted')
+        .in('status', ['accepted', 'checked_in'])
       setMembers(accepted ?? [])
 
       const ids = (accepted ?? []).map((a: { applicant_id: string }) => a.applicant_id)
       if (ids.length > 0) {
-        const { data: profiles } = await supabase.from('user_profiles').select('id, profile_json').in('id', ids)
+        const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ids)
         const avatarMap: Record<string, string> = {}
         const roleMap: Record<string, string> = {}
-        ;(profiles ?? []).forEach((r: { id: string; profile_json?: { avatar_url?: string; role?: string } }) => {
+        const nameMap: Record<string, string> = {}
+        ;(profiles ?? []).forEach((r: { id: string; display_name?: string; profile_json?: { avatar_url?: string; role?: string } }) => {
           if (r.profile_json?.avatar_url) avatarMap[r.id] = r.profile_json.avatar_url
           if (r.profile_json?.role) roleMap[r.id] = r.profile_json.role
+          if (r.display_name) nameMap[r.id] = r.display_name
         })
         setMemberAvatars(avatarMap)
         setMemberRoles(roleMap)
-      } else { setMemberAvatars({}); setMemberRoles({}) }
+        setMemberNames(nameMap)
+      } else { setMemberAvatars({}); setMemberRoles({}); setMemberNames({}) }
 
       if (user) {
         const { data: app } = await supabase
@@ -148,23 +152,54 @@ export default function SessionPage() {
 
         {members.length > 0 && (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP ({members.length})</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP</div>
+            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {members.slice(0, 5).map((m, i) => {
+                  const avatarUrl = memberAvatars[m.applicant_id]
+                  return (
+                    <Link key={m.applicant_id} to={'/profile/' + m.applicant_id} style={{ marginLeft: i === 0 ? 0 : -8, display: 'block' }}>
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #16141F', boxSizing: 'border-box' }} />
+                      ) : (
+                        <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #16141F', boxSizing: 'border-box' }}>
+                          {(memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
+                        </div>
+                      )}
+                    </Link>
+                  )
+                })}
+                {members.length > 5 && (
+                  <span style={{ marginLeft: 6, fontSize: 13, fontWeight: 600, color: '#7E7694' }}>+{members.length - 5}</span>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                {members.slice(0, 5).map(m => {
+                  const name = memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'
+                  return (
+                    <Link key={m.applicant_id} to={'/profile/' + m.applicant_id} style={{ fontSize: 13, color: '#B8B2CC', textDecoration: 'none' }}>{name}</Link>
+                  )
+                )}
+                {members.length > 5 && <span style={{ fontSize: 12, color: '#7E7694' }}>+{members.length - 5}</span>}
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
               {members.map(m => {
                 const eps = m.eps_json || {}
                 const avatarUrl = memberAvatars[m.applicant_id]
                 const role = memberRoles[m.applicant_id] || eps.role
+                const name = memberNames[m.applicant_id] || (eps as any).profile_snapshot?.display_name || eps.displayName || 'Anonyme'
                 return (
                   <Link key={m.applicant_id} to={'/profile/' + m.applicant_id} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: 'inherit' }}>
                     {avatarUrl ? (
                       <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                     ) : (
                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
-                        {(eps.displayName || '?')[0].toUpperCase()}
+                        {(name || '?')[0].toUpperCase()}
                       </div>
                     )}
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{eps.displayName || 'Anonyme'}{eps.age ? ', ' + eps.age : ''}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
                       {role && <div style={{ fontSize: 11, color: '#7E7694' }}>{role}</div>}
                     </div>
                     {m.status === 'checked_in' && <div style={{ fontSize: 11, color: '#4ADE80', fontWeight: 600 }}>Check-in</div>}
