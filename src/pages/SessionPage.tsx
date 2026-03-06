@@ -6,7 +6,7 @@ import type { User } from '@supabase/supabase-js'
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 
-const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }
+const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
 const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
 
 export default function SessionPage() {
@@ -169,12 +169,6 @@ export default function SessionPage() {
           </div>
         )}
 
-        {!isHost && !myApp && session.status === 'open' && (
-          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-            Postuler a cette session
-          </button>
-        )}
-
         {myApp && myApp.status !== 'accepted' && myApp.status !== 'checked_in' && (
           <div style={{ ...card, textAlign: 'center' }}>
             <div style={{ fontSize: 14, color: '#B8B2CC' }}>
@@ -190,6 +184,14 @@ export default function SessionPage() {
         )}
 
       </div>
+
+      {!isHost && !myApp && session.status === 'open' && (
+        <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>
+          <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+            Postuler a cette session
+          </button>
+        </div>
+      )}
     </div>
   )
 }
