@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-5f1be9f — feat: add public ProfilePage at /profile/:userId
+ce9ae58 — feat: ghost flow - postuler sans compte via /join/:code avec profil invité anonyme
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -21,13 +21,14 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
 - DMPage : chat realtime, banniere status (pending/rejected), adresse revelee si accepted
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
-- BottomNav (Home/Sessions/Moi) — masquee sur DMPage
+- BottomNav (Home/Sessions/Moi) — masquee sur DMPage ; badge rouge sur Moi quand nouvelle candidature pour une session hostee (realtime applications)
 - CandidateProfilePage (vue profil candidat depuis HostDashboard)
-- ProfilePage /profile/:userId (lecture profil public: bio, physique, role, pratiques, sante, limites)
+- ProfilePage /profile/:userId (lecture profil public) ; liens depuis lineup SessionPage et noms HostDashboard vers /profile/:userId
 - MePage : auth magic link + edition complete profil (basics, role, physique, pratiques, PrEP, limites)
 - PWA manifest + OG tags
 - user_profiles table + persistence pseudo
 - Check-in flow + status candidat
+- Ghost flow : postuler sans compte via /join/:code (auth anonyme Supabase + profil « Invité », puis redirect DM)
 
 ## DB SCHEMA
 - sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), created_at
@@ -69,8 +70,5 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
 ## PROCHAINS CHANTIERS
-- Ghost flow (postuler sans compte)
-- Notifications badge in-app
 - Photos profil
 - Rate limiting / anti-spam
-- Liens vers ProfilePage depuis lineup/candidatures
