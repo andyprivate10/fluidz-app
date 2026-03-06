@@ -92,6 +92,20 @@ export default function ApplyPage() {
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.title} · {session.approx_area}</p>}
       </div>
 
+      {profile && (
+        <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.border}}>
+          <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>Aperçu de ton profil (ce qui sera partagé)</div>
+          <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile.display_name || 'Anonyme'}</div>
+          {(profile.profile_json?.role || profile.profile_json?.bio) && (
+            <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
+              {profile.profile_json?.role && <span style={{color:S.p300,fontWeight:600}}>{profile.profile_json.role}</span>}
+              {profile.profile_json?.role && profile.profile_json?.bio && ' · '}
+              {profile.profile_json?.bio && (profile.profile_json.bio as string).slice(0, 80)}{(profile.profile_json?.bio as string)?.length > 80 ? '…' : ''}
+            </div>
+          )}
+        </div>
+      )}
+
       {isRateLimited && rateLimitedUntil && (
         <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.red+'18',border:'1px solid '+S.red+'44'}}>
           <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Tu as déjà postulé récemment.</p>
