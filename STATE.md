@@ -2,7 +2,7 @@
 ## Derniere mise a jour : 6 Mars 2026
 
 ## OBJECTIF ACTUEL
-Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
+Batches 13–19 terminés. Prochain milestone : premier event réel 5 personnes.
 
 ## STACK
 - React + TypeScript + Vite + Tailwind (inline styles avec S = {} color tokens)
@@ -11,7 +11,7 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-fe4d3bf — feat: HostDashboard show ghost candidate badge (batch 12)
+6e50115 — feat: lineup member tappable opens profile preview (batch 19)
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
@@ -23,7 +23,7 @@ fe4d3bf — feat: HostDashboard show ghost candidate badge (batch 12)
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
 - BottomNav (Home/Sessions/Notifs/Moi) — masquee sur DMPage ; onglet Notifs (cloche) vers /notifications avec badge si non lues ; badge Moi si nouvelle candidature (realtime)
 - CandidateProfilePage : toutes les sections eps_json en cards (physique, role, pratiques, sante, limites)
-- ProfilePage /profile/:userId (lecture profil public) ; liens depuis lineup SessionPage et noms HostDashboard vers /profile/:userId
+- PublicProfile /profile/:userId (accès membres même session) ; lineup SessionPage cliquable + bottom sheet aperçu mobile
 - MePage : auth magic link + edition complete profil (basics, role, physique, pratiques, PrEP, limites)
 - PWA manifest + OG tags
 - user_profiles table + persistence pseudo
@@ -36,10 +36,17 @@ fe4d3bf — feat: HostDashboard show ghost candidate badge (batch 12)
 - HomePage : si connecté et host d’au moins une session, lien rapide vers la plus récente ; si pas connecté, message de bienvenue Fluidz
 
 - BottomNav : badge nombre notifs ; SessionPage Postuler 2s ; ProfilePage copier lien. NotificationsPage : title/body/href/read_at. HostDashboard : Grindr/WhatsApp, confirmer check-in. SessionPage : statut dynamique. ProfilePage : Santé 💊.
-- Batch 12 : JoinPage « Continuer sans compte » → guest_token + redirect ApplyPage ; ApplyPage mode ghost (pseudo + formulaire, création anon à la soumission). MePage : bannière si guest_token + « Créer mon compte » ; après auth appel rpc_claim_phantom. HostDashboard : badge « 👻 Ghost » et affichage display_name / eps_json pour candidatures ghost.
+- Batch 12 : JoinPage « Continuer sans compte » → guest_token + redirect ApplyPage ; ApplyPage mode ghost. MePage bannière guest_token + claim. HostDashboard badge 👻 Ghost.
+- Batch 13 : NotificationsPage « Tout marquer comme lu » ; SessionPage lineup accepted/checked_in (stack 5 +N) ; HostDashboard « Copier message Grindr ».
+- Batch 14 : HostDashboard broadcast message à tous ; SessionPage vote consultatif (visible dès 3 membres) ; partage lien invitation après check-in.
+- Batch 15 : Framer-motion transitions pages ; skeleton loaders SessionPage + CandidateProfilePage ; pull-to-refresh SessionPage.
+- Batch 16 : CreateSessionPage messages partage Grindr/WhatsApp/Telegram ; directions step-by-step (lineup_json.directions) ; templates Dark Room / Chemical / Techno.
+- Batch 17 : MePage formulaire profil complet (select morphologie, labels) ; section santé PrEP + date test + badges ; kinks checklist 9 pratiques.
+- Batch 18 : JoinPage preview session (tags, lineup) + CTAs Postuler / Sans compte ; ApplyPage message au host + récap + spinner ; CandidateProfilePage sections améliorées + CTAs Accepter/Refuser.
+- Batch 19 : PublicProfile /profile/:userId (accès réservé membres même session), galerie + sections ; SessionPage lineup → bottom sheet aperçu mobile ; STATE.md à jour.
 
 ## DB SCHEMA
-- sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), created_at
+- sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), lineup_json (jsonb), created_at
 - applications: id, session_id, applicant_id (FK -> user_profiles.id), status, eps_json, checked_in (boolean), created_at
 - user_profiles: id, display_name, profile_json
 - messages: id, session_id, sender_id, text, sender_name, created_at
@@ -68,7 +75,7 @@ fe4d3bf — feat: HostDashboard show ghost candidate badge (batch 12)
 - /join/:code : JoinPage
 - /me : MePage (auth + edit profil)
 - /notifications : NotificationsPage (liste notifs, marquer lu)
-- /profile/:userId : ProfilePage (lecture profil public)
+- /profile/:userId : PublicProfile (profil réservé aux membres d’une même session)
 
 ## DONNEES DE TEST
 - Session "Dark Room": id 778fcea6-ca82-41e3-84a6-f59ad5da5764, invite_code qrirmbz4, exact_address "14 rue de la Roquette, code 4521"
@@ -80,4 +87,5 @@ fe4d3bf — feat: HostDashboard show ghost candidate badge (batch 12)
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
 ## PROCHAINS CHANTIERS
-- (à définir — batch 12 terminée)
+- **Milestone** : Premier event réel 5 personnes (toutes features batches 13–19 implémentées, prêt pour test end-to-end).
+- À définir : polish UX, analytics, ou prochaines features selon retours.
