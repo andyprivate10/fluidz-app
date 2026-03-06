@@ -69,6 +69,12 @@ export default function HostDashboard() {
     setSess((s: any) => ({...s, status: newStatus}))
   }
 
+  async function closeSession() {
+    if (!window.confirm('Fermer définitivement cette session ? Elle ne sera plus modifiable.')) return
+    await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
+    setSess((s: any) => ({...s, status: 'ended'}))
+  }
+
   const filtered = tab === 'accepted'
     ? apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
     : apps.filter(a => a.status === tab)
@@ -105,6 +111,11 @@ export default function HostDashboard() {
             {sess?.status==='open' ? '🟢 Ouvert' : '⚫ Fermé'}
           </button>
         </div>
+        {sess?.status !== 'ended' && (
+          <button onClick={closeSession} style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer',width:'100%'}}>
+            Fermer la session
+          </button>
+        )}
 
         {sess?.invite_code && (
           <>
