@@ -22,6 +22,7 @@ export default function HostDashboard() {
   const [actionLoading, setActionLoading] = useState<string|null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
   const [messageCopied, setMessageCopied] = useState(false)
+  const [grinderCopied, setGrinderCopied] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -133,6 +134,19 @@ export default function HostDashboard() {
             </button>
             <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
               <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
+              <button
+                onClick={() => {
+                  const url = window.location.origin + '/join/' + sess.invite_code
+                  const text = '🔥 Plan ce soir – ' + (sess.title || '') + ' – ' + (sess.approx_area || '') + ' – Postule : ' + url
+                  navigator.clipboard.writeText(text).then(() => {
+                    setGrinderCopied(true)
+                    setTimeout(() => setGrinderCopied(false), 2000)
+                  })
+                }}
+                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:grinderCopied ? S.green+'22' : 'transparent',color:grinderCopied ? S.green : S.p300,cursor:'pointer',marginBottom:8}}
+              >
+                {grinderCopied ? 'Copié !' : 'Copier message Grindr'}
+              </button>
               <button
                 onClick={() => {
                   const lines = [sess.title, sess.description || '', 'Postule ici : ' + window.location.origin + '/join/' + sess.invite_code].filter(Boolean)
