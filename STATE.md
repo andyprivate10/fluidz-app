@@ -2,7 +2,7 @@
 ## Derniere mise a jour : 6 Mars 2026
 
 ## OBJECTIF ACTUEL
-Flow Marcus->Karim fonctionnel end-to-end. Tester en conditions reelles.
+Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 
 ## STACK
 - React + TypeScript + Vite + Tailwind (inline styles avec S = {} color tokens)
@@ -11,18 +11,20 @@ Flow Marcus->Karim fonctionnel end-to-end. Tester en conditions reelles.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-da24143 — feat: sessionpage lineup + checkin flow + status candidat
+5f1be9f — feat: add public ProfilePage at /profile/:userId
 
-## CE QUI EST FAIT (Launch 0)
+## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
 - HomePage, SessionsPage, CreateSessionPage (3 etapes: template/details/adresse)
-- SessionPage (vue host + vue candidat + lineup membres acceptes)
+- SessionPage (vue host + vue candidat + lineup + bouton Partager le lien)
 - ApplyPage 3 etapes : basics / physique+role+kinks+PrEP+limites / note session
 - HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
 - DMPage : chat realtime, banniere status (pending/rejected), adresse revelee si accepted
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
 - BottomNav (Home/Sessions/Moi) — masquee sur DMPage
 - CandidateProfilePage (vue profil candidat depuis HostDashboard)
+- ProfilePage /profile/:userId (lecture profil public: bio, physique, role, pratiques, sante, limites)
+- MePage : auth magic link + edition complete profil (basics, role, physique, pratiques, PrEP, limites)
 - PWA manifest + OG tags
 - user_profiles table + persistence pseudo
 - Check-in flow + status candidat
@@ -44,15 +46,18 @@ da24143 — feat: sessionpage lineup + checkin flow + status candidat
 - user_profiles INSERT/UPDATE: id = auth.uid()
 - messages: session participants
 
-## BUGS FIXES (session 6 mars)
-- CreateSessionPage: bouton "Creer" ne faisait rien (colonne tags manquante, erreur avalee)
-- ApplyPage/JoinPage: user_id -> applicant_id (colonne DB)
-- JoinPage route: /join -> /join/:code
-- HostDashboard: navigation profil candidat corrigee
-- DMPage: rewrite complet (input toujours visible, bannieres status, adresse revelee)
-- BottomNav: masquee sur /dm pour ne pas couvrir l'input chat
-- RLS: sessions SELECT ouvert aux authenticated, user_profiles SELECT ouvert
-- FK: applications.applicant_id -> user_profiles.id (pour joins PostgREST)
+## ROUTES
+- / : HomePage
+- /sessions : SessionsPage
+- /session/create : CreateSessionPage
+- /session/:id : SessionPage
+- /session/:id/apply : ApplyPage
+- /session/:id/dm : DMPage
+- /session/:id/host : HostDashboard
+- /session/:id/candidate/:applicantId : CandidateProfilePage
+- /join/:code : JoinPage
+- /me : MePage (auth + edit profil)
+- /profile/:userId : ProfilePage (lecture profil public)
 
 ## DONNEES DE TEST
 - Session "Dark Room": id 778fcea6-ca82-41e3-84a6-f59ad5da5764, invite_code qrirmbz4, exact_address "14 rue de la Roquette, code 4521"
@@ -63,9 +68,9 @@ da24143 — feat: sessionpage lineup + checkin flow + status candidat
 2. Dev server: npm run dev (localhost:5173)
 3. Supabase Management API: voir CLAUDE.md pour tokens
 
-## PROCHAINS CHANTIERS (Phase 2)
-- ProfilePage complete (lecture du profil public)
+## PROCHAINS CHANTIERS
 - Ghost flow (postuler sans compte)
 - Notifications badge in-app
 - Photos profil
 - Rate limiting / anti-spam
+- Liens vers ProfilePage depuis lineup/candidatures
