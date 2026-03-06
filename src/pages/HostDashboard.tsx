@@ -21,6 +21,7 @@ export default function HostDashboard() {
   const [loadError, setLoadError] = useState(false)
   const [actionLoading, setActionLoading] = useState<string|null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [messageCopied, setMessageCopied] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -93,18 +94,35 @@ export default function HostDashboard() {
         </div>
 
         {sess?.invite_code && (
-          <button
-            onClick={() => {
-              const url = window.location.origin + '/join/' + sess.invite_code
-              navigator.clipboard.writeText(url).then(() => {
-                setLinkCopied(true)
-                setTimeout(() => setLinkCopied(false), 2000)
-              })
-            }}
-            style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:linkCopied ? S.green+'22' : 'transparent',color:linkCopied ? S.green : S.p300,cursor:'pointer',width:'100%'}}
-          >
-            {linkCopied ? 'Lien copié' : 'Partager'}
-          </button>
+          <>
+            <button
+              onClick={() => {
+                const url = window.location.origin + '/join/' + sess.invite_code
+                navigator.clipboard.writeText(url).then(() => {
+                  setLinkCopied(true)
+                  setTimeout(() => setLinkCopied(false), 2000)
+                })
+              }}
+              style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:linkCopied ? S.green+'22' : 'transparent',color:linkCopied ? S.green : S.p300,cursor:'pointer',width:'100%'}}
+            >
+              {linkCopied ? 'Lien copié' : 'Partager'}
+            </button>
+            <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
+              <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
+              <button
+                onClick={() => {
+                  const lines = [sess.title, sess.description || '', 'Postule ici : ' + window.location.origin + '/join/' + sess.invite_code].filter(Boolean)
+                  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                    setMessageCopied(true)
+                    setTimeout(() => setMessageCopied(false), 2000)
+                  })
+                }}
+                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:messageCopied ? S.green+'22' : 'transparent',color:messageCopied ? S.green : S.p300,cursor:'pointer'}}
+              >
+                {messageCopied ? 'Copié ✓' : 'Copier le message'}
+              </button>
+            </div>
+          </>
         )}
         <div style={{display:'flex',gap:8,marginTop:16}}>
           {([['pending','⏳ En attente',S.yellow],['accepted','✅ Acceptés',S.green],['rejected','❌ Refusés',S.red]] as const).map(([t,l,c]) => (
