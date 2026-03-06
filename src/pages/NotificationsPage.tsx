@@ -34,6 +34,7 @@ export default function NotificationsPage() {
   const [user, setUser] = useState<string | null>(null)
   const [list, setList] = useState<Notif[]>([])
   const [loading, setLoading] = useState(true)
+  const [markingAll, setMarkingAll] = useState(false)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user: u } }) => {
@@ -58,6 +59,15 @@ export default function NotificationsPage() {
     if (n.href && n.href.trim() !== '') navigate(n.href)
   }
 
+  async function markAllRead() {
+    if (!user) return
+    setMarkingAll(true)
+    const now = new Date().toISOString()
+    await supabase.from('notifications').update({ read_at: now }).eq('user_id', user).is('read_at', null)
+    setList(prev => prev.map(x => ({ ...x, read_at: x.read_at ?? now })))
+    setMarkingAll(false)
+  }
+
   if (!user) {
     return (
       <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter,sans-serif' }}>
@@ -71,7 +81,14 @@ export default function NotificationsPage() {
     <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96, fontFamily: 'Inter,sans-serif' }}>
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: 0 }}>Notifications</h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: 0 }}>Notifications</h1>
+          {list.some(n => n.read_at == null) && (
+            <button onClick={markAllRead} disabled={markingAll} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, border: '1px solid ' + S.border, background: S.bg1, color: S.tx2, cursor: 'pointer' }}>
+              {markingAll ? '...' : 'Tout marquer comme lu'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div style={{ padding: '16px 20px' }}>
