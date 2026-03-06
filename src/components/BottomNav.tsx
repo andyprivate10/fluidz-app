@@ -1,8 +1,36 @@
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 
 export default function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
+  const [userId, setUserId] = useState<string | null>(null)
+  const [hasNewApplication, setHasNewApplication] = useState(false)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setUserId(user?.id ?? null))
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return
+    const channel = supabase
+      .channel('applications-for-host')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'applications',
+      }, async (payload: { new: { session_id: string } }) => {
+        const { data } = await supabase.from('sessions').select('host_id').eq('id', payload.new.session_id).maybeSingle()
+        if (data?.host_id === userId) setHasNewApplication(true)
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [userId])
+
+  useEffect(() => {
+    if (/\/session\/[^/]+\/host/.test(location.pathname)) setHasNewApplication(false)
+  }, [location.pathname])
 
   // Hide on DM pages (full-screen chat)
   if (location.pathname.includes('/dm')) return null
@@ -32,6 +60,7 @@ export default function BottomNav() {
     >
       {tabs.map((tab) => {
         const isActive = location.pathname === tab.path
+        const showBadge = tab.path === '/me' && hasNewApplication
         return (
           <button
             key={tab.path}
@@ -45,9 +74,27 @@ export default function BottomNav() {
               gap: 2,
               cursor: 'pointer',
               padding: '4px 20px',
+              position: 'relative',
             }}
           >
-            <span style={{ fontSize: 20 }}>{tab.icon}</span>
+            <span style={{ fontSize: 20, position: 'relative' }}>
+              {tab.icon}
+              {showBadge && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: -2,
+                    right: -4,
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: '#F87171',
+                    border: '2px solid #16141F',
+                  }}
+                  aria-hidden
+                />
+              )}
+            </span>
             <span
               style={{
                 fontSize: 11,
