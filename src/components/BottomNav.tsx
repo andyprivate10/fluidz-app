@@ -16,7 +16,7 @@ export default function BottomNav() {
   useEffect(() => {
     if (!userId) return
     const fetch = async () => {
-      const { count } = await supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('read', false)
+      const { count } = await supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', userId).is('read_at', null)
       setUnreadNotifCount(count ?? 0)
     }
     fetch()

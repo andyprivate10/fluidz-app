@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import BottomNav from '../components/BottomNav'
 
-type Notif = { id: string; session_id: string; type: string; message: string; read: boolean; created_at: string }
+type Notif = { id: string; user_id: string; type: string; title: string; body: string; href: string | null; read_at: string | null; created_at: string }
 
 const S = {
   bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B',
@@ -45,7 +45,7 @@ export default function NotificationsPage() {
   async function load(uid: string) {
     const { data } = await supabase
       .from('notifications')
-      .select('id, session_id, type, message, read, created_at')
+      .select('id, user_id, type, title, body, href, read_at, created_at')
       .eq('user_id', uid)
       .order('created_at', { ascending: false })
     setList((data as Notif[]) ?? [])
@@ -53,10 +53,9 @@ export default function NotificationsPage() {
   }
 
   async function handleNotifClick(n: Notif) {
-    await supabase.from('notifications').update({ read: true }).eq('id', n.id)
-    setList(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x))
-    const href = '/session/' + n.session_id + '/host'
-    if (href) navigate(href)
+    await supabase.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', n.id)
+    setList(prev => prev.map(x => x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x))
+    if (n.href && n.href.trim() !== '') navigate(n.href)
   }
 
   if (!user) {
@@ -92,10 +91,10 @@ export default function NotificationsPage() {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                  {!n.read && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.orange, flexShrink: 0, marginTop: 6 }} aria-hidden />}
+                  {n.read_at == null && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.orange, flexShrink: 0, marginTop: 6 }} aria-hidden />}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: 700 }}>{n.message}</p>
-                    <p style={{ margin: '4px 0 0', fontSize: 12, color: S.tx2 }}>{n.type === 'new_application' ? 'Nouvelle candidature' : n.type}</p>
+                    <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: 700 }}>{n.title || ''}</p>
+                    {n.body && <p style={{ margin: '4px 0 0', fontSize: 12, color: S.tx2 }}>{n.body}</p>}
                     <p style={{ margin: '8px 0 0', fontSize: 11, color: S.tx4, textAlign: 'right' }}>{formatRelative(n.created_at)}</p>
                   </div>
                 </div>
