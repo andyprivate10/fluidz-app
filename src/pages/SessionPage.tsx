@@ -210,6 +210,17 @@ export default function SessionPage() {
           </div>
         )}
 
+        {members.length >= 3 ? (
+          <div style={card}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>VOTE CONSULTATIF</div>
+            <p style={{ fontSize: 13, color: '#B8B2CC', margin: 0 }}>Vote disponible (3+ membres).</p>
+          </div>
+        ) : (
+          <div style={card}>
+            <p style={{ fontSize: 13, color: '#7E7694', margin: 0 }}>Vote disponible dès 3 membres</p>
+          </div>
+        )}
+
         {myApp?.status === 'accepted' && !checkInDone && (
           <button
             onClick={handleCheckIn}
