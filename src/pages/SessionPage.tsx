@@ -129,7 +129,11 @@ export default function SessionPage() {
             ))}
           </div>
         )}
-        {session.approx_area && <div style={{ fontSize: 13, color: '#7E7694', marginTop: 6 }}>Autour de {session.approx_area}</div>}
+        {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
+          <div style={{ fontSize: 13, color: '#F0EDFF', marginTop: 6, fontWeight: 600 }}>📍 {session.exact_address}</div>
+        ) : session.approx_area ? (
+          <div style={{ fontSize: 13, color: '#7E7694', marginTop: 6 }}>🔒 Autour de {session.approx_area}</div>
+        ) : null}
         {isHost && <div style={{ fontSize: 12, color: '#F9A8A8', marginTop: 4, fontWeight: 600 }}>Tu es le host</div>}
       </div>
 
