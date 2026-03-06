@@ -7,10 +7,22 @@ export default function BottomNav() {
   const location = useLocation()
   const [userId, setUserId] = useState<string | null>(null)
   const [hasNewApplication, setHasNewApplication] = useState(false)
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setUserId(user?.id ?? null))
   }, [])
+
+  useEffect(() => {
+    if (!userId) return
+    const fetch = async () => {
+      const { count } = await supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('read', false)
+      setUnreadNotifCount(count ?? 0)
+    }
+    fetch()
+    const channel = supabase.channel('notifications-count').on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => fetch()).subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [userId])
 
   useEffect(() => {
     if (!userId) return
@@ -38,6 +50,7 @@ export default function BottomNav() {
   const tabs = [
     { path: '/', icon: '🏠', label: 'Home' },
     { path: '/sessions', icon: '⚡', label: 'Sessions' },
+    { path: '/notifications', icon: '🔔', label: 'Notifs' },
     { path: '/me', icon: '👤', label: 'Moi' },
   ]
 
@@ -60,7 +73,7 @@ export default function BottomNav() {
     >
       {tabs.map((tab) => {
         const isActive = location.pathname === tab.path
-        const showBadge = tab.path === '/me' && hasNewApplication
+        const showBadge = (tab.path === '/me' && hasNewApplication) || (tab.path === '/notifications' && unreadNotifCount > 0)
         return (
           <button
             key={tab.path}
