@@ -11,18 +11,18 @@ Phase 2 features en cours. Flow Marcus->Karim valide end-to-end.
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## DERNIER COMMIT
-e59ef09 — feat: DMPage Voir profil button in header to /profile/:peerId
+6cf4e86 — feat: CandidateProfilePage all eps_json sections in cards; SessionPage Gerer (N en attente); DMPage dates relatives
 
 ## CE QUI EST FAIT (Launch 0 + Phase 2)
 - Auth magic link + session persistence
 - HomePage, SessionsPage, CreateSessionPage (3 etapes: template/details/adresse)
-- SessionPage : vue host/candidat, lineup, bouton Partager le lien ; bouton Postuler fixe en bas (position fixed)
+- SessionPage : vue host/candidat, lineup, Partager le lien, Postuler fixe en bas ; bouton Gerer affiche (N en attente) si candidatures pending
 - ApplyPage : apercu profil candidat (display_name, bio, role) en haut avant les 3 etapes ; 3 etapes pack/note/done
 - HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
-- DMPage : chat realtime, banniere status, adresse si accepted ; bouton Voir profil (header) vers /profile/:peerId (host → applicant, candidat → host_id)
+- DMPage : chat realtime, banniere status, adresse si accepted, Voir profil header ; dates relatives sur messages (il y a 2 min, hier, 12h30)
 - JoinPage (via invite_code), NotFoundPage, ErrorBoundary
 - BottomNav (Home/Sessions/Notifs/Moi) — masquee sur DMPage ; onglet Notifs (cloche) vers /notifications avec badge si non lues ; badge Moi si nouvelle candidature (realtime)
-- CandidateProfilePage (vue profil candidat depuis HostDashboard)
+- CandidateProfilePage : toutes les sections eps_json en cards (physique, role, pratiques, sante, limites)
 - ProfilePage /profile/:userId (lecture profil public) ; liens depuis lineup SessionPage et noms HostDashboard vers /profile/:userId
 - MePage : auth magic link + edition complete profil (basics, role, physique, pratiques, PrEP, limites)
 - PWA manifest + OG tags
