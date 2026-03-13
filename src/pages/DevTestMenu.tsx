@@ -31,3 +31,5 @@ SESSION TEST : code pzb3hoiw · ID 7523efb6-d0c3-4f3d-96ea-ec3deba62814
 Supabase : kxbrfjqxufvskcxmliak.supabase.co
 
 AGENTS MULTIPLES : NON maintenant. P0 séquentiel. Reprendre après L0 avec 5 personnes.`;
+
+export default DevTestMenu;
