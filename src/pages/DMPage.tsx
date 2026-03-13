@@ -116,7 +116,25 @@ export default function DMPage() {
       })
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    // Subscribe to application status updates for current user
+    const appChannel = currentUser ? supabase
+      .channel('applications:' + id + ':' + currentUser.id)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'applications',
+        filter: 'session_id=eq.' + id,
+      }, (payload) => {
+        if (payload.new.applicant_id === currentUser.id) {
+          setAppStatus(payload.new.status)
+        }
+      })
+      .subscribe() : null
+
+    return () => { 
+      supabase.removeChannel(channel)
+      if (appChannel) supabase.removeChannel(appChannel)
+    }
   }, [id])
 
   // Auto-scroll to bottom when a new message is sent or received

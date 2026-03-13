@@ -34,6 +34,21 @@ export default function HostDashboard() {
       if (u) load(u)
       else setLoading(false)
     })
+
+    // Set up realtime subscription for application updates
+    const channel = supabase
+      .channel('applications:' + id)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'applications',
+        filter: 'session_id=eq.' + id,
+      }, (payload) => {
+        setApps(prev => prev.map(a => a.id === payload.new.id ? { ...a, ...payload.new } : a))
+      })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [id])
 
   async function load(currentUser?: { id: string }) {
@@ -270,7 +285,7 @@ export default function HostDashboard() {
 
                 {(app.status === 'accepted' || app.status === 'checked_in') && (
                   <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:10,alignItems:'center'}}>
-                    {app.status === 'checked_in' && app.checked_in === false && (
+                    {app.status === 'checked_in' && !app.checked_in && (
                       <>
                         <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>Arrivée à confirmer</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.green,border:'1px solid '+S.green,background:S.green+'22',cursor:'pointer'}}>
