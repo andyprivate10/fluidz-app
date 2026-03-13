@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 
 const PROJECT_START = new Date("2026-03-07T00:00:00");
 const TOTAL_DAYS = 91;
@@ -24,8 +24,8 @@ export default function DevTestMenu() {
   const dayNumber = Math.floor((Date.now() - PROJECT_START.getTime()) / 86400000) + 1;
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUserEmail(data.user?.email ?? null);
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserEmail(user?.email ?? null);
     });
   }, []);
 
