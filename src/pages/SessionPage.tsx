@@ -5,6 +5,8 @@ import type { User } from '@supabase/supabase-js'
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
+type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
+type VoteRow = { id: string; application_id: string; voter_id: string; vote: 'yes' | 'no' }
 
 const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
 const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
@@ -30,6 +32,9 @@ export default function SessionPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [sheetMember, setSheetMember] = useState<Member | null>(null)
+  const [pendingApps, setPendingApps] = useState<PendingApplication[]>([])
+  const [votes, setVotes] = useState<VoteRow[]>([])
+  const [voteLoadingId, setVoteLoadingId] = useState<string | null>(null)
   const touchStartY = useRef(0)
 
   useEffect(() => {
@@ -74,6 +79,42 @@ export default function SessionPage() {
         setMemberNames(nameMap)
       } else { setMemberAvatars({}); setMemberRoles({}); setMemberNames({}) }
 
+      let pendingEnriched: PendingApplication[] = []
+      const { data: pending } = await supabase
+        .from('applications')
+        .select('id, applicant_id, status')
+        .eq('session_id', id)
+        .eq('status', 'pending')
+      if (pending && pending.length > 0) {
+        const pendingIds = pending.map((p: { applicant_id: string }) => p.applicant_id)
+        const { data: pendingProfiles } = await supabase
+          .from('user_profiles')
+          .select('id, display_name, profile_json')
+          .in('id', pendingIds)
+
+        const profileMap: Record<string, { display_name?: string | null; avatar_url?: string | null }> = {}
+        ;(pendingProfiles ?? []).forEach((r: { id: string; display_name?: string | null; profile_json?: { avatar_url?: string | null } }) => {
+          profileMap[r.id] = {
+            display_name: r.display_name ?? profileMap[r.id]?.display_name ?? null,
+            avatar_url: r.profile_json?.avatar_url ?? profileMap[r.id]?.avatar_url ?? null,
+          }
+        })
+
+        pendingEnriched = pending.map((p: { id: string; applicant_id: string }) => ({
+          id: p.id,
+          applicant_id: p.applicant_id,
+          display_name: profileMap[p.applicant_id]?.display_name ?? null,
+          avatar_url: profileMap[p.applicant_id]?.avatar_url ?? null,
+        }))
+      }
+      setPendingApps(pendingEnriched)
+
+      const { data: voteRows } = await supabase
+        .from('votes')
+        .select('id, application_id, voter_id, vote')
+        .eq('session_id', id)
+      setVotes((voteRows as VoteRow[]) || [])
+
       if (user) {
         const { data: app } = await supabase
           .from('applications')
@@ -114,6 +155,40 @@ export default function SessionPage() {
     if (atTop && pullDistance > 60 && !isRefreshing && !loading) {
       setIsRefreshing(true)
       loadData().finally(() => setIsRefreshing(false))
+    }
+  }
+
+  const getVoteStats = (applicationId: string) => {
+    const appVotes = votes.filter(v => v.application_id === applicationId)
+    const yesCount = appVotes.filter(v => v.vote === 'yes').length
+    const noCount = appVotes.filter(v => v.vote === 'no').length
+    const myId = currentUser?.id
+    const myVote = myId ? appVotes.find(v => v.voter_id === myId)?.vote : undefined
+    return { yesCount, noCount, myVote }
+  }
+
+  const handleVote = async (applicationId: string, choice: 'yes' | 'no') => {
+    if (!currentUser || !id) return
+    const { myVote } = getVoteStats(applicationId)
+    if (myVote) return
+    setVoteLoadingId(applicationId)
+    try {
+      const { data, error } = await supabase
+        .from('votes')
+        .upsert(
+          { session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice },
+          { onConflict: 'application_id,voter_id' }
+        )
+        .select('id, application_id, voter_id, vote')
+        .single()
+      if (!error && data) {
+        setVotes(prev => {
+          const others = prev.filter(v => !(v.application_id === applicationId && v.voter_id === currentUser.id))
+          return [...others, data as VoteRow]
+        })
+      }
+    } finally {
+      setVoteLoadingId(null)
     }
   }
 
@@ -304,7 +379,82 @@ export default function SessionPage() {
         {members.length >= 3 ? (
           <div style={card}>
             <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>VOTE CONSULTATIF</div>
-            <p style={{ fontSize: 13, color: '#B8B2CC', margin: 0 }}>Vote disponible (3+ membres).</p>
+            {pendingApps.filter(p => !currentUser || p.applicant_id !== currentUser.id).length === 0 ? (
+              <p style={{ fontSize: 13, color: '#7E7694', margin: '4px 0 0' }}>Aucune candidature en attente de vote pour le moment.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {pendingApps
+                  .filter(p => !currentUser || p.applicant_id !== currentUser.id)
+                  .map(p => {
+                    const { yesCount, noCount, myVote } = getVoteStats(p.id)
+                    const disabled = !!myVote || voteLoadingId === p.id
+                    const name = p.display_name || 'Anonyme'
+                    return (
+                      <div key={p.id} style={{ padding: 10, borderRadius: 12, background: '#0C0A14', border: '1px solid #2A2740', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          {p.avatar_url ? (
+                            <img src={p.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                          ) : (
+                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+                              {name[0].toUpperCase()}
+                            </div>
+                          )}
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{name}</div>
+                            <div style={{ fontSize: 11, color: '#7E7694' }}>Candidature en attente</div>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => handleVote(p.id, 'yes')}
+                            style={{
+                              flex: 1,
+                              padding: '8px 10px',
+                              borderRadius: 999,
+                              border: '1px solid ' + (myVote === 'yes' ? '#F47272' : '#F9A8A855'),
+                              background: myVote === 'yes' ? 'linear-gradient(135deg,#F9A8A8,#F47272)' : 'transparent',
+                              color: myVote === 'yes' ? '#0C0A14' : '#F9A8A8',
+                              fontSize: 13,
+                              fontWeight: 600,
+                              cursor: disabled ? 'default' : 'pointer',
+                              opacity: disabled && myVote !== 'yes' ? 0.5 : 1,
+                            }}
+                          >
+                            👍 Oui
+                          </button>
+                          <button
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => handleVote(p.id, 'no')}
+                            style={{
+                              flex: 1,
+                              padding: '8px 10px',
+                              borderRadius: 999,
+                              border: '1px solid ' + (myVote === 'no' ? '#F47272' : '#2A2740'),
+                              background: myVote === 'no' ? '#2A2740' : 'transparent',
+                              color: myVote === 'no' ? '#F9A8A8' : '#7E7694',
+                              fontSize: 13,
+                              fontWeight: 600,
+                              cursor: disabled ? 'default' : 'pointer',
+                              opacity: disabled && myVote !== 'no' ? 0.5 : 1,
+                            }}
+                          >
+                            👎 Non
+                          </button>
+                        </div>
+                        <div style={{ fontSize: 12, color: '#7E7694', textAlign: 'right' }}>
+                          {yesCount} oui · {noCount} non
+                        </div>
+                      </div>
+                    )
+                  })}
+              </div>
+            )}
+            <p style={{ fontSize: 11, color: '#7E7694', marginTop: 8 }}>
+              Vote consultatif : visible par tous les membres. Le host tranche la décision finale.
+            </p>
           </div>
         ) : (
           <div style={card}>
