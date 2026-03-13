@@ -170,22 +170,20 @@ export default function SessionPage() {
   const handleVote = async (applicationId: string, choice: 'yes' | 'no') => {
     if (!currentUser || !id) return
     const { myVote } = getVoteStats(applicationId)
-    if (myVote) return
+    if (myVote) return // Prevent double voting
     setVoteLoadingId(applicationId)
     try {
+      // Use insert instead of upsert to strictly prevent multiple votes
       const { data, error } = await supabase
         .from('votes')
-        .upsert(
-          { session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice },
-          { onConflict: 'application_id,voter_id' }
-        )
+        .insert({ session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice })
         .select('id, application_id, voter_id, vote, session_id')
         .single()
       if (!error && data) {
-        setVotes(prev => {
-          const others = prev.filter(v => !(v.application_id === applicationId && v.voter_id === currentUser.id))
-          return [...others, data as VoteRow]
-        })
+        setVotes(prev => [...prev, data as VoteRow])
+      } else if (error?.code === '23505') {
+        // Unique constraint violation - user already voted, just ignore silently
+        console.log('Vote already exists for this user and application')
       }
     } finally {
       setVoteLoadingId(null)
