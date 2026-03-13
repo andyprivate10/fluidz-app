@@ -122,6 +122,8 @@ export default function ApplyPage() {
         applicant_id: anonUser.id,
         status: 'pending',
         eps_json: { shared_sections: enabled, occasion_note: note, message: messageToHost.trim() || undefined, profile_snapshot: { display_name: guestDisplayName.trim(), role: selectedRole || undefined }, role: selectedRole || undefined, is_phantom: true },
+      }, {
+        onConflict: 'session_id, applicant_id'
       })
       try { localStorage.removeItem(GUEST_TOKEN_KEY); localStorage.removeItem(GUEST_SESSION_KEY) } catch (_) {}
       setLoading(false)
@@ -133,6 +135,8 @@ export default function ApplyPage() {
     await supabase.from('applications').upsert({
       session_id: id, applicant_id: user.id, status: 'pending',
       eps_json: { shared_sections: enabled, occasion_note: note, message: messageToHost.trim() || undefined, profile_snapshot: profile?.profile_json || {}, role: selectedRole || undefined }
+    }, {
+      onConflict: 'session_id, applicant_id'
     })
     setLoading(false)
     navigate('/session/' + id + '/dm')
