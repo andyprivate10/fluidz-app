@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { seedAll } from "../lib/seedTestData";
 import type { User } from "@supabase/supabase-js";
 
 const PROJECT_START = new Date("2026-03-07T00:00:00");
@@ -47,8 +48,12 @@ export default function DevTestMenu() {
   const seed = async () => {
     setSeeding(true);
     setMsg("Seeding...");
-    await new Promise(r => setTimeout(r, 1000));
-    setMsg("Seed OK");
+    try {
+      const { sessionId } = await seedAll();
+      setMsg(`Seed OK - session ID: ${sessionId}`);
+    } catch (error) {
+      setMsg(`Error: ${error}`);
+    }
     setSeeding(false);
   };
 
@@ -70,6 +75,11 @@ export default function DevTestMenu() {
       <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>DATA</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
         <button onClick={seed} disabled={seeding} style={btn}>{seeding ? "Seeding..." : "Seeder les donnees"}</button>
+      </div>
+
+      <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>MODES</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+        <button onClick={() => navigate("/join/testplan1")} style={{ ...btn, background: "#1a1a2e", border: "1px solid #4a4a6a" }}>👻 Mode GHOST</button>
       </div>
 
       <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>NAVIGATION</p>
