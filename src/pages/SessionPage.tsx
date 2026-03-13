@@ -6,7 +6,7 @@ import type { User } from '@supabase/supabase-js'
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
-type VoteRow = { id: string; application_id: string; voter_id: string; vote: 'yes' | 'no' }
+type VoteRow = { id: string; application_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
 const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
 const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
@@ -111,7 +111,7 @@ export default function SessionPage() {
 
       const { data: voteRows } = await supabase
         .from('votes')
-        .select('id, application_id, voter_id, vote')
+        .select('id, application_id, voter_id, vote, session_id')
         .eq('session_id', id)
       setVotes((voteRows as VoteRow[]) || [])
 
@@ -179,7 +179,7 @@ export default function SessionPage() {
           { session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice },
           { onConflict: 'application_id,voter_id' }
         )
-        .select('id, application_id, voter_id, vote')
+        .select('id, application_id, voter_id, vote, session_id')
         .single()
       if (!error && data) {
         setVotes(prev => {
