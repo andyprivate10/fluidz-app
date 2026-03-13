@@ -59,6 +59,28 @@ export default function HostDashboard() {
   async function decide(appId: string, status: 'accepted'|'rejected') {
     setActionLoading(appId)
     await supabase.from('applications').update({ status }).eq('id', appId)
+    // Send notification to the applicant
+    const app = apps.find(a => a.id === appId)
+    if (app && sess) {
+      const title = status === 'accepted'
+        ? `Accepté pour "${sess.title}" ✓`
+        : `Non retenu pour "${sess.title}"`
+      const body = status === 'accepted'
+        ? "Tu peux maintenant accéder au DM et à l'adresse."
+        : ''
+      const href = status === 'accepted'
+        ? `/session/${id}/dm`
+        : `/session/${id}`
+      await supabase.from('notifications').insert({
+        user_id: app.applicant_id,
+        session_id: id,
+        type: status === 'accepted' ? 'application_accepted' : 'application_rejected',
+        message: title,
+        title,
+        body,
+        href,
+      })
+    }
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
     setActionLoading(null)
   }

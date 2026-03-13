@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { seedAll, clearAll } from "../lib/seedTestData";
 import type { User } from "@supabase/supabase-js";
 
 const PROJECT_START = new Date("2026-03-07T00:00:00");
@@ -22,6 +23,7 @@ export default function DevTestMenu() {
   const [user, setUser] = useState<User | null>(null);
   const [msg, setMsg] = useState("");
   const [seeding, setSeeding] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const dayNumber = Math.floor((Date.now() - PROJECT_START.getTime()) / 86400000) + 1;
 
   useEffect(() => {
@@ -47,9 +49,16 @@ export default function DevTestMenu() {
   const seed = async () => {
     setSeeding(true);
     setMsg("Seeding...");
-    await new Promise(r => setTimeout(r, 1000));
-    setMsg("Seed OK");
-    setSeeding(false);
+    try {
+      await clearAll();
+      const result = await seedAll();
+      setSessionId(result.sessionId);
+      setMsg("Seed OK — session: " + result.sessionId);
+    } catch (err: any) {
+      setMsg("Seed ERREUR: " + (err?.message || String(err)));
+    } finally {
+      setSeeding(false);
+    }
   };
 
   return (
@@ -70,7 +79,21 @@ export default function DevTestMenu() {
       <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>DATA</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
         <button onClick={seed} disabled={seeding} style={btn}>{seeding ? "Seeding..." : "Seeder les donnees"}</button>
+        <button onClick={async () => { setMsg("Clearing..."); try { await clearAll(); setMsg("Cleared"); setSessionId(null); } catch (e: any) { setMsg("Clear err: " + e?.message); } }} style={{ ...btn, background: "#450a0a" }}>Reset donnees test</button>
       </div>
+
+      {sessionId && (
+        <>
+          <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>SESSION TEST</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+            <button onClick={() => navigate("/session/" + sessionId)} style={btn}>Voir session (candidat)</button>
+            <button onClick={() => navigate("/session/" + sessionId + "/host")} style={btn}>Host dashboard</button>
+            <button onClick={() => navigate("/session/" + sessionId + "/apply")} style={btn}>Postuler</button>
+            <button onClick={() => navigate("/session/" + sessionId + "/dm")} style={btn}>DM</button>
+            <p style={{ color: "#7e7694", fontSize: 11, margin: 0, wordBreak: "break-all" }}>ID: {sessionId}</p>
+          </div>
+        </>
+      )}
 
       <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>NAVIGATION</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
