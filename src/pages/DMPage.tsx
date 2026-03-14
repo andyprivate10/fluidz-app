@@ -51,6 +51,8 @@ export default function DMPage() {
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  const [displayName, setDisplayName] = useState<string>('')
+
   const isHost = currentUser?.id === session?.host_id
   const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
   const showCheckInBanner = !isHost && appStatus === 'accepted'
@@ -63,6 +65,12 @@ export default function DMPage() {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         setCurrentUser(user ?? null)
+
+        // Fetch display name for messages
+        if (user) {
+          const { data: prof } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
+          if (prof?.display_name) setDisplayName(prof.display_name)
+        }
 
         const { data: sess, error: sessErr } = await supabase
           .from('sessions')
@@ -126,12 +134,12 @@ export default function DMPage() {
 
   async function handleCheckIn() {
     if (!id || !currentUser) return
+    // Request check-in (flag only), host must confirm to change status
     await supabase
       .from('applications')
-      .update({ status: 'checked_in' })
+      .update({ checked_in: true })
       .eq('session_id', id)
       .eq('applicant_id', currentUser.id)
-    setAppStatus('checked_in')
     setShowCheckInConfirmed(true)
     setTimeout(() => setShowCheckInConfirmed(false), 3000)
   }
@@ -144,7 +152,7 @@ export default function DMPage() {
       session_id: id,
       sender_id: currentUser.id,
       text,
-      sender_name: currentUser.email ?? '',
+      sender_name: displayName || currentUser.email || '',
     })
   }
 
@@ -194,8 +202,8 @@ export default function DMPage() {
       )}
 
       {showCheckInConfirmed && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.green, borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: S.green, fontWeight: 600, textAlign: 'center' }}>Check-in confirmé ✓</div>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#FBBF2414', border: '1px solid #FBBF2444', borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: '#FBBF24', fontWeight: 600, textAlign: 'center' }}>⏳ Check-in envoyé — en attente de confirmation du host</div>
         </div>
       )}
 

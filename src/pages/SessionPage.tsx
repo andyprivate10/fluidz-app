@@ -195,14 +195,14 @@ export default function SessionPage() {
   const handleCheckIn = async () => {
     if (!currentUser) return
     setCheckInLoading(true)
+    // Guest requests check-in (sets checked_in flag), host must confirm to change status
     await supabase
       .from('applications')
-      .update({ status: 'checked_in' })
+      .update({ checked_in: true })
       .eq('session_id', id)
       .eq('applicant_id', currentUser.id)
-    setMyApp(prev => prev ? { ...prev, status: 'checked_in' } : null)
-    setCheckInDone(true)
     setCheckInLoading(false)
+    setCheckInDone(true)
   }
 
   if (loading) return (
@@ -472,7 +472,15 @@ export default function SessionPage() {
           </button>
         )}
 
-        {checkInDone && (
+        {checkInDone && myApp?.status !== 'checked_in' && (
+          <div style={{ ...card, background: '#FBBF2414', borderColor: '#FBBF24', textAlign: 'center' }}>
+            <div style={{ fontSize: 20 }}>⏳</div>
+            <div style={{ fontSize: 14, color: '#FBBF24', marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
+            <p style={{ fontSize: 12, color: '#7E7694', marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
+          </div>
+        )}
+
+        {myApp?.status === 'checked_in' && (
           <div style={{ ...card, background: '#14532d', borderColor: '#4ADE80', textAlign: 'center' }}>
             <div style={{ fontSize: 20 }}>Bienvenue !</div>
             <div style={{ fontSize: 14, color: '#4ADE80', marginTop: 4 }}>Check-in confirme</div>

@@ -87,8 +87,21 @@ export default function HostDashboard() {
 
   async function confirmCheckIn(appId: string) {
     setActionLoading(appId)
-    await supabase.from('applications').update({ checked_in: true }).eq('id', appId)
-    setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true} : a))
+    await supabase.from('applications').update({ checked_in: true, status: 'checked_in' }).eq('id', appId)
+    // Notify the guest that check-in is confirmed
+    const app = apps.find(a => a.id === appId)
+    if (app && sess) {
+      await supabase.from('notifications').insert({
+        user_id: app.applicant_id,
+        session_id: id,
+        type: 'check_in_confirmed',
+        message: `Check-in confirmé pour "${sess.title}" ✓`,
+        title: `Check-in confirmé pour "${sess.title}" ✓`,
+        body: "Tu peux maintenant partager le lien d'invitation.",
+        href: `/session/${id}`,
+      })
+    }
+    setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true, status: 'checked_in'} : a))
     setActionLoading(null)
   }
 
@@ -292,18 +305,18 @@ export default function HostDashboard() {
 
                 {(app.status === 'accepted' || app.status === 'checked_in') && (
                   <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:10,alignItems:'center'}}>
-                    {app.status === 'checked_in' && app.checked_in === false && (
+                    {app.status === 'accepted' && app.checked_in === true && (
                       <>
-                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>Arrivée à confirmer</span>
+                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>🔔 Arrivée à confirmer</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.green,border:'1px solid '+S.green,background:S.green+'22',cursor:'pointer'}}>
                           {actionLoading===app.id ? '...' : 'Confirmer ✓'}
                         </button>
                       </>
-                        )}
-                    {app.status === 'checked_in' && app.checked_in === true && (
+                    )}
+                    {app.status === 'checked_in' && (
                       <span style={{fontSize:12,color:S.green,fontWeight:600}}>Arrivé ✓</span>
                     )}
-                    {app.status === 'accepted' && (
+                    {app.status === 'accepted' && !app.checked_in && (
                       <span style={{fontSize:12,color:S.green,fontWeight:600}}>✅ Accepté — adresse débloquée</span>
                     )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
