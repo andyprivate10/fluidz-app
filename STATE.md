@@ -1,63 +1,59 @@
 # FLUIDZ — STATE.md
-## Derniere mise a jour : 6 Mars 2026 — Launch 0 complet
+## Derniere mise a jour : 14 Mars 2026 — Session Opus (fixes E2E + features)
 
 ## OBJECTIF ACTUEL
-Launch 0 terminé (batches 1–22). Prêt pour premier event réel 5 personnes. Tests via /dev/test?dev=1.
+Tester les 5 flows E2E (candidature, acceptation, DM, check-in, ghost, vote). Issues GitHub #1-#5.
 
 ## STACK
 - React + TypeScript + Vite + Tailwind (inline styles avec S = {} color tokens)
 - Supabase : project kxbrfjqxufvskcxmliak (fluidz)
-- Netlify : stalwart-lamington-4d8649.netlify.app -> fluidz.app
+- Netlify : fluidz-app.netlify.app
 - Repo : https://github.com/andyprivate10/fluidz-app
 
 ## URL DE TEST
-- Production : https://fluidz.app (ou preview Netlify selon déploiement)
+- Production : https://fluidz-app.netlify.app
 - Local : npm run dev -> http://localhost:5173
-- Menu dev : ouvrir /dev/test?dev=1 (ex. https://fluidz.app/dev/test?dev=1) pour connexion rapide HOST/MEMBER/GUEST/GHOST, seed et reset données test. Voir docs/TEST_SCENARIOS.md pour les 4 scénarios.
+- Menu dev : /dev/test?dev=1 — seed idempotent, personas avec navigation directe, session ID partageable via URL (?sid=xxx)
 
 ## DERNIER COMMIT
-899b9f6 — feat: OG tags and iOS meta tags (batch 22)
+a8d1c81 — feat: idempotent seed, safety tip DM, apply pack profile preview
 
-## CE QUI EST FAIT — Launch 0 (toutes features implémentées)
-- Auth magic link + session persistence
-- HomePage, SessionsPage, CreateSessionPage (3 etapes: template/details/adresse)
-- SessionPage : vue host/candidat, lineup, Partager le lien, Postuler fixe en bas ; bouton Gerer affiche (N en attente) si candidatures pending
-- ApplyPage : apercu profil candidat (display_name, bio, role) en haut avant les 3 etapes ; 3 etapes pack/note/done
-- HostDashboard : voir candidatures, accepter/rejeter, toggle open/closed, profil candidat
-- DMPage : chat realtime, banniere status, adresse si accepted, Voir profil header ; dates relatives sur messages ; auto-scroll en bas a chaque nouveau message
-- JoinPage (via invite_code), NotFoundPage, ErrorBoundary
-- BottomNav (Home/Sessions/Notifs/Moi) — masquee sur DMPage ; onglet Notifs (cloche) vers /notifications avec badge si non lues ; badge Moi si nouvelle candidature (realtime)
-- CandidateProfilePage : toutes les sections eps_json en cards (physique, role, pratiques, sante, limites)
-- PublicProfile /profile/:userId (accès membres même session) ; lineup SessionPage cliquable + bottom sheet aperçu mobile
-- MePage : auth magic link + edition complete profil (basics, role, physique, pratiques, PrEP, limites)
-- PWA manifest + OG tags
-- user_profiles table + persistence pseudo
-- Check-in flow + status candidat
-- Ghost flow : /join/:code « Continuer sans compte » (guest_token + redirect ApplyPage) ou « Postuler direct en invité » ; ApplyPage accepte guest_token et crée anon à la soumission ; MePage bannière + claim après signup
-- Photos profil : MePage upload vers bucket Storage « avatars » (public), affichage sur ProfilePage et lineup SessionPage (cercle 32px)
-- Page Notifications /notifications : liste des notifs (table notifications), marquer lu au clic
-- Rate limiting ApplyPage : blocage si postulation dans les 5 dernières minutes
-- Loading spinner (SessionPage, HostDashboard, ApplyPage, DMPage) pendant le fetch ; message erreur si echec fetch
-- HomePage : si connecté et host d’au moins une session, lien rapide vers la plus récente ; si pas connecté, message de bienvenue Fluidz
+## CE QUI A ETE FAIT DANS CETTE SESSION (14 Mars 2026)
 
-- BottomNav : badge nombre notifs ; SessionPage Postuler 2s ; ProfilePage copier lien. NotificationsPage : title/body/href/read_at. HostDashboard : Grindr/WhatsApp, confirmer check-in. SessionPage : statut dynamique. ProfilePage : Santé 💊.
-- Batch 12 : JoinPage « Continuer sans compte » → guest_token + redirect ApplyPage ; ApplyPage mode ghost. MePage bannière guest_token + claim. HostDashboard badge 👻 Ghost.
-- Batch 13 : NotificationsPage « Tout marquer comme lu » ; SessionPage lineup accepted/checked_in (stack 5 +N) ; HostDashboard « Copier message Grindr ».
-- Batch 14 : HostDashboard broadcast message à tous ; SessionPage vote consultatif (visible dès 3 membres) ; partage lien invitation après check-in.
-- Batch 15 : Framer-motion transitions pages ; skeleton loaders SessionPage + CandidateProfilePage ; pull-to-refresh SessionPage.
-- Batch 16 : CreateSessionPage messages partage Grindr/WhatsApp/Telegram ; directions step-by-step (lineup_json.directions) ; templates Dark Room / Chemical / Techno.
-- Batch 17 : MePage formulaire profil complet (select morphologie, labels) ; section santé PrEP + date test + badges ; kinks checklist 9 pratiques.
-- Batch 18 : JoinPage preview session (tags, lineup) + CTAs Postuler / Sans compte ; ApplyPage message au host + récap + spinner ; CandidateProfilePage sections améliorées + CTAs Accepter/Refuser.
-- Batch 19 : PublicProfile /profile/:userId (accès réservé membres même session), galerie + sections ; SessionPage lineup → bottom sheet aperçu mobile ; STATE.md à jour.
-- Batch 20 : seedTestData 4 personas, DevTestMenu quick login, MePage lien Test menu si ?dev=1.
-- Batch 21 : seedTestData complet (picsum, profils, session), DevTestMenu auto-redirect + event_id_test, docs/TEST_SCENARIOS.md.
-- Batch 22 : PWA manifest + SW, OG tags + iOS meta, STATE.md final Launch 0.
+### Fixes critiques
+- DevTestMenu: seed appelle vraiment seedAll() (était un fake wait 1s)
+- seedTestData: emails corrigées (host@ → marcus@, member@ → karim@, guest@ → yann@)
+- seedTestData: seed idempotent (si session testplan1 existe, clean + reuse au lieu de crash duplicate key)
+- Yann a maintenant un profil complet (age, bio, role, kinks, PrEP, avatar)
+- JoinPage: "Postuler" redirige vers /apply (était un insert direct qui bypassait le candidate pack)
+- JoinPage: lineup affiche noms + rôles + avatars squircle (pas juste des cercles empilés)
+- Build fix: variables inutilisées (TS6133) corrigées
 
-## LANCER LES TESTS (Launch 0)
-1. Ouvrir l'app (fluidz.app ou localhost:5173).
-2. Aller sur /dev/test?dev=1 (ex. https://fluidz.app/dev/test?dev=1).
-3. Cliquer « Seeder les données » pour créer la session test et les 3 comptes (Marcus, Karim, Yann).
-4. Utiliser les boutons de connexion rapide (HOST / MEMBER / GUEST / GHOST). Voir docs/TEST_SCENARIOS.md pour les 4 scénarios détaillés.
+### Check-in flow corrigé
+- SessionPage: check-in = candidat demande (checked_in=true), host doit confirmer (status=checked_in)
+- SessionPage: état "⏳ En attente de confirmation du host" après demande
+- DMPage: même correction check-in
+- HostDashboard: confirmCheckIn set checked_in=true ET status=checked_in
+- HostDashboard: bouton "Confirmer" visible quand checked_in=true + status=accepted
+
+### Notifications
+- HostDashboard: notification envoyée au candidat quand accepté/rejeté
+- HostDashboard: notification envoyée au candidat quand check-in confirmé
+- DMPage: sender_name utilise display_name du profil (pas l'email)
+
+### Features
+- Safety tip DM automatique quand candidat accepté (message de 🛡️ Fluidz)
+- ApplyPage: sections montrent un preview des données réelles du profil (age, rôle, kinks, PrEP)
+- ApplyPage: rôle pré-rempli depuis le profil
+- DevTestMenu: session ID partageable via URL + bouton "Copier URL dev"
+- DevTestMenu: bouton Ghost (sans compte)
+
+### RLS / Supabase
+- user_profiles SELECT ouvert à tous les authenticated (needed for lineup)
+- notifications INSERT policy pour host → applicant
+- applications SELECT pour les membres acceptés (lineup visible)
+- applications DELETE policy pour le host
+- sessions DELETE policy pour le host
 
 ## DB SCHEMA
 - sessions: id, host_id, title, description, approx_area, exact_address, status, tags (text[]), invite_code (unique), lineup_json (jsonb), created_at
@@ -65,17 +61,8 @@ Launch 0 terminé (batches 1–22). Prêt pour premier event réel 5 personnes. 
 - user_profiles: id, display_name, profile_json
 - messages: id, session_id, sender_id, text, sender_name, created_at
 - notifications: id, user_id, session_id, type, message, title, body, href, read_at, created_at
-- Storage: bucket avatars (public), policy upload par user (avatars/{user_id}/*)
-
-## RLS POLICIES
-- sessions SELECT: tous les authenticated
-- sessions INSERT/UPDATE: host_id = auth.uid()
-- applications SELECT: applicant_id ou host de la session
-- applications INSERT: applicant_id = auth.uid()
-- applications UPDATE: host de la session
-- user_profiles SELECT: tous les authenticated
-- user_profiles INSERT/UPDATE: id = auth.uid()
-- messages: session participants
+- votes: id, session_id, application_id, voter_id, vote (yes/no), created_at, UNIQUE(application_id, voter_id)
+- Storage: bucket avatars (public)
 
 ## ROUTES
 - / : HomePage
@@ -87,22 +74,18 @@ Launch 0 terminé (batches 1–22). Prêt pour premier event réel 5 personnes. 
 - /session/:id/host : HostDashboard
 - /session/:id/candidate/:applicantId : CandidateProfilePage
 - /join/:code : JoinPage
-- /me : MePage (auth + edit profil)
-- /notifications : NotificationsPage (liste notifs, marquer lu)
-- /profile/:userId : PublicProfile (profil réservé aux membres d’une même session)
-
-- /dev/test : DevTestMenu (connexion rapide + seed, ?dev=1)
-- /dev-loop : DevLoopPage (statut bridge)
+- /me : MePage
+- /notifications : NotificationsPage
+- /profile/:userId : PublicProfile
+- /dev/test : DevTestMenu (?dev=1&sid=xxx)
 
 ## DONNEES DE TEST
-- Session "Dark Room": id 778fcea6-ca82-41e3-84a6-f59ad5da5764, invite_code qrirmbz4, exact_address "14 rue de la Roquette, code 4521"
-- Application Andy: id cb69277d-b33c-4670-9147-ae6587b35fb7, status pending
-
-## POUR REPRENDRE UNE CONVERSATION
-1. Dis "Lis STATE.md et reprends"
-2. Dev server: npm run dev (localhost:5173)
-3. Supabase Management API: voir CLAUDE.md pour tokens
+- Comptes : marcus@fluidz.test / karim@fluidz.test / yann@fluidz.test (password: testpass123)
+- Session seed: invite_code testplan1, titre "Plan ce soir 🔥"
+- Seed idempotent: peut être relancé sans erreur
 
 ## PROCHAINS CHANTIERS
-- **Milestone** : Premier event réel 5 personnes (Launch 0 complet, tests via /dev/test?dev=1).
-- À définir : polish UX, analytics, ou prochaines features selon retours.
+- Tester flow E2E complet (issues #1-#5) quand Sidney revient
+- Profil sections détaillées (sous-sélection photos/vidéos dans le pack)
+- Ghost token flow complet
+- Vote consultatif (3+ membres)
