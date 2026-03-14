@@ -14,7 +14,7 @@ export default function JoinPage() {
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
-  const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string }[]>([])
+  const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string }[]>([])
   const [status, setStatus] = useState<'loading'|'found'|'error'|'joining'>('loading')
   const [msg, setMsg] = useState('')
   const [joinError, setJoinError] = useState('')
@@ -34,24 +34,15 @@ export default function JoinPage() {
     const ids = (accepted || []).map((a: { applicant_id: string }) => a.applicant_id)
     if (ids.length > 0) {
       const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ids)
-      const list = (profiles || []).map((p: { id: string; display_name?: string; profile_json?: { avatar_url?: string } }) => ({
+      const list = (profiles || []).map((p: { id: string; display_name?: string; profile_json?: { avatar_url?: string; role?: string } }) => ({
         applicant_id: p.id,
         display_name: p.display_name,
         avatar_url: p.profile_json?.avatar_url,
+        role: p.profile_json?.role,
       }))
       setLineup(list)
     }
     setStatus('found')
-  }
-
-  async function join() {
-    if (!user) { navigate('/me'); return }
-    if (!session) return
-    setStatus('joining')
-    setJoinError('')
-    await supabase.from('applications').upsert({ session_id: session.id, applicant_id: user.id, status: 'pending', eps_json: {} })
-    setMsg('Candidature envoyée !')
-    setTimeout(() => navigate('/session/' + session.id + '/dm'), 1200)
   }
 
   return (
@@ -81,19 +72,26 @@ export default function JoinPage() {
               </div>
             )}
             {lineup.length > 0 && (
-              <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:0,marginBottom:12}}>
-                {lineup.slice(0, 5).map((m, i) => (
-                  <div key={m.applicant_id} style={{marginLeft: i === 0 ? 0 : -8}}>
-                    {m.avatar_url ? (
-                      <img src={m.avatar_url} alt="" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'2px solid '+S.bg1,boxSizing:'border-box'}} />
-                    ) : (
-                      <div style={{width:28,height:28,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'#fff',border:'2px solid '+S.bg1,boxSizing:'border-box'}}>
-                        {(m.display_name || '?')[0].toUpperCase()}
+              <div style={{marginBottom:12}}>
+                <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',margin:'0 0 8px',textAlign:'center'}}>Lineup · {lineup.length}</p>
+                <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                  {lineup.slice(0, 5).map((m) => (
+                    <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:S.bg0,borderRadius:12,border:'1px solid '+S.border}}>
+                      {m.avatar_url ? (
+                        <img src={m.avatar_url} alt="" style={{width:32,height:32,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.border,flexShrink:0}} />
+                      ) : (
+                        <div style={{width:32,height:32,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:13,fontWeight:700,color:'#fff',flexShrink:0}}>
+                          {(m.display_name || '?')[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div style={{flex:1,minWidth:0}}>
+                        <p style={{margin:0,fontSize:13,fontWeight:600,color:S.tx}}>{m.display_name || 'Anonyme'}</p>
+                        {m.role && <p style={{margin:0,fontSize:11,color:S.p300}}>{m.role}</p>}
                       </div>
-                    )}
-                  </div>
-                ))}
-                {lineup.length > 5 && <span style={{marginLeft:6,fontSize:12,color:S.tx3,fontWeight:600}}>+{lineup.length - 5}</span>}
+                    </div>
+                  ))}
+                  {lineup.length > 5 && <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'4px 0 0'}}>+{lineup.length - 5} autres</p>}
+                </div>
               </div>
             )}
             <div style={{padding:'10px 14px',background:S.bg0,borderRadius:12,border:'1px solid '+S.border}}>
@@ -118,8 +116,8 @@ export default function JoinPage() {
             </div>
           ) : (
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <button onClick={join} disabled={(status as string)==='joining'} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
-                {(status as string)==='joining' ? 'Envoi...' : 'Postuler →'}
+              <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+                Postuler →
               </button>
             </div>
           )}
