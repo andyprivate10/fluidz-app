@@ -2,35 +2,28 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-interface EpsJson {
-  displayName?: string
-  age?: string
-  bio?: string
-  location?: string
-  role?: string
-  height?: string
-  weight?: string
-  morphology?: string
-  kinks?: string[]
-  prep?: string
-  limits?: string
-  sessionNote?: string
-  message?: string
-  profile_snapshot?: { display_name?: string; role?: string }
+const S = {
+  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
+  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
+  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',red:'#F87171',blue:'#7DD3FC',yellow:'#FBBF24',
+  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
 
-interface Application {
-  id: string
-  applicant_id: string
-  status: string
-  eps_json: EpsJson
-  created_at: string
+function monthsAgo(iso: string): string {
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return ''
+  const now = new Date()
+  const months = Math.max(0, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()))
+  if (months === 0) return 'ce mois-ci'
+  return `il y a ${months} mois`
 }
 
 export default function CandidateProfilePage() {
   const { id: sessionId, applicantId } = useParams()
   const navigate = useNavigate()
-  const [app, setApp] = useState<Application | null>(null)
+  const [app, setApp] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
+  const [sess, setSess] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [actioning, setActioning] = useState(false)
   const [isHost, setIsHost] = useState(false)
@@ -41,238 +34,252 @@ export default function CandidateProfilePage() {
 
   async function loadData() {
     setLoading(true)
-    const { data: { session } } = await supabase.auth.getSession()
-    const user = session?.user
+    const { data: { user } } = await supabase.auth.getUser()
 
-    // Check if user is host
-    if (user && sessionId) {
-      const { data: sess } = await supabase.from('sessions').select('host_id').eq('id', sessionId).maybeSingle()
-      setIsHost(sess?.host_id === user.id)
-    }
+    // Session + host check
+    const { data: sessData } = await supabase.from('sessions').select('*').eq('id', sessionId).maybeSingle()
+    setSess(sessData)
+    if (user && sessData) setIsHost(sessData.host_id === user.id)
 
-    // Load application
-    const { data } = await supabase
+    // Application
+    const { data: appData } = await supabase
       .from('applications')
       .select('*')
       .eq('session_id', sessionId)
       .eq('applicant_id', applicantId)
       .maybeSingle()
+    setApp(appData)
 
-    setApp(data)
+    // User profile (actual data, not just snapshot)
+    const { data: profData } = await supabase
+      .from('user_profiles')
+      .select('display_name, profile_json')
+      .eq('id', applicantId)
+      .maybeSingle()
+    setProfile(profData)
+
     setLoading(false)
   }
 
   async function handleDecision(decision: 'accepted' | 'rejected') {
-    if (!app || !sessionId) return
+    if (!app || !sessionId || !sess) return
     setActioning(true)
     await supabase.from('applications').update({ status: decision }).eq('id', app.id)
 
-    // If accepted, open DM
+    // Notification
+    const title = decision === 'accepted'
+      ? `Accepté pour "${sess.title}" ✓`
+      : `Non retenu pour "${sess.title}"`
+    await supabase.from('notifications').insert({
+      user_id: app.applicant_id,
+      session_id: sessionId,
+      type: decision === 'accepted' ? 'application_accepted' : 'application_rejected',
+      message: title,
+      title,
+      body: decision === 'accepted' ? "Tu peux maintenant accéder au DM et à l'adresse." : '',
+      href: decision === 'accepted' ? `/session/${sessionId}/dm` : `/session/${sessionId}`,
+    })
+
+    // Safety tip on accept
     if (decision === 'accepted') {
-      navigate('/session/' + sessionId + '/host')
-    } else {
-      navigate('/session/' + sessionId + '/host')
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('messages').insert({
+          session_id: sessionId,
+          sender_id: user.id,
+          text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
+          sender_name: '🛡️ Fluidz',
+        })
+      }
     }
+
+    navigate('/session/' + sessionId + '/host')
     setActioning(false)
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-bg0 pb-36">
-        <div className="px-5 pt-10 pb-6">
-          <div className="h-4 w-16 bg-[#2A2740] rounded animate-pulse mb-4" />
-          <div className="h-8 w-48 bg-[#2A2740] rounded animate-pulse mb-2" />
-          <div className="h-4 w-32 bg-[#2A2740] rounded animate-pulse" />
-        </div>
-        <div className="px-5 space-y-4">
-          <div className="card p-4">
-            <div className="h-4 w-full max-w-[180px] bg-[#2A2740] rounded animate-pulse mb-3" />
-            <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
-            <div className="h-3 w-3/4 bg-[#2A2740] rounded animate-pulse" />
-          </div>
-          <div className="card p-4">
-            <div className="h-4 w-28 bg-[#2A2740] rounded animate-pulse mb-3" />
-            <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
-            <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse" />
-          </div>
-          <div className="card p-4">
-            <div className="h-4 w-24 bg-[#2A2740] rounded animate-pulse mb-3" />
-            <div className="h-20 w-full bg-[#2A2740] rounded animate-pulse" />
-          </div>
-        </div>
+      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', justifyContent: 'center', paddingTop: 80, fontFamily: 'Inter,system-ui,sans-serif' }}>
+        <div style={{ width: 32, height: 32, border: '3px solid ' + S.p300, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>
     )
   }
 
   if (!app) {
     return (
-      <div className="min-h-screen bg-bg0 flex flex-col items-center justify-center px-6">
-        <p className="text-tx3">Candidature introuvable</p>
-        <button onClick={() => navigate(-1)} className="mt-4 text-peach text-sm" style={{ color: '#F9A8A8' }}>Retour</button>
+      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter,system-ui,sans-serif' }}>
+        <p style={{ color: S.tx3 }}>Candidature introuvable</p>
+        <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p300, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>← Retour</button>
       </div>
     )
   }
 
+  // Merge data: prefer actual profile, fall back to eps_json snapshot
+  const pj = profile?.profile_json || {}
   const eps = app.eps_json || {}
-  const kinks = eps.kinks || []
   const snapshot = eps.profile_snapshot || {}
-  const p = (app.eps_json as Record<string, unknown>) || {}
-  const health = ((p.health || (snapshot as Record<string, unknown>).health) as { prep_status?: string; dernier_test?: string }) || {}
-  const prepStatus = health.prep_status || eps.prep
-  const dernierTest = health.dernier_test
-  const messageText = eps.message || eps.sessionNote || (p.occasion_note as string)
+  const shared = eps.shared_sections || []
 
-  function monthsAgo(iso: string): number {
-    const d = new Date(iso)
-    if (isNaN(d.getTime())) return 0
-    const now = new Date()
-    return Math.max(0, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()))
-  }
+  const displayName = profile?.display_name || snapshot.display_name || 'Anonyme'
+  const role = eps.role || pj.role || snapshot.role || ''
+  const age = pj.age || snapshot.age || ''
+  const location = pj.location || snapshot.location || ''
+  const bio = pj.bio || snapshot.bio || ''
+  const height = pj.height || snapshot.height || ''
+  const weight = pj.weight || snapshot.weight || ''
+  const morphology = pj.morphology || snapshot.morphology || ''
+  const kinks = pj.kinks || snapshot.kinks || []
+  const limits = pj.limits || snapshot.limits || ''
+  const health = pj.health || snapshot.health || {}
+  const avatarUrl = pj.avatar_url || snapshot.avatar_url || ''
+  const messageText = eps.message || eps.occasion_note || ''
+
+  const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, marginBottom: 12 }
 
   return (
-    <div className="min-h-screen bg-bg0 pb-36">
-      {/* Header */}
-      <div className="px-5 pt-10 pb-6">
-        <button onClick={() => navigate(-1)} className="text-tx3 text-sm mb-4 flex items-center gap-1">
-          ← Retour
-        </button>
+    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 390, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif' }}>
 
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-tx">{eps.displayName || snapshot.display_name || 'Anonyme'}</h1>
-            <div className="flex items-center gap-2 mt-1">
-              {eps.age && <span className="text-tx3 text-sm">{eps.age} ans</span>}
-              {eps.location && <span className="text-tx3 text-sm">· {eps.location}</span>}
+      {/* Header */}
+      <div style={{ padding: '40px 20px 20px' }}>
+        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0 }}>← Retour</button>
+
+        {/* Avatar + Name */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" style={{ width: 64, height: 64, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.border }} />
+          ) : (
+            <div style={{ width: 64, height: 64, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#fff' }}>
+              {displayName[0]?.toUpperCase()}
             </div>
-          </div>
-          {(eps.role || snapshot.role) && (
-            <span className="px-3 py-1.5 rounded-full text-sm font-semibold text-white mt-1"
-              style={{ background: 'linear-gradient(135deg,#F9A8A8,#F47272)' }}>
-              {eps.role || snapshot.role}
-            </span>
           )}
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: 0 }}>{displayName}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+              {age && <span style={{ fontSize: 13, color: S.tx3 }}>{age} ans</span>}
+              {location && <span style={{ fontSize: 13, color: S.tx3 }}>· {location}</span>}
+            </div>
+            {role && (
+              <span style={{ display: 'inline-block', marginTop: 6, padding: '3px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: '#fff', background: S.grad }}>{role}</span>
+            )}
+          </div>
         </div>
 
-        <div className="mt-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-            app.status === 'accepted' ? 'bg-green-900 text-green-300' :
-            app.status === 'rejected' ? 'bg-red-900 text-red-300' :
-            'bg-bg3 text-tx3'
-          }`}>
-            {app.status === 'accepted' ? '✓ Accepté' :
-             app.status === 'rejected' ? '✗ Refusé' : '⏳ En attente'}
+        {/* Status badge */}
+        <div style={{ marginTop: 12 }}>
+          <span style={{
+            fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 99,
+            color: app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow,
+            background: (app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow) + '18',
+            border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow) + '44',
+          }}>
+            {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : '⏳ En attente'}
           </span>
+          {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>👻 Ghost</span>}
         </div>
       </div>
 
-      <div className="px-5 space-y-5">
-        {eps.bio && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Bio</p>
-            <p className="text-tx text-sm leading-relaxed">{eps.bio}</p>
+      <div style={{ padding: '0 20px' }}>
+        {/* Bio */}
+        {bio && (
+          <div style={card}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Bio</p>
+            <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
           </div>
         )}
 
-        {(eps.role || snapshot.role) && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Rôle</p>
-            <span className="inline-block px-3 py-1.5 rounded-full text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg,#F9A8A8,#F47272)' }}>
-              {eps.role || snapshot.role}
-            </span>
+        {/* Physique */}
+        {(height || weight || morphology) && (
+          <div style={card}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>Physique</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {height && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{height}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>cm</p></div>}
+              {weight && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{weight}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>kg</p></div>}
+              {morphology && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10, gridColumn: height && weight ? 'span 2' : undefined }}><p style={{ fontSize: 14, fontWeight: 600, color: S.tx, margin: 0 }}>{morphology}</p></div>}
+            </div>
           </div>
         )}
 
-        {(eps.height || eps.weight || eps.morphology) && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-3">Physique</p>
-            <div className="grid grid-cols-2 gap-3">
-              {eps.height && (
-                <div className="text-center p-2 rounded-xl bg-bg1">
-                  <p className="text-lg font-bold text-tx">{eps.height}</p>
-                  <p className="text-tx3 text-xs">cm</p>
-                </div>
+        {/* Santé */}
+        {(health.prep_status || health.dernier_test) && (
+          <div style={card}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Santé</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {health.prep_status === 'Actif' && (
+                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.green, background: S.green + '18', border: '1px solid ' + S.green + '44' }}>💊 PrEP actif ✓</span>
               )}
-              {eps.weight && (
-                <div className="text-center p-2 rounded-xl bg-bg1">
-                  <p className="text-lg font-bold text-tx">{eps.weight}</p>
-                  <p className="text-tx3 text-xs">kg</p>
-                </div>
+              {health.prep_status && health.prep_status !== 'Actif' && (
+                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
               )}
-              {eps.morphology && (
-                <div className="text-center p-2 rounded-xl bg-bg1">
-                  <p className="text-sm font-semibold text-tx">{eps.morphology}</p>
-                  <p className="text-tx3 text-xs">morpho</p>
-                </div>
+              {health.dernier_test && (
+                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>🧪 Testé {monthsAgo(health.dernier_test)}</span>
               )}
             </div>
           </div>
         )}
 
-        {(prepStatus || dernierTest) && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-2">Santé</p>
-            <div className="flex flex-wrap gap-2">
-              {prepStatus === 'Actif' && (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-900/40 text-green-300 border border-green-500/40">PrEP actif ✓</span>
-              )}
-              {dernierTest && (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-900/40 text-blue-300 border border-blue-500/40">Testé il y a {monthsAgo(dernierTest)} mois</span>
-              )}
-              {prepStatus && prepStatus !== 'Actif' && (
-                <span className="px-3 py-1 rounded-full text-xs text-tx2">PrEP {prepStatus}</span>
-              )}
-            </div>
-          </div>
-        )}
-
+        {/* Pratiques */}
         {kinks.length > 0 && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border">
-            <p className="text-tx3 text-xs uppercase tracking-wider mb-3">Kinks</p>
-            <div className="flex flex-wrap gap-2">
+          <div style={card}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {kinks.map((k: string) => (
-                <span key={k} className="px-3 py-1 rounded-full text-xs font-medium text-tx2 border border-border bg-bg3 inline-flex items-center gap-1">
-                  <span className="text-green-400">✓</span> {k}
-                </span>
+                <span key={k} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 12, fontWeight: 500, color: S.tx2, background: S.bg2, border: '1px solid ' + S.border }}>✓ {k}</span>
               ))}
             </div>
           </div>
         )}
 
-        {eps.limits && (
-          <div className="rounded-2xl p-4 border-2 border-red-500/60 bg-red-950/20">
-            <p className="text-red-400 text-xs uppercase tracking-wider mb-2">Limites</p>
-            <p className="text-tx text-sm leading-relaxed">{eps.limits}</p>
+        {/* Limites */}
+        {limits && (
+          <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>🚫 Limites</p>
+            <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
           </div>
         )}
 
+        {/* Message au host */}
         {messageText && (
-          <div className="bg-bg2 rounded-2xl p-4 border border-border" style={{ borderColor: '#F9A8A840' }}>
-            <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#F9A8A8' }}>Message au host</p>
-            <p className="text-tx text-sm leading-relaxed">{messageText}</p>
+          <div style={{ ...card, borderColor: S.p300 + '44' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>💬 Message au host</p>
+            <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
           </div>
         )}
 
-        <div className="text-center text-tx3 text-xs pb-2">
-          Candidature reçue le {new Date(app.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' })}
-        </div>
+        {/* Occasion note */}
+        {eps.occasion_note && eps.occasion_note !== messageText && (
+          <div style={{ ...card, borderColor: S.p300 + '33' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>⚡ Note pour cette session</p>
+            <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
+          </div>
+        )}
+
+        {/* Shared sections info */}
+        {shared.length > 0 && (
+          <p style={{ fontSize: 11, color: S.tx4, margin: '8px 0 0', textAlign: 'center' }}>
+            {shared.length} section{shared.length > 1 ? 's' : ''} partagée{shared.length > 1 ? 's' : ''} · Candidature reçue le {new Date(app.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+          </p>
+        )}
       </div>
 
+      {/* Accept/Reject bar */}
       {isHost && app.status === 'pending' && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-bg0 border-t border-border flex gap-3 max-w-md mx-auto">
-          <button
-            onClick={() => handleDecision('rejected')}
-            disabled={actioning}
-            className="flex-1 py-4 rounded-2xl font-bold text-red-400 border-2 border-red-500/60 bg-red-950/20"
-          >
-            Refuser ✗
+        <div style={{
+          position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 390, padding: '12px 20px 28px',
+          background: 'linear-gradient(to top, ' + S.bg0 + ' 70%, transparent)', display: 'flex', gap: 10,
+        }}>
+          <button onClick={() => handleDecision('rejected')} disabled={actioning} style={{
+            flex: 1, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
+            color: S.red, border: '1px solid ' + S.red + '44', background: S.red + '10', cursor: 'pointer',
+          }}>
+            ✕ Refuser
           </button>
-          <button
-            onClick={() => handleDecision('accepted')}
-            disabled={actioning}
-            className="flex-1 py-4 rounded-2xl font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,#F9A8A8,#F47272)' }}
-          >
-            {actioning ? '...' : 'Accepter ✓'}
+          <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
+            flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
+            color: '#fff', background: S.grad, border: 'none', cursor: 'pointer',
+            boxShadow: '0 4px 16px ' + S.p400 + '44',
+          }}>
+            {actioning ? '...' : '✓ Accepter'}
           </button>
         </div>
       )}

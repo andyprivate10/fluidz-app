@@ -1,73 +1,160 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import BottomNav from '../components/BottomNav'
 
-type Session = { id: string; title: string; status: string; approx_area: string; created_at: string }
+type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string }
+type AppSession = { session_id: string; status: string; title: string; approx_area: string }
+
+const S = {
+  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
+  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
+  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',red:'#F87171',
+  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+}
+
+const statusLabel: Record<string, { text: string; color: string }> = {
+  pending: { text: '⏳ En attente', color: S.yellow },
+  accepted: { text: '✅ Accepté', color: S.green },
+  checked_in: { text: '✅ Check-in', color: S.green },
+  rejected: { text: '❌ Refusé', color: S.red },
+}
 
 export default function SessionsPage() {
   const navigate = useNavigate()
-  const [sessions, setSessions] = useState<Session[]>([])
+  const [hosted, setHosted] = useState<Session[]>([])
+  const [applied, setApplied] = useState<AppSession[]>([])
   const [loading, setLoading] = useState(true)
+  const [tab, setTab] = useState<'hosted'|'applied'>('hosted')
 
   useEffect(() => {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { navigate('/me'); return }
-      const { data } = await supabase.from('sessions').select('*').eq('host_id', user.id).order('created_at', { ascending: false })
-      setSessions(data || [])
+
+      // Sessions I host
+      const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).order('created_at', { ascending: false })
+      setHosted(h || [])
+
+      // Sessions I applied to
+      const { data: apps } = await supabase
+        .from('applications')
+        .select('session_id, status, sessions(title, approx_area)')
+        .eq('applicant_id', user.id)
+        .order('created_at', { ascending: false })
+      const mapped = (apps || []).map((a: any) => ({
+        session_id: a.session_id,
+        status: a.status,
+        title: a.sessions?.title || 'Session',
+        approx_area: a.sessions?.approx_area || '',
+      }))
+      setApplied(mapped)
+
+      // Default tab
+      if ((h || []).length === 0 && mapped.length > 0) setTab('applied')
+
       setLoading(false)
     }
     load()
   }, [])
 
   return (
-    <div style={{ background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 80 }}>
-      <div style={{ padding: '24px 24px 16px', borderBottom: '1px solid #2A2740', background: '#16141F' }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: '#F0EDFF' }}>Mes sessions</div>
-        <div style={{ fontSize: 13, color: '#7E7694', marginTop: 2 }}>
-          {sessions.length} session{sessions.length !== 1 ? 's' : ''}
+    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
+      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 12px' }}>Sessions</h1>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setTab('hosted')} style={{
+            flex: 1, padding: '8px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            border: '1px solid ' + (tab === 'hosted' ? S.p300 + '55' : S.border),
+            background: tab === 'hosted' ? S.p300 + '14' : S.bg2,
+            color: tab === 'hosted' ? S.p300 : S.tx3,
+          }}>
+            Mes sessions {hosted.length > 0 && `(${hosted.length})`}
+          </button>
+          <button onClick={() => setTab('applied')} style={{
+            flex: 1, padding: '8px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            border: '1px solid ' + (tab === 'applied' ? S.green + '55' : S.border),
+            background: tab === 'applied' ? S.green + '14' : S.bg2,
+            color: tab === 'applied' ? S.green : S.tx3,
+          }}>
+            Candidatures {applied.length > 0 && `(${applied.length})`}
+          </button>
         </div>
       </div>
-      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <button
-          onClick={() => navigate('/session/create')}
-          style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg, #F9A8A8, #F47272)', border: 'none', borderRadius: 12, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
-        >
-          + Nouvelle session
-        </button>
-        {loading && <p style={{ color: '#B8B2CC', textAlign: 'center' }}>Chargement...</p>}
-        {!loading && sessions.length === 0 && (
-          <div style={{ textAlign: 'center', padding: 32, color: '#7E7694', fontSize: 14 }}>
-            Aucune session.<br />Cr&eacute;e ta premi&egrave;re !
-          </div>
-        )}
-        {sessions.map(sess => (
-          <div
-            key={sess.id}
-            onClick={() => navigate(`/session/${sess.id}/host`)}
-            style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16, cursor: 'pointer' }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#F0EDFF', flex: 1 }}>{sess.title}</div>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: sess.status === 'open' ? '#4ADE80' : '#7E7694',
-                  background: '#2A2740',
-                  padding: '2px 8px',
-                  borderRadius: 50,
-                  marginLeft: 8,
-                }}
+
+      <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {tab === 'hosted' && (
+          <>
+            <button
+              onClick={() => navigate('/session/create')}
+              style={{ width: '100%', padding: 14, background: S.grad, border: 'none', borderRadius: 14, color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.p400 + '44' }}
+            >
+              + Nouvelle session
+            </button>
+            {loading && <p style={{ color: S.tx3, textAlign: 'center' }}>Chargement...</p>}
+            {!loading && hosted.length === 0 && (
+              <div style={{ textAlign: 'center', padding: 32, color: S.tx3, fontSize: 14 }}>
+                Aucune session. Crée ta première !
+              </div>
+            )}
+            {hosted.map(sess => (
+              <div
+                key={sess.id}
+                onClick={() => navigate('/session/' + sess.id + '/host')}
+                style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, cursor: 'pointer' }}
               >
-                {sess.status === 'open' ? 'Ouverte' : 'Brouillon'}
-              </span>
-            </div>
-            {sess.approx_area && <div style={{ fontSize: 12, color: '#7E7694', marginTop: 6 }}>📍 {sess.approx_area}</div>}
-            <div style={{ fontSize: 11, color: '#453F5C', marginTop: 4 }}>{new Date(sess.created_at).toLocaleDateString('fr-FR')}</div>
-          </div>
-        ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: S.tx, flex: 1 }}>{sess.title}</div>
+                  <span style={{
+                    fontSize: 11, fontWeight: 600,
+                    color: sess.status === 'open' ? S.green : S.tx3,
+                    background: S.bg2, padding: '2px 8px', borderRadius: 50, marginLeft: 8,
+                  }}>
+                    {sess.status === 'open' ? '🟢 Ouverte' : sess.status === 'ended' ? '⚫ Terminée' : '📝 Brouillon'}
+                  </span>
+                </div>
+                {sess.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>📍 {sess.approx_area}</div>}
+                <div style={{ fontSize: 11, color: S.tx4, marginTop: 4 }}>{new Date(sess.created_at).toLocaleDateString('fr-FR')}</div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {tab === 'applied' && (
+          <>
+            {loading && <p style={{ color: S.tx3, textAlign: 'center' }}>Chargement...</p>}
+            {!loading && applied.length === 0 && (
+              <div style={{ textAlign: 'center', padding: 32, color: S.tx3, fontSize: 14 }}>
+                Aucune candidature. Rejoins une session via un lien d'invitation !
+              </div>
+            )}
+            {applied.map(app => {
+              const st = statusLabel[app.status] || { text: app.status, color: S.tx3 }
+              return (
+                <div
+                  key={app.session_id}
+                  onClick={() => navigate('/session/' + app.session_id)}
+                  style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, cursor: 'pointer' }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: S.tx, flex: 1 }}>{app.title}</div>
+                    <span style={{
+                      fontSize: 11, fontWeight: 600, color: st.color,
+                      background: st.color + '18', padding: '2px 8px', borderRadius: 50, marginLeft: 8,
+                      border: '1px solid ' + st.color + '44',
+                    }}>
+                      {st.text}
+                    </span>
+                  </div>
+                  {app.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>📍 {app.approx_area}</div>}
+                </div>
+              )
+            })}
+          </>
+        )}
       </div>
+
+      <BottomNav active="sessions" />
     </div>
   )
 }
