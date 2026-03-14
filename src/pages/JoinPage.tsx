@@ -15,9 +15,7 @@ export default function JoinPage() {
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string }[]>([])
-  const [status, setStatus] = useState<'loading'|'found'|'error'|'joining'>('loading')
-  const [msg, setMsg] = useState('')
-  const [joinError, setJoinError] = useState('')
+  const [status, setStatus] = useState<'loading'|'found'|'error'>('loading')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -98,9 +96,7 @@ export default function JoinPage() {
               <p style={{fontSize:12,color:S.tx3,margin:0,textAlign:'center'}}>🔒 Adresse révélée après acceptation</p>
             </div>
           </div>
-          {msg ? (
-            <p style={{color:S.green,textAlign:'center',fontWeight:700,fontSize:15}}>{msg}</p>
-          ) : !user ? (
+          {!user ? (
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
               <button onClick={() => navigate('/me?next=/join/' + code)} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
                 Postuler →
@@ -112,7 +108,6 @@ export default function JoinPage() {
               }} style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:S.tx,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>
                 👻 Sans compte
               </button>
-              {joinError && <p style={{fontSize:13,color:S.red,textAlign:'center',margin:0}}>{joinError}</p>}
             </div>
           ) : (
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
