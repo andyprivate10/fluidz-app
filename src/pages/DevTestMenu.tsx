@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { seedAll, clearAll, TEST_INVITE_CODE } from "../lib/seedTestData";
 import type { User } from "@supabase/supabase-js";
@@ -22,18 +22,31 @@ const btn: React.CSSProperties = {
 
 export default function DevTestMenu() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [msg, setMsg] = useState("");
   const [seeding, setSeeding] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const dayNumber = Math.floor((Date.now() - PROJECT_START.getTime()) / 86400000) + 1;
 
+  // Persist session ID in both localStorage and URL
+  const saveSessionId = (sid: string) => {
+    setSessionId(sid);
+    try { localStorage.setItem(SESSION_KEY, sid); } catch (_) {}
+  };
+
   useEffect(() => {
     supabase.auth.getUser().then((res) => setUser(res.data.user));
-    try {
-      const stored = localStorage.getItem(SESSION_KEY);
-      if (stored) setSessionId(stored);
-    } catch (_) {}
+    // Restore from URL param first, then localStorage
+    const fromUrl = searchParams.get("sid");
+    if (fromUrl) {
+      saveSessionId(fromUrl);
+    } else {
+      try {
+        const stored = localStorage.getItem(SESSION_KEY);
+        if (stored) setSessionId(stored);
+      } catch (_) {}
+    }
   }, []);
 
   const login = async (email: string) => {
@@ -56,14 +69,12 @@ export default function DevTestMenu() {
     setSeeding(true);
     setMsg("Nettoyage + seed en cours...");
     try {
-      await clearAll();
       const result = await seedAll();
-      setSessionId(result.sessionId);
-      try { localStorage.setItem(SESSION_KEY, result.sessionId); } catch (_) {}
-      setMsg("Seed OK — choisis un persona ci-dessous");
+      saveSessionId(result.sessionId);
+      setMsg("✅ Seed OK — choisis un persona");
       setUser(null);
     } catch (err: any) {
-      setMsg("Seed ERREUR: " + (err?.message || String(err)));
+      setMsg("❌ Seed ERREUR: " + (err?.message || String(err)));
     } finally {
       setSeeding(false);
     }
@@ -73,11 +84,11 @@ export default function DevTestMenu() {
     setMsg("Nettoyage...");
     try {
       await clearAll();
-      setMsg("Données test nettoyées");
+      setMsg("✅ Données test nettoyées");
       setSessionId(null);
       try { localStorage.removeItem(SESSION_KEY); } catch (_) {}
     } catch (e: any) {
-      setMsg("Reset err: " + e?.message);
+      setMsg("❌ Reset err: " + e?.message);
     }
   };
 
@@ -99,6 +110,11 @@ export default function DevTestMenu() {
     navigate("/join/" + TEST_INVITE_CODE);
   };
 
+  // Shareable URL for this dev menu with session ID
+  const shareUrl = sessionId
+    ? `${window.location.origin}/dev/test?dev=1&sid=${sessionId}`
+    : null;
+
   return (
     <div style={{ padding: 24, color: "white", fontFamily: "monospace", maxWidth: 400, margin: "0 auto" }}>
       <h2 style={{ marginBottom: 4 }}>Dev Test Menu</h2>
@@ -106,14 +122,14 @@ export default function DevTestMenu() {
 
       {user && <p style={{ color: "#4ade80", marginBottom: 8 }}>✅ {user.email}</p>}
       {!user && <p style={{ color: "#7e7694", marginBottom: 8 }}>Non connecté</p>}
-      {msg && <p style={{ color: "#fbbf24", marginBottom: 12, fontSize: 13 }}>{msg}</p>}
+      {msg && <p style={{ color: "#fbbf24", marginBottom: 12, fontSize: 13, wordBreak: "break-word" }}>{msg}</p>}
 
       <p style={{ color: "#f9a8a8", fontSize: 12, marginBottom: 8, fontWeight: 700 }}>1. SEEDER</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
         <button onClick={seed} disabled={seeding} style={{ ...btn, background: seeding ? "#2a2740" : "#1f1d2b" }}>
-          {seeding ? "⏳ Seed en cours..." : "🌱 Seeder les données"}
+          {seeding ? "⏳ Seed en cours..." : "🌱 Seeder les données (idempotent)"}
         </button>
-        <button onClick={reset} style={{ ...btn, background: "#450a0a", fontSize: 12 }}>🗑️ Reset</button>
+        <button onClick={reset} style={{ ...btn, background: "#450a0a", fontSize: 12 }}>🗑️ Reset complet</button>
       </div>
 
       <p style={{ color: "#f9a8a8", fontSize: 12, marginBottom: 8, fontWeight: 700 }}>
@@ -143,13 +159,21 @@ export default function DevTestMenu() {
         <>
           <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>LIENS DIRECTS</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
-            <button onClick={() => navigate("/session/" + sessionId)} style={{ ...btn, fontSize: 12 }}>Session</button>
+            <button onClick={() => navigate("/session/" + sessionId)} style={{ ...btn, fontSize: 12 }}>Session (vue candidat)</button>
             <button onClick={() => navigate("/session/" + sessionId + "/host")} style={{ ...btn, fontSize: 12 }}>Host Dashboard</button>
-            <button onClick={() => navigate("/session/" + sessionId + "/apply")} style={{ ...btn, fontSize: 12 }}>Apply</button>
+            <button onClick={() => navigate("/session/" + sessionId + "/apply")} style={{ ...btn, fontSize: 12 }}>Apply Page</button>
             <button onClick={() => navigate("/session/" + sessionId + "/dm")} style={{ ...btn, fontSize: 12 }}>DM</button>
-            <button onClick={() => navigate("/join/" + TEST_INVITE_CODE)} style={{ ...btn, fontSize: 12 }}>Join (invitation)</button>
-            <p style={{ color: "#453f5c", fontSize: 10, margin: 0, wordBreak: "break-all" }}>ID: {sessionId}</p>
+            <button onClick={() => navigate("/join/" + TEST_INVITE_CODE)} style={{ ...btn, fontSize: 12 }}>Join Page (invitation)</button>
           </div>
+          {shareUrl && (
+            <button
+              onClick={() => { navigator.clipboard.writeText(shareUrl); setMsg("URL copiée !"); }}
+              style={{ ...btn, fontSize: 11, color: "#7e7694", marginBottom: 12 }}
+            >
+              📋 Copier URL dev (avec session ID)
+            </button>
+          )}
+          <p style={{ color: "#453f5c", fontSize: 10, margin: "0 0 16px", wordBreak: "break-all" }}>ID: {sessionId}</p>
         </>
       )}
 

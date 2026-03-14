@@ -42,21 +42,21 @@ const MEMBER_PROFILE = {
 const GUEST_PROFILE = {
   display_name: 'Yann',
   profile_json: {
-    age: '',
-    location: 'Paris',
-    bio: '',
-    role: '',
-    height: '',
-    weight: '',
-    morphology: '',
-    kinks: [] as string[],
-    limits: '',
-    avatar_url: undefined as string | undefined,
-    health: {} as Record<string, string>,
+    age: '25',
+    location: 'Paris 3ème',
+    bio: 'Curieux, premier plan de groupe. Open-minded.',
+    role: 'Bottom',
+    height: '178',
+    weight: '72',
+    morphology: 'Mince',
+    kinks: ['Group', 'Voyeur'],
+    limits: 'Pas de SM hard',
+    avatar_url: PICSUM('yann'),
+    health: { prep_status: 'Actif', dernier_test: new Date().toISOString().slice(0, 10), sero_status: '' },
   },
 }
 
-/** Récupère l'id d'un compte existant via signIn. Ne crée pas de compte (évite rate limit). */
+/** Sign in and return user id. Throws if account doesn't exist. */
 async function getUserId(email: string, password: string): Promise<string> {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) throw new Error(`${email}: ${error.message}. Créez le compte dans Supabase Auth (Dashboard).`)
@@ -65,10 +65,12 @@ async function getUserId(email: string, password: string): Promise<string> {
 }
 
 export async function seedAll(): Promise<{ sessionId: string; inviteCode: string }> {
+  // Get user IDs (this also validates accounts exist)
   const hostId = await getUserId('marcus@fluidz.test', TEST_PASSWORD)
   const memberId = await getUserId('karim@fluidz.test', TEST_PASSWORD)
   const guestId = await getUserId('yann@fluidz.test', TEST_PASSWORD)
 
+  // --- Sign in as host ---
   await supabase.auth.signInWithPassword({ email: 'marcus@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('user_profiles').upsert({
     id: hostId,
@@ -76,24 +78,55 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
     profile_json: HOST_PROFILE.profile_json,
   })
 
-  const { data: session, error: sessErr } = await supabase
+  // Check if session already exists (idempotent)
+  const { data: existing } = await supabase
     .from('sessions')
-    .insert({
+    .select('id')
+    .eq('invite_code', TEST_INVITE_CODE)
+    .maybeSingle()
+
+  let sessionId: string
+
+  if (existing) {
+    // Session exists — clean its children and reuse
+    sessionId = existing.id
+    await supabase.from('votes').delete().eq('session_id', sessionId)
+    await supabase.from('applications').delete().eq('session_id', sessionId)
+    await supabase.from('messages').delete().eq('session_id', sessionId)
+    await supabase.from('notifications').delete().eq('session_id', sessionId)
+    // Update session to ensure correct host and data
+    await supabase.from('sessions').update({
       host_id: hostId,
       title: 'Plan ce soir 🔥',
-      description: 'Session test pour dev. Directions et infos dans l’app.',
+      description: 'Session test pour dev.',
       approx_area: 'Paris 4ème',
-      exact_address: null,
+      exact_address: '14 rue de la Roquette, code 4521',
       status: 'open',
-      tags: ['Top', 'Bottom'],
-      invite_code: TEST_INVITE_CODE,
-      lineup_json: { directions: ['Métro Odéon', 'Code 4521'] },
-    })
-    .select('id')
-    .single()
-  if (sessErr) throw new Error(`session insert: ${sessErr.message}`)
-  const sessionId = session.id
+      tags: ['Top', 'Bottom', 'Versa'],
+      lineup_json: { directions: ['Métro Bastille sortie 3', 'Rue de la Roquette direction nord', 'Code porte: 4521', '2ème étage gauche'] },
+    }).eq('id', sessionId)
+  } else {
+    // Create new session
+    const { data: session, error: sessErr } = await supabase
+      .from('sessions')
+      .insert({
+        host_id: hostId,
+        title: 'Plan ce soir 🔥',
+        description: 'Session test pour dev.',
+        approx_area: 'Paris 4ème',
+        exact_address: '14 rue de la Roquette, code 4521',
+        status: 'open',
+        tags: ['Top', 'Bottom', 'Versa'],
+        invite_code: TEST_INVITE_CODE,
+        lineup_json: { directions: ['Métro Bastille sortie 3', 'Rue de la Roquette direction nord', 'Code porte: 4521', '2ème étage gauche'] },
+      })
+      .select('id')
+      .single()
+    if (sessErr) throw new Error(`session insert: ${sessErr.message}`)
+    sessionId = session.id
+  }
 
+  // --- Sign in as member (Karim) — already accepted ---
   await supabase.auth.signOut()
   await supabase.auth.signInWithPassword({ email: 'karim@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('user_profiles').upsert({
@@ -107,17 +140,23 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
       session_id: sessionId,
       applicant_id: memberId,
       status: 'pending',
-      eps_json: {},
+      eps_json: {
+        shared_sections: ['basics', 'role', 'physique', 'pratiques', 'sante', 'photos'],
+        profile_snapshot: MEMBER_PROFILE.profile_json,
+        role: 'Bottom',
+      },
       checked_in: false,
     })
     .select('id')
     .single()
   if (appErr) throw new Error(`application insert: ${appErr.message}`)
 
+  // Host accepts Karim
   await supabase.auth.signOut()
   await supabase.auth.signInWithPassword({ email: 'marcus@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('applications').update({ status: 'accepted', checked_in: true }).eq('id', app.id)
 
+  // --- Set up Yann profile (not applied yet — that's the test) ---
   await supabase.auth.signOut()
   await supabase.auth.signInWithPassword({ email: 'yann@fluidz.test', password: TEST_PASSWORD })
   await supabase.from('user_profiles').upsert({
@@ -131,13 +170,11 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
 }
 
 export async function clearAll(): Promise<void> {
-  // Sign in as marcus to have auth
   await supabase.auth.signInWithPassword({
     email: 'marcus@fluidz.test',
     password: TEST_PASSWORD,
   })
 
-  // Find ALL sessions with our test invite code (regardless of host)
   const { data: sessions } = await supabase
     .from('sessions')
     .select('id')

@@ -59,9 +59,9 @@ export default function HostDashboard() {
   async function decide(appId: string, status: 'accepted'|'rejected') {
     setActionLoading(appId)
     await supabase.from('applications').update({ status }).eq('id', appId)
-    // Send notification to the applicant
     const app = apps.find(a => a.id === appId)
     if (app && sess) {
+      // Notification
       const title = status === 'accepted'
         ? `Accepté pour "${sess.title}" ✓`
         : `Non retenu pour "${sess.title}"`
@@ -80,6 +80,16 @@ export default function HostDashboard() {
         body,
         href,
       })
+
+      // Safety tip DM on acceptance
+      if (status === 'accepted' && user) {
+        await supabase.from('messages').insert({
+          session_id: id,
+          sender_id: user.id,
+          text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
+          sender_name: '🛡️ Fluidz',
+        })
+      }
     }
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
     setActionLoading(null)

@@ -84,7 +84,13 @@ export default function ApplyPage() {
         supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
         supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
       ])
-      if (prof) setProfile(prof)
+      if (prof) {
+        setProfile(prof)
+        // Pre-fill role from profile
+        if (prof.profile_json?.role && !selectedRole) {
+          setSelectedRole(prof.profile_json.role)
+        }
+      }
       if (sess) setSession(sess)
       const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
       if (lastRow?.created_at) {
@@ -228,6 +234,21 @@ export default function ApplyPage() {
           <div style={{display:'flex',flexDirection:'column',gap:8}}>
             {SECTIONS.map(sec => {
               const on = enabled.includes(sec.id)
+              const pj = profile?.profile_json || {}
+              // Show real profile data as preview
+              let preview = ''
+              if (!guestMode && pj) {
+                switch (sec.id) {
+                  case 'basics': preview = [pj.age ? pj.age + ' ans' : '', pj.location].filter(Boolean).join(' · '); break
+                  case 'role': preview = pj.role || selectedRole || ''; break
+                  case 'physique': preview = [pj.height ? pj.height + 'cm' : '', pj.weight ? pj.weight + 'kg' : '', pj.morphology].filter(Boolean).join(' · '); break
+                  case 'pratiques': preview = Array.isArray(pj.kinks) && pj.kinks.length > 0 ? pj.kinks.slice(0, 3).join(', ') + (pj.kinks.length > 3 ? ' +' + (pj.kinks.length - 3) : '') : ''; break
+                  case 'sante': preview = pj.health?.prep_status ? 'PrEP ' + pj.health.prep_status : ''; break
+                  case 'limites': preview = pj.limits ? pj.limits.slice(0, 40) + (pj.limits.length > 40 ? '…' : '') : ''; break
+                  case 'photos': preview = pj.avatar_url ? '1 photo' : 'Aucune photo'; break
+                  case 'occasion': preview = ''; break
+                }
+              }
               return (
                 <div key={sec.id} onClick={() => toggle(sec.id)} style={{
                   background: on ? S.p300 + '10' : S.bg1,
@@ -235,11 +256,15 @@ export default function ApplyPage() {
                   borderRadius:14,padding:'12px 14px',cursor:'pointer',
                   display:'flex',alignItems:'center',justifyContent:'space-between',transition:'all 0.2s',
                 }}>
-                  <div style={{display:'flex',alignItems:'center',gap:10}}>
+                  <div style={{display:'flex',alignItems:'center',gap:10,flex:1,minWidth:0}}>
                     <span style={{fontSize:18}}>{sec.emoji}</span>
-                    <div>
+                    <div style={{flex:1,minWidth:0}}>
                       <p style={{margin:0,fontSize:14,fontWeight:600,color:on?S.tx:S.tx3}}>{sec.label}</p>
-                      <p style={{margin:0,fontSize:11,color:S.tx4}}>{sec.desc}</p>
+                      {on && preview ? (
+                        <p style={{margin:0,fontSize:12,color:S.p300,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{preview}</p>
+                      ) : (
+                        <p style={{margin:0,fontSize:11,color:S.tx4}}>{sec.desc}</p>
+                      )}
                     </div>
                   </div>
                   <div style={{width:20,height:20,borderRadius:99,background:on?S.grad:'transparent',border:on?'none':'2px solid '+S.border,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
