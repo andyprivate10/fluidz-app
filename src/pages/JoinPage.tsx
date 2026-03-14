@@ -15,6 +15,7 @@ export default function JoinPage() {
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string }[]>([])
+  const [hostName, setHostName] = useState<string>('')
   const [status, setStatus] = useState<'loading'|'found'|'error'>('loading')
 
   useEffect(() => {
@@ -25,9 +26,16 @@ export default function JoinPage() {
   }, [code])
 
   async function lookupSession() {
-    const { data: sess } = await supabase.from('sessions').select('id,title,approx_area,status,host_id,tags').eq('invite_code', code).maybeSingle()
+    const { data: sess } = await supabase.from('sessions').select('id,title,description,approx_area,status,host_id,tags').eq('invite_code', code).maybeSingle()
     if (!sess) { setStatus('error'); return }
     setSession(sess)
+
+    // Fetch host name
+    if (sess.host_id) {
+      const { data: hostProf } = await supabase.from('user_profiles').select('display_name').eq('id', sess.host_id).maybeSingle()
+      if (hostProf?.display_name) setHostName(hostProf.display_name)
+    }
+
     const { data: accepted } = await supabase.from('applications').select('applicant_id').eq('session_id', sess.id).in('status', ['accepted', 'checked_in'])
     const ids = (accepted || []).map((a: { applicant_id: string }) => a.applicant_id)
     if (ids.length > 0) {
@@ -62,6 +70,14 @@ export default function JoinPage() {
             <p style={{fontSize:24,margin:'0 0 4px',textAlign:'center'}}>🔥</p>
             <h1 style={{fontSize:20,fontWeight:800,color:S.tx,textAlign:'center',margin:'0 0 8px'}}>{session.title}</h1>
             <p style={{fontSize:13,color:S.tx3,textAlign:'center',margin:'0 0 8px'}}>📍 {session.approx_area}</p>
+            {hostName && (
+              <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'0 0 10px'}}>
+                Organisé par <span style={{color:S.p300,fontWeight:600}}>{hostName}</span>
+              </p>
+            )}
+            {session.description && (
+              <p style={{fontSize:13,color:'#B8B2CC',textAlign:'center',margin:'0 0 12px',lineHeight:1.5}}>{session.description}</p>
+            )}
             {session.tags && session.tags.length > 0 && (
               <div style={{display:'flex',flexWrap:'wrap',gap:6,justifyContent:'center',marginBottom:12}}>
                 {session.tags.map((tag: string) => (

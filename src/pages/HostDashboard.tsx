@@ -27,6 +27,8 @@ export default function HostDashboard() {
   const [broadcastSending, setBroadcastSending] = useState(false)
   const [hostDisplayName, setHostDisplayName] = useState<string>('')
 
+  const [votes, setVotes] = useState<{ application_id: string; vote: string }[]>([])
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user ?? null
@@ -41,13 +43,15 @@ export default function HostDashboard() {
     setLoadError(false)
     const uid = currentUser?.id ?? user?.id
     try {
-      const [{ data: s }, { data: a }, { data: prof }] = await Promise.all([
+      const [{ data: s }, { data: a }, { data: prof }, { data: v }] = await Promise.all([
         supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
         supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
         uid ? supabase.from('user_profiles').select('display_name').eq('id', uid).maybeSingle() : Promise.resolve({ data: null }),
+        supabase.from('votes').select('application_id, vote').eq('session_id', id),
       ])
       setSess(s)
       setApps(a || [])
+      setVotes((v as { application_id: string; vote: string }[]) || [])
       if (prof?.display_name) setHostDisplayName(prof.display_name)
     } catch {
       setLoadError(true)
@@ -303,13 +307,28 @@ export default function HostDashboard() {
                 )}
 
                 {app.status === 'pending' && (
-                  <div style={{display:'flex',gap:8,marginTop:10}}>
-                    <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
-                      ✕ Refuser
-                    </button>
-                    <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.p400+'44'}}>
-                      {actionLoading===app.id ? '...' : '✓ Accepter'}
-                    </button>
+                  <div style={{marginTop:10}}>
+                    {(() => {
+                      const appVotes = votes.filter(v => v.application_id === app.id)
+                      const yes = appVotes.filter(v => v.vote === 'yes').length
+                      const no = appVotes.filter(v => v.vote === 'no').length
+                      if (yes + no === 0) return null
+                      return (
+                        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'6px 10px',background:S.bg2,borderRadius:10,border:'1px solid '+S.border}}>
+                          <span style={{fontSize:12,color:S.tx3}}>Votes :</span>
+                          <span style={{fontSize:13,fontWeight:700,color:S.green}}>👍 {yes}</span>
+                          <span style={{fontSize:13,fontWeight:700,color:S.red}}>👎 {no}</span>
+                        </div>
+                      )
+                    })()}
+                    <div style={{display:'flex',gap:8}}>
+                      <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
+                        ✕ Refuser
+                      </button>
+                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.p400+'44'}}>
+                        {actionLoading===app.id ? '...' : '✓ Accepter'}
+                      </button>
+                    </div>
                   </div>
                 )}
 

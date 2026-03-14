@@ -131,7 +131,7 @@ export default function ApplyPage() {
       })
       try { localStorage.removeItem(GUEST_TOKEN_KEY); localStorage.removeItem(GUEST_SESSION_KEY) } catch (_) {}
       setLoading(false)
-      navigate('/session/' + id + '/dm')
+      navigate('/session/' + id)
       return
     }
     if (!user) return
@@ -141,7 +141,7 @@ export default function ApplyPage() {
       eps_json: { shared_sections: enabled, occasion_note: note, message: messageToHost.trim() || undefined, profile_snapshot: profile?.profile_json || {}, role: selectedRole || undefined }
     })
     setLoading(false)
-    navigate('/session/' + id + '/dm')
+    navigate('/session/' + id)
   }
 
   if (!user && !guestMode) return (

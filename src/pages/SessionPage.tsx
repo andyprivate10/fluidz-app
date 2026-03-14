@@ -531,6 +531,12 @@ export default function SessionPage() {
             {myApp.status === 'accepted' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Accepté ✓</span>
+                {session.exact_address && (
+                  <div style={{ padding: '10px 12px', background: '#14532d', borderRadius: 10, border: '1px solid #4ADE8044' }}>
+                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>📍 Adresse</p>
+                    <p style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
+                  </div>
+                )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
                 </button>
@@ -540,7 +546,18 @@ export default function SessionPage() {
               <span style={{ fontSize: 14, fontWeight: 600, color: '#F87171', padding: '6px 12px', borderRadius: 99, background: '#F8717118', border: '1px solid #F8717144' }}>Non retenu</span>
             )}
             {myApp.status === 'checked_in' && (
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
+                {session.exact_address && (
+                  <div style={{ padding: '10px 12px', background: '#14532d', borderRadius: 10, border: '1px solid #4ADE8044' }}>
+                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>📍 Adresse</p>
+                    <p style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
+                  </div>
+                )}
+                <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                  Ouvrir le DM
+                </button>
+              </div>
             )}
           </div>
         )}
