@@ -131,23 +131,27 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
 }
 
 export async function clearAll(): Promise<void> {
-  const { data: { user } } = await supabase.auth.signInWithPassword({
+  // Sign in as marcus to have auth
+  await supabase.auth.signInWithPassword({
     email: 'marcus@fluidz.test',
     password: TEST_PASSWORD,
   })
-  if (!user) return
+
+  // Find ALL sessions with our test invite code (regardless of host)
   const { data: sessions } = await supabase
     .from('sessions')
     .select('id')
-    .eq('host_id', user.id)
     .eq('invite_code', TEST_INVITE_CODE)
+
   if (sessions && sessions.length > 0) {
-    const sid = sessions[0].id
-    await supabase.from('votes').delete().eq('session_id', sid)
-    await supabase.from('applications').delete().eq('session_id', sid)
-    await supabase.from('messages').delete().eq('session_id', sid)
-    await supabase.from('notifications').delete().eq('session_id', sid)
-    await supabase.from('sessions').delete().eq('id', sid)
+    for (const sess of sessions) {
+      const sid = sess.id
+      await supabase.from('votes').delete().eq('session_id', sid)
+      await supabase.from('applications').delete().eq('session_id', sid)
+      await supabase.from('messages').delete().eq('session_id', sid)
+      await supabase.from('notifications').delete().eq('session_id', sid)
+      await supabase.from('sessions').delete().eq('id', sid)
+    }
   }
   await supabase.auth.signOut()
 }
