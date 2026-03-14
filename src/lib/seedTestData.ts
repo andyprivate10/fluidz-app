@@ -127,7 +127,6 @@ export async function seedAll(): Promise<{ sessionId: string; inviteCode: string
   })
 
   await supabase.auth.signOut()
-  await supabase.auth.signInWithPassword({ email: 'marcus@fluidz.test', password: TEST_PASSWORD })
   return { sessionId, inviteCode: TEST_INVITE_CODE }
 }
 
