@@ -63,6 +63,7 @@ export default function ApplyPage() {
           const storedSession = typeof localStorage !== 'undefined' ? localStorage.getItem(GUEST_SESSION_KEY) : null
           if (guestTokenParam && stored === guestTokenParam && storedSession === id) {
             setGuestMode(true)
+            setEnabled(['basics', 'role', 'occasion'])
             setDataLoading(true)
             supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle().then(({ data: sess }) => {
               setSession(sess ?? null)
@@ -90,6 +91,17 @@ export default function ApplyPage() {
         if (prof.profile_json?.role && !selectedRole) {
           setSelectedRole(prof.profile_json.role)
         }
+        // Smart pre-check: only enable sections with actual data
+        const pj = prof.profile_json || {}
+        const filled: string[] = ['occasion'] // always include occasion
+        if (prof.display_name || pj.age || pj.bio || pj.location) filled.push('basics')
+        if (pj.role) filled.push('role')
+        if (pj.height || pj.weight || pj.morphology) filled.push('physique')
+        if (Array.isArray(pj.kinks) && pj.kinks.length > 0) filled.push('pratiques')
+        if (pj.health?.prep_status || pj.health?.dernier_test) filled.push('sante')
+        if (pj.limits) filled.push('limites')
+        if (pj.avatar_url) filled.push('photos')
+        setEnabled(filled)
       }
       if (sess) setSession(sess)
       const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
