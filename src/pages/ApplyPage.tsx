@@ -35,6 +35,8 @@ export default function ApplyPage() {
   const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [enabled, setEnabled] = useState<string[]>(SECTIONS.map(s => s.id))
+  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([])
+  const [selectedVideos, setSelectedVideos] = useState<string[]>([])
   const [selectedRole, setSelectedRole] = useState<string>('')
   const [note, setNote] = useState('')
   const [messageToHost, setMessageToHost] = useState('')
@@ -100,8 +102,13 @@ export default function ApplyPage() {
         if (Array.isArray(pj.kinks) && pj.kinks.length > 0) filled.push('pratiques')
         if (pj.health?.prep_status || pj.health?.dernier_test) filled.push('sante')
         if (pj.limits) filled.push('limites')
-        if (pj.avatar_url) filled.push('photos')
+        if (pj.avatar_url || (Array.isArray(pj.photos) && pj.photos.length > 0)) filled.push('photos')
         setEnabled(filled)
+        // Pre-select all photos and videos
+        const allPhotos = Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []
+        const allVideos = Array.isArray(pj.videos) ? pj.videos : []
+        setSelectedPhotos(allPhotos)
+        setSelectedVideos(allVideos)
       }
       if (sess) setSession(sess)
       const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
@@ -150,7 +157,15 @@ export default function ApplyPage() {
     setLoading(true)
     await supabase.from('applications').upsert({
       session_id: id, applicant_id: user.id, status: 'pending',
-      eps_json: { shared_sections: enabled, occasion_note: note, message: messageToHost.trim() || undefined, profile_snapshot: profile?.profile_json || {}, role: selectedRole || undefined }
+      eps_json: {
+        shared_sections: enabled,
+        occasion_note: note,
+        message: messageToHost.trim() || undefined,
+        profile_snapshot: profile?.profile_json || {},
+        role: selectedRole || undefined,
+        selected_photos: enabled.includes('photos') ? selectedPhotos : [],
+        selected_videos: enabled.includes('photos') ? selectedVideos : [],
+      }
     })
     setLoading(false)
     navigate('/session/' + id)
@@ -257,7 +272,14 @@ export default function ApplyPage() {
                   case 'pratiques': preview = Array.isArray(pj.kinks) && pj.kinks.length > 0 ? pj.kinks.slice(0, 3).join(', ') + (pj.kinks.length > 3 ? ' +' + (pj.kinks.length - 3) : '') : ''; break
                   case 'sante': preview = pj.health?.prep_status ? 'PrEP ' + pj.health.prep_status : ''; break
                   case 'limites': preview = pj.limits ? pj.limits.slice(0, 40) + (pj.limits.length > 40 ? '…' : '') : ''; break
-                  case 'photos': preview = pj.avatar_url ? '1 photo' : 'Aucune photo'; break
+                  case 'photos': {
+                    const allPhotos = Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []
+                    const allVideos = Array.isArray(pj.videos) ? pj.videos : []
+                    const total = selectedPhotos.length + selectedVideos.length
+                    const max = allPhotos.length + allVideos.length
+                    preview = max > 0 ? `${total}/${max} sélectionné${total > 1 ? 's' : ''}` : 'Aucun média'
+                    break
+                  }
                   case 'occasion': preview = ''; break
                 }
               }
@@ -286,6 +308,52 @@ export default function ApplyPage() {
               )
             })}
           </div>
+
+          {/* Photo/video sub-selection when photos section is enabled */}
+          {enabled.includes('photos') && !guestMode && (() => {
+            const pj = profile?.profile_json || {}
+            const allPhotos: string[] = Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []
+            const allVideos: string[] = Array.isArray(pj.videos) ? pj.videos : []
+            if (allPhotos.length + allVideos.length === 0) return null
+            return (
+              <div style={{margin:'12px 0',padding:14,background:S.bg1,borderRadius:14,border:'1px solid '+S.p300+'33'}}>
+                <p style={{fontSize:12,fontWeight:700,color:S.p300,margin:'0 0 10px'}}>Sélectionne les médias à partager</p>
+                {allPhotos.length > 0 && (
+                  <>
+                    <p style={{fontSize:11,color:S.tx3,margin:'0 0 6px'}}>Photos ({selectedPhotos.length}/{allPhotos.length})</p>
+                    <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:10}}>
+                      {allPhotos.map((url: string) => {
+                        const on = selectedPhotos.includes(url)
+                        return (
+                          <button key={url} type="button" onClick={() => setSelectedPhotos(prev => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:56,height:56,padding:0,border:on ? '2px solid '+S.p300 : '1px solid '+S.border,borderRadius:10,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.4,transition:'opacity 0.15s'}}>
+                            <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                            {on && <div style={{position:'absolute',top:2,right:2,width:16,height:16,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#fff',fontWeight:800}}>✓</div>}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+                {allVideos.length > 0 && (
+                  <>
+                    <p style={{fontSize:11,color:S.tx3,margin:'0 0 6px'}}>Vidéos ({selectedVideos.length}/{allVideos.length})</p>
+                    <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                      {allVideos.map((url: string) => {
+                        const on = selectedVideos.includes(url)
+                        return (
+                          <button key={url} type="button" onClick={() => setSelectedVideos(prev => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:72,height:56,padding:0,border:on ? '2px solid '+S.p300 : '1px solid '+S.border,borderRadius:10,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.4,transition:'opacity 0.15s'}}>
+                            <video src={url} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                            {on && <div style={{position:'absolute',top:2,right:2,width:16,height:16,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#fff',fontWeight:800}}>✓</div>}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
+            )
+          })()}
+
           {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>Ton pseudo est requis</p>}
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{SECTIONS.length}</span> sections partagées</p>

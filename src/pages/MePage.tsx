@@ -89,7 +89,9 @@ export default function MePage() {
   const [seroStatus, setSeroStatus] = useState('')
   const [limits, setLimits] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
-  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [photos, setPhotos] = useState<string[]>([])
+  const [videos, setVideos] = useState<string[]>([])
+  const [mediaUploading, setMediaUploading] = useState(false)
   const [hasGuestToken, setHasGuestToken] = useState(false)
 
   useEffect(() => {
@@ -152,6 +154,8 @@ export default function MePage() {
       const p = data.profile_json || {}
       const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')
+      setPhotos(Array.isArray(p.photos) ? p.photos : p.avatar_url ? [p.avatar_url] : [])
+      setVideos(Array.isArray(p.videos) ? p.videos : [])
       setAge(p.age || '')
       setBio(p.bio || '')
       setLocation(p.location || '')
@@ -188,7 +192,10 @@ export default function MePage() {
     if (!user) return
     setLoading(true)
     const profile_json = {
-      age, bio, location, role, height, weight, morphology, kinks, prep, limits, avatar_url: avatarUrl || undefined,
+      age, bio, location, role, height, weight, morphology, kinks, prep, limits,
+      avatar_url: photos[0] || avatarUrl || undefined,
+      photos,
+      videos,
       health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined },
     }
     await supabase.from('user_profiles').upsert({
@@ -205,22 +212,39 @@ export default function MePage() {
     setKinks(prev => prev.includes(k) ? prev.filter(x => x !== k) : [...prev, k])
   }
 
-  async function onAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file || !user) return
-    if (!file.type.startsWith('image/')) return
-    setAvatarUploading(true)
-    const ext = file.name.split('.').pop() || 'jpg'
-    const path = `${user.id}/avatar.${ext}`
-    const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
+  async function uploadMedia(file: File, type: 'photo' | 'video') {
+    if (!user) return
+    setMediaUploading(true)
+    const ext = file.name.split('.').pop() || (type === 'video' ? 'mp4' : 'jpg')
+    const ts = Date.now()
+    const path = `${user.id}/${type}_${ts}.${ext}`
+    const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: false })
     if (error) {
-      setAvatarUploading(false)
+      console.error('Upload error:', error)
+      setMediaUploading(false)
       return
     }
     const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-    setAvatarUrl(publicUrl)
-    setAvatarUploading(false)
-    e.target.value = ''
+    if (type === 'photo') {
+      setPhotos(prev => [...prev, publicUrl])
+      if (!avatarUrl) setAvatarUrl(publicUrl)
+    } else {
+      setVideos(prev => [...prev, publicUrl])
+    }
+    setMediaUploading(false)
+  }
+
+  function removePhoto(url: string) {
+    setPhotos(prev => prev.filter(p => p !== url))
+    if (avatarUrl === url) setAvatarUrl(photos.find(p => p !== url) || '')
+  }
+
+  function removeVideo(url: string) {
+    setVideos(prev => prev.filter(v => v !== url))
+  }
+
+  function setAsAvatar(url: string) {
+    setAvatarUrl(url)
   }
 
   // ── Non connecté ─────────────────────────────────────────────────────────
@@ -327,23 +351,47 @@ export default function MePage() {
       {activeTab === 'profil' && (
         <div style={{ padding:'16px 20px' }}>
 
-          <Section title="Photo de profil">
-            <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-              <label style={{ cursor: avatarUploading ? 'wait' : 'pointer', position: 'relative' }}>
-                <input type="file" accept="image/*" onChange={onAvatarChange} disabled={avatarUploading} style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer' }} />
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="Avatar" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: 80, height: 80, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 700, color: 'white' }}>
-                    {(displayName || '?')[0].toUpperCase()}
-                  </div>
-                )}
+          <Section title="Photos & vidéos">
+            {/* Photo gallery */}
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
+              {photos.map((url) => (
+                <div key={url} style={{ position:'relative', width:80, height:80 }}>
+                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border: avatarUrl === url ? '2px solid ' + S.p300 : '1px solid ' + S.border }} />
+                  {avatarUrl === url && (
+                    <div style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#fff', fontWeight:700, border:'2px solid ' + S.bg1 }}>1</div>
+                  )}
+                  <button onClick={() => removePhoto(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
+                  {avatarUrl !== url && (
+                    <button onClick={() => setAsAvatar(url)} style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600, cursor:'pointer', border:'none' }}>avatar</button>
+                  )}
+                </div>
+              ))}
+              {/* Add photo button */}
+              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.border, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+                <input type="file" accept="image/*" multiple onChange={e => { const files = e.target.files; if (files) Array.from(files).forEach(f => uploadMedia(f, 'photo')); e.target.value = '' }} disabled={mediaUploading} style={{ display:'none' }} />
+                <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
+                <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Photo</span>
               </label>
-              <div>
-                <p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{avatarUploading ? 'Upload...' : 'Clique pour changer'}</p>
-                <p style={{ fontSize: 11, color: S.tx3, marginTop: 4 }}>JPG, PNG. Affiché sur ton profil.</p>
-              </div>
             </div>
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 12px' }}>{photos.length} photo{photos.length !== 1 ? 's' : ''}{photos.length > 0 ? ' · clique pour définir l\'avatar' : ''}</p>
+
+            {/* Video gallery */}
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
+              {videos.map((url) => (
+                <div key={url} style={{ position:'relative', width:100, height:80 }}>
+                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.border }} />
+                  <button onClick={() => removeVideo(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
+                  <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>vidéo</div>
+                </div>
+              ))}
+              {/* Add video button */}
+              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.border, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+                <input type="file" accept="video/*" onChange={e => { const f = e.target.files?.[0]; if (f) uploadMedia(f, 'video'); e.target.value = '' }} disabled={mediaUploading} style={{ display:'none' }} />
+                <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
+                <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Vidéo</span>
+              </label>
+            </div>
+            {mediaUploading && <p style={{ fontSize:12, color:S.p300, margin:0 }}>Upload en cours...</p>}
           </Section>
 
           <Section title="Profil">

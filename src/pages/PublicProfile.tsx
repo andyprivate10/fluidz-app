@@ -86,23 +86,31 @@ export default function PublicProfile() {
 
   const p = profile.profile_json || {}
   const kinks: string[] = p.kinks || []
-  const gallery: string[] = [p.avatar_url, ...(Array.isArray(p.gallery) ? p.gallery : [])].filter(Boolean)
+  const allPhotos: string[] = Array.isArray(p.photos) ? p.photos : p.avatar_url ? [p.avatar_url] : []
+  const allVideos: string[] = Array.isArray(p.videos) ? p.videos : []
+  const hasMedia = allPhotos.length > 0 || allVideos.length > 0
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
       <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.border }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour</button>
 
-        {gallery.length > 0 && (
+        {hasMedia && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, marginBottom: 16, scrollbarWidth: 'none' }}>
-            {gallery.map((url: string, i: number) => (
-              <img key={i} src={url} alt="" style={{ width: 80, height: 80, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
+            {allPhotos.map((url: string, i: number) => (
+              <img key={i} src={url} alt="" style={{ width: allPhotos.length === 1 && allVideos.length === 0 ? '100%' : 120, height: 160, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+            ))}
+            {allVideos.map((url: string, i: number) => (
+              <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
+                <video src={url} controls style={{ width: 120, height: 160, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.border }} />
+                <div style={{ position: 'absolute', bottom: 6, right: 6, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+              </div>
             ))}
           </div>
         )}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          {!gallery.length && (
+          {!hasMedia && (
             p.avatar_url ? (
               <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', flexShrink: 0, border: '2px solid ' + S.border }} />
             ) : (

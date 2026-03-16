@@ -139,15 +139,37 @@ export default function CandidateProfilePage() {
   const health = pj.health || snapshot.health || {}
   const avatarUrl = pj.avatar_url || snapshot.avatar_url || ''
   const messageText = eps.message || eps.occasion_note || ''
+  const candidatePhotos: string[] = eps.selected_photos || (Array.isArray(pj.photos) ? pj.photos : avatarUrl ? [avatarUrl] : [])
+  const candidateVideos: string[] = eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : [])
 
   const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, marginBottom: 12 }
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto' }}>
 
+      {/* Photo gallery */}
+      {candidatePhotos.length > 0 && (
+        <div style={{ padding: '40px 20px 0' }}>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
+            {candidatePhotos.map((url: string, i: number) => (
+              <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+            ))}
+            {candidateVideos.map((url: string, i: number) => (
+              <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
+                <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.border }} />
+                <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
-      <div style={{ padding: '40px 20px 20px' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0 }}>← Retour</button>
+      <div style={{ padding: candidatePhotos.length > 0 ? '16px 20px 20px' : '40px 20px 20px' }}>
+        {candidatePhotos.length === 0 && (
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0 }}>← Retour</button>
+        )}
 
         {/* Avatar + Name */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
