@@ -6,7 +6,7 @@ import type { User } from '@supabase/supabase-js'
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
-type VoteRow = { id: string; application_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
+type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
 const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
 const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
@@ -111,7 +111,7 @@ export default function SessionPage() {
 
       const { data: voteRows } = await supabase
         .from('votes')
-        .select('id, application_id, voter_id, vote, session_id')
+        .select('id, applicant_id, voter_id, vote, session_id')
         .eq('session_id', id)
       setVotes((voteRows as VoteRow[]) || [])
 
@@ -158,8 +158,8 @@ export default function SessionPage() {
     }
   }
 
-  const getVoteStats = (applicationId: string) => {
-    const appVotes = votes.filter(v => v.application_id === applicationId)
+  const getVoteStats = (applicantId: string) => {
+    const appVotes = votes.filter(v => v.applicant_id === applicantId)
     const yesCount = appVotes.filter(v => v.vote === 'yes').length
     const noCount = appVotes.filter(v => v.vote === 'no').length
     const myId = currentUser?.id
@@ -167,23 +167,23 @@ export default function SessionPage() {
     return { yesCount, noCount, myVote }
   }
 
-  const handleVote = async (applicationId: string, choice: 'yes' | 'no') => {
+  const handleVote = async (applicantId: string, choice: 'yes' | 'no') => {
     if (!currentUser || !id) return
-    const { myVote } = getVoteStats(applicationId)
+    const { myVote } = getVoteStats(applicantId)
     if (myVote) return
-    setVoteLoadingId(applicationId)
+    setVoteLoadingId(applicantId)
     try {
       const { data, error } = await supabase
         .from('votes')
-        .insert({ session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice })
-        .select('id, application_id, voter_id, vote, session_id')
+        .insert({ session_id: id, applicant_id: applicantId, voter_id: currentUser.id, vote: choice })
+        .select('id, applicant_id, voter_id, vote, session_id')
         .single()
       if (error) {
         console.error('Vote error:', error)
         alert('Erreur vote: ' + error.message)
       } else if (data) {
         setVotes(prev => {
-          const others = prev.filter(v => !(v.application_id === applicationId && v.voter_id === currentUser.id))
+          const others = prev.filter(v => !(v.applicant_id === applicantId && v.voter_id === currentUser.id))
           return [...others, data as VoteRow]
         })
       }
@@ -386,8 +386,8 @@ export default function SessionPage() {
                 {pendingApps
                   .filter(p => !currentUser || p.applicant_id !== currentUser.id)
                   .map(p => {
-                    const { yesCount, noCount, myVote } = getVoteStats(p.id)
-                    const disabled = !!myVote || voteLoadingId === p.id
+                    const { yesCount, noCount, myVote } = getVoteStats(p.applicant_id)
+                    const disabled = !!myVote || voteLoadingId === p.applicant_id
                     const name = p.display_name || 'Anonyme'
                     return (
                       <div key={p.id} style={{ padding: 10, borderRadius: 12, background: '#0C0A14', border: '1px solid #2A2740', display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -408,7 +408,7 @@ export default function SessionPage() {
                           <button
                             type="button"
                             disabled={disabled}
-                            onClick={() => handleVote(p.id, 'yes')}
+                            onClick={() => handleVote(p.applicant_id, 'yes')}
                             style={{
                               flex: 1,
                               padding: '8px 10px',
@@ -427,7 +427,7 @@ export default function SessionPage() {
                           <button
                             type="button"
                             disabled={disabled}
-                            onClick={() => handleVote(p.id, 'no')}
+                            onClick={() => handleVote(p.applicant_id, 'no')}
                             style={{
                               flex: 1,
                               padding: '8px 10px',

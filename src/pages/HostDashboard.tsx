@@ -27,7 +27,7 @@ export default function HostDashboard() {
   const [broadcastSending, setBroadcastSending] = useState(false)
   const [hostDisplayName, setHostDisplayName] = useState<string>('')
 
-  const [votes, setVotes] = useState<{ application_id: string; vote: string }[]>([])
+  const [votes, setVotes] = useState<{ applicant_id: string; vote: string }[]>([])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -47,11 +47,11 @@ export default function HostDashboard() {
         supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
         supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
         uid ? supabase.from('user_profiles').select('display_name').eq('id', uid).maybeSingle() : Promise.resolve({ data: null }),
-        supabase.from('votes').select('application_id, vote').eq('session_id', id),
+        supabase.from('votes').select('applicant_id, vote').eq('session_id', id),
       ])
       setSess(s)
       setApps(a || [])
-      setVotes((v as { application_id: string; vote: string }[]) || [])
+      setVotes((v as { applicant_id: string; vote: string }[]) || [])
       if (prof?.display_name) setHostDisplayName(prof.display_name)
     } catch {
       setLoadError(true)
@@ -315,7 +315,7 @@ export default function HostDashboard() {
                 {app.status === 'pending' && (
                   <div style={{marginTop:10}}>
                     {(() => {
-                      const appVotes = votes.filter(v => v.application_id === app.id)
+                      const appVotes = votes.filter(v => v.applicant_id === app.applicant_id)
                       const yes = appVotes.filter(v => v.vote === 'yes').length
                       const no = appVotes.filter(v => v.vote === 'no').length
                       if (yes + no === 0) return null
