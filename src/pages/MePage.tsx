@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { showToast } from '../components/Toast'
 import type { User } from '@supabase/supabase-js'
 
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
@@ -215,21 +216,26 @@ export default function MePage() {
   async function uploadMedia(file: File, type: 'photo' | 'video') {
     if (!user) return
     setMediaUploading(true)
-    const ext = file.name.split('.').pop() || (type === 'video' ? 'mp4' : 'jpg')
-    const ts = Date.now()
-    const path = `${user.id}/${type}_${ts}.${ext}`
-    const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: false })
-    if (error) {
-      console.error('Upload error:', error)
-      setMediaUploading(false)
-      return
-    }
-    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-    if (type === 'photo') {
-      setPhotos(prev => [...prev, publicUrl])
-      if (!avatarUrl) setAvatarUrl(publicUrl)
-    } else {
-      setVideos(prev => [...prev, publicUrl])
+    try {
+      const ext = file.name.split('.').pop() || (type === 'video' ? 'mp4' : 'jpg')
+      const ts = Date.now() + Math.random().toString(36).slice(2, 6)
+      const path = `${user.id}/${type}_${ts}.${ext}`
+      const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: false })
+      if (error) {
+        showToast('Erreur upload: ' + error.message, 'error')
+        setMediaUploading(false)
+        return
+      }
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+      if (type === 'photo') {
+        setPhotos(prev => [...prev, publicUrl])
+        if (!avatarUrl) setAvatarUrl(publicUrl)
+      } else {
+        setVideos(prev => [...prev, publicUrl])
+      }
+      showToast(type === 'photo' ? 'Photo ajoutée' : 'Vidéo ajoutée', 'success')
+    } catch (err) {
+      showToast('Erreur: ' + String(err), 'error')
     }
     setMediaUploading(false)
   }
@@ -368,7 +374,7 @@ export default function MePage() {
               ))}
               {/* Add photo button */}
               <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.border, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="image/*" multiple onChange={e => { const files = e.target.files; if (files) Array.from(files).forEach(f => uploadMedia(f, 'photo')); e.target.value = '' }} disabled={mediaUploading} style={{ display:'none' }} />
+                <input type="file" accept="image/*" multiple onChange={async e => { const files = e.target.files; if (files) { for (const f of Array.from(files)) await uploadMedia(f, 'photo') } e.target.value = '' }} disabled={mediaUploading} style={{ display:'none' }} />
                 <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
                 <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Photo</span>
               </label>
