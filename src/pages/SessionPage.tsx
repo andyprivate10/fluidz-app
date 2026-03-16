@@ -175,13 +175,13 @@ export default function SessionPage() {
     try {
       const { data, error } = await supabase
         .from('votes')
-        .upsert(
-          { session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice },
-          { onConflict: 'application_id,voter_id' }
-        )
+        .insert({ session_id: id, application_id: applicationId, voter_id: currentUser.id, vote: choice })
         .select('id, application_id, voter_id, vote, session_id')
         .single()
-      if (!error && data) {
+      if (error) {
+        console.error('Vote error:', error)
+        alert('Erreur vote: ' + error.message)
+      } else if (data) {
         setVotes(prev => {
           const others = prev.filter(v => !(v.application_id === applicationId && v.voter_id === currentUser.id))
           return [...others, data as VoteRow]
