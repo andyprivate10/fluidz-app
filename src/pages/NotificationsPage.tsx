@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import BottomNav from '../components/BottomNav'
 
 type Notif = { id: string; user_id: string; type: string; title: string; body: string; href: string | null; read_at: string | null; created_at: string }
 
@@ -72,7 +71,6 @@ export default function NotificationsPage() {
     return (
       <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter,sans-serif' }}>
         <p style={{ color: S.tx3 }}>Connecte-toi pour voir tes notifications.</p>
-        <BottomNav />
       </div>
     )
   }
@@ -121,7 +119,6 @@ export default function NotificationsPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   )
 }

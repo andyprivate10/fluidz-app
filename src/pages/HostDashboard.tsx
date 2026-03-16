@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import BottomNav from '../components/BottomNav'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -363,7 +362,6 @@ export default function HostDashboard() {
         })}
       </div>
 
-      <BottomNav active='sessions' />
     </div>
   )
 }

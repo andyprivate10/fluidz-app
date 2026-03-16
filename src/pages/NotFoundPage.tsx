@@ -7,7 +7,7 @@ export default function NotFoundPage() {
       style={{
         background: '#0C0A14',
         padding: 24,
-        maxWidth: 390,
+        maxWidth: 480,
         margin: '0 auto',
         display: 'flex',
         flexDirection: 'column',

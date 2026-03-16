@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import BottomNav from '../components/BottomNav'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
@@ -64,7 +63,7 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
 
       <div style={{ padding: '48px 24px 24px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: S.p300, margin: '0 0 4px' }}>fluidz</h1>
@@ -149,7 +148,6 @@ export default function HomePage() {
         )}
       </div>
 
-      <BottomNav active="home" />
     </div>
   )
 }

@@ -169,7 +169,7 @@ export default function DMPage() {
   return (
     <div style={{
       background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column',
-      padding: 0, maxWidth: 390, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif',
+      padding: 0, maxWidth: 480, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif',
     }}>
       {/* Header */}
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

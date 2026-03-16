@@ -65,7 +65,7 @@ export default function JoinPage() {
       )}
 
       {status === 'found' && session && (
-        <div style={{width:'100%',maxWidth:380}}>
+        <div style={{width:'100%',maxWidth:440}}>
           <div style={{background:S.bg1,borderRadius:20,padding:'24px',border:'1px solid '+S.border,marginBottom:16}}>
             <p style={{fontSize:24,margin:'0 0 4px',textAlign:'center'}}>🔥</p>
             <h1 style={{fontSize:20,fontWeight:800,color:S.tx,textAlign:'center',margin:'0 0 8px'}}>{session.title}</h1>

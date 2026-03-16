@@ -1,6 +1,7 @@
 import { BrowserRouter, useLocation, useRoutes } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
+import ToastProvider from './components/Toast'
 import HomePage from './pages/HomePage'
 import SessionPage from './pages/SessionPage'
 import CreateSessionPage from './pages/CreateSessionPage'
@@ -59,6 +60,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <ToastProvider />
         <AnimatedRoutes />
         <BottomNav />
       </BrowserRouter>

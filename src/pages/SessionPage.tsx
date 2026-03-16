@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { showToast } from '../components/Toast'
 import type { User } from '@supabase/supabase-js'
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
@@ -8,7 +9,7 @@ type Member = { applicant_id: string; eps_json: Record<string, string>; status: 
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
-const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
+const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
 const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
 
 export default function SessionPage() {
@@ -180,7 +181,7 @@ export default function SessionPage() {
         .single()
       if (error) {
         console.error('Vote error:', error)
-        alert('Erreur vote: ' + error.message)
+        showToast('Erreur vote: ' + error.message, 'error')
       } else if (data) {
         setVotes(prev => {
           const others = prev.filter(v => !(v.applicant_id === applicantId && v.voter_id === currentUser.id))
@@ -342,7 +343,7 @@ export default function SessionPage() {
             {sheetMember && isMobile && (
               <>
                 <div role="presentation" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} onClick={() => setSheetMember(null)} />
-                <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, maxWidth: 390, margin: '0 auto', background: '#16141F', borderTopLeftRadius: 20, borderTopRightRadius: 20, border: '1px solid #2A2740', padding: '20px 20px 24px', zIndex: 50 }}>
+                <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, maxWidth: 480, margin: '0 auto', background: '#16141F', borderTopLeftRadius: 20, borderTopRightRadius: 20, border: '1px solid #2A2740', padding: '20px 20px 24px', zIndex: 50 }}>
                   <div style={{ width: 36, height: 4, borderRadius: 2, background: '#7E7694', margin: '0 auto 16px' }} />
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
                     {memberAvatars[sheetMember.applicant_id] ? (
@@ -565,7 +566,7 @@ export default function SessionPage() {
       </div>
 
       {(!isHost && (showPostulerSuccess || (!myApp && session.status === 'open'))) && (
-        <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>
+        <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>
           {showPostulerSuccess ? (
             <button disabled style={{ width: '100%', padding: 16, background: '#14532d', border: '1px solid #4ADE80', borderRadius: 14, color: '#4ADE80', fontSize: 16, fontWeight: 700 }}>
               Candidature envoyee ✓

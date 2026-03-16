@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import BottomNav from '../components/BottomNav'
 
 type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string }
 type AppSession = { session_id: string; status: string; title: string; approx_area: string }
@@ -59,7 +58,7 @@ export default function SessionsPage() {
   }, [])
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 390, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 12px' }}>Sessions</h1>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -82,7 +81,7 @@ export default function SessionsPage() {
         </div>
       </div>
 
-      <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="stagger-children" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {tab === 'hosted' && (
           <>
             <button
@@ -154,7 +153,6 @@ export default function SessionsPage() {
         )}
       </div>
 
-      <BottomNav active="sessions" />
     </div>
   )
 }

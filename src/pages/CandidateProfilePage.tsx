@@ -143,7 +143,7 @@ export default function CandidateProfilePage() {
   const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, marginBottom: 12 }
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 390, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif' }}>
 
       {/* Header */}
       <div style={{ padding: '40px 20px 20px' }}>
@@ -271,7 +271,7 @@ export default function CandidateProfilePage() {
       {isHost && app.status === 'pending' && (
         <div style={{
           position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-          width: '100%', maxWidth: 390, padding: '12px 20px 28px',
+          width: '100%', maxWidth: 480, padding: '12px 20px 28px',
           background: 'linear-gradient(to top, ' + S.bg0 + ' 70%, transparent)', display: 'flex', gap: 10,
         }}>
           <button onClick={() => handleDecision('rejected')} disabled={actioning} style={{

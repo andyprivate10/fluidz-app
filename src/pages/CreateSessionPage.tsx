@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import BottomNav from '../components/BottomNav'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -154,7 +153,6 @@ export default function CreateSessionPage() {
             Aller à la session
           </button>
         </div>
-        <BottomNav active='sessions' />
       </div>
     )
   }
@@ -290,7 +288,6 @@ export default function CreateSessionPage() {
         </div>
       )}
 
-      <BottomNav active='sessions' />
     </div>
   )
 }

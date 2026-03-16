@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { Home, Zap, Bell, User } from 'lucide-react'
 
-type BottomNavProps = { active?: string }
-export default function BottomNav(props: BottomNavProps) {
-  const { active: activeTab } = props
+export default function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
   const [userId, setUserId] = useState<string | null>(null)
@@ -30,11 +29,7 @@ export default function BottomNav(props: BottomNavProps) {
     if (!userId) return
     const channel = supabase
       .channel('applications-for-host')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'applications',
-      }, async (payload: { new: { session_id: string } }) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'applications' }, async (payload: { new: { session_id: string } }) => {
         const { data } = await supabase.from('sessions').select('host_id').eq('id', payload.new.session_id).maybeSingle()
         if (data?.host_id === userId) setHasNewApplication(true)
       })
@@ -46,36 +41,37 @@ export default function BottomNav(props: BottomNavProps) {
     if (/\/session\/[^/]+\/host/.test(location.pathname)) setHasNewApplication(false)
   }, [location.pathname])
 
-  // Hide on DM pages (full-screen chat)
-  if (location.pathname.includes('/dm')) return null
+  // Hide on DM and dev pages
+  if (location.pathname.includes('/dm') || location.pathname.includes('/dev/')) return null
 
   const tabs = [
-    { path: '/', icon: '🏠', label: 'Home' },
-    { path: '/sessions', icon: '⚡', label: 'Sessions' },
-    { path: '/notifications', icon: '🔔', label: 'Notifs' },
-    { path: '/me', icon: '👤', label: 'Moi' },
+    { path: '/', icon: Home, label: 'Home' },
+    { path: '/sessions', icon: Zap, label: 'Sessions' },
+    { path: '/notifications', icon: Bell, label: 'Notifs' },
+    { path: '/me', icon: User, label: 'Moi' },
   ]
 
   return (
-    <nav
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '100%',
-        maxWidth: 390,
-        background: '#16141F',
-        borderTop: '1px solid #2A2740',
-        display: 'flex',
-        justifyContent: 'space-around',
-        padding: '8px 0 20px',
-        zIndex: 100,
-      }}
-    >
+    <nav style={{
+      position: 'fixed',
+      bottom: 0,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: '100%',
+      maxWidth: 480,
+      background: 'rgba(22, 20, 31, 0.92)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      borderTop: '1px solid rgba(42, 39, 64, 0.6)',
+      display: 'flex',
+      justifyContent: 'space-around',
+      padding: '6px 0 calc(8px + env(safe-area-inset-bottom, 0px))',
+      zIndex: 100,
+    }}>
       {tabs.map((tab) => {
-        const isActive = location.pathname === tab.path || (activeTab != null && (activeTab === 'home' ? tab.path === '/' : '/' + activeTab === tab.path))
+        const isActive = location.pathname === tab.path
         const showBadge = (tab.path === '/me' && hasNewApplication) || (tab.path === '/notifications' && unreadNotifCount > 0)
+        const Icon = tab.icon
         return (
           <button
             key={tab.path}
@@ -88,61 +84,55 @@ export default function BottomNav(props: BottomNavProps) {
               alignItems: 'center',
               gap: 2,
               cursor: 'pointer',
-              padding: '4px 20px',
+              padding: '6px 20px',
               position: 'relative',
+              transition: 'transform 0.15s',
             }}
           >
-            <span style={{ fontSize: 20, position: 'relative' }}>
-              {tab.icon}
+            <div style={{ position: 'relative' }}>
+              <Icon
+                size={22}
+                strokeWidth={isActive ? 2.5 : 1.8}
+                style={{
+                  color: isActive ? '#F9A8A8' : '#7E7694',
+                  transition: 'color 0.2s',
+                }}
+              />
               {showBadge && tab.path === '/notifications' && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: -6,
-                    right: -8,
-                    minWidth: 16,
-                    height: 16,
-                    padding: '0 4px',
-                    borderRadius: 8,
-                    background: '#F87171',
-                    border: '2px solid #16141F',
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  aria-hidden
-                >
+                <span style={{
+                  position: 'absolute', top: -4, right: -8,
+                  minWidth: 16, height: 16, padding: '0 4px',
+                  borderRadius: 8, background: '#F87171',
+                  border: '2px solid #16141F',
+                  fontSize: 10, fontWeight: 700, color: 'white',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
                   {unreadNotifCount > 99 ? '99+' : unreadNotifCount}
                 </span>
               )}
               {showBadge && tab.path === '/me' && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: -2,
-                    right: -4,
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    background: '#F87171',
-                    border: '2px solid #16141F',
-                  }}
-                  aria-hidden
-                />
+                <span style={{
+                  position: 'absolute', top: -2, right: -4,
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: '#F87171', border: '2px solid #16141F',
+                }} />
               )}
-            </span>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: isActive ? '#F9A8A8' : '#7E7694',
-              }}
-            >
+            </div>
+            <span style={{
+              fontSize: 10, fontWeight: isActive ? 700 : 500,
+              color: isActive ? '#F9A8A8' : '#7E7694',
+              transition: 'color 0.2s',
+              letterSpacing: '0.01em',
+            }}>
               {tab.label}
             </span>
+            {isActive && (
+              <div style={{
+                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+                width: 20, height: 2, borderRadius: 1,
+                background: 'linear-gradient(90deg, #F9A8A8, #F47272)',
+              }} />
+            )}
           </button>
         )
       })}

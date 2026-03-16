@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
-import BottomNav from '../components/BottomNav'
 
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
 const ROLES = ['Top','Bottom','Versa','Side']
@@ -263,7 +262,6 @@ export default function MePage() {
           {loading ? 'Envoi...' : hasGuestToken ? 'Créer mon compte (lien magique)' : '✉️ Envoyer le lien magique'}
         </button>
         {msg && <p style={{ marginTop:16, fontSize:13, color:S.tx2, textAlign:'center' }}>{msg}</p>}
-        <BottomNav active="me" />
       </div>
     )
   }
@@ -452,7 +450,6 @@ export default function MePage() {
         </div>
       )}
 
-      <BottomNav active="me" />
     </div>
   )
 }
