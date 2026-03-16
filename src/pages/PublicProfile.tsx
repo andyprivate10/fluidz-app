@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import BottomNav from '../components/BottomNav'
 
 const S = {
   bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B', bg3: '#2A2740',
@@ -104,9 +105,9 @@ export default function PublicProfile() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {!gallery.length && (
             p.avatar_url ? (
-              <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+              <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', flexShrink: 0, border: '2px solid ' + S.border }} />
             ) : (
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+              <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, color: 'white', flexShrink: 0 }}>
                 {(profile.display_name || '?')[0].toUpperCase()}
               </div>
             )
@@ -180,6 +181,8 @@ export default function PublicProfile() {
           </div>
         )}
       </div>
+
+      <BottomNav />
     </div>
   )
 }

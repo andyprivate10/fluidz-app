@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import BottomNav from '../components/BottomNav'
@@ -66,7 +66,9 @@ function Section({ title, badge, children }: { title:string; badge?:string; chil
 
 export default function MePage() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const devMode = searchParams.get('dev') === '1'
+  const nextUrl = searchParams.get('next')
   const [user, setUser] = useState<User | null>(null)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -102,6 +104,8 @@ export default function MePage() {
       const u = data.session?.user ?? null
       setUser(u)
       if (u) {
+        // Already logged in + ?next= → redirect immediately
+        if (nextUrl) { navigate(nextUrl); return }
         loadProfile(u.id)
         try {
           const token = localStorage.getItem('guest_token')
@@ -119,6 +123,11 @@ export default function MePage() {
       setUser(u)
       if (u) {
         loadProfile(u.id)
+        // Redirect to ?next= URL if present
+        if (nextUrl) {
+          navigate(nextUrl)
+          return
+        }
         try {
           const token = localStorage.getItem('guest_token')
           if (token) {

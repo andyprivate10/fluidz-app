@@ -48,6 +48,7 @@ export default function DMPage() {
   const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
   const [peerId, setPeerId] = useState<string | null>(null)
+  const [peerName, setPeerName] = useState<string>('')
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -91,11 +92,20 @@ export default function DMPage() {
         }
 
         if (sess) {
+          let pid: string | null = null
           if (user?.id === sess.host_id) {
-            const { data: appRow } = await supabase.from('applications').select('applicant_id').eq('session_id', id).limit(1)
+            const { data: appRow } = await supabase.from('applications').select('applicant_id').eq('session_id', id).in('status', ['accepted', 'checked_in', 'pending']).limit(1)
             const row = Array.isArray(appRow) ? appRow[0] : appRow
-            if (row?.applicant_id) setPeerId(row.applicant_id)
-          } else setPeerId(sess.host_id)
+            if (row?.applicant_id) pid = row.applicant_id
+          } else {
+            pid = sess.host_id
+          }
+          setPeerId(pid)
+          // Fetch peer display name
+          if (pid) {
+            const { data: peerProf } = await supabase.from('user_profiles').select('display_name').eq('id', pid).maybeSingle()
+            if (peerProf?.display_name) setPeerName(peerProf.display_name)
+          }
         }
 
         const { data: msgs } = await supabase
@@ -170,7 +180,7 @@ export default function DMPage() {
               {session?.title ?? 'DM'}
             </h1>
             <p style={{ color: S.tx3, fontSize: 12, margin: 0 }}>
-              {isHost ? 'Tu es le host' : 'Message avec le host'}
+              {isHost ? (peerName ? `DM avec ${peerName}` : 'Tu es le host') : (peerName ? `DM avec ${peerName}` : 'Message avec le host')}
             </p>
           </div>
         </div>
