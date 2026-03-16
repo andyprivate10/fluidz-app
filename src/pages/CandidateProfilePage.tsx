@@ -80,16 +80,22 @@ export default function CandidateProfilePage() {
       href: decision === 'accepted' ? `/session/${sessionId}/dm` : `/session/${sessionId}`,
     })
 
-    // Safety tip on accept
+    // Safety tip on accept (only once per session)
     if (decision === 'accepted') {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        await supabase.from('messages').insert({
-          session_id: sessionId,
-          sender_id: user.id,
-          text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
-          sender_name: '🛡️ Fluidz',
-        })
+        const { count } = await supabase.from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('session_id', sessionId)
+          .eq('sender_name', '🛡️ Fluidz')
+        if (!count || count === 0) {
+          await supabase.from('messages').insert({
+            session_id: sessionId,
+            sender_id: user.id,
+            text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
+            sender_name: '🛡️ Fluidz',
+          })
+        }
       }
     }
 

@@ -85,14 +85,20 @@ export default function HostDashboard() {
         href,
       })
 
-      // Safety tip DM on acceptance
+      // Safety tip DM on acceptance (only once per session)
       if (status === 'accepted' && user) {
-        await supabase.from('messages').insert({
-          session_id: id,
-          sender_id: user.id,
-          text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
-          sender_name: '🛡️ Fluidz',
-        })
+        const { count } = await supabase.from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('session_id', id)
+          .eq('sender_name', '🛡️ Fluidz')
+        if (!count || count === 0) {
+          await supabase.from('messages').insert({
+            session_id: id,
+            sender_id: user.id,
+            text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
+            sender_name: '🛡️ Fluidz',
+          })
+        }
       }
     }
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
