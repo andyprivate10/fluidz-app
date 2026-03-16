@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap } from 'lucide-react'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -12,14 +13,14 @@ const S = {
 const ROLE_OPTIONS = ['Top', 'Bottom', 'Versa', 'Side']
 
 const SECTIONS = [
-  {id:'basics',label:'Basics',emoji:'👤',desc:'pseudo, âge, bio, location'},
-  {id:'role',label:'Rôle',emoji:'🎭',desc:'top, bottom, versa, side'},
-  {id:'physique',label:'Physique',emoji:'💪',desc:'taille, poids, morphologie'},
-  {id:'pratiques',label:'Pratiques',emoji:'🔥',desc:'kinks & pratiques'},
-  {id:'sante',label:'Santé / PrEP',emoji:'💊',desc:'statut PrEP, dernier test'},
-  {id:'limites',label:'Limites',emoji:'🚫',desc:'hard limits, no-go'},
-  {id:'photos',label:'Photos',emoji:'📸',desc:'photos de profil'},
-  {id:'occasion',label:'Pour cette session',emoji:'⚡',desc:'message + contenu spécifique'},
+  {id:'basics',label:'Basics',icon:User,desc:'pseudo, âge, bio, location'},
+  {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
+  {id:'physique',label:'Physique',icon:Dumbbell,desc:'taille, poids, morphologie'},
+  {id:'pratiques',label:'Pratiques',icon:Flame,desc:'kinks & pratiques'},
+  {id:'sante',label:'Santé / PrEP',icon:Heart,desc:'statut PrEP, dernier test'},
+  {id:'limites',label:'Limites',icon:ShieldOff,desc:'hard limits, no-go'},
+  {id:'photos',label:'Photos',icon:Camera,desc:'photos de profil'},
+  {id:'occasion',label:'Pour cette session',icon:Zap,desc:'message + contenu spécifique'},
 ]
 
 const GUEST_TOKEN_KEY = 'guest_token'
@@ -156,7 +157,7 @@ export default function ApplyPage() {
   }
 
   if (!user && !guestMode) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{textAlign:'center',padding:24}}>
         <p style={{color:S.tx3,marginBottom:16}}>Connecte-toi pour postuler</p>
         <button onClick={() => navigate('/me')} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer'}}>Se connecter</button>
@@ -164,17 +165,17 @@ export default function ApplyPage() {
     </div>
   )
   if (dataLoading) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
       <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
   if (loadError) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
       <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid ' + S.border}}>
         <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Postuler</h1>
@@ -268,7 +269,7 @@ export default function ApplyPage() {
                   display:'flex',alignItems:'center',justifyContent:'space-between',transition:'all 0.2s',
                 }}>
                   <div style={{display:'flex',alignItems:'center',gap:10,flex:1,minWidth:0}}>
-                    <span style={{fontSize:18}}>{sec.emoji}</span>
+                    <sec.icon size={18} style={{color:on?S.p300:S.tx4,flexShrink:0}} />
                     <div style={{flex:1,minWidth:0}}>
                       <p style={{margin:0,fontSize:14,fontWeight:600,color:on?S.tx:S.tx3}}>{sec.label}</p>
                       {on && preview ? (

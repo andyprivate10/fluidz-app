@@ -105,7 +105,7 @@ export default function CandidateProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', justifyContent: 'center', paddingTop: 80, fontFamily: 'Inter,system-ui,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
         <div style={{ width: 32, height: 32, border: '3px solid ' + S.p300, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>
     )
@@ -113,7 +113,7 @@ export default function CandidateProfilePage() {
 
   if (!app) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter,system-ui,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: S.tx3 }}>Candidature introuvable</p>
         <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p300, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>← Retour</button>
       </div>
@@ -143,7 +143,7 @@ export default function CandidateProfilePage() {
   const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, marginBottom: 12 }
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto' }}>
 
       {/* Header */}
       <div style={{ padding: '40px 20px 20px' }}>
@@ -178,9 +178,9 @@ export default function CandidateProfilePage() {
             background: (app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow) + '18',
             border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow) + '44',
           }}>
-            {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : '⏳ En attente'}
+            {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : 'En attente'}
           </span>
-          {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>👻 Ghost</span>}
+          {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
         </div>
       </div>
 
@@ -211,13 +211,13 @@ export default function CandidateProfilePage() {
             <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Santé</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {health.prep_status === 'Actif' && (
-                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.green, background: S.green + '18', border: '1px solid ' + S.green + '44' }}>💊 PrEP actif ✓</span>
+                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.green, background: S.green + '18', border: '1px solid ' + S.green + '44' }}>PrEP actif</span>
               )}
               {health.prep_status && health.prep_status !== 'Actif' && (
                 <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
               )}
               {health.dernier_test && (
-                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>🧪 Testé {monthsAgo(health.dernier_test)}</span>
+                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>Testé {monthsAgo(health.dernier_test)}</span>
               )}
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function CandidateProfilePage() {
         {/* Limites */}
         {limits && (
           <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>🚫 Limites</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Limites</p>
             <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
           </div>
         )}
@@ -246,7 +246,7 @@ export default function CandidateProfilePage() {
         {/* Message au host */}
         {messageText && (
           <div style={{ ...card, borderColor: S.p300 + '44' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>💬 Message au host</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
             <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
           </div>
         )}
@@ -254,7 +254,7 @@ export default function CandidateProfilePage() {
         {/* Occasion note */}
         {eps.occasion_note && eps.occasion_note !== messageText && (
           <div style={{ ...card, borderColor: S.p300 + '33' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>⚡ Note pour cette session</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
             <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
           </div>
         )}

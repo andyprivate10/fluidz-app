@@ -13,7 +13,7 @@ export default {
         peach300: '#F9A8A8',
         peach400: '#F47272',
       },
-      fontFamily: { sans: ['Inter', 'sans-serif'] }
+      fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] }
     }
   },
   plugins: []

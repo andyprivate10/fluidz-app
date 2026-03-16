@@ -6,7 +6,7 @@ export default function NotFoundPage() {
     <div style={{
       minHeight:'100vh', background:'#0C0A14', display:'flex', flexDirection:'column',
       alignItems:'center', justifyContent:'center', padding:24,
-      fontFamily:'Inter,system-ui,sans-serif', position:'relative', overflow:'hidden',
+       position:'relative', overflow:'hidden',
     }}>
       <div style={{
         position:'absolute', top:'20%', left:'50%', transform:'translateX(-50%)',

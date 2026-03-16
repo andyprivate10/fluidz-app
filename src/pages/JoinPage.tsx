@@ -67,7 +67,7 @@ export default function JoinPage() {
     <div style={{
       minHeight:'100vh', background:S.bg0,
       display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-      padding:'24px', fontFamily:'Inter,system-ui,sans-serif',
+      padding:'24px', 
       position: 'relative', overflow: 'hidden',
     }}>
       {/* Subtle glow background */}

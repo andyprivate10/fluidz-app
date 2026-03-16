@@ -69,14 +69,14 @@ export default function NotificationsPage() {
 
   if (!user) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: S.tx3 }}>Connecte-toi pour voir tes notifications.</p>
       </div>
     )
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96, fontFamily: 'Inter,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>

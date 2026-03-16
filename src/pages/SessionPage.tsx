@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import { Clock, ThumbsUp, ThumbsDown } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
@@ -9,7 +10,7 @@ type Member = { applicant_id: string; eps_json: Record<string, string>; status: 
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
-const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter, sans-serif' }
+const st: React.CSSProperties = { background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
 const card: React.CSSProperties = { background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
 
 export default function SessionPage() {
@@ -256,9 +257,9 @@ export default function SessionPage() {
           </div>
         )}
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
-          <div style={{ fontSize: 13, color: '#F0EDFF', marginTop: 6, fontWeight: 600 }}>📍 {session.exact_address}</div>
+          <div style={{ fontSize: 13, color: '#F0EDFF', marginTop: 6, fontWeight: 600 }}>{session.exact_address}</div>
         ) : session.approx_area ? (
-          <div style={{ fontSize: 13, color: '#7E7694', marginTop: 6 }}>🔒 Autour de {session.approx_area}</div>
+          <div style={{ fontSize: 13, color: '#7E7694', marginTop: 6 }}>Autour de {session.approx_area}</div>
         ) : null}
         {isHost && <div style={{ fontSize: 12, color: '#F9A8A8', marginTop: 4, fontWeight: 600 }}>Tu es le host</div>}
       </div>
@@ -423,7 +424,7 @@ export default function SessionPage() {
                               opacity: disabled && myVote !== 'yes' ? 0.5 : 1,
                             }}
                           >
-                            👍 Oui
+                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsUp size={14} /> Oui</span>
                           </button>
                           <button
                             type="button"
@@ -442,7 +443,7 @@ export default function SessionPage() {
                               opacity: disabled && myVote !== 'no' ? 0.5 : 1,
                             }}
                           >
-                            👎 Non
+                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> Non</span>
                           </button>
                         </div>
                         <div style={{ fontSize: 12, color: '#7E7694', textAlign: 'right' }}>
@@ -475,7 +476,7 @@ export default function SessionPage() {
 
         {checkInDone && myApp?.status !== 'checked_in' && (
           <div style={{ ...card, background: '#FBBF2414', borderColor: '#FBBF24', textAlign: 'center' }}>
-            <div style={{ fontSize: 20 }}>⏳</div>
+            <Clock size={24} style={{color:'#FBBF24',margin:'0 auto'}} />
             <div style={{ fontSize: 14, color: '#FBBF24', marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
             <p style={{ fontSize: 12, color: '#7E7694', marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
           </div>
@@ -534,7 +535,7 @@ export default function SessionPage() {
                 <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Accepté ✓</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: '#14532d', borderRadius: 10, border: '1px solid #4ADE8044' }}>
-                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>📍 Adresse</p>
+                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
                     <p style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}
@@ -551,7 +552,7 @@ export default function SessionPage() {
                 <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: '#14532d', borderRadius: 10, border: '1px solid #4ADE8044' }}>
-                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>📍 Adresse</p>
+                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
                     <p style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}

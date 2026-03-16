@@ -63,7 +63,7 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
 
       <div style={{ padding: '48px 24px 24px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: S.p300, margin: '0 0 4px' }}>fluidz</h1>
@@ -87,7 +87,7 @@ export default function HomePage() {
           >
             <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ta session active</p>
             <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>{latestHost.title}</p>
-            <p style={{ fontSize: 12, color: S.tx3, margin: '4px 0 0' }}>📍 {latestHost.approx_area}</p>
+            <p style={{ fontSize: 12, color: S.tx3, margin: '4px 0 0' }}>{latestHost.approx_area}</p>
           </div>
         )}
 
@@ -102,7 +102,7 @@ export default function HomePage() {
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', cursor: 'pointer', borderBottom: '1px solid ' + S.border }}
               >
                 <p style={{ fontSize: 14, color: S.tx, margin: 0, fontWeight: 600 }}>{app.title}</p>
-                <span style={{ fontSize: 11, color: S.yellow, fontWeight: 600 }}>⏳</span>
+                <span style={{ fontSize: 11, color: S.yellow, fontWeight: 600 }}></span>
               </div>
             ))}
           </div>

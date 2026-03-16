@@ -65,20 +65,20 @@ export default function PublicProfile() {
   }, [userId])
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <p style={{ color: S.tx3 }}>Chargement...</p>
     </div>
   )
 
   if (allowed === false) return (
-    <div style={{ minHeight: '100vh', background: S.bg0, padding: 24, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, padding: 24 }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}>← Retour</button>
       <p style={{ color: S.tx2, marginTop: 24, textAlign: 'center' }}>Ce profil est réservé aux membres d&apos;une même session.</p>
     </div>
   )
 
   if (!profile) return (
-    <div style={{ minHeight: '100vh', background: S.bg0, padding: 24, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, padding: 24 }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}>← Retour</button>
       <p style={{ color: S.red, marginTop: 16 }}>Profil introuvable.</p>
     </div>
@@ -89,7 +89,7 @@ export default function PublicProfile() {
   const gallery: string[] = [p.avatar_url, ...(Array.isArray(p.gallery) ? p.gallery : [])].filter(Boolean)
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
       <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.border }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour</button>
 
@@ -159,7 +159,7 @@ export default function PublicProfile() {
 
         {(p.health?.prep_status || p.health?.dernier_test || p.prep) && (
           <div style={card}>
-            <div style={label}>💊 Santé</div>
+            <div style={label}>Santé</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
               {(p.health?.prep_status || p.prep) === 'Actif' && (
                 <span style={{ fontSize: 13, fontWeight: 600, color: S.green, padding: '4px 12px', borderRadius: 99, background: S.green + '22', border: '1px solid ' + S.green + '44' }}>PrEP Actif ✓</span>

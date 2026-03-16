@@ -169,7 +169,7 @@ export default function DMPage() {
   return (
     <div style={{
       background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column',
-      padding: 0, maxWidth: 480, margin: '0 auto', fontFamily: 'Inter,system-ui,sans-serif',
+      padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       {/* Header */}
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -213,7 +213,7 @@ export default function DMPage() {
 
       {showCheckInConfirmed && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: '#FBBF2414', border: '1px solid #FBBF2444', borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: '#FBBF24', fontWeight: 600, textAlign: 'center' }}>⏳ Check-in envoyé — en attente de confirmation du host</div>
+          <div style={{ fontSize: 13, color: '#FBBF24', fontWeight: 600, textAlign: 'center' }}>Check-in envoyé — en attente de confirmation du host</div>
         </div>
       )}
 

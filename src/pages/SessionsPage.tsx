@@ -13,10 +13,10 @@ const S = {
 }
 
 const statusLabel: Record<string, { text: string; color: string }> = {
-  pending: { text: '⏳ En attente', color: S.yellow },
-  accepted: { text: '✅ Accepté', color: S.green },
-  checked_in: { text: '✅ Check-in', color: S.green },
-  rejected: { text: '❌ Refusé', color: S.red },
+  pending: { text: 'En attente', color: S.yellow },
+  accepted: { text: 'Accepté', color: S.green },
+  checked_in: { text: 'Check-in', color: S.green },
+  rejected: { text: 'Refusé', color: S.red },
 }
 
 export default function SessionsPage() {
@@ -58,7 +58,7 @@ export default function SessionsPage() {
   }, [])
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96, fontFamily: 'Inter,system-ui,sans-serif' }}>
+    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 12px' }}>Sessions</h1>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -109,10 +109,10 @@ export default function SessionsPage() {
                     color: sess.status === 'open' ? S.green : S.tx3,
                     background: S.bg2, padding: '2px 8px', borderRadius: 50, marginLeft: 8,
                   }}>
-                    {sess.status === 'open' ? '🟢 Ouverte' : sess.status === 'ended' ? '⚫ Terminée' : '📝 Brouillon'}
+                    {sess.status === 'open' ? 'Ouverte' : sess.status === 'ended' ? 'Terminée' : 'Brouillon'}
                   </span>
                 </div>
-                {sess.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>📍 {sess.approx_area}</div>}
+                {sess.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>{sess.approx_area}</div>}
                 <div style={{ fontSize: 11, color: S.tx4, marginTop: 4 }}>{new Date(sess.created_at).toLocaleDateString('fr-FR')}</div>
               </div>
             ))}
@@ -145,7 +145,7 @@ export default function SessionsPage() {
                       {st.text}
                     </span>
                   </div>
-                  {app.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>📍 {app.approx_area}</div>}
+                  {app.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>{app.approx_area}</div>}
                 </div>
               )
             })}

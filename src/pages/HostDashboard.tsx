@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { ThumbsUp, ThumbsDown } from 'lucide-react'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -160,30 +161,30 @@ export default function HostDashboard() {
   }
 
   if (loading) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
       <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
   if (loadError) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
       <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.border}}>
         <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <div>
             <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>{sess?.title}</h1>
-            <p style={{fontSize:13,color:S.tx3,margin:0}}>📍 {sess?.approx_area}</p>
+            <p style={{fontSize:13,color:S.tx3,margin:0}}>{sess?.approx_area}</p>
           </div>
           <button onClick={toggleStatus} style={{
             padding:'6px 14px',borderRadius:99,fontSize:12,fontWeight:700,border:'none',cursor:'pointer',
             background: sess?.status==='open' ? S.green+'22' : S.bg3,
             color: sess?.status==='open' ? S.green : S.tx3,
           }}>
-            {sess?.status==='open' ? '🟢 Ouvert' : '⚫ Fermé'}
+            {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
           </button>
         </div>
         {sess?.status !== 'ended' && (
@@ -237,7 +238,7 @@ export default function HostDashboard() {
           </>
         )}
         <div style={{display:'flex',gap:8,marginTop:16}}>
-          {([['pending','⏳ En attente',S.yellow],['accepted','✅ Acceptés',S.green],['rejected','❌ Refusés',S.red]] as const).map(([t,l,c]) => (
+          {([['pending','En attente',S.yellow],['accepted','Acceptés',S.green],['rejected','Refusés',S.red]] as const).map(([t,l,c]) => (
             <button key={t} onClick={() => setTab(t as any)} style={{
               flex:1,padding:'8px 4px',borderRadius:10,fontSize:12,fontWeight:600,cursor:'pointer',
               border:'1px solid '+(tab===t ? c+'55' : S.border),
@@ -279,7 +280,7 @@ export default function HostDashboard() {
                     <p style={{margin:'0 0 2px',fontSize:16,fontWeight:800,color:S.tx}}>
                       <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{displayName}</Link>
                     </p>
-                    {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.border}}>👻 Ghost</span>}
+                    {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.border}}>Ghost</span>}
                     {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p300+'18',color:S.p300,border:'1px solid '+S.p300+'33'}}>{displayRole}</span>}
                   </div>
                   <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Voir profil</button>
@@ -299,14 +300,14 @@ export default function HostDashboard() {
 
                 {app.eps_json?.occasion_note && (
                   <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p300+'33',marginBottom:8}}>
-                    <p style={{fontSize:11,color:S.p300,fontWeight:700,margin:'0 0 2px'}}>⚡ Note pour cette session</p>
+                    <p style={{fontSize:11,color:S.p300,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0}}>{app.eps_json.occasion_note}</p>
                   </div>
                 )}
 
                 {(pj.limits || (isGhost && snapshot?.limits)) && (
                   <div style={{padding:'8px 12px',background:S.red+'10',borderRadius:10,border:'1px solid '+S.red+'33',marginBottom:8}}>
-                    <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>🚫 Limites</p>
+                    <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>Limites</p>
                     <p style={{fontSize:12,color:S.tx3,margin:0}}>{pj.limits || snapshot?.limits}</p>
                   </div>
                 )}
@@ -321,8 +322,8 @@ export default function HostDashboard() {
                       return (
                         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'6px 10px',background:S.bg2,borderRadius:10,border:'1px solid '+S.border}}>
                           <span style={{fontSize:12,color:S.tx3}}>Votes :</span>
-                          <span style={{fontSize:13,fontWeight:700,color:S.green}}>👍 {yes}</span>
-                          <span style={{fontSize:13,fontWeight:700,color:S.red}}>👎 {no}</span>
+                          <span style={{fontSize:13,fontWeight:700,color:S.green,display:'flex',alignItems:'center',gap:4}}><ThumbsUp size={14} /> {yes}</span>
+                          <span style={{fontSize:13,fontWeight:700,color:S.red,display:'flex',alignItems:'center',gap:4}}><ThumbsDown size={14} /> {no}</span>
                         </div>
                       )
                     })()}
@@ -341,7 +342,7 @@ export default function HostDashboard() {
                   <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:10,alignItems:'center'}}>
                     {app.status === 'accepted' && app.checked_in === true && (
                       <>
-                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>🔔 Arrivée à confirmer</span>
+                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>Arrivée à confirmer</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.green,border:'1px solid '+S.green,background:S.green+'22',cursor:'pointer'}}>
                           {actionLoading===app.id ? '...' : 'Confirmer ✓'}
                         </button>
@@ -351,7 +352,7 @@ export default function HostDashboard() {
                       <span style={{fontSize:12,color:S.green,fontWeight:600}}>Arrivé ✓</span>
                     )}
                     {app.status === 'accepted' && !app.checked_in && (
-                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>✅ Accepté — adresse débloquée</span>
+                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>Accepté — adresse débloquée</span>
                     )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>

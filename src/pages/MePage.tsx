@@ -229,7 +229,7 @@ export default function MePage() {
       <div style={{
         minHeight:'100vh', background:S.bg0, display:'flex', flexDirection:'column',
         alignItems:'center', justifyContent:'center', padding:'0 24px 96px',
-        fontFamily:'Inter,system-ui,sans-serif'
+        
       }}>
         {hasGuestToken && (
           <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p300+'18', border:'1px solid '+S.p300+'44', maxWidth:360, width:'100%' }}>
@@ -268,7 +268,7 @@ export default function MePage() {
 
   // ── Connecté ─────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight:'100vh', background:S.bg0, paddingBottom:96, fontFamily:'Inter,system-ui,sans-serif' }}>
+    <div style={{ minHeight:'100vh', background:S.bg0, paddingBottom:96,  }}>
 
       {/* Header */}
       <div style={{
@@ -300,7 +300,7 @@ export default function MePage() {
             color: activeTab===tab ? S.p300 : S.tx3,
             transition:'all 0.2s',
           }}>
-            {tab === 'auth' ? '🔐 Compte' : '👤 Profil'}
+            {tab === 'auth' ? 'Compte' : 'Profil'}
           </button>
         ))}
       </div>
@@ -445,7 +445,7 @@ export default function MePage() {
           </button>
 
           {devMode && (
-            <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>🧪 Test menu</Link>
+            <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
           )}
         </div>
       )}

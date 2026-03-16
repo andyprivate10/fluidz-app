@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { Moon, Pill, Headphones, Sparkles } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -9,19 +11,19 @@ const S = {
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
 
-const TEMPLATES = [
-  { id:'darkroom', label:'Dark Room', emoji:'🌑', tags:['Dark Room'], desc:'Ambiance sombre, discret' },
-  { id:'chemical', label:'Chemical', emoji:'💊', tags:['Chemical'], desc:'Plan chem, entre adultes consentants' },
-  { id:'techno', label:'Techno', emoji:'🎧', tags:['Techno'], desc:'Après club, énergie haute' },
-  { id:'custom', label:'Custom', emoji:'✨', tags:[], desc:'Crée ton propre vibe' },
+const TEMPLATES: { id: string; label: string; icon: LucideIcon; tags: string[]; desc: string }[] = [
+  { id:'darkroom', label:'Dark Room', icon:Moon, tags:['Dark Room'], desc:'Ambiance sombre, discret' },
+  { id:'chemical', label:'Chemical', icon:Pill, tags:['Chemical'], desc:'Plan chem, entre adultes consentants' },
+  { id:'techno', label:'Techno', icon:Headphones, tags:['Techno'], desc:'Après club, énergie haute' },
+  { id:'custom', label:'Custom', icon:Sparkles, tags:[], desc:'Crée ton propre vibe' },
 ]
 
 const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
 
-const QUICK_TEMPLATES = [
-  { label: 'Dark Room', emoji: '🖤', title: 'Dark Room ce soir', tags: ['Dark Room', 'Top', 'Bottom'] },
-  { label: 'Chemical', emoji: '⚗️', title: 'Chemical ce soir', tags: ['Chemical', 'Top', 'Bottom'] },
-  { label: 'Techno', emoji: '🎵', title: 'Techno ce soir', tags: ['Techno', 'Top', 'Bottom'] },
+const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: string[] }[] = [
+  { label: 'Dark Room', icon: Moon, title: 'Dark Room ce soir', tags: ['Dark Room', 'Top', 'Bottom'] },
+  { label: 'Chemical', icon: Pill, title: 'Chemical ce soir', tags: ['Chemical', 'Top', 'Bottom'] },
+  { label: 'Techno', icon: Headphones, title: 'Techno ce soir', tags: ['Techno', 'Top', 'Bottom'] },
 ]
 
 const inp: React.CSSProperties = {
@@ -134,7 +136,7 @@ export default function CreateSessionPage() {
 
   if (createdSession) {
     return (
-      <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
+      <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
         <div style={{padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 8px'}}>Session créée !</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>Partage le lien avec ton message</p>
@@ -158,7 +160,7 @@ export default function CreateSessionPage() {
   }
 
   return (
-    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96,fontFamily:'Inter,system-ui,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.border}}>
         <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Nouvelle session</h1>
@@ -180,7 +182,7 @@ export default function CreateSessionPage() {
               <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setSelectedTags(qt.tags); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
                 padding:'12px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.border,background:S.bg1,color:S.tx,cursor:'pointer',display:'flex',alignItems:'center',gap:8,
               }}>
-                <span>{qt.emoji}</span>
+                <span><qt.icon size={16} /></span>
                 <span>{qt.label}</span>
               </button>
             ))}
@@ -192,7 +194,7 @@ export default function CreateSessionPage() {
                 padding:'16px',cursor:'pointer',display:'flex',alignItems:'center',gap:14,
                 transition:'all 0.2s',
               }}>
-                <span style={{fontSize:28}}>{t.emoji}</span>
+                <span><t.icon size={28} style={{color:S.p300}} /></span>
                 <div>
                   <p style={{margin:'0 0 2px',fontSize:15,fontWeight:700,color:S.tx}}>{t.label}</p>
                   <p style={{margin:0,fontSize:12,color:S.tx3}}>{t.desc}</p>
@@ -207,7 +209,7 @@ export default function CreateSessionPage() {
         <div style={{padding:'20px 20px',display:'flex',flexDirection:'column',gap:12}}>
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Titre de la session</p>
-            <input value={title} onChange={e=>setTitle(e.target.value)} placeholder='Plan ce soir 🔥' style={inp} />
+            <input value={title} onChange={e=>setTitle(e.target.value)} placeholder='Plan ce soir' style={inp} />
           </div>
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Description</p>
@@ -256,7 +258,7 @@ export default function CreateSessionPage() {
             <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Visible par tous les candidats</p>
           </div>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresse exacte 🔒</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresse exacte</p>
             <input value={exactAddress} onChange={e=>setExactAddress(e.target.value)} placeholder='14 rue de la Roquette, code 1234' style={inp} />
             <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Révélée uniquement après ton acceptation</p>
           </div>
@@ -279,11 +281,11 @@ export default function CreateSessionPage() {
             {savingAddress ? 'Sauvegarde...' : 'Sauvegarder cette adresse'}
           </button>
           <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
-            <p style={{fontSize:12,color:S.tx3,margin:0}}>🔒 L'adresse exacte n'est jamais visible avant acceptation</p>
+            <p style={{fontSize:12,color:S.tx3,margin:0}}>L'adresse exacte n'est jamais visible avant acceptation</p>
           </div>
           {error && <p style={{color:'#F47272',fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:'#F4727215',borderRadius:10}}>{error}</p>}
           <button onClick={create} disabled={loading||!title||!approxArea} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.p400+'44',marginTop:4}}>
-            {loading ? 'Création...' : 'Créer la session 🔥'}
+            {loading ? 'Création...' : 'Créer la session'}
           </button>
         </div>
       )}
