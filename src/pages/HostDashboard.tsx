@@ -73,7 +73,7 @@ export default function HostDashboard() {
         ? "Tu peux maintenant accéder au DM et à l'adresse."
         : ''
       const href = status === 'accepted'
-        ? `/session/${id}/dm`
+        ? `/session/${id}/dm/${app.applicant_id}`
         : `/session/${id}`
       await supabase.from('notifications').insert({
         user_id: app.applicant_id,
