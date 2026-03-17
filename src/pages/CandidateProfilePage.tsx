@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
+import { VibeScoreBadge } from '../components/VibeScoreBadge'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -223,7 +224,10 @@ export default function CandidateProfilePage() {
             </div>
           )}
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: 0 }}>{displayName}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: 0 }}>{displayName}</h1>
+              {!eps.is_phantom && <VibeScoreBadge userId={app.applicant_id} />}
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
               {age && <span style={{ fontSize: 13, color: S.tx3 }}>{age} ans</span>}
               {location && <span style={{ fontSize: 13, color: S.tx3 }}>· {location}</span>}

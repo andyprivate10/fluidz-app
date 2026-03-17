@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Users, Search, Heart } from 'lucide-react'
+import { VibeScoreBadge } from '../components/VibeScoreBadge'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -177,6 +178,7 @@ export default function ContactsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{contact.display_name}</span>
                   <span style={{ fontSize: 10, color: rel.color, fontWeight: 600 }}>{rel.icon}</span>
+                  <VibeScoreBadge userId={contact.contact_user_id} />
                 </div>
                 {contact.role && <p style={{ fontSize: 12, color: S.p300, margin: '2px 0 0' }}>{contact.role}</p>}
                 {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.notes}</p>}

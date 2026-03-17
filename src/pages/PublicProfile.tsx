@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
+import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 
 const S = {
   bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B', bg3: '#2A2740',
@@ -121,7 +122,10 @@ export default function PublicProfile() {
             )
           )}
           <div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: S.tx }}>{profile.display_name || 'Anonyme'}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: S.tx }}>{profile.display_name || 'Anonyme'}</h1>
+              <VibeScoreBadge userId={userId!} />
+            </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
               {p.age && <span style={{ fontSize: 13, color: S.tx3 }}>{p.age} ans</span>}
               {p.age && p.location && <span style={{ fontSize: 13, color: S.tx3 }}>·</span>}
@@ -139,6 +143,11 @@ export default function PublicProfile() {
       </div>
 
       <div style={{ padding: '16px 20px' }}>
+        {/* Vibe Score card */}
+        <div style={{ marginBottom: 12 }}>
+          <VibeScoreCard userId={userId!} />
+        </div>
+
         {(p.height || p.weight || p.morphology) && (
           <div style={card}>
             <div style={label}>Physique</div>
