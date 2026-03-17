@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 type Notif = { id: string; user_id: string; type: string; title: string; body: string; href: string | null; read_at: string | null; created_at: string }
 
@@ -52,6 +53,18 @@ export default function NotificationsPage() {
     setLoading(false)
   }
 
+  const refreshNotifs = useCallback(async () => {
+    if (!user) return
+    const { data } = await supabase
+      .from('notifications')
+      .select('id, user_id, type, title, body, href, read_at, created_at')
+      .eq('user_id', user)
+      .order('created_at', { ascending: false })
+    setList((data as Notif[]) ?? [])
+  }, [user])
+
+  const { pullHandlers, pullIndicator } = usePullToRefresh(refreshNotifs)
+
   async function handleNotifClick(n: Notif) {
     await supabase.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', n.id)
     setList(prev => prev.map(x => x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x))
@@ -76,7 +89,8 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
+      {pullIndicator}
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>

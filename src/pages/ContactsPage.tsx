@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Users, Search } from 'lucide-react'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 
 const S = {
@@ -101,8 +102,11 @@ export default function ContactsPage() {
     favori: contacts.filter(c => c.relation_level === 'favori').length,
   }
 
+  const { pullHandlers, pullIndicator } = usePullToRefresh(loadContacts)
+
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+      {pullIndicator}
       {/* Header */}
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
