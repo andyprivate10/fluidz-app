@@ -24,6 +24,7 @@ import GhostRecoverPage from './pages/GhostRecoverPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
 import ContactsPage from './pages/ContactsPage'
+import GroupsPage from './pages/GroupsPage'
 import ReviewPage from './pages/ReviewPage'
 import BottomNav from './components/BottomNav'
 
@@ -46,6 +47,7 @@ const routes = [
   { path: '/onboarding', element: <OnboardingPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/contacts', element: <ContactsPage /> },
+  { path: '/groups', element: <GroupsPage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },

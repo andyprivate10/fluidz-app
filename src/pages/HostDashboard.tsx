@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 
 const S = {
@@ -27,6 +28,8 @@ export default function HostDashboard() {
   const [broadcastText, setBroadcastText] = useState('')
   const [broadcastSending, setBroadcastSending] = useState(false)
   const [hostDisplayName, setHostDisplayName] = useState<string>('')
+  const [myGroups, setMyGroups] = useState<{ id: string; name: string; color: string; member_ids: string[] }[]>([])
+  
 
   const [votes, setVotes] = useState<{ applicant_id: string; vote: string }[]>([])
 
@@ -63,6 +66,21 @@ export default function HostDashboard() {
       setApps(a || [])
       setVotes((v as { applicant_id: string; vote: string }[]) || [])
       if (prof?.display_name) setHostDisplayName(prof.display_name)
+
+      // Load my groups for invite
+      if (uid) {
+        const { data: grps } = await supabase.from('contact_groups').select('id, name, color').eq('owner_id', uid)
+        if (grps && grps.length > 0) {
+          const gIds = grps.map(g => g.id)
+          const { data: members } = await supabase.from('contact_group_members').select('group_id, contact_user_id').in('group_id', gIds)
+          const memberMap: Record<string, string[]> = {}
+          ;(members || []).forEach((m: any) => {
+            if (!memberMap[m.group_id]) memberMap[m.group_id] = []
+            memberMap[m.group_id].push(m.contact_user_id)
+          })
+          setMyGroups(grps.map(g => ({ ...g, member_ids: memberMap[g.id] || [] })))
+        }
+      }
     } catch {
       setLoadError(true)
     } finally {
@@ -215,6 +233,31 @@ export default function HostDashboard() {
     setBroadcastSending(false)
   }
 
+  async function inviteGroup(groupId: string) {
+    const group = myGroups.find(g => g.id === groupId)
+    if (!group || !user || !id || !sess) return
+    
+    // Create notifications for each group member that isn't already in the session
+    const existingIds = new Set(apps.map(a => a.applicant_id))
+    const newMembers = group.member_ids.filter(uid => !existingIds.has(uid) && uid !== user.id)
+    if (newMembers.length === 0) {
+      showToast('Tous les membres de ce groupe sont déjà dans la session', 'info')
+      
+      return
+    }
+    const notifs = newMembers.map(uid => ({
+      user_id: uid,
+      session_id: id,
+      type: 'group_invite',
+      title: `📩 Tu es invité à "${sess.title}"`,
+      body: `${hostDisplayName || 'Un host'} t'invite via le groupe "${group.name}"`,
+      href: `/session/${id}`,
+    }))
+    await supabase.from('notifications').insert(notifs)
+    showToast(`${newMembers.length} invitation${newMembers.length > 1 ? 's' : ''} envoyée${newMembers.length > 1 ? 's' : ''}`, 'success')
+    
+  }
+
   const filtered = tab === 'accepted'
     ? apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
     : apps.filter(a => a.status === tab)
@@ -359,6 +402,24 @@ export default function HostDashboard() {
             {broadcastSending ? 'Envoi...' : 'Envoyer à tous'}
           </button>
         </div>
+        {/* Group invite */}
+        {myGroups.length > 0 && (
+          <div style={{padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
+            <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Inviter un groupe</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+              {myGroups.map(g => (
+                <button key={g.id} onClick={() => inviteGroup(g.id)} style={{
+                  padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,cursor:'pointer',
+                  border:'1px solid '+g.color+'44',background:g.color+'14',color:g.color,
+                  display:'flex',alignItems:'center',gap:4,
+                }}>
+                  <div style={{width:8,height:8,borderRadius:3,background:g.color}} />
+                  {g.name} ({g.member_ids.length})
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {filtered.length === 0 && (
           <div style={{textAlign:'center',padding:'40px 20px',color:S.tx3,fontSize:14}}>
             {tab==='pending' ? 'Aucune candidature en attente' : tab==='accepted' ? 'Aucun membre accepté' : 'Aucun refus'}

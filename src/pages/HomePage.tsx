@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
@@ -20,57 +21,39 @@ export default function HomePage() {
   const [inviteCode, setInviteCode] = useState('')
   const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string }[]>([])
 
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
-      setUserId(user.id)
+  const loadData = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    setUserId(user.id)
 
-      // Get display name — redirect to onboarding if profile incomplete
-      supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle().then(({ data }) => {
-        if (data?.display_name) {
-          setDisplayName(data.display_name)
-          // Check if onboarding was completed (has role or avatar)
-          const pj = (data.profile_json || {}) as Record<string, unknown>
-          const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
-          if (isNewUser && data.display_name !== 'Marcus' && data.display_name !== 'Karim' && data.display_name !== 'Yann') {
-            // Don't redirect test accounts
-            navigate('/onboarding')
-            return
-          }
-        }
-      })
+    const { data: profData } = await supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle()
+    if (profData?.display_name) {
+      setDisplayName(profData.display_name)
+      const pj = (profData.profile_json || {}) as Record<string, unknown>
+      const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
+      if (isNewUser && profData.display_name !== 'Marcus' && profData.display_name !== 'Karim' && profData.display_name !== 'Yann') {
+        navigate('/onboarding')
+        return
+      }
+    }
 
-      // Latest hosted session
-      supabase.from('sessions').select('id, title, approx_area, status')
-        .eq('host_id', user.id).eq('status', 'open')
-        .order('created_at', { ascending: false }).limit(1)
-        .then(({ data }) => {
-          const row = Array.isArray(data) ? data[0] : data
-          setLatestHost(row ?? null)
-        })
+    const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status')
+      .eq('host_id', user.id).eq('status', 'open')
+      .order('created_at', { ascending: false }).limit(1)
+    setLatestHost(Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null)
 
-      // Pending applications
-      supabase.from('applications').select('session_id, status, sessions(title)')
-        .eq('applicant_id', user.id).eq('status', 'pending')
-        .then(({ data }) => {
-          setPendingApps((data || []).map((a: any) => ({
-            session_id: a.session_id,
-            title: a.sessions?.title || 'Session',
-          })))
-        })
+    const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title)')
+      .eq('applicant_id', user.id).eq('status', 'pending')
+    setPendingApps((pending || []).map((a: any) => ({ session_id: a.session_id, title: a.sessions?.title || 'Session' })))
 
-      // Active applications (accepted / checked_in)
-      supabase.from('applications').select('session_id, status, sessions(title)')
-        .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
-        .then(({ data }) => {
-          setActiveApps((data || []).map((a: any) => ({
-            session_id: a.session_id,
-            status: a.status,
-            title: a.sessions?.title || 'Session',
-          })))
-        })
-    })
-  }, [])
+    const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title)')
+      .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
+    setActiveApps((active || []).map((a: any) => ({ session_id: a.session_id, status: a.status, title: a.sessions?.title || 'Session' })))
+  }, [navigate])
+
+  useEffect(() => { loadData() }, [loadData])
+
+  const { pullHandlers, pullIndicator } = usePullToRefresh(loadData)
 
   function handleJoinCode() {
     const code = inviteCode.trim()
@@ -85,7 +68,8 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+      {pullIndicator}
 
       <div style={{ padding: '48px 24px 24px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: S.p300, margin: '0 0 4px' }}>fluidz</h1>

@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Users, Search, Heart } from 'lucide-react'
+import { Users, Search } from 'lucide-react'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
+
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -42,7 +43,7 @@ export default function ContactsPage() {
     loadContacts()
   }, [])
 
-  async function loadContacts() {
+  const loadContacts = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
 
@@ -79,7 +80,8 @@ export default function ContactsPage() {
 
     setContacts(enriched)
     setLoading(false)
-  }
+  }, [navigate])
+
 
   async function updateRelation(contactId: string, level: 'connaissance' | 'close' | 'favori') {
     await supabase.from('contacts').update({ relation_level: level }).eq('id', contactId)
@@ -108,7 +110,11 @@ export default function ContactsPage() {
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>Naughty Book</h1>
             <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
           </div>
-          <Heart size={24} style={{ color: S.p300 }} />
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => navigate('/groups')} style={{ padding: '6px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.border, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Users size={14} /> Groupes
+            </button>
+          </div>
         </div>
 
         {/* Search */}
