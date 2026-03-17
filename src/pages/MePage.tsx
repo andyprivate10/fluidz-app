@@ -394,11 +394,6 @@ export default function MePage() {
         <div style={{ padding:'16px 20px' }}>
 
           {/* Vibe Score */}
-          <div style={{ marginBottom: 16 }}>
-            <VibeScoreCard userId={user.id} />
-          </div>
-
-          {/* Vibe Score */}
           {user && (
             <div style={{ marginBottom: 16 }}>
               <VibeScoreCard userId={user.id} />
