@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import AddContactButton from '../components/AddContactButton'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -244,6 +245,7 @@ export default function CandidateProfilePage() {
             {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : 'En attente'}
           </span>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
+          {!eps.is_phantom && <AddContactButton targetUserId={app.applicant_id} />}
         </div>
       </div>
 

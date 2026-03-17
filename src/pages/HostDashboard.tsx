@@ -120,9 +120,9 @@ export default function HostDashboard() {
   async function confirmCheckIn(appId: string) {
     setActionLoading(appId)
     await supabase.from('applications').update({ checked_in: true, status: 'checked_in', checked_in_at: new Date().toISOString() }).eq('id', appId)
-    // Notify the guest that check-in is confirmed
     const app = apps.find(a => a.id === appId)
     if (app && sess) {
+      // Notify the guest
       await supabase.from('notifications').insert({
         user_id: app.applicant_id,
         session_id: id,
@@ -132,6 +132,24 @@ export default function HostDashboard() {
         body: "Tu peux maintenant partager le lien d'invitation.",
         href: `/session/${id}`,
       })
+      // Auto-track co_event interactions with all other checked-in members
+      const otherCheckedIn = apps.filter(a => a.id !== appId && a.status === 'checked_in')
+      const interactions = otherCheckedIn.map(other => ({
+        user_id: app.applicant_id,
+        target_user_id: other.applicant_id,
+        type: 'co_event',
+        meta: { session_id: id, session_title: sess.title },
+      }))
+      // Also log reverse (other → new member)
+      const reverseInteractions = otherCheckedIn.map(other => ({
+        user_id: other.applicant_id,
+        target_user_id: app.applicant_id,
+        type: 'co_event',
+        meta: { session_id: id, session_title: sess.title },
+      }))
+      if (interactions.length > 0) {
+        try { await supabase.from('interaction_log').insert([...interactions, ...reverseInteractions]) } catch (_) {}
+      }
     }
     setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true, status: 'checked_in', checked_in_at: new Date().toISOString()} : a))
     setActionLoading(null)
