@@ -84,10 +84,10 @@ export default function GroupChatPage() {
       const { data: app } = await supabase.from('applications')
         .select('status,created_at')
         .eq('session_id', id).eq('applicant_id', user.id)
-        .in('status', ['accepted', 'checked_in'])
+        .eq('status', 'checked_in')
         .maybeSingle()
       if (!app) {
-        showToast('Accès réservé aux membres acceptés', 'error')
+        showToast('Accès réservé aux membres après check-in', 'error')
         navigate('/session/' + id)
         return
       }
