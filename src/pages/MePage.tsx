@@ -214,23 +214,24 @@ export default function MePage() {
   }
 
   async function uploadMedia(file: File, type: 'photo' | 'video') {
-    if (!user) { console.log('uploadMedia: no user'); return }
-    console.log('uploadMedia START:', file.name, file.size, type)
+    if (!user) return
+    // Size limit: 5MB for photos, 20MB for videos
+    const maxSize = type === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024
+    if (file.size > maxSize) {
+      showToast(`Fichier trop gros (max ${type === 'photo' ? '5' : '20'} Mo)`, 'error')
+      return
+    }
     setMediaUploading(true)
     try {
       const ext = file.name.split('.').pop() || (type === 'video' ? 'mp4' : 'jpg')
       const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
       const path = `${user.id}/${type}_${ts}.${ext}`
-      console.log('Uploading to path:', path, 'size:', file.size)
       const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: false })
-      console.log('Upload result:', error ? 'ERROR: ' + error.message : 'OK')
       if (error) {
         showToast('Erreur upload: ' + error.message, 'error')
-        setMediaUploading(false)
         return
       }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-      console.log('Public URL:', publicUrl)
       if (type === 'photo') {
         setPhotos(prev => [...prev, publicUrl])
         if (!avatarUrl) setAvatarUrl(publicUrl)
@@ -239,10 +240,10 @@ export default function MePage() {
       }
       showToast(type === 'photo' ? 'Photo ajoutée' : 'Vidéo ajoutée', 'success')
     } catch (err) {
-      console.error('uploadMedia CATCH:', err)
       showToast('Erreur: ' + String(err), 'error')
+    } finally {
+      setMediaUploading(false)
     }
-    setMediaUploading(false)
   }
 
   function removePhoto(url: string) {
