@@ -39,6 +39,7 @@ export default function SessionPage() {
   const [pendingApps, setPendingApps] = useState<PendingApplication[]>([])
   const [votes, setVotes] = useState<VoteRow[]>([])
   const [voteLoadingId, setVoteLoadingId] = useState<string | null>(null)
+  const [reviewSummary, setReviewSummary] = useState<{ avg: number; count: number; topVibes: string[] } | null>(null)
   const touchStartY = useRef(0)
 
   useEffect(() => {
@@ -146,6 +147,21 @@ export default function SessionPage() {
         const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).eq('status', 'pending')
         setPendingCount(count ?? 0)
       } else setPendingCount(0)
+
+      // Load review summary for ended sessions
+      if (sess?.status === 'ended') {
+        const { data: reviews } = await supabase.from('reviews')
+          .select('rating, vibe_tags')
+          .eq('session_id', id)
+          .is('target_id', null)
+        if (reviews && reviews.length > 0) {
+          const avg = reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / reviews.length
+          const tagCounts: Record<string, number> = {}
+          reviews.forEach((r: { vibe_tags?: string[] }) => (r.vibe_tags || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1 }))
+          const topVibes = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => t)
+          setReviewSummary({ avg: Math.round(avg * 10) / 10, count: reviews.length, topVibes })
+        }
+      }
     } catch {
       setLoadError(true)
     }
@@ -627,6 +643,34 @@ export default function SessionPage() {
         )}
 
       </div>
+
+      {/* Review summary for ended sessions */}
+      {session.status === 'ended' && reviewSummary && (
+        <div style={{ padding: '0 16px 12px' }}>
+          <div style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#7E7694', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avis des participants</span>
+              <span style={{ fontSize: 11, color: '#7E7694' }}>{reviewSummary.count} avis</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+              <span style={{ fontSize: 32, fontWeight: 800, color: '#FBBF24' }}>{reviewSummary.avg}</span>
+              <div style={{ display: 'flex', gap: 2 }}>
+                {[1,2,3,4,5].map(n => (
+                  <span key={n} style={{ fontSize: 18, color: n <= Math.round(reviewSummary.avg) ? '#FBBF24' : '#453F5C' }}>★</span>
+                ))}
+              </div>
+            </div>
+            {reviewSummary.topVibes.length > 0 && (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {reviewSummary.topVibes.map(v => {
+                  const vibeMap: Record<string, string> = { fun: '🎉 Fun', safe: '🛡️ Safe', intense: '🔥 Intense', chill: '😌 Chill', respectful: '🤝 Respectueux', awkward: '😬 Awkward', hot: '🌶️ Hot', welcoming: '👋 Accueillant' }
+                  return <span key={v} style={{ fontSize: 12, padding: '4px 10px', borderRadius: 99, background: '#1F1D2B', color: '#B8B2CC', border: '1px solid #2A2740' }}>{vibeMap[v] || v}</span>
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Review CTA for ended sessions */}
       {session.status === 'ended' && myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
