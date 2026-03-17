@@ -163,9 +163,21 @@ export default function HostDashboard() {
   }
 
   async function closeSession() {
-    if (!window.confirm('Fermer définitivement cette session ? Elle ne sera plus modifiable.')) return
+    const destroyMedia = window.confirm('Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées.')
+    if (!destroyMedia && !window.confirm('Fermer sans supprimer les médias partagés ?')) return
+    
     await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
     setSess((s: any) => ({...s, status: 'ended'}))
+
+    // Mark ephemeral media as expired
+    if (destroyMedia) {
+      try {
+        await supabase.from('ephemeral_media')
+          .update({ expires_at: new Date().toISOString() })
+          .eq('context_id', id)
+      } catch (_) {}
+    }
+
     // Send review notification to all accepted/checked_in participants
     const participants = apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
     if (participants.length > 0 && sess) {
