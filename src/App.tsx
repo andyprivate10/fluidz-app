@@ -18,6 +18,7 @@ import PublicProfile from './pages/PublicProfile'
 import NotificationsPage from './pages/NotificationsPage'
 import DevLoopPage from './pages/DevLoopPage'
 import DevTestMenu from './pages/DevTestMenu'
+import EditSessionPage from './pages/EditSessionPage'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -30,6 +31,7 @@ const routes = [
   { path: '/session/:id/dm/:peerId', element: <DMPage /> },
   { path: '/session/:id/chat', element: <GroupChatPage /> },
   { path: '/session/:id/host', element: <HostDashboard /> },
+  { path: '/session/:id/edit', element: <EditSessionPage /> },
   { path: '/join/:code', element: <JoinPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/notifications', element: <NotificationsPage /> },

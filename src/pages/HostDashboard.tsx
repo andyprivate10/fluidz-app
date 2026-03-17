@@ -179,6 +179,9 @@ export default function HostDashboard() {
     accepted: apps.filter(a=>a.status==='accepted'||a.status==='checked_in').length,
     rejected: apps.filter(a=>a.status==='rejected').length,
   }
+  const arrivedCount = apps.filter(a => a.status === 'checked_in').length
+  const waitingCount = apps.filter(a => a.status === 'accepted' && a.checked_in).length
+  const totalAccepted = counts.accepted
 
   if (loading) return (
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
@@ -208,9 +211,14 @@ export default function HostDashboard() {
           </button>
         </div>
         {sess?.status !== 'ended' && (
-          <button onClick={closeSession} style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer',width:'100%'}}>
-            Fermer la session
-          </button>
+          <div style={{display:'flex',gap:8,marginTop:12}}>
+            <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
+              Modifier
+            </button>
+            <button onClick={closeSession} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>
+              Fermer la session
+            </button>
+          </div>
         )}
 
         <button onClick={() => navigate('/session/' + id + '/chat')} style={{marginTop:8,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:'pointer',width:'100%'}}>
@@ -261,6 +269,30 @@ export default function HostDashboard() {
             </div>
           </>
         )}
+        {/* Arrival stats */}
+        {totalAccepted > 0 && (
+          <div style={{marginTop:16,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.border,display:'flex',justifyContent:'space-around',textAlign:'center'}}>
+            <div>
+              <div style={{fontSize:20,fontWeight:800,color:S.green}}>{arrivedCount}</div>
+              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>Arrivés</div>
+            </div>
+            {waitingCount > 0 && (
+              <div>
+                <div style={{fontSize:20,fontWeight:800,color:S.orange}}>{waitingCount}</div>
+                <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>À confirmer</div>
+              </div>
+            )}
+            <div>
+              <div style={{fontSize:20,fontWeight:800,color:S.tx2}}>{totalAccepted - arrivedCount}</div>
+              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>En route</div>
+            </div>
+            <div>
+              <div style={{fontSize:20,fontWeight:800,color:S.p300}}>{totalAccepted}</div>
+              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>Total</div>
+            </div>
+          </div>
+        )}
+
         <div style={{display:'flex',gap:8,marginTop:16}}>
           {([['pending','En attente',S.yellow],['accepted','Acceptés',S.green],['rejected','Refusés',S.red]] as const).map(([t,l,c]) => (
             <button key={t} onClick={() => setTab(t as any)} style={{
