@@ -42,7 +42,7 @@ export default function BottomNav() {
   }, [location.pathname])
 
   // Hide on DM and dev pages
-  if (location.pathname.includes('/dm') || location.pathname.includes('/chat') || location.pathname.includes('/host') || location.pathname.includes('/apply') || location.pathname.includes('/candidate') || location.pathname.includes('/ghost') || location.pathname.includes('/login') || location.pathname.includes('/dev/')) return null
+  if (location.pathname.includes('/dm') || location.pathname.includes('/chat') || location.pathname.includes('/host') || location.pathname.includes('/apply') || location.pathname.includes('/candidate') || location.pathname.includes('/ghost') || location.pathname.includes('/login') || location.pathname.includes('/onboarding') || location.pathname.includes('/dev/')) return null
 
   const tabs = [
     { path: '/', icon: Home, label: 'Home' },

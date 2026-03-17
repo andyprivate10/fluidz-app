@@ -25,9 +25,19 @@ export default function HomePage() {
       if (!user) return
       setUserId(user.id)
 
-      // Get display name
-      supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle().then(({ data }) => {
-        if (data?.display_name) setDisplayName(data.display_name)
+      // Get display name — redirect to onboarding if profile incomplete
+      supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle().then(({ data }) => {
+        if (data?.display_name) {
+          setDisplayName(data.display_name)
+          // Check if onboarding was completed (has role or avatar)
+          const pj = (data.profile_json || {}) as Record<string, unknown>
+          const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
+          if (isNewUser && data.display_name !== 'Marcus' && data.display_name !== 'Karim' && data.display_name !== 'Yann') {
+            // Don't redirect test accounts
+            navigate('/onboarding')
+            return
+          }
+        }
       })
 
       // Latest hosted session

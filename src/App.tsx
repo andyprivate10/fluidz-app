@@ -22,6 +22,7 @@ import EditSessionPage from './pages/EditSessionPage'
 import GhostSetupPage from './pages/GhostSetupPage'
 import GhostRecoverPage from './pages/GhostRecoverPage'
 import LoginPage from './pages/LoginPage'
+import OnboardingPage from './pages/OnboardingPage'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -39,6 +40,7 @@ const routes = [
   { path: '/ghost/setup', element: <GhostSetupPage /> },
   { path: '/ghost/recover', element: <GhostRecoverPage /> },
   { path: '/login', element: <LoginPage /> },
+  { path: '/onboarding', element: <OnboardingPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
