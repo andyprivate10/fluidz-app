@@ -29,7 +29,7 @@ export default function SessionsPage() {
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { navigate('/me'); return }
+    if (!user) { navigate('/login?next=/sessions'); return }
     const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).order('created_at', { ascending: false })
     setHosted(h || [])
     const { data: apps } = await supabase

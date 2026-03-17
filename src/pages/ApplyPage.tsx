@@ -250,7 +250,7 @@ export default function ApplyPage() {
     <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{textAlign:'center',padding:24}}>
         <p style={{color:S.tx3,marginBottom:16}}>Connecte-toi pour postuler</p>
-        <button onClick={() => navigate('/me')} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer'}}>Se connecter</button>
+        <button onClick={() => navigate('/login?next=' + encodeURIComponent('/session/' + id + '/apply'))} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer'}}>Se connecter</button>
       </div>
     </div>
   )

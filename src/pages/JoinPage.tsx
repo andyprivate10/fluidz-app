@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { MapPin, Lock, Users, ChevronRight, Ghost } from 'lucide-react'
 
@@ -13,6 +13,8 @@ const S = {
 export default function JoinPage() {
   const { code } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const isDirect = searchParams.get('direct') === '1'
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string }[]>([])
@@ -23,6 +25,7 @@ export default function JoinPage() {
   const [profileComplete, setProfileComplete] = useState(false)
   const [userProfile, setUserProfile] = useState<any>(null)
   const [quickApplying, setQuickApplying] = useState(false)
+  const [directJoining, setDirectJoining] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -97,6 +100,59 @@ export default function JoinPage() {
     })
     setQuickApplying(false)
     navigate('/session/' + session.id)
+  }
+
+  // Invite directe — auto-accept sans vote
+  async function directJoin() {
+    if (!user || !session || directJoining) return
+    setDirectJoining(true)
+    const pj = (userProfile?.profile_json || {}) as Record<string, unknown>
+    const allSections = ['photos_profil', 'basics', 'physique', 'photos_adulte', 'role', 'pratiques', 'limites', 'sante', 'occasion']
+    await supabase.from('applications').upsert({
+      session_id: session.id, applicant_id: user.id, status: 'accepted',
+      eps_json: {
+        shared_sections: allSections,
+        profile_snapshot: pj,
+        role: pj.role || undefined,
+        direct_invite: true,
+      }
+    })
+    // Notify host
+    if (session.host_id) {
+      const name = userProfile?.display_name || user.email || 'Quelqu\'un'
+      await supabase.from('notifications').insert({
+        user_id: session.host_id,
+        session_id: session.id,
+        type: 'direct_join',
+        title: `${name} a rejoint (invite directe)`,
+        body: `Accepté automatiquement via lien direct`,
+        href: `/session/${session.id}/host`,
+      })
+    }
+    setDirectJoining(false)
+    navigate('/session/' + session.id)
+  }
+
+  // Auto-trigger direct join when ready
+  useEffect(() => {
+    if (isDirect && user && session && !myAppStatus && !directJoining) {
+      directJoin()
+    }
+  }, [isDirect, user, session, myAppStatus])
+
+  // Direct join loading screen
+  if (isDirect && directJoining) return (
+    <div style={{ background: S.bg0, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: '#F9A8A8', animation: 'spin 0.8s linear infinite', marginBottom: 16 }} />
+      <p style={{ color: S.tx2, fontSize: 15, fontWeight: 600 }}>Rejoindre la session...</p>
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+    </div>
+  )
+
+  // Direct invite but not logged in → redirect to login
+  if (isDirect && !user && status === 'found') {
+    navigate('/login?next=/join/' + code + '%3Fdirect%3D1')
+    return null
   }
 
   const statusLabels: Record<string, { text: string; color: string }> = {
@@ -234,7 +290,7 @@ export default function JoinPage() {
             </div>
           ) : !user ? (
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <button onClick={() => navigate('/me?next=/join/' + code)} style={{
+              <button onClick={() => navigate('/login?next=/join/' + code)} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
                 color:'#fff',background:S.grad,border:'none',cursor:'pointer',
                 boxShadow:'0 4px 24px rgba(244,114,114,0.3)',

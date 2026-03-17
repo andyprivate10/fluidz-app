@@ -354,6 +354,19 @@ export default function HostDashboard() {
                 {messageCopied ? 'Copié ✓' : 'Copier le message'}
               </button>
             </div>
+            {/* Direct invite link */}
+            <button
+              onClick={() => {
+                const url = window.location.origin + '/join/' + sess.invite_code + '?direct=1'
+                navigator.clipboard.writeText(url).then(() => {
+                  setLinkCopied(true)
+                  setTimeout(() => setLinkCopied(false), 2000)
+                })
+              }}
+              style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.green+'44',background:S.green+'14',color:S.green,cursor:'pointer'}}
+            >
+              ⚡ Copier lien invite directe (pas de vote)
+            </button>
           </>
         )}
         {/* Arrival stats */}

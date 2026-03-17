@@ -34,7 +34,7 @@ export default function EditSessionPage() {
     if (!id) return
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { navigate('/me'); return }
+      if (!user) { navigate('/login?next=/session/' + id + '/edit'); return }
 
       const { data: sess } = await supabase.from('sessions').select('*').eq('id', id).single()
       if (!sess || sess.host_id !== user.id) { navigate('/'); return }

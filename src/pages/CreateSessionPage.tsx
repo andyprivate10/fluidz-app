@@ -55,7 +55,7 @@ export default function CreateSessionPage() {
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user ?? null
       setUser(u)
-      if (!u) navigate('/me')
+      if (!u) { navigate('/login?next=/session/create'); return }
       else {
         supabase.from('user_profiles').select('profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
           const addrs = (prof?.profile_json as any)?.saved_addresses
