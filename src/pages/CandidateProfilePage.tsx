@@ -207,15 +207,7 @@ export default function CandidateProfilePage() {
       </div>
 
       <div style={{ padding: '0 20px' }}>
-        {/* Bio */}
-        {bio && (
-          <div style={card}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Bio</p>
-            <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
-          </div>
-        )}
-
-        {/* Physique */}
+        {/* Physique — host priority #4 */}
         {(height || weight || morphology) && (
           <div style={card}>
             <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>Physique</p>
@@ -227,7 +219,27 @@ export default function CandidateProfilePage() {
           </div>
         )}
 
-        {/* Santé */}
+        {/* Pratiques — host priority #5 */}
+        {kinks.length > 0 && (
+          <div style={card}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {kinks.map((k: string) => (
+                <span key={k} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 12, fontWeight: 500, color: S.tx2, background: S.bg2, border: '1px solid ' + S.border }}>✓ {k}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Limites — host priority #6 */}
+        {limits && (
+          <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Limites</p>
+            <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
+          </div>
+        )}
+
+        {/* Santé — host priority #7 */}
         {(health.prep_status || health.dernier_test) && (
           <div style={card}>
             <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Santé</p>
@@ -245,23 +257,11 @@ export default function CandidateProfilePage() {
           </div>
         )}
 
-        {/* Pratiques */}
-        {kinks.length > 0 && (
+        {/* Bio — secondary info */}
+        {bio && (
           <div style={card}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {kinks.map((k: string) => (
-                <span key={k} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 12, fontWeight: 500, color: S.tx2, background: S.bg2, border: '1px solid ' + S.border }}>✓ {k}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Limites */}
-        {limits && (
-          <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Limites</p>
-            <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Bio</p>
+            <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
           </div>
         )}
 

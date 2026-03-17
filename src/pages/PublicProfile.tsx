@@ -136,13 +136,6 @@ export default function PublicProfile() {
       </div>
 
       <div style={{ padding: '16px 20px' }}>
-        {p.bio && (
-          <div style={card}>
-            <div style={label}>Bio</div>
-            <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.bio}</p>
-          </div>
-        )}
-
         {(p.height || p.weight || p.morphology) && (
           <div style={card}>
             <div style={label}>Physique</div>
@@ -165,6 +158,13 @@ export default function PublicProfile() {
           </div>
         )}
 
+        {p.limits && (
+          <div style={{ ...card, borderColor: S.red + '55' }}>
+            <div style={{ ...label, color: S.red }}>Hard limits</div>
+            <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p>
+          </div>
+        )}
+
         {(p.health?.prep_status || p.health?.dernier_test || p.prep) && (
           <div style={card}>
             <div style={label}>Santé</div>
@@ -181,10 +181,10 @@ export default function PublicProfile() {
           </div>
         )}
 
-        {p.limits && (
-          <div style={{ ...card, borderColor: S.red + '55' }}>
-            <div style={{ ...label, color: S.red }}>Hard limits</div>
-            <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p>
+        {p.bio && (
+          <div style={card}>
+            <div style={label}>Bio</div>
+            <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.bio}</p>
           </div>
         )}
       </div>

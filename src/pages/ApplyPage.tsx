@@ -13,14 +13,14 @@ const S = {
 const ROLE_OPTIONS = ['Top', 'Bottom', 'Versa', 'Side']
 
 const SECTIONS = [
-  {id:'basics',label:'Basics',icon:User,desc:'pseudo, âge, bio, location'},
+  {id:'photos',label:'Photos & vidéos',icon:Camera,desc:'ce que tu veux montrer'},
   {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
+  {id:'basics',label:'Pseudo, âge, location',icon:User,desc:'qui tu es en bref'},
   {id:'physique',label:'Physique',icon:Dumbbell,desc:'taille, poids, morphologie'},
   {id:'pratiques',label:'Pratiques',icon:Flame,desc:'kinks & pratiques'},
-  {id:'sante',label:'Santé / PrEP',icon:Heart,desc:'statut PrEP, dernier test'},
   {id:'limites',label:'Limites',icon:ShieldOff,desc:'hard limits, no-go'},
-  {id:'photos',label:'Photos',icon:Camera,desc:'photos de profil'},
-  {id:'occasion',label:'Pour cette session',icon:Zap,desc:'message + contenu spécifique'},
+  {id:'sante',label:'Santé / PrEP',icon:Heart,desc:'PrEP, dernier test'},
+  {id:'occasion',label:'Note pour la session',icon:Zap,desc:'message au host, dispo...'},
 ]
 
 const GUEST_TOKEN_KEY = 'guest_token'
