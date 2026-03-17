@@ -5,7 +5,7 @@ import { showToast } from '../components/Toast'
 import { Clock, ThumbsUp, ThumbsDown } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[] } }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[]; roles_wanted?: Record<string, number> } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
@@ -307,6 +307,48 @@ export default function SessionPage() {
             <div style={{ fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>{session.description}</div>
           </div>
         )}
+
+        {/* Rôles recherchés */}
+        {session.lineup_json?.roles_wanted && Object.keys(session.lineup_json.roles_wanted).length > 0 && (() => {
+          const wanted = session.lineup_json.roles_wanted as Record<string, number>
+          // Count current roles in lineup
+          const currentRoles: Record<string, number> = {}
+          members.forEach(m => {
+            const role = m.eps_json?.role || memberRoles[m.applicant_id]
+            if (role) currentRoles[role] = (currentRoles[role] || 0) + 1
+          })
+          const missing: { role: string; need: number }[] = []
+          Object.entries(wanted).forEach(([role, count]) => {
+            const have = currentRoles[role] || 0
+            if (have < Number(count)) missing.push({ role, need: Number(count) - have })
+          })
+          return (
+            <div style={card}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>RÔLES RECHERCHÉS</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {Object.entries(wanted).map(([role, count]) => {
+                  const have = currentRoles[role] || 0
+                  const filled = have >= Number(count)
+                  return (
+                    <span key={role} style={{
+                      fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 99,
+                      color: filled ? '#4ADE80' : '#F9A8A8',
+                      background: filled ? '#4ADE8018' : '#F9A8A818',
+                      border: '1px solid ' + (filled ? '#4ADE8044' : '#F9A8A844'),
+                    }}>
+                      {filled ? '✓' : `${Number(count) - have}×`} {role}
+                    </span>
+                  )
+                })}
+              </div>
+              {missing.length > 0 && (
+                <p style={{ fontSize: 11, color: '#F9A8A8', margin: '8px 0 0' }}>
+                  Recherche : {missing.map(m => `${m.need} ${m.role}${m.need > 1 ? 's' : ''}`).join(', ')}
+                </p>
+              )}
+            </div>
+          )
+        })()}
 
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
           <div style={card}>

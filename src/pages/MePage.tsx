@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import { compressImage } from '../lib/media'
 import type { User } from '@supabase/supabase-js'
 
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
@@ -240,10 +241,15 @@ export default function MePage() {
     }
     setMediaUploading(true)
     try {
+      // Compress photos before upload (skip videos)
+      let fileToUpload = file
+      if (mediaType === 'photo') {
+        fileToUpload = await compressImage(file)
+      }
       const ext = file.name.split('.').pop() || (mediaType === 'video' ? 'mp4' : 'jpg')
       const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
       const path = `${user.id}/${album}_${mediaType}_${ts}.${ext}`
-      const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: false })
+      const { error } = await supabase.storage.from('avatars').upload(path, fileToUpload, { upsert: false })
       if (error) {
         showToast('Erreur upload: ' + error.message, 'error')
         return

@@ -47,6 +47,7 @@ export default function CreateSessionPage() {
   const [savedAddresses, setSavedAddresses] = useState<{ approx_area?: string; exact_address?: string }[]>([])
   const [savingAddress, setSavingAddress] = useState(false)
   const [directions, setDirections] = useState<string[]>([''])
+  const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
 
@@ -89,7 +90,10 @@ export default function CreateSessionPage() {
       status: 'open',
       tags: selectedTags,
       invite_code: Math.random().toString(36).slice(2, 10),
-      lineup_json: directionsFiltered.length > 0 ? { directions: directionsFiltered } : {},
+      lineup_json: {
+        ...(directionsFiltered.length > 0 ? { directions: directionsFiltered } : {}),
+        ...(Object.keys(rolesWanted).length > 0 ? { roles_wanted: rolesWanted } : {}),
+      },
     }).select().single()
     setLoading(false)
     if (err) {
@@ -229,6 +233,30 @@ export default function CreateSessionPage() {
                 )
               })}
             </div>
+          </div>
+          {/* Rôles recherchés */}
+          <div>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Rôles recherchés (optionnel)</p>
+            <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
+              {['Top', 'Bottom', 'Versa', 'Side'].map(role => {
+                const count = rolesWanted[role] || 0
+                return (
+                  <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p300+'18' : S.bg2,border:'1px solid '+(count > 0 ? S.p300+'44' : S.border)}}>
+                    <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p300 : S.tx3}}>{role}</span>
+                    <div style={{display:'flex',alignItems:'center',gap:4}}>
+                      <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[role]||0)>0) n[role]=(n[role]||0)-1; if(n[role]===0) delete n[role]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.border,background:S.bg0,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>
+                      <span style={{fontSize:14,fontWeight:700,color:S.tx,minWidth:16,textAlign:'center'}}>{count}</span>
+                      <button onClick={()=>setRolesWanted(prev => ({...prev,[role]:(prev[role]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.p300+'44',background:S.p300+'18',color:S.p300,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            {Object.keys(rolesWanted).length > 0 && (
+              <p style={{fontSize:11,color:S.tx3,margin:'6px 0 0'}}>
+                Recherche : {Object.entries(rolesWanted).map(([r,c]) => `${c} ${r}${Number(c)>1?'s':''}`).join(', ')}
+              </p>
+            )}
           </div>
           <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.p400+'44',marginTop:4}}>
             Continuer →
