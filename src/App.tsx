@@ -7,6 +7,7 @@ import SessionPage from './pages/SessionPage'
 import CreateSessionPage from './pages/CreateSessionPage'
 import ApplyPage from './pages/ApplyPage'
 import DMPage from './pages/DMPage'
+import GroupChatPage from './pages/GroupChatPage'
 import MePage from './pages/MePage'
 import HostDashboard from './pages/HostDashboard'
 import SessionsPage from './pages/SessionsPage'
@@ -26,6 +27,7 @@ const routes = [
   { path: '/session/:id', element: <SessionPage /> },
   { path: '/session/:id/apply', element: <ApplyPage /> },
   { path: '/session/:id/dm', element: <DMPage /> },
+  { path: '/session/:id/chat', element: <GroupChatPage /> },
   { path: '/session/:id/host', element: <HostDashboard /> },
   { path: '/join/:code', element: <JoinPage /> },
   { path: '/me', element: <MePage /> },

@@ -193,6 +193,10 @@ export default function HostDashboard() {
           </button>
         )}
 
+        <button onClick={() => navigate('/session/' + id + '/chat')} style={{marginTop:8,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:'pointer',width:'100%'}}>
+          Group Chat
+        </button>
+
         {sess?.invite_code && (
           <>
             <button

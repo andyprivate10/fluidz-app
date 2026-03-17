@@ -542,6 +542,9 @@ export default function SessionPage() {
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
                 </button>
+                <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #F9A8A8', borderRadius: 12, color: '#F9A8A8', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                  Group Chat
+                </button>
               </div>
             )}
             {myApp.status === 'rejected' && (
@@ -558,6 +561,9 @@ export default function SessionPage() {
                 )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
+                </button>
+                <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #F9A8A8', borderRadius: 12, color: '#F9A8A8', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                  Group Chat
                 </button>
               </div>
             )}
