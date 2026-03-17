@@ -94,7 +94,7 @@ export default function HostDashboard() {
         href,
       })
 
-      // Safety tip DM on acceptance (per candidate, not per session)
+      // Safety tip DM on acceptance (1 per candidate)
       if (status === 'accepted' && user) {
         const { count } = await supabase.from('messages')
           .select('*', { count: 'exact', head: true })
