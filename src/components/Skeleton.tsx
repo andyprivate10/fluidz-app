@@ -94,12 +94,46 @@ export function SkeletonChatPage() {
           <SkeletonLine width={240} height={50} style={{ borderRadius: 16 }} />
         </div>
       </div>
-      <style>{`
-        @keyframes skeletonPulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 0.8; }
-        }
-      `}</style>
+      <style>{`@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }`}</style>
+    </div>
+  )
+}
+
+export function SkeletonHomePage() {
+  return (
+    <div style={{ background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto', padding: '32px 20px' }}>
+      <SkeletonLine width="40%" height={28} style={{ marginBottom: 8 }} />
+      <SkeletonLine width="55%" height={14} style={{ marginBottom: 24 }} />
+      <SkeletonCard lines={2} />
+      <div style={{ height: 12 }} />
+      <SkeletonCard lines={1} />
+      <div style={{ height: 12 }} />
+      <SkeletonLine width="100%" height={50} style={{ borderRadius: 14 }} />
+      <style>{`@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }`}</style>
+    </div>
+  )
+}
+
+export function SkeletonContactsPage() {
+  return (
+    <div style={{ background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto' }}>
+      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
+        <SkeletonLine width="50%" height={22} style={{ marginBottom: 6 }} />
+        <SkeletonLine width="30%" height={12} style={{ marginBottom: 16 }} />
+        <SkeletonLine width="100%" height={38} style={{ borderRadius: 12, marginBottom: 10 }} />
+        <div style={{ display: 'flex', gap: 6 }}>
+          <SkeletonLine width={70} height={28} style={{ borderRadius: 8 }} />
+          <SkeletonLine width={70} height={28} style={{ borderRadius: 8 }} />
+          <SkeletonLine width={70} height={28} style={{ borderRadius: 8 }} />
+        </div>
+      </div>
+      <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <SkeletonProfile />
+        <SkeletonProfile />
+        <SkeletonProfile />
+        <SkeletonProfile />
+      </div>
+      <style>{`@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }`}</style>
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { SkeletonLine } from '../components/Skeleton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
@@ -279,8 +280,10 @@ export default function DMPage() {
       {/* Messages area */}
       <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, padding: '16px 0' }}>
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-            <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0 24px', width: '100%', paddingTop: 20 }}>
+            <div style={{ alignSelf: 'flex-start' }}><SkeletonLine width={200} height={44} style={{ borderRadius: 16 }} /></div>
+            <div style={{ alignSelf: 'flex-end' }}><SkeletonLine width={160} height={36} style={{ borderRadius: 16 }} /></div>
+            <div style={{ alignSelf: 'flex-start' }}><SkeletonLine width={240} height={44} style={{ borderRadius: 16 }} /></div>
           </div>
         ) : loadError ? (
           <p style={{ color: '#F87171', margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>Impossible de charger les données. Réessaie.</p>

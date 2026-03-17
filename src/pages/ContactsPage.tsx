@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast'
 import { Users, Search } from 'lucide-react'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { SkeletonProfile } from '../components/Skeleton'
 
 
 const S = {
@@ -152,7 +153,7 @@ export default function ContactsPage() {
 
       {/* Contact list */}
       <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {loading && <p style={{ color: S.tx3, textAlign: 'center', padding: 24 }}>Chargement...</p>}
+        {loading && <>{[1,2,3,4].map(i => <SkeletonProfile key={i} />)}</>}
 
         {!loading && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>

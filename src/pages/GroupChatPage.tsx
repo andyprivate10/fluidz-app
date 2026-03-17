@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { SkeletonChatPage } from '../components/Skeleton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
@@ -214,13 +215,7 @@ export default function GroupChatPage() {
     showToast(newVal ? 'Group chat activé' : 'Group chat désactivé', 'info')
   }
 
-  if (loading) {
-    return (
-      <div style={{ minHeight:'100vh', background:S.bg0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-        <div style={{ width:32, height:32, border:'3px solid '+S.p300, borderTopColor:'transparent', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
-      </div>
-    )
-  }
+  if (loading) return <SkeletonChatPage />
 
   if (!session) {
     return (
