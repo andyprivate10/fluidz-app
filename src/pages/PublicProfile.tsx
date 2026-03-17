@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import AddContactButton from '../components/AddContactButton'
 
 const S = {
   bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B', bg3: '#2A2740',
@@ -133,6 +134,8 @@ export default function PublicProfile() {
             {p.role}
           </span>
         )}
+        {/* Add to contacts button */}
+        <AddContactButton targetUserId={userId!} />
       </div>
 
       <div style={{ padding: '16px 20px' }}>
