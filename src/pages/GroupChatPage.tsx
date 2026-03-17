@@ -124,11 +124,24 @@ export default function GroupChatPage() {
     // Fetch messages (no-history: only after user's accept time)
     let acceptedAt: string | null = null
     if (!hostAccess) {
-      const { data: appForTime } = await supabase.from('applications')
+      // Try with checked_in_at first, fall back to created_at if column doesn't exist
+      let appForTime: { checked_in_at?: string; created_at?: string } | null = null
+      const { data: d1, error: e1 } = await supabase.from('applications')
         .select('created_at,checked_in_at')
         .eq('session_id', id).eq('applicant_id', user.id)
-        .in('status', ['accepted', 'checked_in'])
+        .eq('status', 'checked_in')
         .maybeSingle()
+      if (!e1 && d1) {
+        appForTime = d1 as { checked_in_at?: string; created_at?: string }
+      } else {
+        // Fallback without checked_in_at column
+        const { data: d2 } = await supabase.from('applications')
+          .select('created_at')
+          .eq('session_id', id).eq('applicant_id', user.id)
+          .eq('status', 'checked_in')
+          .maybeSingle()
+        appForTime = d2 as { created_at?: string } | null
+      }
       acceptedAt = appForTime?.checked_in_at || appForTime?.created_at || null
       setMyAcceptedAt(acceptedAt)
     }
