@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { SkeletonLine } from '../components/Skeleton'
+import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
@@ -205,6 +205,8 @@ export default function DMPage() {
       })
     }
   }
+
+  if (loading) return <SkeletonChatPage />
 
   return (
     <div style={{
