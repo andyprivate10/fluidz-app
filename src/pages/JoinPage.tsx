@@ -17,6 +17,7 @@ export default function JoinPage() {
   const [session, setSession] = useState<any>(null)
   const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string }[]>([])
   const [hostName, setHostName] = useState<string>('')
+  const [hostAvatar, setHostAvatar] = useState<string>('')
   const [myAppStatus, setMyAppStatus] = useState<string | null>(null)
   const [status, setStatus] = useState<'loading'|'found'|'error'>('loading')
 
@@ -33,8 +34,10 @@ export default function JoinPage() {
     setSession(sess)
 
     if (sess.host_id) {
-      const { data: hostProf } = await supabase.from('user_profiles').select('display_name').eq('id', sess.host_id).maybeSingle()
+      const { data: hostProf } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', sess.host_id).maybeSingle()
       if (hostProf?.display_name) setHostName(hostProf.display_name)
+      const hAvatar = hostProf?.profile_json ? (hostProf.profile_json as Record<string, unknown>).avatar_url as string : ''
+      if (hAvatar) setHostAvatar(hAvatar)
     }
 
     const { data: accepted } = await supabase.from('applications').select('applicant_id').eq('session_id', sess.id).in('status', ['accepted', 'checked_in'])
@@ -102,15 +105,24 @@ export default function JoinPage() {
           <div style={{background:S.bg1,borderRadius:24,padding:'28px 24px',border:'1px solid '+S.border,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3)'}}>
             <h1 style={{fontSize:24,fontWeight:800,color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
 
-            <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:8}}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:4}}>
               <MapPin size={14} style={{color:S.p300}} />
               <span style={{fontSize:13,color:S.tx3}}>{session.approx_area}</span>
             </div>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:4,marginBottom:8}}>
+              <Lock size={11} style={{color:'#453F5C'}} />
+              <span style={{fontSize:11,color:'#453F5C'}}>Adresse exacte révélée après acceptation</span>
+            </div>
 
             {hostName && (
-              <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'0 0 12px'}}>
-                par <span style={{color:S.p300,fontWeight:600}}>{hostName}</span>
-              </p>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,margin:'0 0 12px'}}>
+                {hostAvatar ? (
+                  <img src={hostAvatar} alt="" style={{width:22,height:22,borderRadius:'28%',objectFit:'cover',border:'1px solid #2A2740'}} />
+                ) : (
+                  <div style={{width:22,height:22,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,color:'#F9A8A8',fontWeight:700}}>{hostName[0]}</div>
+                )}
+                <span style={{fontSize:12,color:S.tx3}}>par <span style={{color:S.p300,fontWeight:600}}>{hostName}</span></span>
+              </div>
             )}
 
             {session.description && (

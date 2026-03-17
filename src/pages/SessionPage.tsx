@@ -25,6 +25,7 @@ export default function SessionPage() {
   const [memberNames, setMemberNames] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
+  const [hostProfile, setHostProfile] = useState<{ name: string; avatar?: string } | null>(null)
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -57,6 +58,12 @@ export default function SessionPage() {
       const { data: sess, error: sessErr } = await supabase.from('sessions').select('*').eq('id', id).single()
       if (sessErr) throw sessErr
       setSession(sess)
+
+      // Fetch host profile
+      if (sess?.host_id) {
+        const { data: hp } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', sess.host_id).maybeSingle()
+        if (hp) setHostProfile({ name: hp.display_name || 'Host', avatar: (hp.profile_json as any)?.avatar_url })
+      }
 
       const { data: accepted } = await supabase
         .from('applications')
@@ -274,9 +281,22 @@ export default function SessionPage() {
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
           <div style={{ fontSize: 13, color: '#F0EDFF', marginTop: 6, fontWeight: 600 }}>{session.exact_address}</div>
         ) : session.approx_area ? (
-          <div style={{ fontSize: 13, color: '#7E7694', marginTop: 6 }}>Autour de {session.approx_area}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+            <span style={{ fontSize: 13, color: '#7E7694' }}>Autour de {session.approx_area}</span>
+            {!isHost && <span style={{ fontSize: 11, color: '#453F5C' }}>🔒 Adresse révélée après acceptation</span>}
+          </div>
         ) : null}
         {isHost && <div style={{ fontSize: 12, color: '#F9A8A8', marginTop: 4, fontWeight: 600 }}>Tu es le host</div>}
+        {!isHost && hostProfile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }} onClick={() => navigate('/profile/' + session.host_id)}>
+            {hostProfile.avatar ? (
+              <img src={hostProfile.avatar} alt="" style={{ width: 24, height: 24, borderRadius: '28%', objectFit: 'cover', border: '1px solid #2A2740' }} />
+            ) : (
+              <div style={{ width: 24, height: 24, borderRadius: '28%', background: '#F9A8A822', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#F9A8A8', fontWeight: 700 }}>{hostProfile.name[0]}</div>
+            )}
+            <span style={{ fontSize: 12, color: '#B8B2CC', fontWeight: 600, cursor: 'pointer' }}>Host : {hostProfile.name}</span>
+          </div>
+        )}
       </div>
 
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
