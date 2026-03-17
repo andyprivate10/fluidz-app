@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
@@ -73,7 +73,6 @@ export default function MePage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
-  const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
 
   const [displayName, setDisplayName] = useState('')
@@ -95,6 +94,9 @@ export default function MePage() {
   const [videosIntime, setVideosIntime] = useState<string[]>([])
   const [mediaUploading, setMediaUploading] = useState(false)
   const [hasGuestToken, setHasGuestToken] = useState(false)
+  const profileLoaded = useRef(false)
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle'|'saving'|'saved'>('idle')
 
   useEffect(() => {
     try {
@@ -174,6 +176,8 @@ export default function MePage() {
       setSeroStatus(h.sero_status || '')
       setLimits(p.limits || '')
     }
+    // Allow auto-save after initial load settles
+    setTimeout(() => { profileLoaded.current = true }, 500)
   }
 
   async function sendMagicLink() {
@@ -193,16 +197,15 @@ export default function MePage() {
     setActiveTab('auth')
   }
 
-  async function saveProfile() {
+  const doSave = useCallback(async () => {
     if (!user) return
-    setLoading(true)
+    setAutoSaveStatus('saving')
     const profile_json = {
       age, bio, location, role, height, weight, morphology, kinks, prep, limits,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
       videos_intime: videosIntime,
-      // Keep backward compat: photos = all photos combined
       photos: [...photosProfil, ...photosIntime],
       videos: videosIntime,
       health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined },
@@ -212,10 +215,17 @@ export default function MePage() {
       display_name: displayName || 'Anonyme',
       profile_json
     })
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-    setLoading(false)
-  }
+    setAutoSaveStatus('saved')
+    setTimeout(() => setAutoSaveStatus('idle'), 2000)
+  }, [user, displayName, age, bio, location, role, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime])
+
+  // Auto-save: debounce 1.5s after any field change
+  useEffect(() => {
+    if (!profileLoaded.current || !user) return
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = setTimeout(() => { doSave() }, 1500)
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
+  }, [doSave])
 
   function toggleKink(k: string) {
     setKinks(prev => prev.includes(k) ? prev.filter(x => x !== k) : [...prev, k])
@@ -527,18 +537,14 @@ export default function MePage() {
             </p>
           </Section>
 
-          <button
-            onClick={saveProfile} disabled={loading || !displayName}
-            style={{
-              width:'100%', padding:'15px', borderRadius:16, fontWeight:700,
-              fontSize:15, color:'#fff', background:S.grad, border:'none',
-              cursor: loading||!displayName ? 'not-allowed' : 'pointer',
-              opacity: loading||!displayName ? 0.5 : 1,
-              boxShadow:`0 4px 24px ${S.p400}44`,
-              transition:'opacity 0.2s',
-            }}>
-            {saved ? '✓ Profil sauvegardé !' : loading ? 'Sauvegarde...' : 'Sauvegarder'}
-          </button>
+          {/* Auto-save status */}
+          <div style={{
+            textAlign:'center', padding:'12px 0', fontSize:12, fontWeight:600,
+            color: autoSaveStatus === 'saving' ? S.p300 : autoSaveStatus === 'saved' ? S.green : S.tx4,
+            transition:'color 0.3s',
+          }}>
+            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '✓ Sauvegardé' : 'Les modifications sont sauvegardées automatiquement'}
+          </div>
 
           {devMode && (
             <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
