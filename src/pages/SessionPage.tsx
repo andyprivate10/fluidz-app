@@ -120,12 +120,14 @@ export default function SessionPage() {
       if (user) {
         const { data: app } = await supabase
           .from('applications')
-          .select('status')
+          .select('status,checked_in')
           .eq('session_id', id)
           .eq('applicant_id', user.id)
           .maybeSingle()
         setMyApp(app)
         if (app?.status === 'checked_in') setCheckInDone(true)
+        // If checked_in flag is true but status still accepted → check-in request pending
+        if (app?.checked_in && app?.status === 'accepted') setCheckInDone(true)
         if (app?.status === 'pending') {
           setShowPostulerSuccess(true)
           setTimeout(() => setShowPostulerSuccess(false), 2000)
@@ -197,14 +199,18 @@ export default function SessionPage() {
   const handleCheckIn = async () => {
     if (!currentUser) return
     setCheckInLoading(true)
-    // Guest requests check-in (sets checked_in flag), host must confirm to change status
-    await supabase
+    const { error } = await supabase
       .from('applications')
       .update({ checked_in: true })
       .eq('session_id', id)
       .eq('applicant_id', currentUser.id)
+    if (error) {
+      showToast('Erreur check-in: ' + error.message, 'error')
+      console.error('Check-in error:', error)
+    } else {
+      setCheckInDone(true)
+    }
     setCheckInLoading(false)
-    setCheckInDone(true)
   }
 
   if (loading) return (
