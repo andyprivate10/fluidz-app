@@ -91,7 +91,8 @@ export default function GroupChatPage() {
         navigate('/session/' + id)
         return
       }
-      setMyAcceptedAt(app.checked_in_at || app.created_at)
+      // No-history: use check-in time as cutoff (not candidature date)
+      setMyAcceptedAt(app.checked_in_at || new Date().toISOString())
       setCanChat(true)
     } else {
       setCanChat(true)

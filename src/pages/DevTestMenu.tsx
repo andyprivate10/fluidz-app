@@ -50,7 +50,10 @@ export default function DevTestMenu() {
   }, []);
 
   const login = async (email: string) => {
+    setMsg("Connexion en cours...");
     await supabase.auth.signOut();
+    // Small delay to ensure session is cleared
+    await new Promise(r => setTimeout(r, 300));
     const { error } = await supabase.auth.signInWithPassword({ email, password: "testpass123" });
     if (error) { setMsg("Erreur: " + error.message); return null; }
     const res = await supabase.auth.getUser();
@@ -63,6 +66,8 @@ export default function DevTestMenu() {
     await supabase.auth.signOut();
     setUser(null);
     setMsg("Déconnecté");
+    // Force reload to clear all React state
+    window.location.reload();
   };
 
   const seed = async () => {
@@ -163,6 +168,7 @@ export default function DevTestMenu() {
             <button onClick={() => navigate("/session/" + sessionId + "/host")} style={{ ...btn, fontSize: 12 }}>Host Dashboard</button>
             <button onClick={() => navigate("/session/" + sessionId + "/apply")} style={{ ...btn, fontSize: 12 }}>Apply Page</button>
             <button onClick={() => navigate("/session/" + sessionId + "/dm")} style={{ ...btn, fontSize: 12 }}>DM</button>
+            <button onClick={() => navigate("/session/" + sessionId + "/chat")} style={{ ...btn, fontSize: 12 }}>Group Chat</button>
             <button onClick={() => navigate("/join/" + TEST_INVITE_CODE)} style={{ ...btn, fontSize: 12 }}>Join Page (invitation)</button>
           </div>
           {shareUrl && (
