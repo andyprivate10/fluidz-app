@@ -174,7 +174,7 @@ export default function ContactsPage() {
           return (
             <div key={contact.id} style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
               {/* Avatar */}
-              <div onClick={() => navigate('/profile/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
+              <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
                 {contact.avatar_url ? (
                   <img src={contact.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.border }} />
                 ) : (
@@ -185,7 +185,7 @@ export default function ContactsPage() {
               </div>
 
               {/* Info */}
-              <div style={{ flex: 1, minWidth: 0 }} onClick={() => navigate('/profile/' + contact.contact_user_id)}>
+              <div style={{ flex: 1, minWidth: 0 }} onClick={() => navigate('/contacts/' + contact.contact_user_id)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{contact.display_name}</span>
                   <span style={{ fontSize: 10, color: rel.color, fontWeight: 600 }}>{rel.icon}</span>

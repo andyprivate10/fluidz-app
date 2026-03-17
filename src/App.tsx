@@ -25,6 +25,7 @@ import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
 import ContactsPage from './pages/ContactsPage'
 import GroupsPage from './pages/GroupsPage'
+import ContactDetailPage from './pages/ContactDetailPage'
 import ReviewPage from './pages/ReviewPage'
 import BottomNav from './components/BottomNav'
 
@@ -47,6 +48,7 @@ const routes = [
   { path: '/onboarding', element: <OnboardingPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/contacts', element: <ContactsPage /> },
+  { path: '/contacts/:contactUserId', element: <ContactDetailPage /> },
   { path: '/groups', element: <GroupsPage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
