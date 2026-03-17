@@ -51,19 +51,29 @@ export default function DevTestMenu() {
 
   const login = async (email: string) => {
     setMsg("Connexion en cours...");
-    await supabase.auth.signOut();
-    // Small delay to ensure session is cleared
-    await new Promise(r => setTimeout(r, 300));
-    const { error } = await supabase.auth.signInWithPassword({ email, password: "testpass123" });
+    // Force sign out with global scope to clear all sessions
+    await supabase.auth.signOut({ scope: 'global' }).catch(() => {});
+    // Clear all Supabase auth storage
+    try {
+      Object.keys(localStorage).filter(k => k.startsWith('sb-')).forEach(k => localStorage.removeItem(k));
+      Object.keys(sessionStorage).filter(k => k.startsWith('sb-')).forEach(k => sessionStorage.removeItem(k));
+    } catch (_) {}
+    // Wait for Supabase client to fully reset
+    await new Promise(r => setTimeout(r, 800));
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: "testpass123" });
     if (error) { setMsg("Erreur: " + error.message); return null; }
-    const res = await supabase.auth.getUser();
-    setUser(res.data.user);
+    // Verify login is the correct user
+    if (data.user?.email !== email) { setMsg("Erreur: mauvais user " + data.user?.email); return null; }
+    setUser(data.user);
     setMsg("Connecté : " + email);
-    return res.data.user;
+    return data.user;
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
+    try {
+      Object.keys(localStorage).filter(k => k.startsWith('sb-')).forEach(k => localStorage.removeItem(k));
+    } catch (_) {}
     setUser(null);
     setMsg("Déconnecté");
     // Force reload to clear all React state
@@ -98,16 +108,16 @@ export default function DevTestMenu() {
   };
 
   const goHost = async () => {
-    await login("marcus@fluidz.test");
-    if (sessionId) navigate("/session/" + sessionId + "/host");
+    const u = await login("marcus@fluidz.test");
+    if (u && sessionId) navigate("/session/" + sessionId + "/host");
   };
   const goMember = async () => {
-    await login("karim@fluidz.test");
-    if (sessionId) navigate("/session/" + sessionId);
+    const u = await login("karim@fluidz.test");
+    if (u && sessionId) navigate("/session/" + sessionId);
   };
   const goGuest = async () => {
-    await login("yann@fluidz.test");
-    if (sessionId) navigate("/join/" + TEST_INVITE_CODE);
+    const u = await login("yann@fluidz.test");
+    if (u && sessionId) navigate("/join/" + TEST_INVITE_CODE);
   };
   const goGhost = async () => {
     await supabase.auth.signOut();

@@ -38,7 +38,7 @@ function formatRelative(dateStr: string): string {
 }
 
 export default function DMPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id, peerId: peerIdParam } = useParams<{ id: string; peerId?: string }>()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
@@ -47,7 +47,7 @@ export default function DMPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
-  const [peerId, setPeerId] = useState<string | null>(null)
+  const [peerId, setPeerId] = useState<string | null>(peerIdParam || null)
   const [peerName, setPeerName] = useState<string>('')
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -92,12 +92,16 @@ export default function DMPage() {
         }
 
         if (sess) {
-          let pid: string | null = null
+          let pid: string | null = peerIdParam || null
           if (user?.id === sess.host_id) {
-            const { data: appRow } = await supabase.from('applications').select('applicant_id').eq('session_id', id).in('status', ['accepted', 'checked_in', 'pending']).limit(1)
-            const row = Array.isArray(appRow) ? appRow[0] : appRow
-            if (row?.applicant_id) pid = row.applicant_id
+            // Host: peerId must come from URL params
+            if (!pid) {
+              // Redirect to host dashboard if no peer specified
+              navigate('/session/' + id + '/host')
+              return
+            }
           } else {
+            // Candidate: peer is always the host
             pid = sess.host_id
           }
           setPeerId(pid)
@@ -108,11 +112,22 @@ export default function DMPage() {
           }
         }
 
-        const { data: msgs } = await supabase
+        // Fetch DM messages for this peer pair
+        // Filter: messages between current user and peer (backward compat: include messages without dm_peer_id)
+        const effectivePeerId = peerIdParam || (sess?.host_id !== user?.id ? sess?.host_id : null)
+        let query = supabase
           .from('messages')
           .select('*')
           .eq('session_id', id)
+          .eq('room_type', 'dm')
           .order('created_at')
+        
+        if (effectivePeerId && user) {
+          // Only show messages in this specific DM thread
+          query = query.or(`and(sender_id.eq.${user.id},dm_peer_id.eq.${effectivePeerId}),and(sender_id.eq.${effectivePeerId},dm_peer_id.eq.${user.id}),and(sender_id.eq.${user.id},dm_peer_id.is.null),and(sender_id.eq.${effectivePeerId},dm_peer_id.is.null)`)
+        }
+
+        const { data: msgs } = await query
         setMessages((msgs as Message[]) ?? [])
       } catch {
         setLoadError(true)
@@ -122,20 +137,30 @@ export default function DMPage() {
     }
     init()
 
+    const effectivePeer = peerIdParam || null
     const channel = supabase
-      .channel('messages:' + id)
+      .channel('dm:' + id + ':' + (effectivePeer || 'all'))
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
         table: 'messages',
         filter: 'session_id=eq.' + id,
       }, (payload) => {
-        setMessages((prev) => [...prev, payload.new as Message])
+        const msg = payload.new as Message & { room_type?: string; dm_peer_id?: string }
+        if (msg.room_type !== 'dm') return
+        // Only show messages in this DM thread
+        if (effectivePeer && currentUser) {
+          const isMyMsg = msg.sender_id === currentUser.id && msg.dm_peer_id === effectivePeer
+          const isPeerMsg = msg.sender_id === effectivePeer && msg.dm_peer_id === currentUser.id
+          const isLegacy = !msg.dm_peer_id && (msg.sender_id === currentUser.id || msg.sender_id === effectivePeer)
+          if (!isMyMsg && !isPeerMsg && !isLegacy) return
+        }
+        setMessages((prev) => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name }])
       })
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
-  }, [id])
+  }, [id, peerIdParam])
 
   // Auto-scroll to bottom when a new message is sent or received
   useEffect(() => {
@@ -163,6 +188,8 @@ export default function DMPage() {
       sender_id: currentUser.id,
       text,
       sender_name: displayName || currentUser.email || '',
+      room_type: 'dm',
+      dm_peer_id: peerId || undefined,
     })
   }
 

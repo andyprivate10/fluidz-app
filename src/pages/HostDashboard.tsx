@@ -85,18 +85,21 @@ export default function HostDashboard() {
         href,
       })
 
-      // Safety tip DM on acceptance (only once per session)
+      // Safety tip DM on acceptance (per candidate, not per session)
       if (status === 'accepted' && user) {
         const { count } = await supabase.from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('session_id', id)
           .eq('sender_name', '🛡️ Fluidz')
+          .eq('dm_peer_id', app.applicant_id)
         if (!count || count === 0) {
           await supabase.from('messages').insert({
             session_id: id,
             sender_id: user.id,
             text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
             sender_name: '🛡️ Fluidz',
+            room_type: 'dm',
+            dm_peer_id: app.applicant_id,
           })
         }
       }
@@ -358,6 +361,7 @@ export default function HostDashboard() {
                     {app.status === 'accepted' && !app.checked_in && (
                       <span style={{fontSize:12,color:S.green,fontWeight:600}}>Accepté — adresse débloquée</span>
                     )}
+                    <button onClick={() => navigate('/session/' + id + '/dm/' + app.applicant_id)} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p300,border:'1px solid '+S.p300+'55',background:'transparent',cursor:'pointer'}}>DM</button>
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>
                 )}

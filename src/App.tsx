@@ -27,6 +27,7 @@ const routes = [
   { path: '/session/:id', element: <SessionPage /> },
   { path: '/session/:id/apply', element: <ApplyPage /> },
   { path: '/session/:id/dm', element: <DMPage /> },
+  { path: '/session/:id/dm/:peerId', element: <DMPage /> },
   { path: '/session/:id/chat', element: <GroupChatPage /> },
   { path: '/session/:id/host', element: <HostDashboard /> },
   { path: '/join/:code', element: <JoinPage /> },
