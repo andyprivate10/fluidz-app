@@ -331,7 +331,12 @@ export default function HostDashboard() {
               <button
                 onClick={() => {
                   const url = window.location.origin + '/join/' + sess.invite_code
-                  const text = '🔥 Plan ce soir – ' + (sess.title || '') + ' – ' + (sess.approx_area || '') + ' – Postule : ' + url
+                  const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
+                  const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0
+                    ? ' – Recherche : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
+                    : ''
+                  const membersText = counts.accepted > 0 ? ` – ${counts.accepted} déjà là` : ''
+                  const text = '🔥 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – Postule : ' + url
                   navigator.clipboard.writeText(text).then(() => {
                     setGrinderCopied(true)
                     setTimeout(() => setGrinderCopied(false), 2000)
@@ -343,7 +348,12 @@ export default function HostDashboard() {
               </button>
               <button
                 onClick={() => {
-                  const lines = [sess.title, sess.description || '', 'Postule ici : ' + window.location.origin + '/join/' + sess.invite_code].filter(Boolean)
+                  const url = window.location.origin + '/join/' + sess.invite_code
+                  const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
+                  const rolesLine = rolesWanted && Object.keys(rolesWanted).length > 0
+                    ? 'Recherche : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
+                    : ''
+                  const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '📍 ' + sess.approx_area : '', counts.accepted > 0 ? `👥 ${counts.accepted} membres` : '', '', 'Postule ici : ' + url].filter(Boolean)
                   navigator.clipboard.writeText(lines.join('\n')).then(() => {
                     setMessageCopied(true)
                     setTimeout(() => setMessageCopied(false), 2000)

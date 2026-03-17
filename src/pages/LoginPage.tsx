@@ -46,6 +46,10 @@ export default function LoginPage() {
 
     setStep('sent')
     setLoading(false)
+    // Store redirect URL for post-auth
+    if (next && next !== '/') {
+      try { localStorage.setItem('auth_redirect', next) } catch (_) {}
+    }
 
     // Cooldown 60s
     setCooldown(60)

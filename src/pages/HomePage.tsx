@@ -26,6 +26,16 @@ export default function HomePage() {
     if (!user) return
     setUserId(user.id)
 
+    // Check for post-auth redirect (deep linking)
+    try {
+      const redirect = localStorage.getItem('auth_redirect')
+      if (redirect) {
+        localStorage.removeItem('auth_redirect')
+        navigate(redirect)
+        return
+      }
+    } catch (_) {}
+
     const { data: profData } = await supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle()
     if (profData?.display_name) {
       setDisplayName(profData.display_name)
