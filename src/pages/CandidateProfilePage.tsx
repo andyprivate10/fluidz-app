@@ -139,8 +139,18 @@ export default function CandidateProfilePage() {
   const health = pj.health || snapshot.health || {}
   const avatarUrl = pj.avatar_url || snapshot.avatar_url || ''
   const messageText = eps.message || eps.occasion_note || ''
-  const candidatePhotos: string[] = eps.selected_photos || (Array.isArray(pj.photos) ? pj.photos : avatarUrl ? [avatarUrl] : [])
-  const candidateVideos: string[] = eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : [])
+  // New split albums (backward compat with old selected_photos)
+  const photosProfil: string[] = eps.selected_photos_profil || (Array.isArray(pj.photos_profil) ? pj.photos_profil : [])
+  const photosAdulte: string[] = eps.selected_photos_adulte || []
+  const videosAdulte: string[] = eps.selected_videos_adulte || []
+  // Fallback: old combined format
+  const candidatePhotos: string[] = photosProfil.length > 0 || photosAdulte.length > 0
+    ? [...photosProfil, ...photosAdulte]
+    : (eps.selected_photos || (Array.isArray(pj.photos) ? pj.photos : avatarUrl ? [avatarUrl] : []))
+  const candidateVideos: string[] = videosAdulte.length > 0
+    ? videosAdulte
+    : (eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : []))
+  const hasAdulteMedia = photosAdulte.length > 0 || videosAdulte.length > 0
 
   const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, marginBottom: 12 }
 
@@ -151,17 +161,48 @@ export default function CandidateProfilePage() {
       {candidatePhotos.length > 0 && (
         <div style={{ padding: '40px 20px 0' }}>
           <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
-          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
-            {candidatePhotos.map((url: string, i: number) => (
-              <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
-            ))}
-            {candidateVideos.map((url: string, i: number) => (
-              <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.border }} />
-                <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+          {/* Profil photos */}
+          {photosProfil.length > 0 && (
+            <>
+              {hasAdulteMedia && <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Profil</p>}
+              <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
+                {photosProfil.map((url: string, i: number) => (
+                  <img key={i} src={url} alt="" style={{ width: photosProfil.length === 1 && !hasAdulteMedia ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
+          {/* Adulte photos/videos */}
+          {hasAdulteMedia && (
+            <>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.p400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
+              <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
+                {photosAdulte.map((url: string, i: number) => (
+                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.p400 + '55' }} />
+                ))}
+                {videosAdulte.map((url: string, i: number) => (
+                  <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
+                    <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.p400 + '55' }} />
+                    <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          {/* Fallback: old combined format (no album labels) */}
+          {photosProfil.length === 0 && !hasAdulteMedia && candidatePhotos.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
+              {candidatePhotos.map((url: string, i: number) => (
+                <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+              ))}
+              {candidateVideos.map((url: string, i: number) => (
+                <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
+                  <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.border }} />
+                  <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
