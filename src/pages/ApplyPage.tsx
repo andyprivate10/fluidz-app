@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap } from 'lucide-react'
+import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye } from 'lucide-react'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -12,16 +12,25 @@ const S = {
 
 const ROLE_OPTIONS = ['Top', 'Bottom', 'Versa', 'Side']
 
-const SECTIONS = [
-  {id:'photos',label:'Photos & vidéos',icon:Camera,desc:'ce que tu veux montrer'},
-  {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
+type Section = { id: string; label: string; icon: typeof Camera; desc: string }
+
+const BLOC_PROFIL: Section[] = [
+  {id:'photos_profil',label:'Photos profil',icon:Camera,desc:'visage, corps'},
   {id:'basics',label:'Pseudo, âge, location',icon:User,desc:'qui tu es en bref'},
   {id:'physique',label:'Physique',icon:Dumbbell,desc:'taille, poids, morphologie'},
+]
+
+const BLOC_ADULTE: Section[] = [
+  {id:'photos_adulte',label:'Photos & vidéos adultes',icon:Eye,desc:'contenu NSFW'},
+  {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
   {id:'pratiques',label:'Pratiques',icon:Flame,desc:'kinks & pratiques'},
   {id:'limites',label:'Limites',icon:ShieldOff,desc:'hard limits, no-go'},
   {id:'sante',label:'Santé / PrEP',icon:Heart,desc:'PrEP, dernier test'},
-  {id:'occasion',label:'Note pour la session',icon:Zap,desc:'message au host, dispo...'},
 ]
+
+const SECTION_OCCASION: Section = {id:'occasion',label:'Note pour la session',icon:Zap,desc:'message au host, dispo...'}
+
+const ALL_SECTIONS = [...BLOC_PROFIL, ...BLOC_ADULTE, SECTION_OCCASION]
 
 const GUEST_TOKEN_KEY = 'guest_token'
 const GUEST_SESSION_KEY = 'guest_session_id'
@@ -34,9 +43,10 @@ export default function ApplyPage() {
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
-  const [enabled, setEnabled] = useState<string[]>(SECTIONS.map(s => s.id))
-  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([])
-  const [selectedVideos, setSelectedVideos] = useState<string[]>([])
+  const [enabled, setEnabled] = useState<string[]>(ALL_SECTIONS.map(s => s.id))
+  const [selectedPhotosProfil, setSelectedPhotosProfil] = useState<string[]>([])
+  const [selectedPhotosAdulte, setSelectedPhotosAdulte] = useState<string[]>([])
+  const [selectedVideosAdulte, setSelectedVideosAdulte] = useState<string[]>([])
   const [selectedRole, setSelectedRole] = useState<string>('')
   const [note, setNote] = useState('')
   const [messageToHost, setMessageToHost] = useState('')
@@ -95,20 +105,25 @@ export default function ApplyPage() {
         }
         // Smart pre-check: only enable sections with actual data
         const pj = prof.profile_json || {}
-        const filled: string[] = ['occasion'] // always include occasion
+        const filled: string[] = ['occasion']
         if (prof.display_name || pj.age || pj.bio || pj.location) filled.push('basics')
         if (pj.role) filled.push('role')
         if (pj.height || pj.weight || pj.morphology) filled.push('physique')
         if (Array.isArray(pj.kinks) && pj.kinks.length > 0) filled.push('pratiques')
         if (pj.health?.prep_status || pj.health?.dernier_test) filled.push('sante')
         if (pj.limits) filled.push('limites')
-        if (pj.avatar_url || (Array.isArray(pj.photos) && pj.photos.length > 0)) filled.push('photos')
+        // Photos profil
+        const pprofil = Array.isArray(pj.photos_profil) ? pj.photos_profil : (Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : [])
+        if (pprofil.length > 0) filled.push('photos_profil')
+        // Photos adulte
+        const padulte = Array.isArray(pj.photos_intime) ? pj.photos_intime : []
+        const vadulte = Array.isArray(pj.videos_intime) ? pj.videos_intime : (Array.isArray(pj.videos) ? pj.videos : [])
+        if (padulte.length > 0 || vadulte.length > 0) filled.push('photos_adulte')
         setEnabled(filled)
-        // Pre-select all photos and videos
-        const allPhotos = Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []
-        const allVideos = Array.isArray(pj.videos) ? pj.videos : []
-        setSelectedPhotos(allPhotos)
-        setSelectedVideos(allVideos)
+        // Pre-select all media
+        setSelectedPhotosProfil(pprofil)
+        setSelectedPhotosAdulte(padulte)
+        setSelectedVideosAdulte(vadulte)
       }
       if (sess) setSession(sess)
       const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
@@ -163,8 +178,12 @@ export default function ApplyPage() {
         message: messageToHost.trim() || undefined,
         profile_snapshot: profile?.profile_json || {},
         role: selectedRole || undefined,
-        selected_photos: enabled.includes('photos') ? selectedPhotos : [],
-        selected_videos: enabled.includes('photos') ? selectedVideos : [],
+        selected_photos_profil: enabled.includes('photos_profil') ? selectedPhotosProfil : [],
+        selected_photos_adulte: enabled.includes('photos_adulte') ? selectedPhotosAdulte : [],
+        selected_videos_adulte: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+        // Backward compat
+        selected_photos: [...(enabled.includes('photos_profil') ? selectedPhotosProfil : []), ...(enabled.includes('photos_adulte') ? selectedPhotosAdulte : [])],
+        selected_videos: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
       }
     })
     setLoading(false)
@@ -258,31 +277,27 @@ export default function ApplyPage() {
               })}
             </div>
           </div>
-          <div style={{display:'flex',flexDirection:'column',gap:8}}>
-            {SECTIONS.map(sec => {
-              const on = enabled.includes(sec.id)
-              const pj = profile?.profile_json || {}
-              // Show real profile data as preview
-              let preview = ''
-              if (!guestMode && pj) {
-                switch (sec.id) {
-                  case 'basics': preview = [pj.age ? pj.age + ' ans' : '', pj.location].filter(Boolean).join(' · '); break
-                  case 'role': preview = pj.role || selectedRole || ''; break
-                  case 'physique': preview = [pj.height ? pj.height + 'cm' : '', pj.weight ? pj.weight + 'kg' : '', pj.morphology].filter(Boolean).join(' · '); break
-                  case 'pratiques': preview = Array.isArray(pj.kinks) && pj.kinks.length > 0 ? pj.kinks.slice(0, 3).join(', ') + (pj.kinks.length > 3 ? ' +' + (pj.kinks.length - 3) : '') : ''; break
-                  case 'sante': preview = pj.health?.prep_status ? 'PrEP ' + pj.health.prep_status : ''; break
-                  case 'limites': preview = pj.limits ? pj.limits.slice(0, 40) + (pj.limits.length > 40 ? '…' : '') : ''; break
-                  case 'photos': {
-                    const allPhotos = Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []
-                    const allVideos = Array.isArray(pj.videos) ? pj.videos : []
-                    const total = selectedPhotos.length + selectedVideos.length
-                    const max = allPhotos.length + allVideos.length
-                    preview = max > 0 ? `${total}/${max} sélectionné${total > 1 ? 's' : ''}` : 'Aucun média'
-                    break
-                  }
-                  case 'occasion': preview = ''; break
-                }
+          {/* Helper: render a section row */}
+          {(() => {
+            const pj = profile?.profile_json || {}
+            function getPreview(secId: string) {
+              if (guestMode || !pj) return ''
+              switch (secId) {
+                case 'basics': return [pj.age ? pj.age + ' ans' : '', pj.location].filter(Boolean).join(' · ')
+                case 'role': return pj.role || selectedRole || ''
+                case 'physique': return [pj.height ? pj.height + 'cm' : '', pj.weight ? pj.weight + 'kg' : '', pj.morphology].filter(Boolean).join(' · ')
+                case 'pratiques': return Array.isArray(pj.kinks) && pj.kinks.length > 0 ? pj.kinks.slice(0, 3).join(', ') + (pj.kinks.length > 3 ? ' +' + (pj.kinks.length - 3) : '') : ''
+                case 'sante': return pj.health?.prep_status ? 'PrEP ' + pj.health.prep_status : ''
+                case 'limites': return pj.limits ? pj.limits.slice(0, 40) + (pj.limits.length > 40 ? '…' : '') : ''
+                case 'photos_profil': { const pp = Array.isArray(pj.photos_profil) ? pj.photos_profil : (Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []); return pp.length > 0 ? `${selectedPhotosProfil.length}/${pp.length}` : '' }
+                case 'photos_adulte': { const pa = Array.isArray(pj.photos_intime) ? pj.photos_intime : []; const va = Array.isArray(pj.videos_intime) ? pj.videos_intime : []; const t = selectedPhotosAdulte.length + selectedVideosAdulte.length; return (pa.length + va.length) > 0 ? `${t}/${pa.length + va.length}` : '' }
+                default: return ''
               }
+            }
+
+            function renderSection(sec: Section) {
+              const on = enabled.includes(sec.id)
+              const preview = getPreview(sec.id)
               return (
                 <div key={sec.id} onClick={() => toggle(sec.id)} style={{
                   background: on ? S.p300 + '10' : S.bg1,
@@ -306,57 +321,102 @@ export default function ApplyPage() {
                   </div>
                 </div>
               )
-            })}
-          </div>
+            }
 
-          {/* Photo/video sub-selection when photos section is enabled */}
-          {enabled.includes('photos') && !guestMode && (() => {
-            const pj = profile?.profile_json || {}
-            const allPhotos: string[] = Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []
-            const allVideos: string[] = Array.isArray(pj.videos) ? pj.videos : []
-            if (allPhotos.length + allVideos.length === 0) return null
+            function renderBlocToggle(label: string, sections: Section[], color: string) {
+              const allOn = sections.every(s => enabled.includes(s.id))
+              const someOn = sections.some(s => enabled.includes(s.id))
+              return (
+                <button type="button" onClick={() => {
+                  const ids = sections.map(s => s.id)
+                  if (allOn) setEnabled(prev => prev.filter(x => !ids.includes(x)))
+                  else setEnabled(prev => [...new Set([...prev, ...ids])])
+                }} style={{
+                  display:'flex',alignItems:'center',justifyContent:'space-between',width:'100%',
+                  padding:'10px 14px',borderRadius:12,cursor:'pointer',border:'none',
+                  background: someOn ? color + '14' : S.bg2,
+                }}>
+                  <span style={{fontSize:13,fontWeight:700,color: someOn ? color : S.tx3}}>{label}</span>
+                  <span style={{fontSize:11,fontWeight:600,color: someOn ? color : S.tx4}}>
+                    {allOn ? 'Tout activé' : someOn ? 'Partiel' : 'Désactivé'}
+                  </span>
+                </button>
+              )
+            }
+
+            // Sub-selection for photos profil
+            function renderPhotoSubSelection(albumKey: 'profil' | 'adulte') {
+              const enabledKey = albumKey === 'profil' ? 'photos_profil' : 'photos_adulte'
+              if (!enabled.includes(enabledKey) || guestMode) return null
+              const allP: string[] = albumKey === 'profil'
+                ? (Array.isArray(pj.photos_profil) ? pj.photos_profil : (Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []))
+                : (Array.isArray(pj.photos_intime) ? pj.photos_intime : [])
+              const allV: string[] = albumKey === 'adulte' ? (Array.isArray(pj.videos_intime) ? pj.videos_intime : (Array.isArray(pj.videos) ? pj.videos : [])) : []
+              if (allP.length + allV.length === 0) return null
+              const selP = albumKey === 'profil' ? selectedPhotosProfil : selectedPhotosAdulte
+              const setSelP = albumKey === 'profil' ? setSelectedPhotosProfil : setSelectedPhotosAdulte
+              const selV = selectedVideosAdulte
+              const setSelV = setSelectedVideosAdulte
+              const accentColor = albumKey === 'profil' ? S.p300 : S.p400
+              return (
+                <div style={{marginTop:6,marginLeft:28,padding:10,background:S.bg1,borderRadius:12,border:'1px solid '+accentColor+'33'}}>
+                  <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                    {allP.map((url: string) => {
+                      const on = selP.includes(url)
+                      return (
+                        <button key={url} type="button" onClick={() => setSelP((prev: string[]) => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.border,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
+                          <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
+                        </button>
+                      )
+                    })}
+                    {allV.map((url: string) => {
+                      const on = selV.includes(url)
+                      return (
+                        <button key={url} type="button" onClick={() => setSelV((prev: string[]) => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:66,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.border,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
+                          <video src={url} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            }
+
             return (
-              <div style={{margin:'12px 0',padding:14,background:S.bg1,borderRadius:14,border:'1px solid '+S.p300+'33'}}>
-                <p style={{fontSize:12,fontWeight:700,color:S.p300,margin:'0 0 10px'}}>Sélectionne les médias à partager</p>
-                {allPhotos.length > 0 && (
-                  <>
-                    <p style={{fontSize:11,color:S.tx3,margin:'0 0 6px'}}>Photos ({selectedPhotos.length}/{allPhotos.length})</p>
-                    <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:10}}>
-                      {allPhotos.map((url: string) => {
-                        const on = selectedPhotos.includes(url)
-                        return (
-                          <button key={url} type="button" onClick={() => setSelectedPhotos(prev => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:56,height:56,padding:0,border:on ? '2px solid '+S.p300 : '1px solid '+S.border,borderRadius:10,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.4,transition:'opacity 0.15s'}}>
-                            <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                            {on && <div style={{position:'absolute',top:2,right:2,width:16,height:16,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#fff',fontWeight:800}}>✓</div>}
-                          </button>
-                        )
-                      })}
+              <>
+                {/* BLOC PROFIL */}
+                {renderBlocToggle('Profil', BLOC_PROFIL, S.green)}
+                <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
+                  {BLOC_PROFIL.map(sec => (
+                    <div key={sec.id}>
+                      {renderSection(sec)}
+                      {sec.id === 'photos_profil' && renderPhotoSubSelection('profil')}
                     </div>
-                  </>
-                )}
-                {allVideos.length > 0 && (
-                  <>
-                    <p style={{fontSize:11,color:S.tx3,margin:'0 0 6px'}}>Vidéos ({selectedVideos.length}/{allVideos.length})</p>
-                    <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-                      {allVideos.map((url: string) => {
-                        const on = selectedVideos.includes(url)
-                        return (
-                          <button key={url} type="button" onClick={() => setSelectedVideos(prev => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:72,height:56,padding:0,border:on ? '2px solid '+S.p300 : '1px solid '+S.border,borderRadius:10,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.4,transition:'opacity 0.15s'}}>
-                            <video src={url} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                            {on && <div style={{position:'absolute',top:2,right:2,width:16,height:16,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#fff',fontWeight:800}}>✓</div>}
-                          </button>
-                        )
-                      })}
+                  ))}
+                </div>
+
+                {/* BLOC ADULTE */}
+                {renderBlocToggle('Adulte', BLOC_ADULTE, S.p400)}
+                <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
+                  {BLOC_ADULTE.map(sec => (
+                    <div key={sec.id}>
+                      {renderSection(sec)}
+                      {sec.id === 'photos_adulte' && renderPhotoSubSelection('adulte')}
                     </div>
-                  </>
-                )}
-              </div>
+                  ))}
+                </div>
+
+                {/* OCCASION (hors bloc) */}
+                {renderSection(SECTION_OCCASION)}
+              </>
             )
           })()}
 
           {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>Ton pseudo est requis</p>}
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
-            <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{SECTIONS.length}</span> sections partagées</p>
+            <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
           <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
             Continuer →
@@ -375,7 +435,7 @@ export default function ApplyPage() {
           </div>
           <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border,marginBottom:12}}>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,margin:'0 0 6px'}}>Récapitulatif — sections partagées</p>
-            <p style={{fontSize:13,color:S.tx2,margin:0}}>{enabled.length} section{enabled.length > 1 ? 's' : ''} : {enabled.map(sid => SECTIONS.find(s => s.id === sid)?.label).filter(Boolean).join(', ') || '—'}</p>
+            <p style={{fontSize:13,color:S.tx2,margin:0}}>{enabled.length} section{enabled.length > 1 ? 's' : ''} : {enabled.map(sid => ALL_SECTIONS.find(s => s.id === sid)?.label).filter(Boolean).join(', ') || '—'}</p>
           </div>
           <div style={{display:'flex',gap:10,marginTop:8}}>
             <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.border,background:S.bg2,cursor:'pointer'}}>← Retour</button>
