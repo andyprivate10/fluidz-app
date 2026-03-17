@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Clock, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[]; roles_wanted?: Record<string, number> } }
@@ -229,26 +230,7 @@ export default function SessionPage() {
     setCheckInLoading(false)
   }
 
-  if (loading) return (
-    <div style={st}>
-      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #2A2740', background: '#16141F' }}>
-        <div className="h-5 w-32 bg-[#2A2740] rounded animate-pulse mb-3" />
-        <div className="h-4 w-48 bg-[#2A2740] rounded animate-pulse" />
-      </div>
-      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{ ...card }}>
-          <div className="h-4 w-full max-w-[200px] bg-[#2A2740] rounded animate-pulse mb-3" />
-          <div className="h-3 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
-          <div className="h-3 w-4/5 bg-[#2A2740] rounded animate-pulse" />
-        </div>
-        <div style={{ ...card }}>
-          <div className="h-4 w-24 bg-[#2A2740] rounded animate-pulse mb-3" />
-          <div className="h-10 w-full bg-[#2A2740] rounded animate-pulse mb-2" />
-          <div className="h-10 w-full bg-[#2A2740] rounded animate-pulse" />
-        </div>
-      </div>
-    </div>
-  )
+  if (loading) return <SkeletonSessionPage />
   if (loadError) return (
     <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
       <p style={{ color: '#F87171', textAlign: 'center' }}>Impossible de charger les données. Réessaie.</p>

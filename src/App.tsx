@@ -21,6 +21,7 @@ import DevTestMenu from './pages/DevTestMenu'
 import EditSessionPage from './pages/EditSessionPage'
 import GhostSetupPage from './pages/GhostSetupPage'
 import GhostRecoverPage from './pages/GhostRecoverPage'
+import LoginPage from './pages/LoginPage'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -37,6 +38,7 @@ const routes = [
   { path: '/join/:code', element: <JoinPage /> },
   { path: '/ghost/setup', element: <GhostSetupPage /> },
   { path: '/ghost/recover', element: <GhostRecoverPage /> },
+  { path: '/login', element: <LoginPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
