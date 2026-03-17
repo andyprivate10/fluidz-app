@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string }
 type AppSession = { session_id: string; status: string; title: string; approx_area: string }
@@ -26,39 +27,32 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'hosted'|'applied'>('hosted')
 
-  useEffect(() => {
-    const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { navigate('/me'); return }
+  const loadData = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { navigate('/me'); return }
+    const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).order('created_at', { ascending: false })
+    setHosted(h || [])
+    const { data: apps } = await supabase
+      .from('applications')
+      .select('session_id, status, sessions(title, approx_area)')
+      .eq('applicant_id', user.id)
+      .order('created_at', { ascending: false })
+    const mapped = (apps || []).map((a: any) => ({
+      session_id: a.session_id, status: a.status,
+      title: a.sessions?.title || 'Session', approx_area: a.sessions?.approx_area || '',
+    }))
+    setApplied(mapped)
+    if ((h || []).length === 0 && mapped.length > 0) setTab('applied')
+    setLoading(false)
+  }, [navigate])
 
-      // Sessions I host
-      const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).order('created_at', { ascending: false })
-      setHosted(h || [])
+  const { pullHandlers, pullIndicator } = usePullToRefresh(loadData)
 
-      // Sessions I applied to
-      const { data: apps } = await supabase
-        .from('applications')
-        .select('session_id, status, sessions(title, approx_area)')
-        .eq('applicant_id', user.id)
-        .order('created_at', { ascending: false })
-      const mapped = (apps || []).map((a: any) => ({
-        session_id: a.session_id,
-        status: a.status,
-        title: a.sessions?.title || 'Session',
-        approx_area: a.sessions?.approx_area || '',
-      }))
-      setApplied(mapped)
-
-      // Default tab
-      if ((h || []).length === 0 && mapped.length > 0) setTab('applied')
-
-      setLoading(false)
-    }
-    load()
-  }, [])
+  useEffect(() => { loadData() }, [loadData])
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+      {pullIndicator}
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 12px' }}>Sessions</h1>
         <div style={{ display: 'flex', gap: 8 }}>
