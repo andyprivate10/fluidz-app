@@ -82,7 +82,7 @@ export default function GroupChatPage() {
     const hostAccess = user.id === sess.host_id
     if (!hostAccess) {
       const { data: app } = await supabase.from('applications')
-        .select('status,created_at')
+        .select('status,created_at,checked_in_at')
         .eq('session_id', id).eq('applicant_id', user.id)
         .eq('status', 'checked_in')
         .maybeSingle()
@@ -91,7 +91,7 @@ export default function GroupChatPage() {
         navigate('/session/' + id)
         return
       }
-      setMyAcceptedAt(app.created_at)
+      setMyAcceptedAt(app.checked_in_at || app.created_at)
       setCanChat(true)
     } else {
       setCanChat(true)
@@ -125,11 +125,11 @@ export default function GroupChatPage() {
     let acceptedAt: string | null = null
     if (!hostAccess) {
       const { data: appForTime } = await supabase.from('applications')
-        .select('created_at')
+        .select('created_at,checked_in_at')
         .eq('session_id', id).eq('applicant_id', user.id)
         .in('status', ['accepted', 'checked_in'])
         .maybeSingle()
-      acceptedAt = appForTime?.created_at || null
+      acceptedAt = appForTime?.checked_in_at || appForTime?.created_at || null
       setMyAcceptedAt(acceptedAt)
     }
     await loadMessages(id!, acceptedAt)

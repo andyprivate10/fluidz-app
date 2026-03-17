@@ -107,7 +107,7 @@ export default function HostDashboard() {
 
   async function confirmCheckIn(appId: string) {
     setActionLoading(appId)
-    await supabase.from('applications').update({ checked_in: true, status: 'checked_in' }).eq('id', appId)
+    await supabase.from('applications').update({ checked_in: true, status: 'checked_in', checked_in_at: new Date().toISOString() }).eq('id', appId)
     // Notify the guest that check-in is confirmed
     const app = apps.find(a => a.id === appId)
     if (app && sess) {
@@ -121,7 +121,7 @@ export default function HostDashboard() {
         href: `/session/${id}`,
       })
     }
-    setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true, status: 'checked_in'} : a))
+    setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true, status: 'checked_in', checked_in_at: new Date().toISOString()} : a))
     setActionLoading(null)
   }
 
