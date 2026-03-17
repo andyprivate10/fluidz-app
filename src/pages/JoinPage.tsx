@@ -20,6 +20,9 @@ export default function JoinPage() {
   const [hostAvatar, setHostAvatar] = useState<string>('')
   const [myAppStatus, setMyAppStatus] = useState<string | null>(null)
   const [status, setStatus] = useState<'loading'|'found'|'error'>('loading')
+  const [profileComplete, setProfileComplete] = useState(false)
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [quickApplying, setQuickApplying] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -54,9 +57,46 @@ export default function JoinPage() {
     if (u) {
       const { data: app } = await supabase.from('applications').select('status').eq('session_id', sess.id).eq('applicant_id', u.id).maybeSingle()
       if (app) setMyAppStatus(app.status)
+
+      // Check if profile is complete enough for 1-tap apply
+      const { data: prof } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', u.id).maybeSingle()
+      if (prof) {
+        setUserProfile(prof)
+        const pj = (prof.profile_json || {}) as Record<string, unknown>
+        const hasBasics = !!prof.display_name && prof.display_name !== 'Anonymous'
+        const hasRole = !!pj.role
+        const hasAnyData = hasBasics && (hasRole || !!pj.age || !!pj.bio)
+        setProfileComplete(hasAnyData)
+      }
     }
 
     setStatus('found')
+  }
+
+  async function quickApply() {
+    if (!user || !session || quickApplying) return
+    setQuickApplying(true)
+    const pj = (userProfile?.profile_json || {}) as Record<string, unknown>
+    const allSections = ['photos_profil', 'basics', 'physique', 'photos_adulte', 'role', 'pratiques', 'limites', 'sante', 'occasion']
+    const photosProfil = Array.isArray(pj.photos_profil) ? pj.photos_profil : (pj.avatar_url ? [pj.avatar_url] : [])
+    const photosAdulte = Array.isArray(pj.photos_intime) ? pj.photos_intime : []
+    const videosAdulte = Array.isArray(pj.videos_intime) ? pj.videos_intime : []
+    await supabase.from('applications').upsert({
+      session_id: session.id, applicant_id: user.id, status: 'pending',
+      eps_json: {
+        shared_sections: allSections,
+        occasion_note: '',
+        profile_snapshot: pj,
+        role: pj.role || undefined,
+        selected_photos_profil: photosProfil,
+        selected_photos_adulte: photosAdulte,
+        selected_videos_adulte: videosAdulte,
+        selected_photos: [...photosProfil, ...photosAdulte],
+        selected_videos: videosAdulte,
+      }
+    })
+    setQuickApplying(false)
+    navigate('/session/' + session.id)
   }
 
   const statusLabels: Record<string, { text: string; color: string }> = {
@@ -202,15 +242,29 @@ export default function JoinPage() {
                 Postuler →
               </button>
               <button onClick={() => {
-                const token = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
-                try { localStorage.setItem('guest_token', token); localStorage.setItem('guest_session_id', session.id) } catch (_) {}
-                navigate('/session/' + session.id + '/apply?guest_token=' + encodeURIComponent(token))
+                navigate('/ghost/setup?session_id=' + session.id + (code ? '&invite_code=' + code : ''))
               }} style={{
                 width:'100%',padding:'14px',borderRadius:14,fontWeight:600,fontSize:14,
                 color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer',
                 display:'flex',alignItems:'center',justifyContent:'center',gap:8,
               }}>
-                <Ghost size={16} /> Sans compte
+                <Ghost size={16} /> Sans compte (24h)
+              </button>
+            </div>
+          ) : profileComplete ? (
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              <button onClick={quickApply} disabled={quickApplying} style={{
+                width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
+                color:'#fff',background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
+                boxShadow:'0 4px 24px rgba(244,114,114,0.3)',opacity:quickApplying?0.7:1,
+              }}>
+                {quickApplying ? 'Envoi...' : 'Postuler →'}
+              </button>
+              <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
+                width:'100%',padding:'12px',borderRadius:14,fontWeight:600,fontSize:13,
+                color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer',
+              }}>
+                Personnaliser ma candidature
               </button>
             </div>
           ) : (

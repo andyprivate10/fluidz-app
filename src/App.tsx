@@ -19,6 +19,8 @@ import NotificationsPage from './pages/NotificationsPage'
 import DevLoopPage from './pages/DevLoopPage'
 import DevTestMenu from './pages/DevTestMenu'
 import EditSessionPage from './pages/EditSessionPage'
+import GhostSetupPage from './pages/GhostSetupPage'
+import GhostRecoverPage from './pages/GhostRecoverPage'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -33,6 +35,8 @@ const routes = [
   { path: '/session/:id/host', element: <HostDashboard /> },
   { path: '/session/:id/edit', element: <EditSessionPage /> },
   { path: '/join/:code', element: <JoinPage /> },
+  { path: '/ghost/setup', element: <GhostSetupPage /> },
+  { path: '/ghost/recover', element: <GhostRecoverPage /> },
   { path: '/me', element: <MePage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },

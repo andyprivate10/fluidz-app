@@ -40,6 +40,7 @@ export default function ApplyPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const guestTokenParam = searchParams.get('guest_token')
+  const ghostIdParam = searchParams.get('ghost_id') || (typeof localStorage !== 'undefined' ? localStorage.getItem('ghost_id') : null)
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
@@ -57,6 +58,7 @@ export default function ApplyPage() {
   const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null)
   const [guestMode, setGuestMode] = useState(false)
   const [guestDisplayName, setGuestDisplayName] = useState('')
+  const [ghostSessionId, setGhostSessionId] = useState<string | null>(null)
 
   const RATE_LIMIT_MIN = 5
   const isRateLimited = rateLimitedUntil ? new Date() < rateLimitedUntil : false
@@ -69,6 +71,36 @@ export default function ApplyPage() {
       if (u) {
         setDataLoading(true)
         load(u.id)
+      } else if (ghostIdParam) {
+        // Ghost 24h mode — load profile from ghost_sessions
+        setGuestMode(true)
+        setGhostSessionId(ghostIdParam)
+        setDataLoading(true)
+        Promise.all([
+          supabase.from('ghost_sessions').select('display_name, profile_json').eq('id', ghostIdParam).maybeSingle(),
+          supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
+        ]).then(([{ data: ghost }, { data: sess }]) => {
+          if (ghost) {
+            setGuestDisplayName(ghost.display_name || '')
+            const pj = ghost.profile_json || {}
+            setProfile({ display_name: ghost.display_name, profile_json: pj })
+            if (pj.role) setSelectedRole(pj.role)
+            // Pre-check sections that have data
+            const hasSections: string[] = ['basics', 'occasion']
+            if (pj.role) hasSections.push('role')
+            if (pj.height || pj.weight || pj.morphology) hasSections.push('physique')
+            if (pj.kinks?.length) hasSections.push('pratiques')
+            if (pj.prep_status || pj.health?.prep_status) hasSections.push('sante')
+            if (pj.limits) hasSections.push('limites')
+            if (pj.photos_profil?.length) hasSections.push('photos_profil')
+            if (pj.photos_intime?.length || pj.videos_intime?.length) hasSections.push('photos_adulte')
+            setEnabled(hasSections)
+          } else {
+            setEnabled(['basics', 'role', 'occasion'])
+          }
+          setSession(sess ?? null)
+          setDataLoading(false)
+        })
       } else {
         try {
           const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(GUEST_TOKEN_KEY) : null
@@ -87,7 +119,7 @@ export default function ApplyPage() {
         }
       }
     })
-  }, [id, guestTokenParam])
+  }, [id, guestTokenParam, ghostIdParam])
 
   async function load(uid: string) {
     setLoadError(false)
@@ -148,6 +180,16 @@ export default function ApplyPage() {
     if (guestMode) {
       if (guestDisplayName.trim().length < 2) return
       setLoading(true)
+
+      // Save ghost profile data to ghost_sessions (if ghost 24h mode)
+      const ghostProfile = profile?.profile_json || {}
+      if (ghostSessionId) {
+        await supabase.from('ghost_sessions').update({
+          display_name: guestDisplayName.trim(),
+          profile_json: { ...ghostProfile, role: selectedRole || undefined },
+        }).eq('id', ghostSessionId)
+      }
+
       const { data: anonData, error: anonErr } = await supabase.auth.signInAnonymously()
       if (anonErr) { setLoading(false); return }
       const anonUser = anonData?.user
@@ -155,13 +197,27 @@ export default function ApplyPage() {
       await supabase.from('user_profiles').upsert({
         id: anonUser.id,
         display_name: guestDisplayName.trim(),
-        profile_json: { role: selectedRole || undefined },
+        profile_json: { role: selectedRole || undefined, ...ghostProfile },
       })
+      const snapshot = ghostProfile.role || ghostProfile.age ? ghostProfile : { display_name: guestDisplayName.trim(), role: selectedRole || undefined }
       await supabase.from('applications').upsert({
         session_id: id,
         applicant_id: anonUser.id,
         status: 'pending',
-        eps_json: { shared_sections: enabled, occasion_note: note, message: messageToHost.trim() || undefined, profile_snapshot: { display_name: guestDisplayName.trim(), role: selectedRole || undefined }, role: selectedRole || undefined, is_phantom: true },
+        ghost_session_id: ghostSessionId || undefined,
+        eps_json: {
+          shared_sections: enabled,
+          occasion_note: note,
+          message: messageToHost.trim() || undefined,
+          profile_snapshot: snapshot,
+          role: selectedRole || undefined,
+          is_phantom: true,
+          selected_photos_profil: enabled.includes('photos_profil') ? selectedPhotosProfil : [],
+          selected_photos_adulte: enabled.includes('photos_adulte') ? selectedPhotosAdulte : [],
+          selected_videos_adulte: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+          selected_photos: [...(enabled.includes('photos_profil') ? selectedPhotosProfil : []), ...(enabled.includes('photos_adulte') ? selectedPhotosAdulte : [])],
+          selected_videos: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+        },
       })
       try { localStorage.removeItem(GUEST_TOKEN_KEY); localStorage.removeItem(GUEST_SESSION_KEY) } catch (_) {}
       setLoading(false)
