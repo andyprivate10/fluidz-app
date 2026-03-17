@@ -214,19 +214,23 @@ export default function MePage() {
   }
 
   async function uploadMedia(file: File, type: 'photo' | 'video') {
-    if (!user) return
+    if (!user) { console.log('uploadMedia: no user'); return }
+    console.log('uploadMedia START:', file.name, file.size, type)
     setMediaUploading(true)
     try {
       const ext = file.name.split('.').pop() || (type === 'video' ? 'mp4' : 'jpg')
-      const ts = Date.now() + Math.random().toString(36).slice(2, 6)
+      const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
       const path = `${user.id}/${type}_${ts}.${ext}`
+      console.log('Uploading to path:', path, 'size:', file.size)
       const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: false })
+      console.log('Upload result:', error ? 'ERROR: ' + error.message : 'OK')
       if (error) {
         showToast('Erreur upload: ' + error.message, 'error')
         setMediaUploading(false)
         return
       }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+      console.log('Public URL:', publicUrl)
       if (type === 'photo') {
         setPhotos(prev => [...prev, publicUrl])
         if (!avatarUrl) setAvatarUrl(publicUrl)
@@ -235,6 +239,7 @@ export default function MePage() {
       }
       showToast(type === 'photo' ? 'Photo ajoutée' : 'Vidéo ajoutée', 'success')
     } catch (err) {
+      console.error('uploadMedia CATCH:', err)
       showToast('Erreur: ' + String(err), 'error')
     }
     setMediaUploading(false)
@@ -374,7 +379,13 @@ export default function MePage() {
               ))}
               {/* Add photo button */}
               <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.border, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="image/*" multiple onChange={async e => { const files = e.target.files; if (files) { for (const f of Array.from(files)) await uploadMedia(f, 'photo') } e.target.value = '' }} disabled={mediaUploading} style={{ display:'none' }} />
+                <input type="file" accept="image/*" multiple onChange={async (e) => {
+                  const fileList = e.target.files
+                  if (!fileList || fileList.length === 0) return
+                  const captured = Array.from(fileList)
+                  e.target.value = ''
+                  for (const f of captured) await uploadMedia(f, 'photo')
+                }} disabled={mediaUploading} style={{ display:'none' }} />
                 <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
                 <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Photo</span>
               </label>
@@ -392,7 +403,12 @@ export default function MePage() {
               ))}
               {/* Add video button */}
               <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.border, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="video/*" onChange={e => { const f = e.target.files?.[0]; if (f) uploadMedia(f, 'video'); e.target.value = '' }} disabled={mediaUploading} style={{ display:'none' }} />
+                <input type="file" accept="video/*" onChange={async (e) => {
+                  const f = e.target.files?.[0]
+                  if (!f) return
+                  e.target.value = ''
+                  await uploadMedia(f, 'video')
+                }} disabled={mediaUploading} style={{ display:'none' }} />
                 <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
                 <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Vidéo</span>
               </label>
