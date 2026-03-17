@@ -147,6 +147,15 @@ export default function SessionPage() {
     setLoadError(false)
     setLoading(true)
     loadData().finally(() => setLoading(false))
+
+    // Realtime: auto-refresh when my application status changes
+    const channel = supabase
+      .channel('session-page-' + id)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'applications', filter: `session_id=eq.${id}` }, () => { loadData() })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'applications', filter: `session_id=eq.${id}` }, () => { loadData() })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [loadData])
 
   const handleTouchStart = (e: React.TouchEvent) => {

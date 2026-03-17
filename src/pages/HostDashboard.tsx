@@ -36,6 +36,15 @@ export default function HostDashboard() {
       if (u) load(u)
       else setLoading(false)
     })
+
+    // Realtime: auto-refresh when applications or votes change
+    const channel = supabase
+      .channel('host-dashboard-' + id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'applications', filter: `session_id=eq.${id}` }, () => { load() })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'votes', filter: `session_id=eq.${id}` }, () => { load() })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [id])
 
   async function load(currentUser?: { id: string }) {
@@ -144,12 +153,20 @@ export default function HostDashboard() {
     const text = broadcastText.trim()
     if (!text || !user || !id) return
     setBroadcastSending(true)
-    await supabase.from('messages').insert({
+    // Send 1 DM per accepted/checked_in member
+    const acceptedApps = apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
+    const senderName = hostDisplayName || (user as any).email || 'Host'
+    const inserts = acceptedApps.map(a => ({
       session_id: id,
-      sender_id: user.id,
+      sender_id: user!.id,
       text,
-      sender_name: hostDisplayName || (user as any).email || 'Host',
-    })
+      sender_name: senderName,
+      room_type: 'dm',
+      dm_peer_id: a.applicant_id,
+    }))
+    if (inserts.length > 0) {
+      await supabase.from('messages').insert(inserts)
+    }
     setBroadcastText('')
     setBroadcastSending(false)
   }
