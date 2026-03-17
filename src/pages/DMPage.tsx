@@ -212,7 +212,7 @@ export default function DMPage() {
           </div>
         </div>
         {peerId && (
-          <button onClick={() => navigate('/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.border, background: 'transparent', cursor: 'pointer' }}>
+          <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.border, background: 'transparent', cursor: 'pointer' }}>
             Voir profil
           </button>
         )}

@@ -18,6 +18,7 @@ export default function HomePage() {
   const [latestHost, setLatestHost] = useState<QuickSession | null>(null)
   const [pendingApps, setPendingApps] = useState<{ session_id: string; title: string }[]>([])
   const [inviteCode, setInviteCode] = useState('')
+  const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string }[]>([])
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -44,6 +45,17 @@ export default function HomePage() {
         .then(({ data }) => {
           setPendingApps((data || []).map((a: any) => ({
             session_id: a.session_id,
+            title: a.sessions?.title || 'Session',
+          })))
+        })
+
+      // Active applications (accepted / checked_in)
+      supabase.from('applications').select('session_id, status, sessions(title)')
+        .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
+        .then(({ data }) => {
+          setActiveApps((data || []).map((a: any) => ({
+            session_id: a.session_id,
+            status: a.status,
             title: a.sessions?.title || 'Session',
           })))
         })
@@ -103,6 +115,23 @@ export default function HomePage() {
               >
                 <p style={{ fontSize: 14, color: S.tx, margin: 0, fontWeight: 600 }}>{app.title}</p>
                 <span style={{ fontSize: 11, color: S.yellow, fontWeight: 600 }}></span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Active sessions (accepted/checked-in) */}
+        {activeApps.length > 0 && (
+          <div style={{ background: S.bg1, border: '1px solid ' + S.green + '44', borderRadius: 16, padding: 16 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.green, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions actives</p>
+            {activeApps.map(app => (
+              <div
+                key={app.session_id}
+                onClick={() => navigate('/session/' + app.session_id)}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', cursor: 'pointer', borderBottom: '1px solid ' + S.border }}
+              >
+                <p style={{ fontSize: 14, color: S.tx, margin: 0, fontWeight: 600 }}>{app.title}</p>
+                <span style={{ fontSize: 11, color: S.green, fontWeight: 600 }}>{app.status === 'checked_in' ? 'Check-in ✓' : 'Accepté'}</span>
               </div>
             ))}
           </div>
