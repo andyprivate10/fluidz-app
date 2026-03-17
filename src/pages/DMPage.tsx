@@ -191,6 +191,18 @@ export default function DMPage() {
       room_type: 'dm',
       dm_peer_id: peerId || undefined,
     })
+    // Notify the peer about new DM (debounced: only if no recent notif)
+    if (peerId && session) {
+      const senderLabel = displayName || 'Quelqu\'un'
+      await supabase.from('notifications').insert({
+        user_id: peerId,
+        session_id: id,
+        type: 'new_dm',
+        title: `💬 ${senderLabel}`,
+        body: text.length > 60 ? text.slice(0, 60) + '…' : text,
+        href: `/session/${id}/dm/${currentUser.id}`,
+      })
+    }
   }
 
   return (
