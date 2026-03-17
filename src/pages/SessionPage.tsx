@@ -238,8 +238,8 @@ export default function SessionPage() {
   )
   if (!session) return <div style={{ ...st, padding: 24, color: '#F87171' }}>Session introuvable.</div>
 
-  const statusLabel = session.status === 'open' ? 'Ouverte' : 'Brouillon'
-  const statusColor = session.status === 'open' ? '#4ADE80' : '#7E7694'
+  const statusLabel = session.status === 'open' ? 'Ouverte' : session.status === 'ended' ? 'Terminée' : 'Brouillon'
+  const statusColor = session.status === 'open' ? '#4ADE80' : session.status === 'ended' ? '#F87171' : '#7E7694'
 
   return (
     <div style={st} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
@@ -627,6 +627,19 @@ export default function SessionPage() {
         )}
 
       </div>
+
+      {/* Review CTA for ended sessions */}
+      {session.status === 'ended' && myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
+        <div style={{ padding: '0 16px 16px' }}>
+          <div style={{ background: '#16141F', border: '1px solid #FBBF2444', borderRadius: 16, padding: 20, textAlign: 'center' }}>
+            <p style={{ fontSize: 15, fontWeight: 700, color: '#F0EDFF', margin: '0 0 6px' }}>Comment c'était ?</p>
+            <p style={{ fontSize: 12, color: '#7E7694', margin: '0 0 14px' }}>Ton avis anonyme aide la communauté</p>
+            <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px #F4727244' }}>
+              ⭐ Laisser un avis
+            </button>
+          </div>
+        </div>
+      )}
 
       {(!isHost && (showPostulerSuccess || (!myApp && session.status === 'open'))) && (
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>

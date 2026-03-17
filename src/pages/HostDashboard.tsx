@@ -165,6 +165,19 @@ export default function HostDashboard() {
     if (!window.confirm('Fermer définitivement cette session ? Elle ne sera plus modifiable.')) return
     await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
     setSess((s: any) => ({...s, status: 'ended'}))
+    // Send review notification to all accepted/checked_in participants
+    const participants = apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
+    if (participants.length > 0 && sess) {
+      const notifs = participants.map(p => ({
+        user_id: p.applicant_id,
+        session_id: id,
+        type: 'review_request',
+        title: `⭐ Comment c'était "${sess.title}" ?`,
+        body: 'Laisse un avis anonyme pour aider la communauté',
+        href: `/session/${id}/review`,
+      }))
+      try { await supabase.from('notifications').insert(notifs) } catch (_) {}
+    }
   }
 
   async function sendBroadcast() {

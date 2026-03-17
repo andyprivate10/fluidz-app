@@ -24,6 +24,7 @@ import GhostRecoverPage from './pages/GhostRecoverPage'
 import LoginPage from './pages/LoginPage'
 import OnboardingPage from './pages/OnboardingPage'
 import ContactsPage from './pages/ContactsPage'
+import ReviewPage from './pages/ReviewPage'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -37,6 +38,7 @@ const routes = [
   { path: '/session/:id/chat', element: <GroupChatPage /> },
   { path: '/session/:id/host', element: <HostDashboard /> },
   { path: '/session/:id/edit', element: <EditSessionPage /> },
+  { path: '/session/:id/review', element: <ReviewPage /> },
   { path: '/join/:code', element: <JoinPage /> },
   { path: '/ghost/setup', element: <GhostSetupPage /> },
   { path: '/ghost/recover', element: <GhostRecoverPage /> },
