@@ -3,6 +3,7 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
+import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
@@ -391,6 +392,18 @@ export default function MePage() {
       {/* ── Profil ── */}
       {activeTab === 'profil' && (
         <div style={{ padding:'16px 20px' }}>
+
+          {/* Vibe Score */}
+          <div style={{ marginBottom: 16 }}>
+            <VibeScoreCard userId={user.id} />
+          </div>
+
+          {/* Vibe Score */}
+          {user && (
+            <div style={{ marginBottom: 16 }}>
+              <VibeScoreCard userId={user.id} />
+            </div>
+          )}
 
           <Section title="Photos profil">
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>Visage, corps. Visible par défaut.</p>
