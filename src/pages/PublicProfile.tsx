@@ -254,8 +254,16 @@ export default function PublicProfile() {
 
   const p = profile.profile_json || {}
   const kinks: string[] = p.kinks || []
-  const allPhotos: string[] = Array.isArray(p.photos) ? p.photos : p.avatar_url ? [p.avatar_url] : []
-  const allVideos: string[] = Array.isArray(p.videos) ? p.videos : []
+  const allPhotos: string[] = [
+    ...(Array.isArray(p.photos_profil) ? p.photos_profil : []),
+    ...(Array.isArray(p.photos_intime) ? p.photos_intime : []),
+    ...(Array.isArray(p.photos) ? p.photos : []),
+    ...(!Array.isArray(p.photos_profil) && !Array.isArray(p.photos) && p.avatar_url ? [p.avatar_url] : []),
+  ].filter((v, i, a) => a.indexOf(v) === i) as string[]
+  const allVideos: string[] = [
+    ...(Array.isArray(p.videos_intime) ? p.videos_intime : []),
+    ...(Array.isArray(p.videos) ? p.videos : []),
+  ] as string[]
   const hasMedia = allPhotos.length > 0 || allVideos.length > 0
 
   return (
