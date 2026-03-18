@@ -50,6 +50,7 @@ export default function DirectDMPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -108,6 +109,7 @@ export default function DirectDMPage() {
       })
       .subscribe()
 
+    setLoading(false)
     return () => { supabase.removeChannel(channel) }
   }
 
@@ -190,6 +192,20 @@ export default function DirectDMPage() {
   }
 
   const isMe = (senderId: string) => senderId === currentUser?.id
+
+  if (loading) return (
+    <div style={{ background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
+      <div style={{ padding: '16px', borderBottom: '1px solid ' + S.border, background: S.bg1, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg2 }} />
+        <div style={{ width: 120, height: 16, borderRadius: 8, background: S.bg2 }} />
+      </div>
+      <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ alignSelf: 'flex-start', width: 200, height: 40, borderRadius: 16, background: S.bg2 }} />
+        <div style={{ alignSelf: 'flex-end', width: 160, height: 36, borderRadius: 16, background: S.bg2 }} />
+        <div style={{ alignSelf: 'flex-start', width: 240, height: 40, borderRadius: 16, background: S.bg2 }} />
+      </div>
+    </div>
+  )
 
   return (
     <div style={{ background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>

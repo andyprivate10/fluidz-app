@@ -117,9 +117,37 @@ export default function ExplorePage() {
   }, [userId])
 
   useEffect(() => {
-    if (myLat && myLng) loadNearby(myLat, myLng)
+    if (myLat && myLng) {
+      loadNearby(myLat, myLng)
+      loadNearbySessions(myLat, myLng)
+    }
     else requestLocation()
   }, [myLat, myLng, requestLocation])
+
+  async function loadNearbySessions(lat: number, lng: number) {
+    const delta = 0.15
+    const { data: pubSess } = await supabase.from('sessions')
+      .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at')
+      .eq('is_public', true).eq('status', 'open')
+      .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
+      .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
+      .limit(20)
+    if (pubSess && pubSess.length > 0) {
+      const hIds = [...new Set(pubSess.map((s: any) => s.host_id))]
+      const sIds = pubSess.map((s: any) => s.id)
+      const [{ data: hProfs }, { data: appCounts }] = await Promise.all([
+        supabase.from('user_profiles').select('id, display_name, profile_json').in('id', hIds),
+        supabase.from('applications').select('session_id').in('session_id', sIds).in('status', ['accepted', 'checked_in']),
+      ])
+      const hMap = new Map<string, { name: string; avatar?: string }>()
+      ;(hProfs || []).forEach((p: any) => hMap.set(p.id, { name: p.display_name, avatar: p.profile_json?.avatar_url }))
+      const countMap = new Map<string, number>()
+      ;(appCounts || []).forEach((a: any) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1))
+      setNearbySessions(pubSess.map((s: any) => ({ ...s, host_name: hMap.get(s.host_id)?.name || 'Host', host_avatar: hMap.get(s.host_id)?.avatar, member_count: (countMap.get(s.id) || 0) + 1 })))
+    } else {
+      setNearbySessions([])
+    }
+  }
 
   async function loadNearby(lat: number, lng: number) {
     setLoading(true)
