@@ -165,6 +165,15 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Empty state for logged-in users with no activity */}
+        {userId && !latestHost && pendingApps.length === 0 && activeApps.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '24px 16px', background: S.bg1, borderRadius: 16, border: '1px solid ' + S.border }}>
+            <p style={{ fontSize: 32, margin: '0 0 8px' }}>🔥</p>
+            <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>Prêt pour ce soir ?</p>
+            <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 4px', lineHeight: 1.5 }}>Crée une session et partage le lien sur Grindr, ou explore les profils autour de toi.</p>
+          </div>
+        )}
+
         {/* Create session CTA */}
         {userId && (
           <>

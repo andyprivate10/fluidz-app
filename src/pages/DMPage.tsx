@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
+import { showToast } from '../components/Toast'
 import { Camera } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -415,6 +416,14 @@ export default function DMPage() {
           </div>
           <div style={{ fontSize: 14, color: S.tx, fontWeight: 600 }}>
             {session.exact_address}
+          </div>
+          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+            <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.green, border: '1px solid ' + S.green + '44', background: 'transparent', cursor: 'pointer' }}>
+              📋 Copier
+            </button>
+            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: '#7DD3FC', border: '1px solid #7DD3FC44', background: 'transparent', cursor: 'pointer' }}>
+              🗺️ Maps
+            </button>
           </div>
           {session.lineup_json?.directions && session.lineup_json.directions.length > 0 && (
             <div style={{ padding: '8px 16px 0' }}>
