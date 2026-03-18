@@ -142,13 +142,17 @@ export default function DirectDMPage() {
     if (!currentUser || !sessionId) return
     setUploading(true)
     try {
-      const compressed = await compressImage(file)
-      const path = `${currentUser.id}/dm_${Date.now()}.jpg`
-      const { error } = await supabase.storage.from('avatars').upload(path, compressed)
+      const isVideo = file.type.startsWith('video/')
+      let uploadFile: Blob = file
+      const ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
+      const label = isVideo ? '🎬 Vidéo' : '📷 Photo'
+      if (!isVideo) uploadFile = await compressImage(file)
+      const path = `${currentUser.id}/ddm_${Date.now()}.${ext}`
+      const { error } = await supabase.storage.from('avatars').upload(path, uploadFile, { contentType: isVideo ? file.type : 'image/jpeg' })
       if (error) { setUploading(false); return }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       await supabase.from('messages').insert({
-        session_id: sessionId, sender_id: currentUser.id, text: '📷 Photo',
+        session_id: sessionId, sender_id: currentUser.id, text: label,
         sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
         has_media: true, media_urls: [publicUrl],
       })
