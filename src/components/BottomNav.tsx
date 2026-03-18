@@ -1,147 +1,125 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Home, Zap, User, Compass, MessageCircle } from 'lucide-react'
+import { colors } from '../brand'
+import { Home, Zap, MessageCircle, Compass, User } from 'lucide-react'
+
+const C = colors
+
+const tabs = [
+  { path: '/',         icon: Home,          label: 'Home' },
+  { path: '/sessions', icon: Zap,           label: 'Sessions' },
+  { path: '/chats',    icon: MessageCircle,  label: 'Chats' },
+  { path: '/explore',  icon: Compass,       label: 'Explore' },
+  { path: '/me',       icon: User,          label: 'Moi' },
+]
 
 export default function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [userId, setUserId] = useState<string | null>(null)
   const [hasNewApplication, setHasNewApplication] = useState(false)
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUserId(user?.id ?? null))
-  }, [])
-
-  useEffect(() => {
-    if (!userId) return
-    const fetch = async () => {
-      const { count } = await supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', userId).is('read_at', null)
-      setUnreadNotifCount(count ?? 0)
-    }
-    fetch()
-    const channel = supabase.channel('notifications-count').on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => fetch()).subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [userId])
-
-  useEffect(() => {
-    if (!userId) return
-    const channel = supabase
-      .channel('applications-for-host')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'applications' }, async (payload: { new: { session_id: string } }) => {
-        const { data } = await supabase.from('sessions').select('host_id').eq('id', payload.new.session_id).maybeSingle()
-        if (data?.host_id === userId) setHasNewApplication(true)
-      })
-      .subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [userId])
-
-  useEffect(() => {
-    if (/\/session\/[^/]+\/host/.test(location.pathname)) setHasNewApplication(false)
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      // Unread notifications
+      supabase.from('notifications').select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id).is('read_at', null)
+        .then(({ count }) => setUnreadNotifCount(count ?? 0))
+      // Pending applications on hosted sessions
+      supabase.from('sessions').select('id').eq('host_id', user.id).eq('status', 'open')
+        .then(({ data: sessions }) => {
+          if (!sessions || sessions.length === 0) return
+          supabase.from('applications').select('id', { count: 'exact', head: true })
+            .in('session_id', sessions.map(s => s.id)).eq('status', 'pending')
+            .then(({ count }) => setHasNewApplication((count ?? 0) > 0))
+        })
+    })
   }, [location.pathname])
 
-  // Update document title with unread count
+  // Update doc title
   useEffect(() => {
     document.title = unreadNotifCount > 0 ? `(${unreadNotifCount}) Fluidz` : 'Fluidz'
   }, [unreadNotifCount])
 
-  // Hide on DM and dev pages
-  if (location.pathname.includes('/dm') || location.pathname.includes('/chat') || location.pathname.includes('/host') || location.pathname.includes('/apply') || location.pathname.includes('/candidate') || location.pathname.includes('/ghost') || location.pathname.includes('/login') || location.pathname.includes('/onboarding') || location.pathname.includes('/review') || location.pathname.includes('/edit') || location.pathname.includes('/dev/')) return null
+  // Hide on certain paths
+  const hidePaths = ['/login', '/onboarding', '/ghost/setup']
+  if (hidePaths.some(p => location.pathname.startsWith(p))) return null
+  // Hide inside DM/chat pages (they have their own nav)
+  if (/\/(dm|chat)/.test(location.pathname) && !location.pathname.startsWith('/chats')) return null
 
-  const tabs = [
-    { path: '/', icon: Home, label: 'Home' },
-    { path: '/sessions', icon: Zap, label: 'Sessions' },
-    { path: '/chats', icon: MessageCircle, label: 'Chats' },
-    { path: '/explore', icon: Compass, label: 'Explore' },
-    { path: '/me', icon: User, label: 'Moi' },
-  ]
+  const active = tabs.find(t => t.path === '/' ? location.pathname === '/' : location.pathname.startsWith(t.path))?.path || '/'
 
   return (
     <nav style={{
-      position: 'fixed',
-      bottom: 0,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: '100%',
-      maxWidth: 480,
-      background: 'rgba(22, 20, 31, 0.92)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      borderTop: '1px solid rgba(42, 39, 64, 0.6)',
-      display: 'flex',
-      justifyContent: 'space-around',
-      padding: '6px 0 calc(8px + env(safe-area-inset-bottom, 0px))',
-      zIndex: 100,
+      position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
+      background: 'rgba(5,4,10,0.92)',
+      backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+      borderTop: `1px solid ${C.rule}`,
+      paddingBottom: 'env(safe-area-inset-bottom, 0px)',
     }}>
-      {tabs.map((tab) => {
-        const isActive = location.pathname === tab.path
-        const showBadge = (tab.path === '/me' && (hasNewApplication || unreadNotifCount > 0)) || (tab.path === '/chats' && unreadNotifCount > 0)
-        const Icon = tab.icon
-        return (
-          <button
-            key={tab.path}
-            onClick={() => navigate(tab.path)}
-            style={{
-              background: 'none',
-              border: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-              cursor: 'pointer',
-              padding: '6px 20px',
-              position: 'relative',
-              transition: 'transform 0.15s',
-            }}
-          >
-            <div style={{ position: 'relative' }}>
-              <Icon
-                size={22}
-                strokeWidth={isActive ? 2.5 : 1.8}
-                style={{
-                  color: isActive ? '#F9A8A8' : '#7E7694',
-                  transition: 'color 0.2s',
-                }}
-              />
-              {showBadge && tab.path === '/chats' && (
-                <span style={{
-                  position: 'absolute', top: -4, right: -8,
-                  minWidth: 16, height: 16, padding: '0 4px',
-                  borderRadius: 8, background: '#F87171',
-                  border: '2px solid #16141F',
-                  fontSize: 10, fontWeight: 700, color: 'white',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  {unreadNotifCount > 99 ? '99+' : unreadNotifCount}
-                </span>
-              )}
-              {showBadge && tab.path === '/me' && (
-                <span style={{
-                  position: 'absolute', top: -2, right: -4,
-                  width: 8, height: 8, borderRadius: '50%',
-                  background: '#F87171', border: '2px solid #16141F',
-                }} />
-              )}
-            </div>
-            <span style={{
-              fontSize: 10, fontWeight: isActive ? 700 : 500,
-              color: isActive ? '#F9A8A8' : '#7E7694',
-              transition: 'color 0.2s',
-              letterSpacing: '0.01em',
-            }}>
-              {tab.label}
-            </span>
-            {isActive && (
+      <div style={{
+        display: 'flex', maxWidth: 480, margin: '0 auto',
+        height: 56,
+      }}>
+        {tabs.map(tab => {
+          const isActive = tab.path === active
+          const Icon = tab.icon
+          const showDot = (tab.path === '/chats' && unreadNotifCount > 0) ||
+                          (tab.path === '/me' && hasNewApplication)
+
+          return (
+            <button
+              key={tab.path}
+              onClick={() => navigate(tab.path)}
+              style={{
+                flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', gap: 2,
+                background: 'none', border: 'none', cursor: 'pointer',
+                position: 'relative', padding: 0,
+              }}
+            >
+              {/* Active indicator — 2px peach line on top */}
               <div style={{
-                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-                width: 20, height: 2, borderRadius: 1,
-                background: 'linear-gradient(90deg, #F9A8A8, #F47272)',
+                position: 'absolute', top: 0, left: '25%', right: '25%',
+                height: 2, borderRadius: 1,
+                background: isActive ? C.p : 'transparent',
+                transition: 'background 0.2s',
               }} />
-            )}
-          </button>
-        )
-      })}
+
+              <div style={{ position: 'relative' }}>
+                <Icon
+                  size={20}
+                  strokeWidth={1.5}
+                  style={{
+                    color: isActive ? C.p : C.tx3,
+                    transition: 'color 0.2s',
+                  }}
+                />
+                {/* Badge dot */}
+                {showDot && (
+                  <div style={{
+                    position: 'absolute', top: -2, right: -4,
+                    width: 7, height: 7, borderRadius: '50%',
+                    background: C.p,
+                    border: `2px solid ${C.bg}`,
+                  }} />
+                )}
+              </div>
+
+              <span style={{
+                fontSize: 10, fontWeight: isActive ? 600 : 500,
+                letterSpacing: '-0.01em',
+                color: isActive ? C.tx : C.tx3,
+                transition: 'color 0.2s',
+              }}>
+                {tab.label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
     </nav>
   )
 }
