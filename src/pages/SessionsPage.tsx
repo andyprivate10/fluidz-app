@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
-type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string }
+type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[] }
 type AppSession = { session_id: string; status: string; title: string; approx_area: string }
 
 const S = {
@@ -119,7 +119,14 @@ export default function SessionsPage() {
                     {sess.status === 'open' ? 'Ouverte' : sess.status === 'ended' ? 'Terminée' : 'Brouillon'}
                   </span>
                 </div>
-                {sess.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>{sess.approx_area}</div>}
+                {sess.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 4 }}>{sess.approx_area}</div>}
+                {sess.tags && sess.tags.length > 0 && (
+                  <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
+                    {sess.tags.slice(0, 4).map(tag => (
+                      <span key={tag} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: S.p300 + '14', color: S.p300, fontWeight: 600 }}>{tag}</span>
+                    ))}
+                  </div>
+                )}
                 <div style={{ fontSize: 11, color: S.tx4, marginTop: 4 }}>{timeAgo(sess.created_at)}</div>
               </div>
             ))}
