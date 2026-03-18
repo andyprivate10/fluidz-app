@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
+import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 
 const S = {
@@ -66,6 +67,7 @@ export default function PublicProfile() {
   const navigate = useNavigate()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [showStory, setShowStory] = useState(false)
   const [allowed, setAllowed] = useState<boolean>(false)
 
   useEffect(() => {
@@ -188,6 +190,10 @@ export default function PublicProfile() {
             {p.role}
           </span>
         )}
+        {/* Story button */}
+        <button onClick={() => setShowStory(true)} style={{ marginTop: 10, padding: '8px 16px', borderRadius: 12, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 12px rgba(244,114,114,0.3)' }}>
+          ▶ Voir la Story
+        </button>
         {/* Add to contacts button */}
         <AddContactButton targetUserId={userId!} />
         <InviteToSessionButton targetUserId={userId!} />
@@ -252,6 +258,10 @@ export default function PublicProfile() {
         )}
       </div>
 
+      {/* Story overlay */}
+      {showStory && profile && (
+        <ProfileStory profile={{ display_name: profile.display_name, profile_json: p }} onClose={() => setShowStory(false)} />
+      )}
     </div>
   )
 }
