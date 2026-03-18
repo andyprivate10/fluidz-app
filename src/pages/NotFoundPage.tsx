@@ -1,37 +1,27 @@
 import { useNavigate } from 'react-router-dom'
-import { colors } from '../brand'
-const S = { ...colors, red: "#F87171", orange: "#FBBF24", blue: "#7DD3FC", grad: colors.p }
+import { colors, typeStyle, radius } from '../brand'
+import OrbLayer from '../components/OrbLayer'
+import { Home } from 'lucide-react'
+
+const C = colors
 
 export default function NotFoundPage() {
   const navigate = useNavigate()
   return (
-    <div style={{
-      minHeight:'100vh', background:S.bg, display:'flex', flexDirection:'column',
-      alignItems:'center', justifyContent:'center', padding:24,
-       position:'relative', overflow:'hidden',
-    }}>
-      <div style={{
-        position:'absolute', top:'20%', left:'50%', transform:'translateX(-50%)',
-        width:300, height:300, borderRadius:'50%',
-        background:'radial-gradient(circle, rgba(249,168,168,0.04) 0%, transparent 70%)',
-        pointerEvents:'none',
-      }} />
-      <div className="animate-fade-in" style={{textAlign:'center',position:'relative',zIndex:1}}>
-        <p style={{fontSize:72,fontWeight:800,color:S.p,margin:'0 0 8px',lineHeight:1}}>404</p>
-        <p style={{fontSize:18,fontWeight:700,color:'#F0EDFF',marginBottom:8}}>Page introuvable</p>
-        <p style={{fontSize:14,color:'#7E7694',marginBottom:32,lineHeight:1.5}}>Ce lien ne mène nulle part.<br />Peut-être qu'il a expiré.</p>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative' }}>
+      <OrbLayer />
+      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+        <p style={{ ...typeStyle('hero'), color: C.p, margin: '0 0 12px' }}>404</p>
+        <p style={{ ...typeStyle('section'), color: C.tx, margin: '0 0 6px' }}>Page introuvable</p>
+        <p style={{ ...typeStyle('body'), color: C.tx2, margin: '0 0 24px' }}>Cette page n'existe pas ou a été déplacée.</p>
         <button onClick={() => navigate('/')} style={{
-          padding:'14px 32px', borderRadius:14, fontWeight:700, fontSize:15,
-          color:'#fff', background:'linear-gradient(135deg,#F9A8A8,#F47272)',
-          border:'none', cursor:'pointer', boxShadow:'0 4px 20px rgba(244,114,114,0.25)',
+          padding: '12px 24px', borderRadius: radius.btn, background: C.p, border: 'none',
+          color: '#fff', ...typeStyle('label'), cursor: 'pointer',
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          boxShadow: `0 4px 24px ${C.pbd}`,
         }}>
-          Retour à l'accueil
+          <Home size={14} strokeWidth={1.5} /> Retour à l'accueil
         </button>
-        <div style={{ display:'flex', gap:12, marginTop:20, flexWrap:'wrap', justifyContent:'center' }}>
-          <button onClick={() => navigate('/login')} style={{ padding:'8px 16px', borderRadius:10, fontSize:13, fontWeight:600, color:'#7E7694', border:'1px solid #2A2740', background:'transparent', cursor:'pointer' }}>Se connecter</button>
-          <button onClick={() => navigate('/sessions')} style={{ padding:'8px 16px', borderRadius:10, fontSize:13, fontWeight:600, color:'#7E7694', border:'1px solid #2A2740', background:'transparent', cursor:'pointer' }}>Mes sessions</button>
-          <button onClick={() => navigate('/contacts')} style={{ padding:'8px 16px', borderRadius:10, fontSize:13, fontWeight:600, color:'#7E7694', border:'1px solid #2A2740', background:'transparent', cursor:'pointer' }}>Mon carnet</button>
-        </div>
       </div>
     </div>
   )

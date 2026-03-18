@@ -2,151 +2,121 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { colors } from '../brand'
+import { colors, radius, typeStyle } from '../brand'
+import OrbLayer from '../components/OrbLayer'
+import { Bell, CheckCheck } from 'lucide-react'
 
-type Notif = { id: string; user_id: string; type: string; title: string; body: string; href: string | null; read_at: string | null; created_at: string }
+const C = colors
+const R = radius
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+type Notif = { id: string; type: string; title: string; body: string; href: string; read_at: string | null; created_at: string }
 
 const TYPE_ICONS: Record<string, string> = {
-  new_application: '📩',
-  application_accepted: '✅',
-  application_rejected: '❌',
-  session_invite: '📩',
-  group_invite: '👥',
-  direct_dm: '💬',
-  direct_join: '⚡',
-  contact_request: '💕',
-  check_in: '📍',
-  review_request: '⭐',
+  new_application: '→', application_accepted: '✓', application_rejected: '✗',
+  session_invite: '→', group_invite: '⊕', direct_dm: '↗',
+  direct_join: '⚡', contact_request: '♡', check_in: '◎',
+  check_in_confirmed: '◉', review_request: '★', nudge: '⏱',
 }
 
 function formatRelative(dateStr: string): string {
-  const d = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - d.getTime()
-  const diffMin = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const sameDay = d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-  const yesterday = new Date(now)
-  yesterday.setDate(yesterday.getDate() - 1)
-  const isYesterday = d.getDate() === yesterday.getDate() && d.getMonth() === yesterday.getMonth() && d.getFullYear() === yesterday.getFullYear()
-  if (diffMin < 1) return "à l'instant"
-  if (diffMin < 60) return `il y a ${diffMin} min`
-  if (sameDay) return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-  if (isYesterday) return 'hier ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-  if (diffHours < 24 * 7) return d.toLocaleDateString('fr-FR', { weekday: 'short', hour: '2-digit', minute: '2-digit' })
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const ms = Date.now() - new Date(dateStr).getTime()
+  const m = Math.floor(ms / 60000)
+  if (m < 1) return "à l'instant"
+  if (m < 60) return m + 'min'
+  const h = Math.floor(m / 60)
+  if (h < 24) return h + 'h'
+  const d = Math.floor(h / 24)
+  if (d < 7) return d + 'j'
+  return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
 }
 
 export default function NotificationsPage() {
   const navigate = useNavigate()
-  const [user, setUser] = useState<string | null>(null)
-  const [list, setList] = useState<Notif[]>([])
+  const [notifs, setNotifs] = useState<Notif[]>([])
   const [loading, setLoading] = useState(true)
-  const [markingAll, setMarkingAll] = useState(false)
 
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
-      setUser(u?.id ?? null)
-      if (u) load(u.id)
-    })
-  }, [])
-
-  async function load(uid: string) {
-    const { data } = await supabase
-      .from('notifications')
-      .select('id, user_id, type, title, body, href, read_at, created_at')
-      .eq('user_id', uid)
-      .order('created_at', { ascending: false })
-    setList((data as Notif[]) ?? [])
+  const load = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { navigate('/login'); return }
+    const { data } = await supabase.from('notifications').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50)
+    setNotifs(data || [])
     setLoading(false)
-  }
+  }, [navigate])
 
-  const refreshNotifs = useCallback(async () => {
-    if (!user) return
-    const { data } = await supabase
-      .from('notifications')
-      .select('id, user_id, type, title, body, href, read_at, created_at')
-      .eq('user_id', user)
-      .order('created_at', { ascending: false })
-    setList((data as Notif[]) ?? [])
-  }, [user])
+  useEffect(() => { load() }, [load])
+  const { pullHandlers, pullIndicator } = usePullToRefresh(load)
 
-  const { pullHandlers, pullIndicator } = usePullToRefresh(refreshNotifs)
-
-  async function handleNotifClick(n: Notif) {
-    await supabase.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', n.id)
-    setList(prev => prev.map(x => x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x))
-    if (n.href && n.href.trim() !== '') navigate(n.href)
+  async function handleClick(n: Notif) {
+    if (!n.read_at) await supabase.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', n.id)
+    setNotifs(prev => prev.map(x => x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x))
+    if (n.href?.trim()) navigate(n.href)
   }
 
   async function markAllRead() {
-    if (!user) return
-    setMarkingAll(true)
-    const now = new Date().toISOString()
-    await supabase.from('notifications').update({ read_at: now }).eq('user_id', user).is('read_at', null)
-    setList(prev => prev.map(x => ({ ...x, read_at: x.read_at ?? now })))
-    setMarkingAll(false)
-  }
-
-  if (!user) {
-    return (
-      <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: S.tx3 }}>Connecte-toi pour voir tes notifications.</p>
-      </div>
-    )
+    const unread = notifs.filter(n => !n.read_at)
+    if (unread.length === 0) return
+    await supabase.from('notifications').update({ read_at: new Date().toISOString() }).in('id', unread.map(n => n.id))
+    setNotifs(prev => prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() })))
   }
 
   return (
-    <div {...pullHandlers} style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: C.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
+      <OrbLayer />
       {pullIndicator}
-      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: 0 }}>Notifications</h1>
-          {list.some(n => n.read_at == null) && (
-            <button onClick={markAllRead} disabled={markingAll} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, border: '1px solid ' + S.rule, background: S.bg1, color: S.tx2, cursor: 'pointer' }}>
-              {markingAll ? '...' : 'Tout marquer comme lu'}
-            </button>
-          )}
+
+      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${C.rule}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', ...typeStyle('body'), color: C.tx2, cursor: 'pointer', padding: 0, marginBottom: 8 }}>← Retour</button>
+          <h1 style={{ ...typeStyle('title'), color: C.tx, margin: 0 }}>Notifications</h1>
         </div>
+        {notifs.some(n => !n.read_at) && (
+          <button onClick={markAllRead} style={{
+            padding: '6px 12px', borderRadius: R.chip, ...typeStyle('meta'),
+            color: C.sage, background: C.sagebg, border: `1px solid ${C.sagebd}`,
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4,
+          }}>
+            <CheckCheck size={12} /> Tout lire
+          </button>
+        )}
       </div>
 
-      <div style={{ padding: '16px 20px' }}>
-        {loading && <p style={{ color: S.tx3 }}>Chargement...</p>}
-        {!loading && list.length === 0 && (
-          <p style={{ color: S.tx3, textAlign: 'center', padding: 24 }}>Aucune notification</p>
-        )}
-        {!loading && list.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {list.map(n => (
-              <button
-                key={n.id}
-                onClick={() => handleNotifClick(n)}
-                style={{
-                  width: '100%', textAlign: 'left', padding: 16, borderRadius: 14, border: '1px solid ' + S.rule,
-                  background: n.read_at ? S.bg1 : S.bg1, cursor: 'pointer', fontFamily: 'inherit', position: 'relative', borderLeft: n.read_at ? 'none' : '3px solid #F9A8A8',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                  {n.read_at == null && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.orange, flexShrink: 0, marginTop: 6 }} aria-hidden />}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: 700 }}>{TYPE_ICONS[n.type] || '🔔'} {n.title || ''}</p>
-                    {n.body && <p style={{ margin: '4px 0 0', fontSize: 12, color: S.tx2 }}>{n.body}</p>}
-                    <p style={{ margin: '8px 0 0', fontSize: 11, color: S.tx4, textAlign: 'right' }}>{formatRelative(n.created_at)}</p>
-                  </div>
-                </div>
-              </button>
-            ))}
+      <div style={{ position: 'relative', zIndex: 1, padding: '8px 16px', paddingBottom: 96 }}>
+        {loading && <p style={{ ...typeStyle('body'), color: C.tx3, textAlign: 'center', padding: 24 }}>Chargement...</p>}
+
+        {!loading && notifs.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '48px 16px' }}>
+            <Bell size={28} strokeWidth={1.5} style={{ color: C.tx3, marginBottom: 10 }} />
+            <p style={{ ...typeStyle('section'), color: C.tx3, margin: '0 0 4px' }}>Aucune notification</p>
+            <p style={{ ...typeStyle('body'), color: C.tx3 }}>Tu seras notifié des candidatures, messages et check-ins</p>
           </div>
         )}
-      </div>
 
+        {notifs.map(n => (
+          <button key={n.id} onClick={() => handleClick(n)} style={{
+            width: '100%', textAlign: 'left', padding: '14px 12px', borderRadius: R.block,
+            border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
+            borderBottom: `1px solid ${C.rule}`, position: 'relative',
+            borderLeft: n.read_at ? 'none' : `3px solid ${C.p}`,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              {/* Icon */}
+              <div style={{
+                width: 28, height: 28, borderRadius: R.icon, flexShrink: 0, marginTop: 1,
+                background: n.read_at ? C.bg2 : C.p3, border: `1px solid ${n.read_at ? C.rule : C.pbd}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                ...typeStyle('meta'), color: n.read_at ? C.tx3 : C.p,
+              }}>
+                {TYPE_ICONS[n.type] || '•'}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ ...typeStyle('label'), color: n.read_at ? C.tx2 : C.tx, margin: 0 }}>{n.title}</p>
+                {n.body && <p style={{ ...typeStyle('body'), color: C.tx3, margin: '3px 0 0' }}>{n.body}</p>}
+                <p style={{ ...typeStyle('meta'), color: C.tx3, margin: '6px 0 0', textAlign: 'right' }}>{formatRelative(n.created_at)}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

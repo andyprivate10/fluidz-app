@@ -2,14 +2,12 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Mail, Ghost } from 'lucide-react'
-import { colors } from '../brand'
+import { Mail, Ghost, ArrowRight } from 'lucide-react'
+import { colors, radius, typeStyle } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const C = colors
+const R = radius
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -24,44 +22,22 @@ export default function LoginPage() {
   async function handleMagicLink() {
     const trimmed = email.trim().toLowerCase()
     if (!trimmed || !trimmed.includes('@')) { showToast('Email invalide', 'error'); return }
-
     setLoading(true)
     const { error } = await supabase.auth.signInWithOtp({
       email: trimmed,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: window.location.origin + next,
-      },
+      options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + next },
     })
-
     if (error) {
-      if (error.message.includes('rate limit')) {
-        showToast('Trop de tentatives. Attends 15-30 min.', 'error')
-      } else {
-        showToast('Erreur: ' + error.message, 'error')
-      }
-      setLoading(false)
-      return
+      showToast(error.message.includes('rate limit') ? 'Trop de tentatives. Attends 15-30 min.' : 'Erreur: ' + error.message, 'error')
+      setLoading(false); return
     }
-
-    setStep('sent')
-    setLoading(false)
-    // Store redirect URL for post-auth
-    if (next && next !== '/') {
-      try { localStorage.setItem('auth_redirect', next) } catch (_) {}
-    }
-
-    // Cooldown 60s
+    setStep('sent'); setLoading(false)
+    if (next && next !== '/') { try { localStorage.setItem('auth_redirect', next) } catch (_) {} }
     setCooldown(60)
-    const interval = setInterval(() => {
-      setCooldown(prev => {
-        if (prev <= 1) { clearInterval(interval); return 0 }
-        return prev - 1
-      })
-    }, 1000)
+    const iv = setInterval(() => { setCooldown(prev => { if (prev <= 1) { clearInterval(iv); return 0 } return prev - 1 }) }, 1000)
   }
 
-  // Dev password login (only in dev mode)
+  // Dev login
   const isDev = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).get('dev') === '1' || import.meta.env.DEV)
   const [devEmail, setDevEmail] = useState('marcus@fluidz.test')
   const [devPass, setDevPass] = useState('testpass123')
@@ -69,96 +45,85 @@ export default function LoginPage() {
   async function devLogin() {
     const { error } = await supabase.auth.signInWithPassword({ email: devEmail, password: devPass })
     if (error) { showToast('Erreur: ' + error.message, 'error'); return }
-    // Auto-create profile
     const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      await supabase.from('user_profiles').upsert({ id: user.id, display_name: devEmail.split('@')[0] || 'Dev' })
-    }
+    if (user) await supabase.from('user_profiles').upsert({ id: user.id, display_name: devEmail.split('@')[0] || 'Dev' })
     navigate(next)
   }
 
   const inp: React.CSSProperties = {
-    width: '100%', background: S.bg2, color: S.tx, borderRadius: 14,
-    padding: '14px 16px', border: '1px solid ' + S.rule, outline: 'none',
-    fontSize: 15, fontFamily: 'inherit', boxSizing: 'border-box',
+    width: '100%', background: C.bg2, color: C.tx, borderRadius: R.block,
+    padding: '14px 16px', border: `1px solid ${C.rule}`, outline: 'none',
+    fontSize: 15, fontFamily: 'inherit', letterSpacing: '-0.02em',
   }
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div style={{ width: '100%', maxWidth: 400 }}>
+    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative' }}>
+      <OrbLayer />
+      <div style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}>
 
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <h1 style={{ fontSize: 36, fontWeight: 800, color: S.p, margin: '0 0 8px' }}>fluidz</h1>
-          <p style={{ color: S.tx3, fontSize: 14, margin: 0 }}>Recrute ton groupe pour ce soir</p>
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <h1 style={{ ...typeStyle('hero'), color: C.p, margin: '0 0 10px', fontSize: 40 }}>fluidz</h1>
+          <p style={{ ...typeStyle('body'), color: C.tx2, margin: 0 }}>Recrute ton groupe pour ce soir</p>
         </div>
 
         {step === 'email' && (
-          <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {/* Magic link */}
-            <div style={{ background: S.bg1, borderRadius: 20, padding: 20, border: '1px solid ' + S.rule }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Mail size={18} style={{ color: S.p }} />
-                <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>Connexion par email</span>
+          <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Magic link card */}
+            <div style={{ background: C.bg1, borderRadius: R.card, padding: 24, border: `1px solid ${C.rule}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
+                <Mail size={16} strokeWidth={1.5} style={{ color: C.p }} />
+                <span style={{ ...typeStyle('label'), color: C.tx }}>Connexion par email</span>
               </div>
               <input
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                value={email} onChange={e => setEmail(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleMagicLink()}
-                placeholder="ton@email.com"
-                type="email"
-                autoFocus
+                placeholder="ton@email.com" type="email" autoFocus
                 style={inp}
               />
-              <button
-                onClick={handleMagicLink}
-                disabled={loading || !email.trim()}
-                style={{
-                  width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15,
-                  color: '#fff', background: S.grad, border: 'none', marginTop: 12,
-                  cursor: loading || !email.trim() ? 'not-allowed' : 'pointer',
-                  opacity: loading || !email.trim() ? 0.6 : 1,
-                  boxShadow: '0 4px 20px ' + S.p + '44',
-                }}
-              >
-                {loading ? 'Envoi...' : 'Envoyer le lien magique →'}
+              <button onClick={handleMagicLink} disabled={loading || !email.trim()} style={{
+                position: 'relative', overflow: 'hidden',
+                width: '100%', padding: 16, borderRadius: R.btn, ...typeStyle('section'),
+                color: '#fff', background: C.p, border: 'none', marginTop: 14,
+                cursor: loading || !email.trim() ? 'not-allowed' : 'pointer',
+                opacity: loading || !email.trim() ? 0.5 : 1,
+                boxShadow: `0 4px 24px ${C.pbd}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              }}>
+                {loading ? 'Envoi...' : <>Envoyer le lien magique <ArrowRight size={16} strokeWidth={2} /></>}
+                <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)', animation: 'shimmer 3s ease-in-out infinite' }} />
               </button>
             </div>
 
             {/* Separator */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ flex: 1, height: 1, background: S.rule }} />
-              <span style={{ fontSize: 12, color: S.tx4, fontWeight: 600 }}>ou</span>
-              <div style={{ flex: 1, height: 1, background: S.rule }} />
+              <div style={{ flex: 1, height: 1, background: C.rule }} />
+              <span style={{ ...typeStyle('meta'), color: C.tx3 }}>ou</span>
+              <div style={{ flex: 1, height: 1, background: C.rule }} />
             </div>
 
-            {/* Ghost mode */}
-            <button
-              onClick={() => navigate('/ghost/setup' + (next !== '/' ? '?invite_code=' + next.split('/').pop() : ''))}
-              style={{
-                width: '100%', padding: 14, borderRadius: 14, fontWeight: 600, fontSize: 14,
-                color: S.tx3, border: '1px solid ' + S.rule, background: S.bg1,
-                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              }}
-            >
-              <Ghost size={16} /> Mode Ghost (24h, sans inscription)
+            {/* Ghost */}
+            <button onClick={() => navigate('/ghost/setup' + (next !== '/' ? '?invite_code=' + next.split('/').pop() : ''))} style={{
+              width: '100%', padding: 14, borderRadius: R.btn, ...typeStyle('label'),
+              color: C.lav, border: `1px solid ${C.lavbd}`, background: C.lavbg,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}>
+              <Ghost size={15} strokeWidth={1.5} /> Mode Ghost (24h, sans inscription)
             </button>
 
-            {/* Ghost recover */}
-            <button
-              onClick={() => navigate('/ghost/recover')}
-              style={{ background: 'none', border: 'none', color: S.tx4, fontSize: 12, cursor: 'pointer', textAlign: 'center', padding: 8 }}
-            >
-              J'ai un code ghost → Récupérer mon profil
+            <button onClick={() => navigate('/ghost/recover')} style={{
+              background: 'none', border: 'none', ...typeStyle('meta'), color: C.tx3, cursor: 'pointer', textAlign: 'center', padding: 8,
+            }}>
+              J'ai un code ghost — Récupérer mon profil
             </button>
 
-            {/* Dev login */}
+            {/* Dev */}
             {isDev && (
-              <div style={{ marginTop: 16, background: '#450a0a', borderRadius: 12, padding: 12, border: '1px solid #7f1d1d' }}>
-                <p style={{ fontSize: 11, color: '#F87171', fontWeight: 700, margin: '0 0 8px' }}>DEV LOGIN</p>
+              <div style={{ marginTop: 16, background: C.bg2, borderRadius: R.block, padding: 14, border: `1px solid ${C.rule2}` }}>
+                <p style={{ ...typeStyle('micro'), color: '#F87171', margin: '0 0 8px' }}>DEV LOGIN</p>
                 <input value={devEmail} onChange={e => setDevEmail(e.target.value)} placeholder="email" style={{ ...inp, fontSize: 12, padding: '8px 12px', marginBottom: 6 }} />
                 <input value={devPass} onChange={e => setDevPass(e.target.value)} placeholder="password" type="password" style={{ ...inp, fontSize: 12, padding: '8px 12px', marginBottom: 6 }} />
-                <button onClick={devLogin} style={{ width: '100%', padding: 8, borderRadius: 8, fontSize: 12, fontWeight: 600, color: '#F87171', border: '1px solid #7f1d1d', background: 'transparent', cursor: 'pointer' }}>DEV Sign in</button>
+                <button onClick={devLogin} style={{ width: '100%', padding: 8, borderRadius: R.chip, ...typeStyle('label'), color: '#F87171', border: `1px solid rgba(248,113,113,0.24)`, background: 'transparent', cursor: 'pointer' }}>DEV Sign in</button>
               </div>
             )}
           </div>
@@ -166,34 +131,30 @@ export default function LoginPage() {
 
         {step === 'sent' && (
           <div className="animate-slide-up" style={{ textAlign: 'center' }}>
-            <div style={{ background: S.bg1, borderRadius: 20, padding: 28, border: '1px solid ' + S.sage + '44' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>✉️</div>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>Lien envoyé !</h2>
-              <p style={{ color: S.tx2, fontSize: 14, margin: '0 0 16px', lineHeight: 1.5 }}>
-                Ouvre <strong>{email}</strong> et clique sur le lien pour te connecter.
+            <div style={{ background: C.bg1, borderRadius: R.card, padding: 32, border: `1px solid ${C.sagebd}` }}>
+              <Mail size={32} strokeWidth={1.5} style={{ color: C.sage, marginBottom: 14 }} />
+              <h2 style={{ ...typeStyle('title'), color: C.tx, margin: '0 0 10px' }}>Lien envoyé</h2>
+              <p style={{ ...typeStyle('body'), color: C.tx2, margin: '0 0 20px', lineHeight: 1.6 }}>
+                Ouvre <strong style={{ color: C.tx }}>{email}</strong> et clique sur le lien pour te connecter.
               </p>
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 16 }}>
-                <a href="https://mail.google.com" target="_blank" rel="noopener" style={{ padding: '8px 16px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-                  Ouvrir Gmail
-                </a>
-                <a href="https://outlook.live.com" target="_blank" rel="noopener" style={{ padding: '8px 16px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-                  Ouvrir Outlook
-                </a>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 20 }}>
+                <a href="https://mail.google.com" target="_blank" rel="noopener" style={{
+                  padding: '9px 16px', borderRadius: R.chip, background: C.bg2, border: `1px solid ${C.rule}`,
+                  ...typeStyle('label'), color: C.tx2, textDecoration: 'none',
+                }}>Gmail</a>
+                <a href="https://outlook.live.com" target="_blank" rel="noopener" style={{
+                  padding: '9px 16px', borderRadius: R.chip, background: C.bg2, border: `1px solid ${C.rule}`,
+                  ...typeStyle('label'), color: C.tx2, textDecoration: 'none',
+                }}>Outlook</a>
               </div>
-              <button
-                onClick={handleMagicLink}
-                disabled={cooldown > 0 || loading}
-                style={{
-                  background: 'none', border: 'none', color: cooldown > 0 ? S.tx4 : S.p,
-                  fontSize: 13, cursor: cooldown > 0 ? 'not-allowed' : 'pointer', fontWeight: 600,
-                }}
-              >
+              <button onClick={handleMagicLink} disabled={cooldown > 0 || loading} style={{
+                background: 'none', border: 'none', ...typeStyle('label'),
+                color: cooldown > 0 ? C.tx3 : C.p, cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
+              }}>
                 {cooldown > 0 ? `Renvoyer dans ${cooldown}s` : 'Renvoyer le lien'}
               </button>
             </div>
-            <p style={{ color: S.tx4, fontSize: 11, marginTop: 12 }}>
-              Vérifie tes spams si tu ne trouves pas l'email
-            </p>
+            <p style={{ ...typeStyle('meta'), color: C.tx3, marginTop: 14 }}>Vérifie tes spams si tu ne trouves pas l'email</p>
           </div>
         )}
 
