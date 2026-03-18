@@ -237,7 +237,7 @@ export default function DirectDMPage() {
           <div key={msg.id} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
             <div style={{
               padding: msg.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
-              borderRadius: 16, background: isMe(msg.sender_id) ? S.p2 : S.bg2,
+              borderRadius: 16, background: isMe(msg.sender_id) ? 'linear-gradient(135deg, #E0887A, #C0706A)' : S.bg2,
               borderBottomRightRadius: isMe(msg.sender_id) ? 4 : 16,
               borderBottomLeftRadius: isMe(msg.sender_id) ? 16 : 4,
               overflow: 'hidden',
