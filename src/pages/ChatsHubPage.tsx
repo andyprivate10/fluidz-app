@@ -199,11 +199,11 @@ export default function ChatsHubPage() {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                <span style={{ fontSize: 10, color: t.isHost ? S.p300 : S.green, fontWeight: 600, flexShrink: 0 }}>
+                <span style={{ fontSize: 10, color: (t as any).type === 'direct' ? '#7DD3FC' : t.isHost ? S.p300 : S.green, fontWeight: 600, flexShrink: 0 }}>
                   {(t as any).type === 'direct' ? 'Direct' : t.type === 'group' ? 'Groupe' : t.isHost ? 'Host' : 'Session'}
                 </span>
                 <span style={{ fontSize: 11, color: S.tx3 }}>·</span>
-                <span style={{ fontSize: 11, color: S.tx4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.sessionTitle}</span>
+                <span style={{ fontSize: 11, color: S.tx4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{(t as any).type === 'direct' ? '' : t.sessionTitle}</span>
               </div>
               <p style={{ fontSize: 12, color: S.tx3, margin: '3px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {t.lastMessage.slice(0, 60)}
