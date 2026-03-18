@@ -1,4 +1,5 @@
 import LazyImage from '../components/LazyImage'
+import ProfileStory from '../components/ProfileStory'
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -30,6 +31,7 @@ export default function CandidateProfilePage() {
   const [loading, setLoading] = useState(true)
   const [actioning, setActioning] = useState(false)
   const [isHost, setIsHost] = useState(false)
+  const [showStory, setShowStory] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -249,6 +251,7 @@ export default function CandidateProfilePage() {
           }}>
             {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : 'En attente'}
           </span>
+          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>▶ Story</button>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
           {!eps.is_phantom && <AddContactButton targetUserId={app.applicant_id} />}
         </div>
@@ -358,6 +361,9 @@ export default function CandidateProfilePage() {
             {actioning ? '...' : '✓ Accepter'}
           </button>
         </div>
+      )}
+      {showStory && (
+        <ProfileStory profile={{ display_name: displayName, profile_json: { ...pj, ...snapshot } }} onClose={() => setShowStory(false)} />
       )}
     </div>
   )
