@@ -135,6 +135,15 @@ export default function DMPage() {
       } finally {
         setLoading(false)
       }
+      // Mark DM notifications as read for this session
+      if (currentUser) {
+        const hrefPattern = '/session/' + id + '/dm'
+        await supabase.from('notifications')
+          .update({ read_at: new Date().toISOString() })
+          .eq('user_id', currentUser.id)
+          .like('href', hrefPattern + '%')
+          .is('read_at', null)
+      }
     }
     init()
 
