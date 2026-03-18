@@ -93,14 +93,14 @@ export default function SessionsPage() {
             {hosted.map(sess => (
               <div
                 key={sess.id}
-                onClick={() => navigate('/session/' + sess.id + '/host')}
-                style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, cursor: 'pointer' }}
+                onClick={() => navigate(sess.status === 'ended' ? '/session/' + sess.id : '/session/' + sess.id + '/host')}
+                style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, cursor: 'pointer', }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: S.tx, flex: 1 }}>{sess.title}</div>
                   <span style={{
                     fontSize: 11, fontWeight: 600,
-                    color: sess.status === 'open' ? S.green : S.tx3,
+                    color: sess.status === 'open' ? S.green : sess.status === 'ended' ? S.red : S.tx3,
                     background: S.bg2, padding: '2px 8px', borderRadius: 50, marginLeft: 8,
                   }}>
                     {sess.status === 'open' ? 'Ouverte' : sess.status === 'ended' ? 'Terminée' : 'Brouillon'}
@@ -127,7 +127,7 @@ export default function SessionsPage() {
                 <div
                   key={app.session_id}
                   onClick={() => navigate('/session/' + app.session_id)}
-                  style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, cursor: 'pointer' }}
+                  style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, cursor: 'pointer', }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ fontSize: 16, fontWeight: 700, color: S.tx, flex: 1 }}>{app.title}</div>
