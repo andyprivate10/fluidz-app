@@ -103,10 +103,18 @@ export default function DirectDMPage() {
   async function handleSend() {
     if (!newMessage.trim() || !currentUser || !sessionId || sending) return
     setSending(true)
+    const msgText = newMessage.trim()
     await supabase.from('messages').insert({
-      session_id: sessionId, sender_id: currentUser.id, text: newMessage.trim(),
+      session_id: sessionId, sender_id: currentUser.id, text: msgText,
       sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
     })
+    // Notify peer
+    await supabase.from('notifications').insert({
+      user_id: peerId, type: 'direct_dm',
+      title: '💬 ' + displayName,
+      body: msgText.length > 60 ? msgText.slice(0, 60) + '...' : msgText,
+      href: '/dm/' + currentUser.id,
+    }).then(() => {})
     setNewMessage('')
     setSending(false)
   }
