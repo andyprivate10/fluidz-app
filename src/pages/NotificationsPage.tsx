@@ -11,6 +11,19 @@ const S = {
   border: '#2A2740', p300: '#F9A8A8', orange: '#FBBF24',
 }
 
+const TYPE_ICONS: Record<string, string> = {
+  new_application: '📩',
+  application_accepted: '✅',
+  application_rejected: '❌',
+  session_invite: '📩',
+  group_invite: '👥',
+  direct_dm: '💬',
+  direct_join: '⚡',
+  contact_request: '💕',
+  check_in: '📍',
+  review_request: '⭐',
+}
+
 function formatRelative(dateStr: string): string {
   const d = new Date(dateStr)
   const now = new Date()
@@ -116,13 +129,13 @@ export default function NotificationsPage() {
                 onClick={() => handleNotifClick(n)}
                 style={{
                   width: '100%', textAlign: 'left', padding: 16, borderRadius: 14, border: '1px solid ' + S.border,
-                  background: S.bg1, cursor: 'pointer', fontFamily: 'inherit', position: 'relative',
+                  background: n.read_at ? S.bg1 : S.bg1, cursor: 'pointer', fontFamily: 'inherit', position: 'relative', borderLeft: n.read_at ? 'none' : '3px solid #F9A8A8',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                   {n.read_at == null && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.orange, flexShrink: 0, marginTop: 6 }} aria-hidden />}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: 700 }}>{n.title || ''}</p>
+                    <p style={{ margin: 0, fontSize: 14, color: S.tx, fontWeight: 700 }}>{TYPE_ICONS[n.type] || '🔔'} {n.title || ''}</p>
                     {n.body && <p style={{ margin: '4px 0 0', fontSize: 12, color: S.tx2 }}>{n.body}</p>}
                     <p style={{ margin: '8px 0 0', fontSize: 11, color: S.tx4, textAlign: 'right' }}>{formatRelative(n.created_at)}</p>
                   </div>

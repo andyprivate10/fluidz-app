@@ -293,6 +293,9 @@ export default function ExplorePage() {
                     ))}
                   </div>
                 )}
+                <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  Postuler →
+                </button>
               </div>
             ))}
           </div>
