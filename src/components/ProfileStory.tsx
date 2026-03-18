@@ -49,6 +49,14 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
   function next() { if (tmr.current) clearInterval(tmr.current); if (cur < slides.length - 1) setCur(c => c + 1); else onClose() }
   function prev() { if (tmr.current) clearInterval(tmr.current); if (cur > 0) setCur(c => c - 1); else { t0.current = Date.now(); setProgress(0) } }
 
+  // Swipe down to close
+  const swipeStart = useRef(0)
+  function onTouchStart(e: React.TouchEvent) { swipeStart.current = e.touches[0].clientY }
+  function onTouchEnd(e: React.TouchEvent) {
+    const dy = e.changedTouches[0].clientY - swipeStart.current
+    if (dy > 80) onClose()
+  }
+
   if (!sl) return null
   const d = sl.data
   const anim: React.CSSProperties = { animation: 'sfu 0.4s ease' }
@@ -62,7 +70,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
   }
 
   return (
-    <div style={{ position:'fixed',inset:0,zIndex:9999,background:bgMap[sl.type]||'#000',display:'flex',flexDirection:'column',transition:'background 0.5s ease' }}>
+    <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ position:'fixed',inset:0,zIndex:9999,background:bgMap[sl.type]||'#000',display:'flex',flexDirection:'column',transition:'background 0.5s ease' }}>
       <div style={{ display:'flex',gap:3,padding:'12px 12px 0',zIndex:20 }}>
         {slides.map((_,i) => (
           <div key={i} style={{ flex:1,height:3,background:'rgba(255,255,255,0.2)',borderRadius:2,overflow:'hidden' }}>

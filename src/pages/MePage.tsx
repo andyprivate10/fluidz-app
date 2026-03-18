@@ -71,6 +71,7 @@ export default function MePage() {
   const navigate = useNavigate()
   const devMode = searchParams.get('dev') === '1'
   const nextUrl = searchParams.get('next')
+  const ghostMergeId = searchParams.get('ghost_merge')
   const [user, setUser] = useState<User | null>(null)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -79,6 +80,25 @@ export default function MePage() {
   const [locationVisible, setLocationVisible] = useState(false)
   const [profileViews, setProfileViews] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
+
+  async function mergeGhost(mergeId: string, userId: string) {
+    const { data: ghost } = await supabase.from('ghost_sessions').select('id, display_name, profile_json').eq('id', mergeId).maybeSingle()
+    if (!ghost || !ghost.profile_json) return
+    const gp = (ghost.profile_json || {}) as Record<string, unknown>
+    const { data: existing } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', userId).maybeSingle()
+    const ep = ((existing?.profile_json || {}) as Record<string, unknown>)
+    const merged = { ...gp, ...ep }
+    if (!ep.avatar_url && gp.avatar_url) merged.avatar_url = gp.avatar_url
+    await supabase.from('user_profiles').upsert({
+      id: userId,
+      display_name: existing?.display_name || ghost.display_name || 'Anonyme',
+      profile_json: merged,
+    })
+    await supabase.from('applications').update({ applicant_id: userId }).eq('ghost_session_id', mergeId)
+    await supabase.from('ghost_sessions').update({ claimed_user_id: userId }).eq('id', mergeId)
+    try { localStorage.removeItem('ghost_merge_id') } catch (_e) {}
+    showToast('Compte créé ! Profil ghost importé.', 'success')
+  }
 
   const [displayName, setDisplayName] = useState('')
   const [age, setAge] = useState('')
@@ -114,6 +134,12 @@ export default function MePage() {
       const u = data.session?.user ?? null
       setUser(u)
       if (u) {
+        // Ghost → account merge
+        const mergeId = ghostMergeId || localStorage.getItem('ghost_merge_id')
+        if (mergeId && u) {
+          mergeGhost(mergeId, u.id)
+        }
+
         // Already logged in + ?next= → redirect immediately
         if (nextUrl) { navigate(nextUrl); return }
         loadProfile(u.id)
