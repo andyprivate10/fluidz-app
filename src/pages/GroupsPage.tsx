@@ -8,7 +8,7 @@ import OrbLayer from '../components/OrbLayer'
 
 const S = colors
 
-const GROUP_COLORS = [S.p, S.sage, S.blue, S.p, '#A78BFA', S.red, '#34D399', '#FB923C']
+const GROUP_COLORS = [S.p, S.sage, S.blue, S.p, S.violet, S.red, S.emerald, S.amber]
 
 type Group = {
   id: string

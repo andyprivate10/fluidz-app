@@ -739,7 +739,7 @@ export default function SessionPage() {
               </div>
             )}
             {myApp.status === 'rejected' && (
-              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: 'rgba(248,113,113,0.08)', border: '1px solid #F8717144' }}>Non retenu</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: S.red+'14', border: '1px solid '+S.red+'44' }}>Non retenu</span>
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

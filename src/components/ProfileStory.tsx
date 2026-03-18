@@ -112,8 +112,8 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
         {sl.type === 'kinks' && (() => {
           const kinkColors: Record<string, string> = {
             'Dominant':S.p,'Soumis':S.p,'SM léger':S.p,'SM hard':S.red,
-            'Fist':S.red,'Group':S.blue,'Voyeur':'#A78BFA','Exhib':'#A78BFA',
-            'Fétichisme':'#34D399','Jeux de rôle':'#FB923C','Bears welcome':S.p,
+            'Fist':S.red,'Group':S.blue,'Voyeur':S.violet,'Exhib':S.violet,
+            'Fétichisme':S.emerald,'Jeux de rôle':S.amber,'Bears welcome':S.p,
           }
           return (
           <div style={{ textAlign:'center',...anim }}>

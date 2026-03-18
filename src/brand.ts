@@ -33,6 +33,11 @@ export const colors = {
   lavbg:   'rgba(144,128,186,0.08)',
   lavbd:   'rgba(144,128,186,0.18)',
 
+  // Secondary accents (kink categories, groups)
+  violet:  '#A78BFA',
+  emerald: '#34D399',
+  amber:   '#FB923C',
+
   // Semantic
   red:    '#F87171',
   orange: '#FBBF24',

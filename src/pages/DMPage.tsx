@@ -344,6 +344,7 @@ export default function DMPage() {
       background: S.bg, height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column',
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
+      <OrbLayer />
       {/* Header */}
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -398,7 +399,7 @@ export default function DMPage() {
       )}
 
       {!isHost && appStatus === 'rejected' && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: 'rgba(248,113,113,0.08)', border: '1px solid #F8717144', borderRadius: 12, flexShrink: 0 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.red+'14', border: '1px solid '+S.red+'44', borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.red, fontWeight: 600, textAlign: 'center' }}>
             Candidature refusee
           </div>
@@ -463,7 +464,6 @@ export default function DMPage() {
                 alignItems: isMine ? 'flex-end' : 'flex-start',
                 padding: '0 24px',
               }}>
-      <OrbLayer />
                 {!isMine && (
                   <span style={{ color: S.tx3, fontSize: 11, marginBottom: 2 }}>
                     {message.sender_name}
@@ -513,7 +513,7 @@ export default function DMPage() {
 
       {/* Input bar */}
       <div style={{
-        background: S.bg1, padding: 16, borderTop: '1px solid '+S.rule,
+        background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: '1px solid '+S.rule,
         display: 'flex', gap: 8, flexShrink: 0,
       }}>
         <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
