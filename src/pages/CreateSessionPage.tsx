@@ -328,7 +328,7 @@ export default function CreateSessionPage() {
                   </div>
                 ) : (
                   <label style={{display:'inline-flex',alignItems:'center',gap:4,marginTop:6,padding:'4px 8px',borderRadius:6,border:'1px solid '+S.rule,background:S.bg2,color:S.tx4,fontSize:10,fontWeight:600,cursor:'pointer'}}>
-                    📷 Photo
+                    Photo
                     <input type="file" accept="image/*" onChange={async (e)=>{ const f=e.target.files?.[0]; if(!f)return; const { compressImage: ci } = await import('../lib/media'); const c = await ci(f); const { data:{ user } } = await supabase.auth.getUser(); if(!user) return; const path=user.id+'/dir_'+Date.now()+'.jpg'; const {error}=await supabase.storage.from('avatars').upload(path,c); if(error) return; const {data:{publicUrl}}=supabase.storage.from('avatars').getPublicUrl(path); const next=[...directions]; next[i]={...next[i],photo_url:publicUrl}; setDirections(next) }} style={{display:'none'}} />
                   </label>
                 )}

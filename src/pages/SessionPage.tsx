@@ -280,21 +280,17 @@ export default function SessionPage() {
     <div style={st} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {isRefreshing && (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 12, background: S.bg1, borderBottom: '1px solid '+S.rule }}>
-          <div className="w-6 h-6 border-2 border-peach300 border-t-transparent rounded-full animate-spin" />
+          <div style={{ width: 24, height: 24, border: '2px solid '+S.pbd, borderTopColor: S.p, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       )}
-      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid '+S.rule, background: S.bg1 }}>
+      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: S.tx, flex: 1 }}>{session.title}</h1>
-          <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
-          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Users size={11} strokeWidth={1.5} style={{marginRight:3, display:'inline'}} /> {members.length}</span>}
-          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: S.sage, background: S.sagebg, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Users size={11} strokeWidth={1.5} style={{marginRight:3, display:'inline'}} /> {members.length + 1}</span>}
-          {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
-          {session.status === 'open' && session.created_at && (() => {
-            const mins = Math.floor((Date.now() - new Date(session.created_at).getTime()) / 60000)
-            const label = mins < 60 ? mins + 'min' : Math.floor(mins / 60) + 'h' + (mins % 60 > 0 ? String(mins % 60).padStart(2, '0') : '')
-            return <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{label}</span>
-          })()}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8, alignItems: 'center' }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: statusColor + '14', border: '1px solid ' + statusColor + '33', padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}>{statusLabel}</span>
+          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd, padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}><Users size={11} strokeWidth={1.5} style={{marginRight:3, display:'inline'}} /> {members.length + 1}</span>}
+          {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx3, background: S.rule, padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
         </div>
         {session.tags && session.tags.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
