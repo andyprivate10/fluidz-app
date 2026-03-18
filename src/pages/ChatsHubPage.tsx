@@ -100,7 +100,7 @@ export default function ChatsHubPage() {
           threadMap.set(key, {
             id: key, type: sess.title === 'DM Direct' ? 'direct' as any : 'dm_session', sessionId: msg.session_id,
             sessionTitle: sess.title, peerId, peerName: msg.sender_id === user.id ? '' : msg.sender_name,
-            lastMessage: msg.text, lastMessageAt: msg.created_at, isHost: sess.isHost,
+            lastMessage: msg.text, lastMessageAt: msg.created_at, lastSenderId: msg.sender_id, isHost: sess.isHost,
           })
         }
       }
@@ -192,7 +192,7 @@ export default function ChatsHubPage() {
                   {t.type === 'group' ? `💬 ${t.sessionTitle}` : t.peerName || 'Anonyme'}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0, marginLeft: 8 }}>
-                  {t.lastSenderId !== user?.id && (Date.now() - new Date(t.lastMessageAt).getTime()) < 3600000 && (
+                  {t.lastSenderId !== user?.id && (Date.now() - new Date(t.lastMessageAt).getTime()) < 86400000 && (
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#F9A8A8' }} />
                   )}
                   <span style={{ fontSize: 10, color: S.tx4 }}>{timeAgo(t.lastMessageAt)}</span>
