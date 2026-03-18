@@ -171,7 +171,7 @@ export default function JoinPage() {
       <div style={{
         position:'absolute', top:'-30%', left:'50%', transform:'translateX(-50%)',
         width:400, height:400, borderRadius:'50%',
-        background:'radial-gradient(circle, rgba(240,120,88,0.04) 0%, transparent 70%)',
+        background:'radial-gradient(circle, rgba(224,136,122,0.04) 0%, transparent 70%)',
         pointerEvents:'none',
       }} />
 
@@ -291,7 +291,7 @@ export default function JoinPage() {
               <button onClick={() => navigate('/login?next=/join/' + code)} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
                 color:'#fff',background:S.grad,border:'none',cursor:'pointer',
-                boxShadow:'0 4px 24px rgba(240,120,88,0.28)',
+                boxShadow:'0 4px 24px rgba(224,136,122,0.28)',
               }}>
                 Postuler →
               </button>
@@ -310,7 +310,7 @@ export default function JoinPage() {
               <button onClick={quickApply} disabled={quickApplying} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
                 color:'#fff',background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
-                boxShadow:'0 4px 24px rgba(240,120,88,0.28)',opacity:quickApplying?0.7:1,
+                boxShadow:'0 4px 24px rgba(224,136,122,0.28)',opacity:quickApplying?0.7:1,
               }}>
                 {quickApplying ? 'Envoi...' : 'Postuler →'}
               </button>
@@ -325,7 +325,7 @@ export default function JoinPage() {
             <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
               width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
               color:'#fff',background:S.grad,border:'none',cursor:'pointer',
-              boxShadow:'0 4px 24px rgba(240,120,88,0.28)',
+              boxShadow:'0 4px 24px rgba(224,136,122,0.28)',
             }}>
               Postuler →
             </button>

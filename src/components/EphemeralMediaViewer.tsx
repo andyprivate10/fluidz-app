@@ -174,7 +174,7 @@ export default function EphemeralMediaViewer({ mediaId, onClose }: { mediaId: st
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
         pointerEvents: 'none', zIndex: 1,
-        background: 'repeating-linear-gradient(45deg, transparent, transparent 200px, rgba(240,120,88,0.03) 200px, rgba(240,120,88,0.03) 202px)',
+        background: 'repeating-linear-gradient(45deg, transparent, transparent 200px, rgba(224,136,122,0.03) 200px, rgba(224,136,122,0.03) 202px)',
       }} />
     </div>
   )
