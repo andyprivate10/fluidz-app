@@ -46,7 +46,7 @@ export default function DMPage() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string } | null>(null)
+  const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string; lineup_json?: { directions?: string[] } } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
   const [peerId, setPeerId] = useState<string | null>(peerIdParam || null)
   const [peerName, setPeerName] = useState<string>('')
@@ -76,7 +76,7 @@ export default function DMPage() {
 
         const { data: sess, error: sessErr } = await supabase
           .from('sessions')
-          .select('title,exact_address,host_id')
+          .select('title,exact_address,host_id,lineup_json')
           .eq('id', id)
           .single()
         if (sessErr) throw sessErr
@@ -285,6 +285,14 @@ export default function DMPage() {
           <div style={{ fontSize: 14, color: S.tx, fontWeight: 600 }}>
             {session.exact_address}
           </div>
+          {session.lineup_json?.directions && session.lineup_json.directions.length > 0 && (
+            <div style={{ padding: '8px 16px 0' }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: '#7E7694', margin: '0 0 4px' }}>ACCÈS</p>
+              {session.lineup_json.directions.map((step: string, i: number) => (
+                <p key={i} style={{ fontSize: 12, color: '#B8B2CC', margin: '2px 0', lineHeight: 1.4 }}>{i + 1}. {step}</p>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
