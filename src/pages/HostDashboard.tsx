@@ -483,6 +483,13 @@ export default function HostDashboard() {
                   </div>
                 )}
 
+                {app.eps_json?.message && (
+                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid #7DD3FC33',marginBottom:8}}>
+                    <p style={{fontSize:11,color:'#7DD3FC',fontWeight:700,margin:'0 0 2px'}}>Message au host</p>
+                    <p style={{fontSize:13,color:S.tx2,margin:0,lineHeight:1.4}}>{app.eps_json.message}</p>
+                  </div>
+                )}
+
                 {app.eps_json?.occasion_note && (
                   <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p300+'33',marginBottom:8}}>
                     <p style={{fontSize:11,color:S.p300,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
