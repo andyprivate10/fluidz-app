@@ -51,6 +51,7 @@ export default function CreateSessionPage() {
   const [directions, setDirections] = useState<{ text: string; photo_url?: string }[]>([{ text: '' }])
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
+  const [isPublic, setIsPublic] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
 
   useEffect(() => {
@@ -335,6 +336,20 @@ export default function CreateSessionPage() {
               Ajouter une étape
             </button>
           </div>
+          {/* Public toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12 }}>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Publier dans l'app</p>
+              <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore pour les profils à proximité</p>
+            </div>
+            <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
+              width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
+              background: isPublic ? '#4ADE80' : '#2A2740', transition: 'background 0.2s',
+            }}>
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: isPublic ? 21 : 3, transition: 'left 0.2s' }} />
+            </button>
+          </div>
+
           <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
             {savingAddress ? 'Sauvegarde...' : 'Sauvegarder cette adresse'}
           </button>
