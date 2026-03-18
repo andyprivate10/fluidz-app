@@ -301,11 +301,11 @@ export default function GroupChatPage() {
       {/* Header */}
       <div style={{
         padding:'12px 16px', display:'flex', alignItems:'center', gap:12,
-        borderBottom:'1px solid '+S.rule, background:S.bg1,
+        borderBottom:'1px solid '+S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)',
         paddingTop:'calc(12px + env(safe-area-inset-top, 0px))',
       }}>
         <button onClick={() => navigate('/session/' + id)} style={{ background:'none', border:'none', cursor:'pointer', padding:4 }}>
-          <ArrowLeft size={20} style={{ color:S.tx2 }} />
+          <ArrowLeft size={18} strokeWidth={1.5} style={{ color:S.tx2 }} />
         </button>
         <div style={{ flex:1, minWidth:0 }}>
           <p style={{ margin:0, fontSize:15, fontWeight:700, color:S.tx, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
@@ -436,7 +436,7 @@ export default function GroupChatPage() {
       {/* Input */}
       {canChat && (session.group_chat_enabled || isHost) && (
         <div style={{
-          padding:'10px 16px', borderTop:'1px solid '+S.rule, background:S.bg1,
+          padding:'10px 16px', borderTop:'1px solid '+S.rule, background:'rgba(5,4,10,0.92)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
           paddingBottom:'calc(10px + env(safe-area-inset-bottom, 0px))',
           display:'flex', gap:8, alignItems:'center',
         }}>
@@ -444,7 +444,7 @@ export default function GroupChatPage() {
             <Camera size={16} style={{ color:S.tx3 }} />
             <input type="file" accept="image/*,video/*" onChange={e => { const f=e.target.files?.[0]; if(f) sendPhoto(f); e.target.value='' }} style={{ display:'none' }} disabled={uploading} />
           </label>
-          <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width:38, height:38, borderRadius:10, border:'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor:'pointer', fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', animation: recording ? 'pulse 1s infinite' : 'none' }}>
+          <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width:38, height:38, borderRadius:10, border:'none', background: recording ? S.red : S.bg2, color: recording ? '#fff' : S.tx3, cursor:'pointer', fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', animation: recording ? 'pulse 1s infinite' : 'none' }}>
             {recording ? '■' : '●'}
           </button>
           <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
