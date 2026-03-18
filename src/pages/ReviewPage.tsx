@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast'
 import {Star, Send, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 
 const S = colors
 
@@ -174,6 +175,7 @@ export default function ReviewPage() {
           {/* Comment */}
           <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
       <OrbLayer />
+      <EventContextNav role='member' />
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Commentaire (optionnel, anonyme)</p>
             <textarea
               value={comment}

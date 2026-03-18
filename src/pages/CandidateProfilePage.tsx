@@ -8,6 +8,7 @@ import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 
 const S = colors
 
@@ -287,6 +288,7 @@ export default function CandidateProfilePage() {
           return (
             <div style={card}>
       <OrbLayer />
+      <EventContextNav role='host' />
               <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {kinks.map((k: string) => {

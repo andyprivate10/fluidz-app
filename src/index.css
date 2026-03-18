@@ -143,3 +143,31 @@ button:active:not(:disabled) { transform: scale(0.97); transition: transform 0.0
 
 /* Safe areas */
 .safe-bottom { padding-bottom: calc(72px + var(--safe-bottom)); }
+
+/* ─── Shimmer CTA button ─── */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -180%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* ─── Input V1 style ─── */
+.input-v1 {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  color: var(--tx);
+  border-radius: var(--r-block);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-v1::placeholder { color: var(--tx4); }
+.input-v1:focus { border-color: rgba(224,136,122,0.28); }

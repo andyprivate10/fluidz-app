@@ -282,6 +282,7 @@ export default function SessionPage() {
 
   return (
     <div style={st} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      <OrbLayer />
       {isRefreshing && (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 12, background: S.bg1, borderBottom: '1px solid '+S.rule }}>
           <div style={{ width: 24, height: 24, border: '2px solid '+S.pbd, borderTopColor: S.p, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
@@ -689,7 +690,6 @@ export default function SessionPage() {
                 const avatar = memberAvatars[m.applicant_id]
                 return (
                   <button key={m.applicant_id} onClick={() => navigate('/contacts/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid '+S.rule, background: S.bg2, cursor: 'pointer' }}>
-      <OrbLayer />
                     {avatar ? (
                       <img src={avatar} alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (

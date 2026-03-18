@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ThumbsUp, ThumbsDown, Clock, ArrowLeft } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Clock } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'

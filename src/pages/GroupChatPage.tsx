@@ -7,6 +7,7 @@ import { ArrowLeft, Send, Users, Shield, Camera } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 
 type Message = {
   id: string
@@ -295,6 +296,7 @@ export default function GroupChatPage() {
       background:S.bg, maxWidth:480, margin:'0 auto', position:'relative' as const,
     }}>
       <OrbLayer />
+      <EventContextNav role={isHost ? 'host' : 'member'} sessionTitle={session?.title} />
       {/* Header */}
       <div style={{
         padding:'12px 16px', display:'flex', alignItems:'center', gap:12,

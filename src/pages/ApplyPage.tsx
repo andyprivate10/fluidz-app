@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye, ArrowLeft } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 
 const S = colors
 
@@ -285,11 +286,12 @@ export default function ApplyPage() {
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
-      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid ' + S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)'}}>
-        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{marginRight:4,display:'inline'}} />Retour</button>
-        <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Postuler</h1>
-        {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.title} · {session.approx_area}</p>}
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative'}}>
+      <OrbLayer />
+      <EventContextNav role="candidate" sessionTitle={session?.title} />
+      <div style={{padding:'12px 20px 16px',borderBottom:'1px solid ' + S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)'}}>
+        <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px',fontFamily:"'Bricolage Grotesque', sans-serif"}}>Ma candidature</h1>
+        {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.approx_area}</p>}
       </div>
 
       {(profile || guestMode) && (
