@@ -49,7 +49,7 @@ export default function HomePage() {
     }
 
     const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status')
-      .eq('host_id', user.id).eq('status', 'open')
+      .eq('host_id', user.id).eq('status', 'open').neq('title', 'DM Direct')
       .order('created_at', { ascending: false }).limit(1)
     const hostSession = Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null
     setLatestHost(hostSession)
