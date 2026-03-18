@@ -89,10 +89,16 @@ export default function ExplorePage() {
           .limit(20)
         if (pubSess && pubSess.length > 0) {
           const hIds = [...new Set(pubSess.map((s: any) => s.host_id))]
-          const { data: hProfs } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', hIds)
+          const sIds = pubSess.map((s: any) => s.id)
+          const [{ data: hProfs }, { data: appCounts }] = await Promise.all([
+            supabase.from('user_profiles').select('id, display_name, profile_json').in('id', hIds),
+            supabase.from('applications').select('session_id').in('session_id', sIds).in('status', ['accepted', 'checked_in']),
+          ])
           const hMap = new Map<string, { name: string; avatar?: string }>()
           ;(hProfs || []).forEach((p: any) => hMap.set(p.id, { name: p.display_name, avatar: p.profile_json?.avatar_url }))
-          setNearbySessions(pubSess.map((s: any) => ({ ...s, host_name: hMap.get(s.host_id)?.name || 'Host', host_avatar: hMap.get(s.host_id)?.avatar })))
+          const countMap = new Map<string, number>()
+          ;(appCounts || []).forEach((a: any) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1))
+          setNearbySessions(pubSess.map((s: any) => ({ ...s, host_name: hMap.get(s.host_id)?.name || 'Host', host_avatar: hMap.get(s.host_id)?.avatar, member_count: (countMap.get(s.id) || 0) + 1 })))
         }
       },
       () => { setGeoError(true); setLoading(false) },
@@ -275,7 +281,11 @@ export default function ExplorePage() {
                     <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>par {s.host_name}</p>
                   </div>
                 </div>
-                {s.approx_area && <p style={{ fontSize: 12, color: '#B8B2CC', margin: '0 0 6px' }}>📍 {s.approx_area}</p>}
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
+                  {s.approx_area && <span style={{ fontSize: 12, color: '#B8B2CC' }}>📍 {s.approx_area}</span>}
+                  {s.member_count > 0 && <span style={{ fontSize: 11, color: '#7E7694' }}>👥 {s.member_count}</span>}
+                  {s.created_at && <span style={{ fontSize: 10, color: '#453F5C' }}>{(() => { const m = Math.floor((Date.now() - new Date(s.created_at).getTime()) / 60000); return m < 60 ? m + 'min' : Math.floor(m / 60) + 'h' })()}</span>}
+                </div>
                 {s.tags && s.tags.length > 0 && (
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                     {s.tags.slice(0, 5).map((tag: string) => (

@@ -21,6 +21,7 @@ type ChatThread = {
   peerAvatar?: string
   lastMessage: string
   lastMessageAt: string
+  lastSenderId: string
   isHost: boolean
 }
 
@@ -39,12 +40,14 @@ export default function ChatsHubPage() {
   const navigate = useNavigate()
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<any>(null)
   const [tab, setTab] = useState<'all' | 'dm' | 'direct' | 'group'>('all')
   
 
   const loadThreads = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
+    setUser(user)
     
 
     // Get all sessions where user is host or accepted member
@@ -85,7 +88,7 @@ export default function ChatsHubPage() {
           threadMap.set(key, {
             id: key, type: 'group', sessionId: msg.session_id,
             sessionTitle: sess.title, lastMessage: msg.text,
-            lastMessageAt: msg.created_at, isHost: sess.isHost,
+            lastMessageAt: msg.created_at, lastSenderId: msg.sender_id, isHost: sess.isHost,
           })
         }
       } else if (msg.room_type === 'dm') {
@@ -188,7 +191,12 @@ export default function ChatsHubPage() {
                 <span style={{ fontSize: 14, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {t.type === 'group' ? `💬 ${t.sessionTitle}` : t.peerName || 'Anonyme'}
                 </span>
-                <span style={{ fontSize: 10, color: S.tx4, flexShrink: 0, marginLeft: 8 }}>{timeAgo(t.lastMessageAt)}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0, marginLeft: 8 }}>
+                  {t.lastSenderId !== user?.id && (Date.now() - new Date(t.lastMessageAt).getTime()) < 3600000 && (
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#F9A8A8' }} />
+                  )}
+                  <span style={{ fontSize: 10, color: S.tx4 }}>{timeAgo(t.lastMessageAt)}</span>
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                 <span style={{ fontSize: 10, color: t.isHost ? S.p300 : S.green, fontWeight: 600, flexShrink: 0 }}>
