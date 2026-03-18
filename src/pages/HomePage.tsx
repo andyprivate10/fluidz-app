@@ -97,6 +97,26 @@ export default function HomePage() {
             Recrute ton groupe pour ce soir. Partage un lien, les candidats postulent, tu choisis.
           </p>
         )}
+        {userId && (
+          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <button onClick={() => navigate('/explore')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>👤</div>
+              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Explorer</div>
+            </button>
+            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>💕</div>
+              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Contacts</div>
+            </button>
+            <button onClick={() => navigate('/addresses')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>📍</div>
+              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Adresses</div>
+            </button>
+            <button onClick={() => navigate('/me')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>⭐</div>
+              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Profil</div>
+            </button>
+          </div>
+        )}
       </div>
 
       <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
