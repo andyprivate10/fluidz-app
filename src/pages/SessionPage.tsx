@@ -591,6 +591,14 @@ export default function SessionPage() {
               </button>
               </>
             )}
+            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+              <button onClick={() => navigate('/session/' + id + '/chat')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid #F9A8A844', background: '#F9A8A814', color: '#F9A8A8', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                💬 Group Chat
+              </button>
+              <button onClick={() => navigate('/session/' + id + '/dm')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid #2A2740', background: '#16141F', color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                DM Host
+              </button>
+            </div>
           </div>
         )}
 
