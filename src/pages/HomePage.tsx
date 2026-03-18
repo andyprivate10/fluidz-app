@@ -20,6 +20,7 @@ export default function HomePage() {
   const [pendingApps, setPendingApps] = useState<{ session_id: string; title: string }[]>([])
   const [inviteCode, setInviteCode] = useState('')
   const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string }[]>([])
+  const [hostPendingCount, setHostPendingCount] = useState(0)
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -50,7 +51,12 @@ export default function HomePage() {
     const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status')
       .eq('host_id', user.id).eq('status', 'open')
       .order('created_at', { ascending: false }).limit(1)
-    setLatestHost(Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null)
+    const hostSession = Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null
+    setLatestHost(hostSession)
+    if (hostSession) {
+      const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).eq('status', 'pending')
+      setHostPendingCount(count ?? 0)
+    }
 
     const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title)')
       .eq('applicant_id', user.id).eq('status', 'pending')
@@ -104,6 +110,7 @@ export default function HomePage() {
             <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ta session active</p>
             <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>{latestHost.title}</p>
             <p style={{ fontSize: 12, color: S.tx3, margin: '4px 0 0' }}>{latestHost.approx_area}</p>
+            {hostPendingCount > 0 && <p style={{ fontSize: 12, fontWeight: 700, color: S.yellow, margin: '6px 0 0' }}>📩 {hostPendingCount} candidature{hostPendingCount > 1 ? 's' : ''} en attente</p>}
           </div>
         )}
 
