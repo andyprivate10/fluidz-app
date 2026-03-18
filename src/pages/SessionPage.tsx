@@ -648,6 +648,30 @@ export default function SessionPage() {
           </div>
         )}
 
+        {/* Suggest adding co-participants to Naughty Book */}
+        {myApp?.status === 'checked_in' && members.length > 0 && (
+          <div style={{ ...card, borderColor: '#F9A8A833' }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: '#7E7694', margin: '0 0 8px' }}>AJOUTER AU CARNET ?</p>
+            <p style={{ fontSize: 12, color: '#7E7694', margin: '0 0 10px' }}>Tu peux ajouter les membres de cette session à ton Naughty Book</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {members.filter(m => m.applicant_id !== currentUser?.id).slice(0, 6).map(m => {
+                const name = memberNames[m.applicant_id] || 'Anonyme'
+                const avatar = memberAvatars[m.applicant_id]
+                return (
+                  <button key={m.applicant_id} onClick={() => navigate('/contacts/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid #2A2740', background: '#1F1D2B', cursor: 'pointer' }}>
+                    {avatar ? (
+                      <img src={avatar} alt="" style={{ width: 20, height: 20, borderRadius: '28%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: 20, height: 20, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{name[0].toUpperCase()}</div>
+                    )}
+                    <span style={{ fontSize: 12, color: '#B8B2CC', fontWeight: 600 }}>{name}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, color: '#F0EDFF', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
