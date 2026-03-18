@@ -67,6 +67,62 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
   )
 }
 
+function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; targetName: string }) {
+  const nav = useNavigate()
+  const [creating, setCreating] = useState(false)
+
+  async function create() {
+    setCreating(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setCreating(false); return }
+    const { data: myProf } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
+    const myName = myProf?.display_name || 'Quelqu\'un'
+
+    // Create session
+    const code = Math.random().toString(36).slice(2, 8)
+    const { data: sess, error } = await supabase.from('sessions').insert({
+      host_id: user.id,
+      title: myName + ' & ' + targetName,
+      description: 'Session privée 1-to-1',
+      status: 'open',
+      tags: [],
+      invite_code: code,
+      group_chat_enabled: false,
+    }).select('id').single()
+
+    if (error || !sess) { setCreating(false); return }
+
+    // Auto-accept target as member
+    await supabase.from('applications').insert({
+      session_id: sess.id, applicant_id: targetUserId, status: 'accepted',
+      eps_json: { direct_invite: true, role: '' },
+    })
+
+    // Notify target
+    await supabase.from('notifications').insert({
+      user_id: targetUserId, session_id: sess.id,
+      type: 'session_invite',
+      title: '💫 Session privée avec ' + myName,
+      body: myName + ' veut te rencontrer en privé',
+      href: '/session/' + sess.id,
+    })
+
+    setCreating(false)
+    nav('/session/' + sess.id + '/dm/' + targetUserId)
+  }
+
+  return (
+    <button onClick={create} disabled={creating} style={{
+      marginTop: 6, width: '100%', padding: '10px 16px', borderRadius: 12,
+      background: 'transparent', border: '1px solid #7DD3FC44', color: '#7DD3FC',
+      fontSize: 13, fontWeight: 600, cursor: creating ? 'not-allowed' : 'pointer',
+      opacity: creating ? 0.6 : 1,
+    }}>
+      {creating ? 'Création...' : '💫 Créer session 1-to-1'}
+    </button>
+  )
+}
+
 function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
   const [sessions, setSessions] = useState<{ id: string; title: string }[]>([])
   const [sending, setSending] = useState(false)
@@ -256,6 +312,7 @@ export default function PublicProfile() {
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
         <AddContactButton targetUserId={userId!} />
         <InviteToSessionButton targetUserId={userId!} />
+        <Create1to1Button targetUserId={userId!} targetName={profile.display_name || 'Anonyme'} />
       </div>
 
       <div style={{ padding: '16px 20px' }}>
