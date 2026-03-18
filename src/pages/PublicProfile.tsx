@@ -1,3 +1,4 @@
+import LazyImage from '../components/LazyImage'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -100,7 +101,7 @@ export default function PublicProfile() {
         {hasMedia && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, marginBottom: 16, scrollbarWidth: 'none' }}>
             {allPhotos.map((url: string, i: number) => (
-              <img key={i} src={url} alt="" style={{ width: allPhotos.length === 1 && allVideos.length === 0 ? '100%' : 120, height: 160, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+              <LazyImage key={i} src={url} style={{ width: allPhotos.length === 1 && allVideos.length === 0 ? '100%' : 120, height: 160, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
             ))}
             {allVideos.map((url: string, i: number) => (
               <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
