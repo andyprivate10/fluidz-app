@@ -388,7 +388,7 @@ export default function DMPage() {
           <div style={{ fontSize: 13, color: S.sage, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
             Tu as été accepté(e) ! Clique quand tu arrives.
           </div>
-          <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', cursor: 'pointer' }}>
+          <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer' }}>
             Je suis là ✓
           </button>
         </div>

@@ -112,7 +112,7 @@ export default function GhostRecoverPage() {
 
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: '0 0 6px' }}>Récupérer mon profil</h1>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>Récupérer mon profil</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Entre ton code de session et ton PIN</p>
         </div>
 
@@ -143,7 +143,7 @@ export default function GhostRecoverPage() {
             <button
               onClick={handleRecover}
               disabled={loading || code.length !== 6 || pin.length !== 4}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || code.length !== 6 || pin.length !== 4 ? 0.7 : 1 }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || code.length !== 6 || pin.length !== 4 ? 0.7 : 1 }}
             >
               {loading ? 'Recherche...' : 'Récupérer'}
             </button>
@@ -165,7 +165,7 @@ export default function GhostRecoverPage() {
               )}
             </div>
 
-            <button onClick={goToApply} style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <button onClick={goToApply} style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               Continuer en ghost <ArrowRight size={18} />
             </button>
 

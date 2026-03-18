@@ -311,7 +311,7 @@ export default function HostDashboard() {
       <div style={{padding:'12px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <div>
-            <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}</div>
+            <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}</div>
             <p style={{fontSize:13,color:S.tx3,margin:0}}>{sess?.approx_area}</p>
           </div>
           <button onClick={toggleStatus} style={{
@@ -592,7 +592,7 @@ export default function HostDashboard() {
                       <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
                         ✕ Refuser
                       </button>
-                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
+                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
                         {actionLoading===app.id ? '...' : '✓ Accepter'}
                       </button>
                     </div>

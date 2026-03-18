@@ -109,7 +109,7 @@ export default function ReviewPage() {
       <div style={{ padding: '40px 20px 20px' }}>
         <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour à la session</button>
 
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Comment c'était ?</h1>
+        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Comment c'était ?</h1>
         <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{session?.title || 'Session'}</p>
       </div>
 

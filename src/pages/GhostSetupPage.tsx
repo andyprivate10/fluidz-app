@@ -110,7 +110,7 @@ export default function GhostSetupPage() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: '0 0 6px' }}>Mode Ghost ◌</h1>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>Mode Ghost ◌</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0, lineHeight: 1.5 }}>
             Profil temporaire 24h. Pas d'email, pas de compte. Tu peux le convertir plus tard.
           </p>
@@ -134,7 +134,7 @@ export default function GhostSetupPage() {
                 if (!displayName.trim()) { showToast('Choisis un pseudo', 'error'); return }
                 setStep('pin')
               }}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)' }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)' }}
             >
               Suivant →
             </button>
@@ -164,7 +164,7 @@ export default function GhostSetupPage() {
             <button
               onClick={handleCreate}
               disabled={loading || pin.length !== 4}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || pin.length !== 4 ? 0.7 : 1 }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || pin.length !== 4 ? 0.7 : 1 }}
             >
               {loading ? 'Création...' : 'Créer mon profil ghost'}
             </button>
@@ -209,7 +209,7 @@ export default function GhostSetupPage() {
 
             <button
               onClick={goToApply}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               Continuer <ArrowRight size={18} />
             </button>

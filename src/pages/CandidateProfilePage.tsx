@@ -227,7 +227,7 @@ export default function CandidateProfilePage() {
           )}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: 0 }}>{displayName}</h1>
+              <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: 0 }}>{displayName}</h1>
               {!eps.is_phantom && <VibeScoreBadge userId={app.applicant_id} />}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
@@ -373,7 +373,7 @@ export default function CandidateProfilePage() {
           </button>
           <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
             flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
-            color: '#fff', background: S.grad, border: 'none', cursor: 'pointer',
+            color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer',
             boxShadow: '0 4px 16px ' + S.pbd,
           }}>
             {actioning ? '...' : '✓ Accepter'}

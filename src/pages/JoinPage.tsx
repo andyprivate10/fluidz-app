@@ -197,7 +197,7 @@ export default function JoinPage() {
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
           {/* Main card */}
           <div style={{background:S.bg1,borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3)'}}>
-            <h1 style={{fontSize:24,fontWeight:800,color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
+            <h1 style={{fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
 
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:4}}>
               <MapPin size={14} style={{color:S.p}} />
@@ -290,7 +290,7 @@ export default function JoinPage() {
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
               <button onClick={() => navigate('/login?next=/join/' + code)} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                color:'#fff',background:S.grad,border:'none',cursor:'pointer',
+                color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',
                 boxShadow:'0 4px 24px rgba(224,136,122,0.28)',
               }}>
                 Postuler →
@@ -309,7 +309,7 @@ export default function JoinPage() {
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
               <button onClick={quickApply} disabled={quickApplying} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                color:'#fff',background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
+                color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:quickApplying?'not-allowed':'pointer',
                 boxShadow:'0 4px 24px rgba(224,136,122,0.28)',opacity:quickApplying?0.7:1,
               }}>
                 {quickApplying ? 'Envoi...' : 'Postuler →'}
@@ -324,7 +324,7 @@ export default function JoinPage() {
           ) : (
             <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
               width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-              color:'#fff',background:S.grad,border:'none',cursor:'pointer',
+              color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',
               boxShadow:'0 4px 24px rgba(224,136,122,0.28)',
             }}>
               Postuler →

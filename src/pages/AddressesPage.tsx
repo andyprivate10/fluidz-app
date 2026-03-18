@@ -141,10 +141,10 @@ export default function AddressesPage() {
         <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <div>
-            <h1 style={{ fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 2px' }}>Mes adresses</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>Mes adresses</h1>
             <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length} adresse{addresses.length !== 1 ? 's' : ''} sauvegardée{addresses.length !== 1 ? 's' : ''}</p>
           </div>
-          <button onClick={openCreate} style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
+          <button onClick={openCreate} style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
             <Plus size={18} style={{ color:'#fff' }} />
           </button>
         </div>
@@ -254,7 +254,7 @@ export default function AddressesPage() {
               </div>
 
               <button onClick={save} disabled={saving || !label.trim() || !exactAddress.trim()} style={{
-                width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',
+                width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
                 cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || !exactAddress.trim() ? 0.6 : 1,
               }}>
                 {saving ? 'Sauvegarde...' : editId ? 'Mettre à jour' : 'Sauvegarder'}

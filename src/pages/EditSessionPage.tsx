@@ -93,7 +93,7 @@ export default function EditSessionPage() {
       <EventContextNav role='host' />
       <div style={{ padding:'40px 20px 16px', borderBottom:'1px solid '+S.rule ,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
         <button onClick={() => navigate('/session/' + id + '/host')} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', marginBottom:12, padding:0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Host Dashboard</button>
-        <h1 style={{ fontSize:22, fontWeight:800, color:S.tx, margin:0 }}>Modifier la session</h1>
+        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>Modifier la session</h1>
       </div>
 
       <div style={{ padding:'20px', display:'flex', flexDirection:'column', gap:16 }}>

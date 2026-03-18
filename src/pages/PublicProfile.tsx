@@ -292,7 +292,7 @@ export default function PublicProfile() {
           )}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: S.tx }}>{profile.display_name || 'Anonyme'}</h1>
+              <h1 style={{ margin: 0, fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx }}>{profile.display_name || 'Anonyme'}</h1>
               <VibeScoreBadge userId={userId!} />
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>

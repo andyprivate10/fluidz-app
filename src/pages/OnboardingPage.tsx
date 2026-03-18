@@ -116,7 +116,7 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
             <UserIcon size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Dis-nous qui tu es</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Dis-nous qui tu es</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Les bases pour ton profil</p>
           </div>
 
@@ -137,7 +137,7 @@ export default function OnboardingPage() {
           </div>
 
           <button onClick={() => { if (!displayName.trim()) { showToast('Choisis un pseudo', 'error'); return }; setStep(2) }}
-            style={{ width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            style={{ width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             Suivant <ChevronRight size={18} />
           </button>
         </div>
@@ -148,7 +148,7 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
             <Sparkles size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Tes préférences</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Tes préférences</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Optionnel mais augmente tes chances</p>
           </div>
 
@@ -182,7 +182,7 @@ export default function OnboardingPage() {
 
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
-            <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               Suivant <ChevronRight size={18} />
             </button>
           </div>
@@ -198,7 +198,7 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <Camera size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Ajoute une photo</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Ajoute une photo</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Les profils avec photo ont 5x plus de chances</p>
           </div>
 
@@ -223,7 +223,7 @@ export default function OnboardingPage() {
               <button onClick={() => setStep(2)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
               <button onClick={save} disabled={saving || !displayName.trim()} style={{
                 flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
-                background: S.grad, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
+                background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: saving ? 'not-allowed' : 'pointer',
                 opacity: saving || !displayName.trim() ? 0.6 : 1,
                 boxShadow: '0 4px 20px ' + S.pbd,
               }}>

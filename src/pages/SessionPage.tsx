@@ -291,7 +291,7 @@ export default function SessionPage() {
       <EventContextNav role={eventRole} sessionTitle={session.title} />
       <div style={{ padding: '12px 24px 16px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: S.tx, flex: 1 }}>{session.title}</h1>
+          <h1 style={{ margin: 0, fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, flex: 1 }}>{session.title}</h1>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8, alignItems: 'center' }}>
           <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: statusColor + '14', border: '1px solid ' + statusColor + '33', padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}>{statusLabel}</span>

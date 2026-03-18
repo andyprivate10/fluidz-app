@@ -102,8 +102,8 @@ export default function HomePage() {
         {userId && (
           <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
             {[
-              { icon: Compass, label: 'Explorer', path: '/explore' },
-              { icon: BookOpen, label: 'Contacts', path: '/contacts' },
+              { icon: Compass, label: 'Discover', path: '/explore' },
+              { icon: BookOpen, label: 'Book', path: '/contacts' },
               { icon: MapPin, label: 'Adresses', path: '/addresses' },
               { icon: User, label: 'Profil', path: '/me' },
             ].map(item => (

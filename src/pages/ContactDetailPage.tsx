@@ -174,7 +174,7 @@ export default function ContactDetailPage() {
           )}
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: 0 }}>{profile.display_name}</h1>
+              <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: 0 }}>{profile.display_name}</h1>
               <VibeScoreBadge userId={contactUserId!} />
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>

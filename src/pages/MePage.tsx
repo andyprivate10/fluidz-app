@@ -378,7 +378,7 @@ export default function MePage() {
         display:'flex', alignItems:'center', justifyContent:'space-between'
       }}>
         <div>
-          <h1 style={{ fontSize:24, fontWeight:800, color:S.tx, margin:0 }}>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>
             {displayName || 'Mon profil'}
           </h1>
           <p style={{ fontSize:12, color:S.tx3, marginTop:3 }}>{user.email}</p>
