@@ -69,9 +69,9 @@ export default function HomePage() {
     const code = inviteCode.trim()
     if (!code) return
     // If user pasted a full URL, extract the code
-    const match = code.match(/\/join\/([a-zA-Z0-9]+)/)
+    const match = code.match(/\/join\/([a-zA-Z0-9]+)(\?.*)?/)
     if (match) {
-      navigate('/join/' + match[1])
+      navigate('/join/' + match[1] + (match[2] || ''))
     } else {
       navigate('/join/' + code)
     }
