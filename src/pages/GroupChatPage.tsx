@@ -3,7 +3,7 @@ import { SkeletonChatPage } from '../components/Skeleton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Users, Shield } from 'lucide-react'
+import { ArrowLeft, Send, Users, Shield, Camera } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
 type Message = {
@@ -12,6 +12,8 @@ type Message = {
   sender_id: string
   created_at: string
   sender_name: string
+  has_media?: boolean
+  media_urls?: string[]
 }
 
 type Member = {
@@ -47,6 +49,7 @@ export default function GroupChatPage() {
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [session, setSession] = useState<{ title: string; host_id: string; group_chat_enabled: boolean } | null>(null)
   const [members, setMembers] = useState<Member[]>([])
@@ -158,7 +161,7 @@ export default function GroupChatPage() {
       }, (payload) => {
         const msg = payload.new as Message & { room_type?: string }
         if (msg.room_type === 'group') {
-          setMessages(prev => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name }])
+          setMessages(prev => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
         }
       })
       .subscribe()
@@ -170,7 +173,7 @@ export default function GroupChatPage() {
 
   async function loadMessages(sessionId: string, acceptedAt: string | null) {
     let query = supabase.from('messages')
-      .select('id,text,sender_id,created_at,sender_name')
+      .select('id,text,sender_id,created_at,sender_name,has_media,media_urls')
       .eq('session_id', sessionId)
       .eq('room_type', 'group')
       .order('created_at', { ascending: true })
@@ -187,6 +190,25 @@ export default function GroupChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  async function sendPhoto(file: File) {
+    if (!currentUser || !id) return
+    setUploading(true)
+    try {
+      const { compressImage } = await import('../lib/media')
+      const c = await compressImage(file)
+      const path = currentUser.id + '/gchat_' + Date.now() + '.jpg'
+      const { error } = await supabase.storage.from('avatars').upload(path, c)
+      if (error) { setUploading(false); return }
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+      await supabase.from('messages').insert({
+        session_id: id, sender_id: currentUser.id, text: '📷 Photo',
+        sender_name: displayName || 'Anonyme', room_type: 'group',
+        has_media: true, media_urls: [publicUrl],
+      })
+    } catch {}
+    setUploading(false)
+  }
 
   async function sendMessage() {
     if (!newMessage.trim() || !currentUser || !id || sending) return
@@ -344,12 +366,16 @@ export default function GroupChatPage() {
                 <p style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p300, fontWeight:600 }}>{msg.sender_name}</p>
               )}
               <div style={{
-                maxWidth:'80%', padding:'8px 12px', borderRadius:16,
+                maxWidth:'80%', padding: msg.has_media ? 4 : '8px 12px', borderRadius:16,
                 background: isMe ? S.p300+'22' : S.bg2,
                 borderBottomRightRadius: isMe ? 4 : 16,
                 borderBottomLeftRadius: isMe ? 16 : 4,
+                overflow:'hidden',
               }}>
-                <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4 }}>{msg.text}</p>
+                {msg.has_media && msg.media_urls?.map((url: string, mi: number) => (
+                  <img key={mi} src={url} alt="" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block', marginBottom: msg.text !== '📷 Photo' ? 4 : 0 }} />
+                ))}
+                {msg.text !== '📷 Photo' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
                 <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatTime(msg.created_at)}</p>
               </div>
             </div>
@@ -365,6 +391,10 @@ export default function GroupChatPage() {
           paddingBottom:'calc(10px + env(safe-area-inset-bottom, 0px))',
           display:'flex', gap:8, alignItems:'center',
         }}>
+          <label style={{ display:'flex', alignItems:'center', justifyContent:'center', width:40, height:40, borderRadius:'50%', background:S.bg2, border:'1px solid '+S.border, cursor: uploading?'not-allowed':'pointer', flexShrink:0, opacity: uploading?0.5:1 }}>
+            <Camera size={16} style={{ color:S.tx3 }} />
+            <input type="file" accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(f)sendPhoto(f);e.target.value=''}} style={{display:'none'}} disabled={uploading} />
+          </label>
           <input
             ref={inputRef}
             value={newMessage}
