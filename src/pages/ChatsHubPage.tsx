@@ -161,8 +161,12 @@ export default function ChatsHubPage() {
         {!loading && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
             <MessageCircle size={32} style={{ color: S.tx4, marginBottom: 8 }} />
-            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 4px' }}>Pas de messages</p>
-            <p style={{ fontSize: 12 }}>Tes conversations apparaîtront ici</p>
+            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 4px' }}>Pas encore de messages</p>
+            <p style={{ fontSize: 12, margin: '0 0 16px' }}>Rejoins une session ou explore les profils pour commencer</p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+              <button onClick={() => navigate('/explore')} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: '#F9A8A8', border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>👤 Explorer</button>
+              <button onClick={() => navigate('/sessions')} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: '#B8B2CC', border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>⚡ Sessions</button>
+            </div>
           </div>
         )}
 
