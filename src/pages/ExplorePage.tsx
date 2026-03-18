@@ -82,7 +82,7 @@ export default function ExplorePage() {
         // Load public sessions nearby
         const delta = 0.15
         const { data: pubSess } = await supabase.from('sessions')
-          .select('id, title, approx_area, tags, host_id, approx_lat, approx_lng, created_at')
+          .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at')
           .eq('is_public', true).eq('status', 'open')
           .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
           .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
@@ -281,6 +281,7 @@ export default function ExplorePage() {
                     <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>par {s.host_name}</p>
                   </div>
                 </div>
+                {s.description && <p style={{ fontSize: 12, color: '#B8B2CC', margin: '0 0 6px', lineHeight: 1.4 }}>{s.description.slice(0, 80)}{s.description.length > 80 ? '...' : ''}</p>}
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
                   {s.approx_area && <span style={{ fontSize: 12, color: '#B8B2CC' }}>📍 {s.approx_area}</span>}
                   {s.member_count > 0 && <span style={{ fontSize: 11, color: '#7E7694' }}>👥 {s.member_count}</span>}
