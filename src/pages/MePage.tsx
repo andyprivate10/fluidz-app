@@ -374,6 +374,7 @@ export default function MePage() {
       {/* Header */}
       <div style={{
         padding:'40px 20px 16px', borderBottom:`1px solid ${S.rule}`,
+        background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)',
         display:'flex', alignItems:'center', justifyContent:'space-between'
       }}>
         <div>
@@ -396,8 +397,8 @@ export default function MePage() {
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             flex:1, padding:'10px', borderRadius:12, fontSize:13,
             fontWeight:600, cursor:'pointer',
-            border: `1px solid ${activeTab===tab ? `${S.p}66` : S.rule}`,
-            background: activeTab===tab ? `${S.p}14` : S.bg2,
+            border: `1px solid ${activeTab===tab ? S.pbd : S.rule}`,
+            background: activeTab===tab ? S.p2 : S.bg2,
             color: activeTab===tab ? S.p : S.tx3,
             transition:'all 0.2s',
           }}>
