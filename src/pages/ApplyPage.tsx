@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { showToast } from '../components/Toast'
 import { supabase } from '../lib/supabase'
 import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye } from 'lucide-react'
 
@@ -243,6 +244,22 @@ export default function ApplyPage() {
       }
     })
     setLoading(false)
+    // Notify the host
+    if (id) {
+      const { data: sess } = await supabase.from('sessions').select('host_id, title').eq('id', id).maybeSingle()
+      if (sess?.host_id && user) {
+        const name = profile?.display_name || user.email || 'Quelqu\'un'
+        await supabase.from('notifications').insert({
+          user_id: sess.host_id,
+          session_id: id,
+          type: 'new_application',
+          title: '📩 Nouvelle candidature',
+          body: name + ' a postulé pour "' + (sess.title || 'ta session') + '"',
+          href: '/session/' + id + '/host',
+        })
+      }
+    }
+    showToast('Candidature envoyée !', 'success')
     navigate('/session/' + id)
   }
 
