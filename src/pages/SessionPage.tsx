@@ -400,7 +400,7 @@ export default function SessionPage() {
                 {members.slice(0, 5).map(m => {
                   const name = memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'
                   return (
-                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: '#B8B2CC', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}>{name}</button>
+                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: '#B8B2CC', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <span style={{ color: '#4ADE80', fontSize: 10 }}>✓</span>}</button>
                   )
                 })}
                 {members.length > 5 && <span style={{ fontSize: 12, color: '#7E7694' }}>+{members.length - 5}</span>}
