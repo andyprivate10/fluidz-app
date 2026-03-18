@@ -112,16 +112,24 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
             {d.bio ? <p style={{ fontSize:16,color:S.tx2,lineHeight:1.6,maxWidth:320,margin:'0 auto' }}>{v(d.bio)}</p> : null}
           </div>
         )}
-        {sl.type === 'kinks' && (
+        {sl.type === 'kinks' && (() => {
+          const kinkColors: Record<string, string> = {
+            'Dominant':'#F47272','Soumis':'#F9A8A8','SM léger':'#FBBF24','SM hard':'#F87171',
+            'Fist':'#F87171','Group':'#7DD3FC','Voyeur':'#A78BFA','Exhib':'#A78BFA',
+            'Fétichisme':'#34D399','Jeux de rôle':'#FB923C','Bears welcome':'#FBBF24',
+          }
+          return (
           <div style={{ textAlign:'center',...anim }}>
             <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>Pratiques</p>
             <div style={{ display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center',maxWidth:340 }}>
-              {(d.kinks as string[]).map((k: string, i: number) => (
-                <span key={i} style={{ padding:'8px 16px',borderRadius:99,fontSize:15,fontWeight:600,color:S.p300,background:S.p300+'22',border:'1px solid '+S.p300+'44',animation:`sfu 0.3s ease ${i*0.1}s both` }}>{k}</span>
-              ))}
+              {(d.kinks as string[]).map((k: string, i: number) => {
+                const c = kinkColors[k] || S.p300
+                return <span key={i} style={{ padding:'8px 16px',borderRadius:99,fontSize:15,fontWeight:600,color:c,background:c+'22',border:'1px solid '+c+'44',animation:`sfu 0.3s ease ${i*0.1}s both` }}>{k}</span>
+              })}
             </div>
           </div>
-        )}
+          )
+        })()}
         {sl.type === 'outro' && (
           <div style={{ textAlign:'center',...anim }}>
             <p style={{ fontSize:48,marginBottom:12 }}>🔥</p>
