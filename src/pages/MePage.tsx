@@ -386,6 +386,15 @@ export default function MePage() {
           }}>
             Se déconnecter
           </button>
+
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#F9A8A8', border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
+              💕 Naughty Book
+            </button>
+            <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#B8B2CC', border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>
+              👥 Groupes
+            </button>
+          </div>
         </div>
       )}
 
