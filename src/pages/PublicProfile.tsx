@@ -42,6 +42,15 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
       body: role ? role + ' · Veut en voir plus' : 'Veut entrer en contact',
       href: '/profile/' + user.id,
     })
+    // Auto-add to contacts (both directions)
+    await supabase.from('contacts').upsert(
+      { user_id: user.id, contact_user_id: targetUserId, relation_level: 'connaissance' },
+      { onConflict: 'user_id,contact_user_id' }
+    )
+    await supabase.from('contacts').upsert(
+      { user_id: targetUserId, contact_user_id: user.id, relation_level: 'connaissance' },
+      { onConflict: 'user_id,contact_user_id' }
+    )
     // Log interaction
     await supabase.from('interaction_log').insert({
       user_id: user.id, target_user_id: targetUserId,
