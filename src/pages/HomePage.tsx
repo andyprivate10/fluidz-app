@@ -10,7 +10,7 @@ const S = {
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
 
-type QuickSession = { id: string; title: string; approx_area: string; status: string }
+type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number; invite_code?: string | null }
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -130,6 +130,10 @@ export default function HomePage() {
             <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ta session active</p>
             <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>{latestHost.title}</p>
             <p style={{ fontSize: 12, color: S.tx3, margin: '4px 0 0' }}>{latestHost.approx_area}</p>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 4 }}>
+              {latestHost.member_count && latestHost.member_count > 1 && <span style={{ fontSize: 11, color: S.green, fontWeight: 600 }}>👥 {latestHost.member_count} membres</span>}
+              {latestHost.tags && latestHost.tags.length > 0 && latestHost.tags.slice(0, 3).map(t => <span key={t} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: S.p300 + '14', color: S.p300, fontWeight: 600 }}>{t}</span>)}
+            </div>
             {hostPendingCount > 0 && <p style={{ fontSize: 12, fontWeight: 700, color: S.yellow, margin: '6px 0 0' }}>📩 {hostPendingCount} candidature{hostPendingCount > 1 ? 's' : ''} en attente</p>}
           </div>
         )}
