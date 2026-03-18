@@ -624,6 +624,17 @@ export default function SessionPage() {
               >
                 {copied ? 'Message copié !' : 'Copier message pour Grindr / WhatsApp'}
               </button>
+              {typeof navigator !== 'undefined' && navigator.share && (
+                <button
+                  onClick={() => {
+                    const url = window.location.origin + '/join/' + session.invite_code
+                    navigator.share({ title: session.title, text: '🔥 ' + session.title + ' – Rejoins-nous !', url }).catch(() => {})
+                  }}
+                  style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid #4ADE80', background: 'transparent', color: '#4ADE80', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                >
+                  📤 Partager via...
+                </button>
+              )}
               </>
             )}
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
