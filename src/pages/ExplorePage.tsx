@@ -4,14 +4,12 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { MapPin, Filter, Eye, EyeOff } from 'lucide-react'
+import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
-const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
-}
+const S = colors
+
 
 type NearbyProfile = {
   id: string
@@ -196,20 +194,21 @@ export default function ExplorePage() {
   const { pullHandlers, pullIndicator } = usePullToRefresh(async () => { if (myLat && myLng) await loadNearby(myLat, myLng) })
 
   return (
-    <div {...pullHandlers} style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
       {pullIndicator}
+      <OrbLayer />
       {/* Header */}
-      <div style={{ padding: '40px 20px 12px', borderBottom: '1px solid ' + S.border }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 12px', borderBottom: '1px solid ' + S.rule }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>Autour de moi</h1>
             <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? `${filtered.length} profils` : `${nearbySessions.length} sessions`} à proximité{myViewCount > 0 ? ` · Vu par ${myViewCount} cette semaine` : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.green + '44' : S.border), background: visible ? S.green + '14' : 'transparent', color: visible ? S.green : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
+            <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.sage + '44' : S.rule), background: visible ? S.sage + '14' : 'transparent', color: visible ? S.sage : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
               {visible ? <Eye size={14} /> : <EyeOff size={14} />} {visible ? 'Visible' : 'Masqué'}
             </button>
-            <button onClick={() => setShowFilters(!showFilters)} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + S.border, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
+            <button onClick={() => setShowFilters(!showFilters)} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
               <Filter size={14} />
             </button>
           </div>
@@ -221,9 +220,9 @@ export default function ExplorePage() {
             {ROLE_FILTERS.map(r => (
               <button key={r} onClick={() => setRoleFilter(r)} style={{
                 padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
-                border: '1px solid ' + (roleFilter === r ? S.p300 + '55' : S.border),
-                background: roleFilter === r ? S.p300 + '14' : 'transparent',
-                color: roleFilter === r ? S.p300 : S.tx3,
+                border: '1px solid ' + (roleFilter === r ? S.p + '55' : S.rule),
+                background: roleFilter === r ? S.p + '14' : 'transparent',
+                color: roleFilter === r ? S.p : S.tx3,
               }}>{r}</button>
             ))}
           </div>
@@ -234,9 +233,9 @@ export default function ExplorePage() {
           {(['profils', 'sessions'] as const).map(t => (
             <button key={t} onClick={() => setExploreTab(t)} style={{
               flex: 1, padding: '7px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              border: '1px solid ' + (exploreTab === t ? '#F9A8A855' : '#2A2740'),
-              background: exploreTab === t ? '#F9A8A814' : 'transparent',
-              color: exploreTab === t ? '#F9A8A8' : '#7E7694',
+              border: '1px solid ' + (exploreTab === t ? S.p + '44' : S.rule),
+              background: exploreTab === t ? S.p2 : 'transparent',
+              color: exploreTab === t ? S.p : S.tx2,
             }}>{t === 'profils' ? '👤 Profils' : '🎉 Sessions'}</button>
           ))}
         </div>
@@ -248,8 +247,8 @@ export default function ExplorePage() {
           <input
             type="text" value={searchText} onChange={e => setSearchText(e.target.value)}
             placeholder="Rechercher un profil..." style={{
-              width: '100%', padding: '10px 14px', borderRadius: 12, background: '#1F1D2B',
-              border: '1px solid #2A2740', color: '#F0EDFF', fontSize: 13, outline: 'none',
+              width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
+              border: '1px solid #2A2740', color: S.tx, fontSize: 13, outline: 'none',
               fontFamily: 'inherit', boxSizing: 'border-box',
             }}
           />
@@ -264,7 +263,7 @@ export default function ExplorePage() {
             <MapPin size={32} style={{ color: S.tx4, marginBottom: 8 }} />
             <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>Localisation nécessaire</p>
             <p style={{ fontSize: 12, margin: '0 0 16px' }}>Active la géolocalisation pour voir les profils à proximité</p>
-            <button onClick={requestLocation} style={{ padding: '10px 20px', borderRadius: 12, background: S.grad, color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+            <button onClick={requestLocation} style={{ padding: '10px 20px', borderRadius: 12, background: S.p, color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
               Activer la localisation
             </button>
           </div>
@@ -272,7 +271,7 @@ export default function ExplorePage() {
 
         {loading && !geoError && (
           <div style={{ textAlign: 'center', padding: 40 }}>
-            <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: '#F9A8A8', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+            <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: S.p, animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
             <p style={{ color: S.tx3, fontSize: 13 }}>Recherche de profils...</p>
             <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
           </div>
@@ -292,12 +291,12 @@ export default function ExplorePage() {
               <div
                 key={p.id}
                 onClick={() => navigate('/profile/' + p.id)}
-                style={{ background: S.bg1, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.border }}
+                style={{ background: S.bg1, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule }}
               >
                 {p.avatar_url ? (
                   <img src={p.avatar_url} alt="" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: '100%', aspectRatio: '3/4', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff' }}>
+                  <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff' }}>
                     {p.display_name[0]?.toUpperCase()}
                   </div>
                 )}
@@ -306,7 +305,7 @@ export default function ExplorePage() {
                     <span style={{ fontSize: 12, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{p.display_name}</span>
                     {p.age && <span style={{ fontSize: 10, color: S.tx3 }}>{p.age}</span>}
                   </div>
-                  {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p300 }}>{p.role}</span>}
+                  {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                     {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 1800000 && (
                       <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80', display: 'inline-block' }} title="En ligne" />
@@ -325,20 +324,20 @@ export default function ExplorePage() {
           <div style={{ marginBottom: 10 }}>
             <input type="text" value={sessionSearch} onChange={e => setSessionSearch(e.target.value)}
               placeholder="Rechercher une session..." style={{
-                width: '100%', padding: '10px 14px', borderRadius: 12, background: '#1F1D2B',
-                border: '1px solid #2A2740', color: '#F0EDFF', fontSize: 13, outline: 'none',
+                width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
+                border: '1px solid #2A2740', color: S.tx, fontSize: 13, outline: 'none',
                 fontFamily: 'inherit', boxSizing: 'border-box',
               }} />
           </div>
           {nearbySessions.filter(s => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).length === 0 && !loading && (
-            <div style={{ textAlign: 'center', padding: 40, color: '#7E7694' }}>
+            <div style={{ textAlign: 'center', padding: 40, color: S.tx2 }}>
               <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>Pas de sessions publiques</p>
               <p style={{ fontSize: 12 }}>Les sessions publiques à proximité apparaîtront ici</p>
             </div>
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {nearbySessions.filter((s: any) => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).map((s: any) => (
-              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 14, cursor: 'pointer' }}>
+              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: S.bg1, border: '1px solid #2A2740', borderRadius: 16, padding: 14, cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                   {s.host_avatar ? (
                     <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid #2A2740' }} />
@@ -346,20 +345,20 @@ export default function ExplorePage() {
                     <div style={{ width: 32, height: 32, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
                   )}
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: '#F0EDFF', margin: 0 }}>{s.title}</p>
-                    <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>par {s.host_name}</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0 }}>{s.title}</p>
+                    <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>par {s.host_name}</p>
                   </div>
                 </div>
-                {s.description && <p style={{ fontSize: 12, color: '#B8B2CC', margin: '0 0 6px', lineHeight: 1.4 }}>{s.description.slice(0, 80)}{s.description.length > 80 ? '...' : ''}</p>}
+                {s.description && <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 6px', lineHeight: 1.4 }}>{s.description.slice(0, 80)}{s.description.length > 80 ? '...' : ''}</p>}
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
-                  {s.approx_area && <span style={{ fontSize: 12, color: '#B8B2CC' }}>📍 {s.approx_area}</span>}
-                  {s.member_count > 0 && <span style={{ fontSize: 11, color: '#7E7694' }}>👥 {s.member_count}</span>}
-                  {s.created_at && <span style={{ fontSize: 10, color: '#453F5C' }}>{(() => { const m = Math.floor((Date.now() - new Date(s.created_at).getTime()) / 60000); return m < 60 ? m + 'min' : Math.floor(m / 60) + 'h' })()}</span>}
+                  {s.approx_area && <span style={{ fontSize: 12, color: S.tx2 }}>📍 {s.approx_area}</span>}
+                  {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2 }}>👥 {s.member_count}</span>}
+                  {s.created_at && <span style={{ fontSize: 10, color: S.tx3 }}>{(() => { const m = Math.floor((Date.now() - new Date(s.created_at).getTime()) / 60000); return m < 60 ? m + 'min' : Math.floor(m / 60) + 'h' })()}</span>}
                 </div>
                 {s.tags && s.tags.length > 0 && (
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                     {s.tags.slice(0, 5).map((tag: string) => (
-                      <span key={tag} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#F9A8A818', color: '#F9A8A8', fontWeight: 600 }}>{tag}</span>
+                      <span key={tag} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: S.p3, color: S.p, fontWeight: 600 }}>{tag}</span>
                     ))}
                   </div>
                 )}

@@ -5,6 +5,8 @@ import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
 import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
+import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
 const ROLES = ['Top','Bottom','Versa','Side']
@@ -12,10 +14,10 @@ const PREP_OPTIONS = ['Actif','Inactif','Non']
 const KINKS_LIST = ['Fist', 'SM léger', 'SM hard', 'Bareback', 'Group', 'Exhib', 'Voyeur', 'Fétichisme', 'Jeux de rôle']
 
 const S = {
-  bg0:'#0C0A14', bg1:'#16141F', bg2:'#1F1D2B', bg3:'#2A2740',
-  tx:'#F0EDFF', tx2:'#B8B2CC', tx3:'#7E7694', tx4:'#453F5C',
-  border:'#2A2740', p300:'#F9A8A8', p400:'#F47272', red:'#F87171', green:'#4ADE80', blue:'#3B82F6',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171',
+  blue: '#3B82F6',
+  grad: colors.p,
 }
 
 function monthsAgo(isoDate: string): number | null {
@@ -28,7 +30,7 @@ function monthsAgo(isoDate: string): number | null {
 
 const inputStyle: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
-  padding:'12px 16px', border:`1px solid ${S.border}`, outline:'none',
+  padding:'12px 16px', border:`1px solid ${S.rule}`, outline:'none',
   fontSize:14, fontFamily:'inherit', boxSizing:'border-box',
 }
 
@@ -36,11 +38,11 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
   return (
     <button onClick={onClick} style={{
       padding:'6px 14px', borderRadius:99, fontSize:13, fontWeight:600,
-      border: active ? 'none' : `1px solid ${S.border}`,
+      border: active ? 'none' : `1px solid ${S.rule}`,
       background: active ? S.grad : S.bg2,
       color: active ? '#fff' : S.tx3,
       cursor:'pointer', transition:'all 0.15s',
-      boxShadow: active ? `0 2px 12px ${S.p400}44` : 'none',
+      boxShadow: active ? `0 2px 12px ${S.p}44` : 'none',
     }}>
       {label}
     </button>
@@ -49,14 +51,14 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
 
 function Section({ title, badge, children }: { title:string; badge?:string; children:React.ReactNode }) {
   return (
-    <div style={{ background:S.bg1, borderRadius:20, padding:'16px', border:`1px solid ${S.border}`, marginBottom:12 }}>
+    <div style={{ background:S.bg1, borderRadius:20, padding:'16px', border:`1px solid ${S.rule}`, marginBottom:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
         <span style={{ fontSize:11, fontWeight:700, color:S.tx3, textTransform:'uppercase', letterSpacing:'0.08em' }}>
           {title}
         </span>
         {badge && (
           <span style={{ fontSize:11, fontWeight:600, padding:'2px 8px', borderRadius:99,
-            background:`${S.p300}18`, color:S.p300, border:`1px solid ${S.p300}33` }}>
+            background:`${S.p}18`, color:S.p, border:`1px solid ${S.p}33` }}>
             {badge}
           </span>
         )}
@@ -329,12 +331,12 @@ export default function MePage() {
   if (!user) {
     return (
       <div style={{
-        minHeight:'100vh', background:S.bg0, display:'flex', flexDirection:'column',
+        minHeight:'100vh', background:S.bg, display:'flex', flexDirection:'column',
         alignItems:'center', justifyContent:'center', padding:'0 24px 96px',
         
       }}>
         {hasGuestToken && (
-          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p300+'18', border:'1px solid '+S.p300+'44', maxWidth:360, width:'100%' }}>
+          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p+'18', border:'1px solid '+S.p+'44', maxWidth:360, width:'100%' }}>
             <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>Vous avez une candidature en attente — créer un compte pour la conserver.</p>
             <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>Connecte-toi avec ton email pour récupérer ta candidature.</p>
           </div>
@@ -359,7 +361,7 @@ export default function MePage() {
             width:'100%', maxWidth:360, padding:'14px', borderRadius:14,
             fontWeight:700, fontSize:15, color:'#fff', background:S.grad,
             border:'none', cursor:'pointer', opacity: loading ? 0.7 : 1,
-            boxShadow:`0 4px 20px ${S.p400}44`,
+            boxShadow:`0 4px 20px ${S.p}44`,
           }}>
           {loading ? 'Envoi...' : hasGuestToken ? 'Créer mon compte (lien magique)' : '✉️ Envoyer le lien magique'}
         </button>
@@ -370,11 +372,12 @@ export default function MePage() {
 
   // ── Connecté ─────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight:'100vh', background:S.bg0, paddingBottom:96,  }}>
+    <div style={{ minHeight:'100vh', background:S.bg, paddingBottom:96, position:'relative', maxWidth:480, margin:'0 auto' }}>
+      <OrbLayer />
 
       {/* Header */}
       <div style={{
-        padding:'40px 20px 16px', borderBottom:`1px solid ${S.border}`,
+        padding:'40px 20px 16px', borderBottom:`1px solid ${S.rule}`,
         display:'flex', alignItems:'center', justifyContent:'space-between'
       }}>
         <div>
@@ -385,7 +388,7 @@ export default function MePage() {
         </div>
         <button onClick={signOut} style={{
           padding:'7px 14px', borderRadius:10, fontSize:12, color:S.tx3,
-          border:`1px solid ${S.border}`, background:'transparent', cursor:'pointer',
+          border:`1px solid ${S.rule}`, background:'transparent', cursor:'pointer',
         }}>
           Déco
         </button>
@@ -397,9 +400,9 @@ export default function MePage() {
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             flex:1, padding:'10px', borderRadius:12, fontSize:13,
             fontWeight:600, cursor:'pointer',
-            border: `1px solid ${activeTab===tab ? `${S.p300}66` : S.border}`,
-            background: activeTab===tab ? `${S.p300}14` : S.bg2,
-            color: activeTab===tab ? S.p300 : S.tx3,
+            border: `1px solid ${activeTab===tab ? `${S.p}66` : S.rule}`,
+            background: activeTab===tab ? `${S.p}14` : S.bg2,
+            color: activeTab===tab ? S.p : S.tx3,
             transition:'all 0.2s',
           }}>
             {tab === 'auth' ? 'Compte' : 'Profil'}
@@ -410,14 +413,14 @@ export default function MePage() {
       {/* ── Compte ── */}
       {activeTab === 'auth' && (
         <div style={{ padding:'16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
-          <div style={{ background:S.bg1, borderRadius:16, padding:'14px 16px', border:`1px solid ${S.border}` }}>
+          <div style={{ background:S.bg1, borderRadius:16, padding:'14px 16px', border:`1px solid ${S.rule}` }}>
             <p style={{ fontSize:11, color:S.tx3, marginBottom:4, fontWeight:600,
               textTransform:'uppercase', letterSpacing:'0.06em' }}>Email</p>
             <p style={{ fontSize:14, color:S.tx, fontWeight:500 }}>{user.email}</p>
           </div>
           <button onClick={signOut} style={{
             width:'100%', padding:'13px', borderRadius:14, fontWeight:600,
-            fontSize:14, color:S.tx2, border:`1px solid ${S.border}`,
+            fontSize:14, color:S.tx2, border:`1px solid ${S.rule}`,
             background:S.bg2, cursor:'pointer',
           }}>
             Se déconnecter
@@ -445,7 +448,7 @@ export default function MePage() {
             🔔 Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
           </button>
           <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#F9A8A8', border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
               💕 Naughty Book
             </button>
             <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#B8B2CC', border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>
@@ -472,7 +475,7 @@ export default function MePage() {
           {/* Preview button */}
           {user && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: '#F9A8A8', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                 👁 Voir mon profil
               </button>
               <button onClick={() => {
@@ -498,7 +501,7 @@ export default function MePage() {
           {/* Contact requests */}
           {contactRequests > 0 && (
             <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: '#F9A8A814', border: '1px solid #F9A8A844', borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: '#F9A8A8', fontWeight: 600 }}>💕 {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
+              <span style={{ fontSize: 13, color: S.p, fontWeight: 600 }}>💕 {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
               <span style={{ fontSize: 11, color: '#7E7694' }}>Voir →</span>
             </button>
           )}
@@ -541,7 +544,7 @@ export default function MePage() {
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosProfil.map((url) => (
                 <div key={url} style={{ position:'relative', width:80, height:80 }}>
-                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border: avatarUrl === url ? '2px solid ' + S.p300 : '1px solid ' + S.border }} />
+                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border: avatarUrl === url ? '2px solid ' + S.p : '1px solid ' + S.rule }} />
                   {avatarUrl === url && (
                     <div style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#fff', fontWeight:700, border:'2px solid ' + S.bg1 }}>1</div>
                   )}
@@ -551,7 +554,7 @@ export default function MePage() {
                   )}
                 </div>
               ))}
-              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.border, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.rule, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="image/*" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
                   for (const f of captured) await uploadMedia(f, 'profil', 'photo')
@@ -568,38 +571,38 @@ export default function MePage() {
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosIntime.map((url) => (
                 <div key={url} style={{ position:'relative', width:80, height:80 }}>
-                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p400 + '55' }} />
+                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
                   <button onClick={() => removePhotoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
                 </div>
               ))}
-              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.p400 + '44', background:S.p400 + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.p + '44', background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="image/*" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
                   for (const f of captured) await uploadMedia(f, 'intime', 'photo')
                 }} disabled={mediaUploading} style={{ display:'none' }} />
-                <span style={{ fontSize:24, color:S.p400, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.p400, marginTop:2 }}>Photo</span>
+                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
+                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Photo</span>
               </label>
             </div>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {videosIntime.map((url) => (
                 <div key={url} style={{ position:'relative', width:100, height:80 }}>
-                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p400 + '55' }} />
+                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
                   <button onClick={() => removeVideoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
                   <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>vidéo</div>
                 </div>
               ))}
-              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.p400 + '44', background:S.p400 + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.p + '44', background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="video/*" onChange={async (e) => {
                   const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
                   await uploadMedia(f, 'intime', 'video')
                 }} disabled={mediaUploading} style={{ display:'none' }} />
-                <span style={{ fontSize:24, color:S.p400, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.p400, marginTop:2 }}>Vidéo</span>
+                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
+                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Vidéo</span>
               </label>
             </div>
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosIntime.length} photo{photosIntime.length !== 1 ? 's' : ''} · {videosIntime.length} vidéo{videosIntime.length !== 1 ? 's' : ''}</p>
-            {mediaUploading && <p style={{ fontSize:12, color:S.p300, marginTop:8 }}>Upload en cours...</p>}
+            {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>Upload en cours...</p>}
           </Section>
 
           <Section title="Profil">
@@ -658,7 +661,7 @@ export default function MePage() {
 
           <Section title="Santé" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Testé il y a ${monthsAgo(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.green+'22', color:S.green, border:'1px solid '+S.green+'44' }}>PrEP actif</span>}
+              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sage+'22', color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Testé il y a {monthsAgo(dernierTest)} mois</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
@@ -690,7 +693,7 @@ export default function MePage() {
           {/* Auto-save status */}
           <div style={{
             textAlign:'center', padding:'12px 0', fontSize:12, fontWeight:600,
-            color: autoSaveStatus === 'saving' ? S.p300 : autoSaveStatus === 'saved' ? S.green : S.tx4,
+            color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
             transition:'color 0.3s',
           }}>
             {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '✓ Sauvegardé' : 'Les modifications sont sauvegardées automatiquement'}
