@@ -53,12 +53,12 @@ export function VibeScoreCard({ userId }: { userId: string }) {
 
   const badge = vibeScoreBadge(data.score)
   const bars = [
-    { label: 'Reviews', value: data.breakdown.reviews, max: 30, color: '#4ADE80' },
-    { label: 'Participation', value: data.breakdown.participation, max: 20, color: '#FBBF24' },
-    { label: 'Fiabilité', value: data.breakdown.noReports, max: 15, color: '#7DD3FC' },
+    { label: 'Reviews', value: data.breakdown.reviews, max: 30, color: S.sage },
+    { label: 'Participation', value: data.breakdown.participation, max: 20, color: S.p },
+    { label: 'Fiabilité', value: data.breakdown.noReports, max: 15, color: S.blue },
     { label: 'Check-in', value: data.breakdown.checkInRate, max: 15, color: S.p },
-    { label: 'Profil', value: data.breakdown.profileComplete, max: 10, color: '#B8B2CC' },
-    { label: 'Ancienneté', value: data.breakdown.seniority, max: 10, color: '#7E7694' },
+    { label: 'Profil', value: data.breakdown.profileComplete, max: 10, color: S.tx2 },
+    { label: 'Ancienneté', value: data.breakdown.seniority, max: 10, color: S.tx2 },
   ]
 
   return (
@@ -72,11 +72,11 @@ export function VibeScoreCard({ userId }: { userId: string }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {bars.map(bar => (
           <div key={bar.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 11, color: '#7E7694', width: 80, flexShrink: 0 }}>{bar.label}</span>
-            <div style={{ flex: 1, background: '#1F1D2B', borderRadius: 4, height: 6, overflow: 'hidden' }}>
+            <span style={{ fontSize: 11, color: S.tx2, width: 80, flexShrink: 0 }}>{bar.label}</span>
+            <div style={{ flex: 1, background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden' }}>
               <div style={{ width: `${(bar.value / bar.max) * 100}%`, background: bar.color, height: '100%', borderRadius: 4 }} />
             </div>
-            <span style={{ fontSize: 10, color: '#453F5C', width: 30, textAlign: 'right', flexShrink: 0 }}>{bar.value}/{bar.max}</span>
+            <span style={{ fontSize: 10, color: S.tx3, width: 30, textAlign: 'right', flexShrink: 0 }}>{bar.value}/{bar.max}</span>
           </div>
         ))}
       </div>

@@ -144,7 +144,7 @@ export default function JoinPage() {
   // Direct join loading screen
   if (isDirect && directJoining) return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: '#F9A8A8', animation: 'spin 0.8s linear infinite', marginBottom: 16 }} />
+      <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: S.p, animation: 'spin 0.8s linear infinite', marginBottom: 16 }} />
       <p style={{ color: S.tx2, fontSize: 15, fontWeight: 600 }}>Rejoindre la session...</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
@@ -208,8 +208,8 @@ export default function JoinPage() {
               <span style={{fontSize:13,color:S.tx3}}>{session.approx_area}</span>
             </div>
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:4,marginBottom:8}}>
-              <Lock size={11} style={{color:'#453F5C'}} />
-              <span style={{fontSize:11,color:'#453F5C'}}>Adresse exacte révélée après acceptation</span>
+              <Lock size={11} style={{color:S.tx3}} />
+              <span style={{fontSize:11,color:S.tx3}}>Adresse exacte révélée après acceptation</span>
             </div>
 
             {hostName && session.host_id && (
@@ -217,7 +217,7 @@ export default function JoinPage() {
                 {hostAvatar ? (
                   <img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'28%',objectFit:'cover',border:'1px solid #2A2740'}} />
                 ) : (
-                  <div style={{width:28,height:28,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:'#F9A8A8',fontWeight:700}}>{hostName[0]}</div>
+                  <div style={{width:28,height:28,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
                 )}
                 <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:'#F9A8A844'}}>{hostName}</span></span>
               </button>

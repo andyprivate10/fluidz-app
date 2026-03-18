@@ -13,14 +13,14 @@ const S = {
 }
 
 const VIBE_TAGS = [
-  { id: 'fun', label: '🎉 Fun', color: '#4ADE80' },
-  { id: 'safe', label: '🛡️ Safe', color: '#7DD3FC' },
-  { id: 'intense', label: '🔥 Intense', color: '#F47272' },
-  { id: 'chill', label: '😌 Chill', color: '#FBBF24' },
-  { id: 'respectful', label: '🤝 Respectueux', color: '#4ADE80' },
-  { id: 'awkward', label: '😬 Awkward', color: '#F87171' },
-  { id: 'hot', label: '🌶️ Hot', color: '#F47272' },
-  { id: 'welcoming', label: '👋 Accueillant', color: '#7DD3FC' },
+  { id: 'fun', label: '🎉 Fun', color: S.sage },
+  { id: 'safe', label: '🛡️ Safe', color: S.blue },
+  { id: 'intense', label: '🔥 Intense', color: S.p },
+  { id: 'chill', label: '😌 Chill', color: S.p },
+  { id: 'respectful', label: '🤝 Respectueux', color: S.sage },
+  { id: 'awkward', label: '😬 Awkward', color: S.red },
+  { id: 'hot', label: '🌶️ Hot', color: S.p },
+  { id: 'welcoming', label: '👋 Accueillant', color: S.blue },
 ]
 
 type Participant = { applicant_id: string; display_name: string; avatar_url?: string; role?: string }
@@ -146,7 +146,7 @@ export default function ReviewPage() {
                   transform: rating >= n ? 'scale(1.15)' : 'scale(1)',
                   transition: 'transform 0.2s',
                 }}>
-                  <Star size={36} fill={rating >= n ? '#FBBF24' : 'none'} stroke={rating >= n ? '#FBBF24' : S.tx4} strokeWidth={1.5} />
+                  <Star size={36} fill={rating >= n ? S.p : 'none'} stroke={rating >= n ? S.p : S.tx4} strokeWidth={1.5} />
                 </button>
               ))}
             </div>
@@ -196,7 +196,7 @@ export default function ReviewPage() {
             cursor: submitting || rating === 0 ? 'not-allowed' : 'pointer',
             opacity: submitting || rating === 0 ? 0.6 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            boxShadow: rating > 0 ? '0 4px 20px ' + S.p + '44' : 'none',
+            boxShadow: rating > 0 ? '0 4px 20px ' + S.pbd : 'none',
           }}>
             <Send size={16} />
             {submitting ? 'Envoi...' : 'Envoyer mon avis'}

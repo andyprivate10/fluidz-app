@@ -128,7 +128,7 @@ export default function EphemeralMediaViewer({ mediaId, onClose }: { mediaId: st
         </div>
         <button onClick={startViewing} style={{
           padding: '14px 32px', borderRadius: 14, fontWeight: 700, fontSize: 15,
-          color: '#fff', background: 'linear-gradient(135deg,#F9A8A8,#F47272)',
+          color: '#fff', background: S.p,
           border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px #F4727244',
         }}>
           Voir le contenu

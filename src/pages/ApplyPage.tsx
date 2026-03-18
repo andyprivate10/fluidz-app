@@ -358,8 +358,8 @@ export default function ApplyPage() {
               }}>
                 <span style={{ fontSize: 14, color: S.orange }}>!</span>
                 <div>
-                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#FBBF24' }}>Profil incomplet</p>
-                  <p style={{ margin: '2px 0 0', fontSize: 11, color: '#7E7694' }}>Manque : {missing.join(', ')}. Complète-le pour plus de chances !</p>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: S.p }}>Profil incomplet</p>
+                  <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx2 }}>Manque : {missing.join(', ')}. Complète-le pour plus de chances !</p>
                 </div>
               </button>
             )
@@ -521,7 +521,7 @@ export default function ApplyPage() {
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p + '44'}}>
+          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
             Continuer →
           </button>
         </div>

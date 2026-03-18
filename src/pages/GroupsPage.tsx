@@ -12,7 +12,7 @@ const S = {
   grad: colors.p,
 }
 
-const GROUP_COLORS = ['#F9A8A8', '#4ADE80', '#7DD3FC', '#FBBF24', '#A78BFA', '#F87171', '#34D399', '#FB923C']
+const GROUP_COLORS = [S.p, S.sage, S.blue, S.p, '#A78BFA', S.red, '#34D399', '#FB923C']
 
 type Group = {
   id: string
@@ -34,7 +34,7 @@ export default function GroupsPage() {
   const [editGroup, setEditGroup] = useState<Group | null>(null)
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
-  const [newColor, setNewColor] = useState('#F9A8A8')
+  const [newColor, setNewColor] = useState<string>(S.p)
   const [selectedMembers, setSelectedMembers] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
 
@@ -89,7 +89,7 @@ export default function GroupsPage() {
   }
 
   function openCreate() {
-    setNewName(''); setNewDesc(''); setNewColor('#F9A8A8'); setSelectedMembers([]); setEditGroup(null); setShowCreate(true)
+    setNewName(''); setNewDesc(''); setNewColor(S.p); setSelectedMembers([]); setEditGroup(null); setShowCreate(true)
   }
 
   function openEdit(group: Group) {

@@ -431,7 +431,7 @@ export default function MePage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Visible dans la galerie</p>
-              <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>Les profils à proximité te voient</p>
+              <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>Les profils à proximité te voient</p>
             </div>
             <button onClick={async () => {
               const nv = !locationVisible
@@ -439,17 +439,17 @@ export default function MePage() {
               setLocationVisible(nv)
             }} style={{
               width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-              background: locationVisible ? '#4ADE80' : S.rule, transition: 'background 0.2s',
+              background: locationVisible ? S.sage : S.rule, transition: 'background 0.2s',
             }}>
               <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: locationVisible ? 21 : 3, transition: 'left 0.2s' }} />
             </button>
           </div>
 
-          <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.p + '44', background: S.p3, cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p3, cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <Bell size={14} strokeWidth={1.5} style={{marginRight:4}} /> Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
           </button>
           <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.p + '44', background: S.p + '14', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p2, cursor: 'pointer' }}>
               <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> Naughty Book
             </button>
             <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>
@@ -476,7 +476,7 @@ export default function MePage() {
           {/* Preview button */}
           {user && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.p + '44', color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.pbd, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                 <Eye size={13} strokeWidth={1.5} style={{marginRight:3}} /> Voir mon profil
               </button>
               <button onClick={() => {
@@ -501,9 +501,9 @@ export default function MePage() {
 
           {/* Contact requests */}
           {contactRequests > 0 && (
-            <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: S.p + '14', border: '1px solid ' + S.p + '44', borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: S.p2, border: '1px solid ' + S.pbd, borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: S.p, fontWeight: 600, display:'flex', alignItems:'center', gap:4 }}><Heart size={13} strokeWidth={1.5} /> {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
-              <span style={{ fontSize: 11, color: '#7E7694' }}>Voir →</span>
+              <span style={{ fontSize: 11, color: S.tx2 }}>Voir →</span>
             </button>
           )}
 
@@ -523,15 +523,15 @@ export default function MePage() {
             return (
               <div style={{ marginBottom: 16, background: S.bg1, border: '1px solid #2A2740', borderRadius: 14, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#7E7694' }}>Profil {pct}% complet</span>
-                  <span style={{ fontSize: 11, color: pct === 100 ? '#4ADE80' : '#FBBF24', fontWeight: 600 }}>{done}/{checks.length}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2 }}>Profil {pct}% complet</span>
+                  <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
                 </div>
-                <div style={{ background: '#1F1D2B', borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
-                  <div style={{ width: `${pct}%`, background: pct === 100 ? '#4ADE80' : 'linear-gradient(90deg,#F9A8A8,#F47272)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
+                <div style={{ background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
+                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,#F9A8A8,#F47272)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (
-                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : '#1F1D2B', color: c.done ? '#4ADE80' : '#453F5C', fontWeight: 600, border: '1px solid ' + (c.done ? '#4ADE8044' : S.rule) }}>
+                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? '#4ADE8044' : S.rule) }}>
                       {c.done ? '✓' : '○'} {c.label}
                     </span>
                   ))}
@@ -576,7 +576,7 @@ export default function MePage() {
                   <button onClick={() => removePhotoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
                 </div>
               ))}
-              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.p + '44', background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="image/*" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
                   for (const f of captured) await uploadMedia(f, 'intime', 'photo')
@@ -593,7 +593,7 @@ export default function MePage() {
                   <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>vidéo</div>
                 </div>
               ))}
-              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.p + '44', background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="video/*" onChange={async (e) => {
                   const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
                   await uploadMedia(f, 'intime', 'video')

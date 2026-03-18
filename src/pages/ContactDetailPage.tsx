@@ -326,7 +326,7 @@ export default function ContactDetailPage() {
               {activeSessions.map(s => (
                 <button key={s.id} onClick={() => inviteToSession(s.id)} disabled={inviting} style={{
                   width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600,
-                  border: '1px solid ' + S.p + '44', background: S.p + '14', color: S.p,
+                  border: '1px solid ' + S.pbd, background: S.p2, color: S.p,
                   cursor: inviting ? 'not-allowed' : 'pointer', textAlign: 'left',
                 }}>
                   📩 Inviter à "{s.title}"

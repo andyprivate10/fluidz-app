@@ -252,7 +252,7 @@ export default function CandidateProfilePage() {
           }}>
             {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : 'En attente'}
           </span>
-          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>▶ Story</button>
+          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>▶ Story</button>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
           {!eps.is_phantom && <AddContactButton targetUserId={app.applicant_id} />}
         </div>
@@ -274,17 +274,17 @@ export default function CandidateProfilePage() {
         {/* Pratiques — host priority #5 */}
         {kinks.length > 0 && (() => {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
-            'Dominant': { bg: '#F4727222', color: '#F47272', border: '#F4727244' },
-            'Soumis': { bg: '#F9A8A822', color: '#F9A8A8', border: '#F9A8A844' },
-            'SM léger': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
-            'SM hard': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
-            'Fist': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
-            'Group': { bg: '#7DD3FC22', color: '#7DD3FC', border: '#7DD3FC44' },
+            'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
+            'Soumis': { bg: '#F9A8A822', color: S.p, border: '#F9A8A844' },
+            'SM léger': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
+            'SM hard': { bg: '#F8717122', color: S.red, border: '#F8717144' },
+            'Fist': { bg: '#F8717122', color: S.red, border: '#F8717144' },
+            'Group': { bg: '#7DD3FC22', color: S.blue, border: '#7DD3FC44' },
             'Voyeur': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Exhib': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Fétichisme': { bg: '#34D39922', color: '#34D399', border: '#34D39944' },
             'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
-            'Bears welcome': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
+            'Bears welcome': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
           }
           const def = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
@@ -337,7 +337,7 @@ export default function CandidateProfilePage() {
 
         {/* Message au host */}
         {messageText && (
-          <div style={{ ...card, borderColor: S.p + '44' }}>
+          <div style={{ ...card, borderColor: S.pbd }}>
             <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
             <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
           </div>
@@ -375,7 +375,7 @@ export default function CandidateProfilePage() {
           <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
             flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
             color: '#fff', background: S.grad, border: 'none', cursor: 'pointer',
-            boxShadow: '0 4px 16px ' + S.p + '44',
+            boxShadow: '0 4px 16px ' + S.pbd,
           }}>
             {actioning ? '...' : '✓ Accepter'}
           </button>

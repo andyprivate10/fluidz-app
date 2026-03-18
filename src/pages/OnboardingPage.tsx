@@ -98,7 +98,7 @@ export default function OnboardingPage() {
   const progress = step === 1 ? 33 : step === 2 ? 66 : 100
   const completeness = [displayName.trim(), age, role, avatarUrl].filter(Boolean).length
   const completenessLabel = completeness <= 1 ? 'Débutant' : completeness <= 2 ? 'En route' : completeness <= 3 ? 'Presque complet' : 'Complet ✓'
-  const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? '#FBBF24' : completeness <= 3 ? '#7DD3FC' : S.sage
+  const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? S.p : completeness <= 3 ? S.blue : S.sage
 
   return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
@@ -177,7 +177,7 @@ export default function OnboardingPage() {
                 <button key={m} onClick={() => setMorpho(morpho === m ? '' : m)} style={{
                   padding: '8px 16px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   border: morpho === m ? 'none' : '1px solid ' + S.rule,
-                  background: morpho === m ? S.p + '22' : S.bg2,
+                  background: morpho === m ? S.p2 : S.bg2,
                   color: morpho === m ? S.p : S.tx3,
                 }}>{m}</button>
               ))}
@@ -229,7 +229,7 @@ export default function OnboardingPage() {
                 flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
                 background: S.grad, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
                 opacity: saving || !displayName.trim() ? 0.6 : 1,
-                boxShadow: '0 4px 20px ' + S.p + '44',
+                boxShadow: '0 4px 20px ' + S.pbd,
               }}>
                 {saving ? 'Sauvegarde...' : avatarUrl ? 'Terminer ✓' : 'Terminer sans photo'}
               </button>

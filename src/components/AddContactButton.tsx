@@ -106,7 +106,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
             <button onClick={removeFromContacts} style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
               borderRadius: 10, border: 'none', cursor: 'pointer', textAlign: 'left',
-              background: 'transparent', color: '#F87171', marginTop: 4,
+              background: 'transparent', color: S.red, marginTop: 4,
               borderTop: '1px solid ' + S.rule, paddingTop: 12,
             }}>
               <span style={{ fontSize: 13, fontWeight: 600 }}>Retirer du carnet</span>

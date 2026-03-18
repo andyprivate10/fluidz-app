@@ -346,7 +346,7 @@ export default function CreateSessionPage() {
             </div>
             <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
               width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-              background: isPublic ? '#4ADE80' : '#2A2740', transition: 'background 0.2s',
+              background: isPublic ? S.sage : S.rule, transition: 'background 0.2s',
             }}>
               <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: isPublic ? 21 : 3, transition: 'left 0.2s' }} />
             </button>
@@ -358,7 +358,7 @@ export default function CreateSessionPage() {
           <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}>L'adresse exacte n'est jamais visible avant acceptation</p>
           </div>
-          {error && <p style={{color:'#F47272',fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:'#F4727215',borderRadius:10}}>{error}</p>}
+          {error && <p style={{color:S.p,fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:'#F4727215',borderRadius:10}}>{error}</p>}
           <button onClick={create} disabled={loading||!title||!approxArea} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.p+'44',marginTop:4}}>
             {loading ? 'Création...' : 'Créer la session'}
           </button>

@@ -221,7 +221,7 @@ export default function ExplorePage() {
               <button key={r} onClick={() => setRoleFilter(r)} style={{
                 padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
                 border: '1px solid ' + (roleFilter === r ? S.p + '55' : S.rule),
-                background: roleFilter === r ? S.p + '14' : 'transparent',
+                background: roleFilter === r ? S.p2 : 'transparent',
                 color: roleFilter === r ? S.p : S.tx3,
               }}>{r}</button>
             ))}
@@ -233,7 +233,7 @@ export default function ExplorePage() {
           {(['profils', 'sessions'] as const).map(t => (
             <button key={t} onClick={() => setExploreTab(t)} style={{
               flex: 1, padding: '7px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              border: '1px solid ' + (exploreTab === t ? S.p + '44' : S.rule),
+              border: '1px solid ' + (exploreTab === t ? S.pbd : S.rule),
               background: exploreTab === t ? S.p2 : 'transparent',
               color: exploreTab === t ? S.p : S.tx2,
             }}>{t === 'profils' ? '👤 Profils' : '🎉 Sessions'}</button>
@@ -308,7 +308,7 @@ export default function ExplorePage() {
                   {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                     {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 1800000 && (
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80', display: 'inline-block' }} title="En ligne" />
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: S.sage, display: 'inline-block' }} title="En ligne" />
                     )}
                     {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
                     <VibeScoreBadge userId={p.id} size="sm" />
@@ -342,7 +342,7 @@ export default function ExplorePage() {
                   {s.host_avatar ? (
                     <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid #2A2740' }} />
                   ) : (
-                    <div style={{ width: 32, height: 32, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
+                    <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
                   )}
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0 }}>{s.title}</p>
@@ -362,7 +362,7 @@ export default function ExplorePage() {
                     ))}
                   </div>
                 )}
-                <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                   Postuler →
                 </button>
               </div>

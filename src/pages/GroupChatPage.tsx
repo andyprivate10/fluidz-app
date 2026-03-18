@@ -336,7 +336,7 @@ export default function GroupChatPage() {
 
       {/* Members panel */}
       {showMembers && (
-        <div style={{ padding:'12px 16px', background:S.bg1, borderBottom:'1px solid '+S.rule }}>
+        <div style={{ padding:'12px 16px', background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', borderBottom:'1px solid '+S.rule }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
             {/* Host */}
             <div style={{ display:'flex', alignItems:'center', gap:6, padding:'4px 10px', background:S.bg2, borderRadius:99 }}>

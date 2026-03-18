@@ -63,15 +63,15 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
 
   if (sent) return (
     <button onClick={() => nav('/dm/' + targetUserId)} style={{ marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12, background: '#4ADE8014', border: '1px solid #4ADE8044', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-      <span style={{ fontSize: 13, fontWeight: 600, color: '#4ADE80' }}>✓ Demande envoyée</span>
-      <span style={{ fontSize: 13, fontWeight: 600, color: '#7DD3FC' }}>→ Ouvrir le DM</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: S.sage }}>✓ Demande envoyée</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: S.blue }}>→ Ouvrir le DM</span>
     </button>
   )
 
   return (
     <button onClick={sendRequest} disabled={sending} style={{
       marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12,
-      background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none',
+      background: S.p, border: 'none',
       color: '#fff', fontSize: 14, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer',
       boxShadow: '0 2px 12px rgba(244,114,114,0.3)', opacity: sending ? 0.7 : 1,
     }}>
@@ -127,7 +127,7 @@ function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; 
   return (
     <button onClick={create} disabled={creating} style={{
       marginTop: 6, width: '100%', padding: '10px 16px', borderRadius: 12,
-      background: 'transparent', border: '1px solid #7DD3FC44', color: '#7DD3FC',
+      background: 'transparent', border: '1px solid #7DD3FC44', color: S.blue,
       fontSize: 13, fontWeight: 600, cursor: creating ? 'not-allowed' : 'pointer',
       opacity: creating ? 0.6 : 1,
     }}>
@@ -176,7 +176,7 @@ function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
       {sessions.map(s => (
         <button key={s.id} onClick={() => invite(s.id)} disabled={sending} style={{
           padding: '6px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: sending ? 'not-allowed' : 'pointer',
-          border: '1px solid #4ADE8044', background: '#4ADE8014', color: '#4ADE80',
+          border: '1px solid #4ADE8044', background: '#4ADE8014', color: S.sage,
         }}>
           📩 Inviter à "{s.title}"
         </button>
@@ -319,19 +319,19 @@ export default function PublicProfile() {
           const label = isOnline ? 'En ligne' : mins < 60 ? `Vu il y a ${mins}min` : mins < 1440 ? `Vu il y a ${Math.floor(mins/60)}h` : `Vu il y a ${Math.floor(mins/1440)}j`
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: isOnline ? '#4ADE80' : '#7E7694', display: 'inline-block' }} />
-              <span style={{ fontSize: 12, color: isOnline ? '#4ADE80' : '#7E7694', fontWeight: 600 }}>{label}</span>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: isOnline ? S.sage : S.tx2, display: 'inline-block' }} />
+              <span style={{ fontSize: 12, color: isOnline ? S.sage : S.tx2, fontWeight: 600 }}>{label}</span>
             </div>
           )
         })()}
 
         {/* Story button */}
-        <button onClick={() => setShowStory(true)} style={{ marginTop: 10, padding: '8px 16px', borderRadius: 12, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 12px rgba(244,114,114,0.3)' }}>
+        <button onClick={() => setShowStory(true)} style={{ marginTop: 10, padding: '8px 16px', borderRadius: 12, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 12px rgba(244,114,114,0.3)' }}>
           <span style={{marginRight:4}}>▶</span> Voir la Story
         </button>
         {/* Add to contacts button */}
         {/* Direct DM button */}
-        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           <MessageCircle size={13} strokeWidth={1.5} style={{marginRight:3}} /> DM direct
         </button>
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
@@ -361,15 +361,15 @@ export default function PublicProfile() {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
             'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
             'Soumis': { bg: '#F9A8A822', color: S.p, border: '#F9A8A844' },
-            'SM léger': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
-            'SM hard': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
-            'Fist': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
-            'Group': { bg: '#7DD3FC22', color: '#7DD3FC', border: '#7DD3FC44' },
+            'SM léger': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
+            'SM hard': { bg: '#F8717122', color: S.red, border: '#F8717144' },
+            'Fist': { bg: '#F8717122', color: S.red, border: '#F8717144' },
+            'Group': { bg: '#7DD3FC22', color: S.blue, border: '#7DD3FC44' },
             'Voyeur': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Exhib': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Fétichisme': { bg: '#34D39922', color: '#34D399', border: '#34D39944' },
             'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
-            'Bears welcome': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
+            'Bears welcome': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
           }
           const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (

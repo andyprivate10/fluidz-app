@@ -175,7 +175,7 @@ export default function EditSessionPage() {
           </div>
           <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
             width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-            background: isPublic ? '#4ADE80' : '#2A2740', transition: 'background 0.2s',
+            background: isPublic ? S.sage : S.rule, transition: 'background 0.2s',
           }}>
             <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: isPublic ? 21 : 3, transition: 'left 0.2s' }} />
           </button>

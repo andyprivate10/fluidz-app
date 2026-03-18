@@ -268,13 +268,13 @@ export default function SessionPage() {
   if (loading) return <SkeletonSessionPage />
   if (loadError) return (
     <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <p style={{ color: '#F87171', textAlign: 'center' }}>Impossible de charger les données. Réessaie.</p>
+      <p style={{ color: S.red, textAlign: 'center' }}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
-  if (!session) return <div style={{ ...st, padding: 24, color: '#F87171' }}>Session introuvable.</div>
+  if (!session) return <div style={{ ...st, padding: 24, color: S.red }}>Session introuvable.</div>
 
   const statusLabel = session.status === 'open' ? 'Ouverte' : session.status === 'ended' ? 'Terminée' : 'Brouillon'
-  const statusColor = session.status === 'open' ? '#4ADE80' : session.status === 'ended' ? '#F87171' : '#7E7694'
+  const statusColor = session.status === 'open' ? S.sage : session.status === 'ended' ? S.red : S.tx2
 
   return (
     <div style={st} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
@@ -285,10 +285,10 @@ export default function SessionPage() {
       )}
       <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #2A2740', background: S.bg1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#F0EDFF', flex: 1 }}>{session.title}</h1>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: S.tx, flex: 1 }}>{session.title}</h1>
           <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
-          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#B8B2CC', background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length}</span>}
-          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#4ADE80', background: '#4ADE8018', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length + 1}</span>}
+          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length}</span>}
+          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: S.sage, background: '#4ADE8018', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length + 1}</span>}
           {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
           {session.status === 'open' && session.created_at && (() => {
             const mins = Math.floor((Date.now() - new Date(session.created_at).getTime()) / 60000)
@@ -305,7 +305,7 @@ export default function SessionPage() {
         )}
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
           <div style={{ marginTop: 6 }}>
-            <div style={{ fontSize: 13, color: '#F0EDFF', fontWeight: 600 }}>{session.exact_address}</div>
+            <div style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{session.exact_address}</div>
             <button onClick={() => {
               const dirs = (session.lineup_json?.directions || []).map((d, i) => {
                 const txt = typeof d === 'string' ? d : d.text
@@ -313,14 +313,14 @@ export default function SessionPage() {
               }).join('\n')
               const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
               navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
-            }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? '#4ADE8044' : S.rule), background: addressCopied ? '#4ADE8014' : 'transparent', color: addressCopied ? '#4ADE80' : '#7E7694' }}>
+            }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? '#4ADE8044' : S.rule), background: addressCopied ? '#4ADE8014' : 'transparent', color: addressCopied ? S.sage : S.tx2 }}>
               {addressCopied ? '✓ Copié' : 'Copier adresse + directions'}
             </button>
           </div>
         ) : session.approx_area ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
             <span style={{ fontSize: 13, color: S.tx2 }}>Autour de {session.approx_area}</span>
-            {!isHost && <span style={{ fontSize: 11, color: '#453F5C' }}>🔒 Adresse révélée après acceptation</span>}
+            {!isHost && <span style={{ fontSize: 11, color: S.tx3 }}>🔒 Adresse révélée après acceptation</span>}
           </div>
         ) : null}
         {isHost && <div style={{ fontSize: 12, color: S.p, marginTop: 4, fontWeight: 600 }}>Tu es le host</div>}
@@ -331,7 +331,7 @@ export default function SessionPage() {
             ) : (
               <div style={{ width: 24, height: 24, borderRadius: '28%', background: '#F9A8A822', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: S.p, fontWeight: 700 }}>{hostProfile.name[0]}</div>
             )}
-            <span style={{ fontSize: 12, color: '#B8B2CC', fontWeight: 600, cursor: 'pointer' }}>Host : {hostProfile.name}</span>
+            <span style={{ fontSize: 12, color: S.tx2, fontWeight: 600, cursor: 'pointer' }}>Host : {hostProfile.name}</span>
           </div>
         )}
       </div>
@@ -341,7 +341,7 @@ export default function SessionPage() {
         {session.description && (
           <div style={card}>
             <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>DESCRIPTION</div>
-            <div style={{ fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>{session.description}</div>
+            <div style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6 }}>{session.description}</div>
           </div>
         )}
 
@@ -369,7 +369,7 @@ export default function SessionPage() {
                   return (
                     <span key={role} style={{
                       fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 99,
-                      color: filled ? '#4ADE80' : S.p,
+                      color: filled ? S.sage : S.p,
                       background: filled ? '#4ADE8018' : '#F9A8A818',
                       border: '1px solid ' + (filled ? '#4ADE8044' : '#F9A8A844'),
                     }}>
@@ -398,7 +398,7 @@ export default function SessionPage() {
                   <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 13, fontWeight: 700, color: S.p, minWidth: 22 }}>{i + 1}.</span>
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontSize: 14, color: '#B8B2CC', margin: 0, lineHeight: 1.5 }}>{text}</p>
+                      <p style={{ fontSize: 14, color: S.tx2, margin: 0, lineHeight: 1.5 }}>{text}</p>
                       {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 240, height: 140, objectFit: 'cover', borderRadius: 10, marginTop: 6, border: '1px solid #2A2740' }} />}
                     </div>
                   </div>
@@ -419,7 +419,7 @@ export default function SessionPage() {
                     {hostProfile.avatar ? (
                       <img src={hostProfile.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #F9A8A8', boxSizing: 'border-box' }} />
                     ) : (
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #F9A8A8', boxSizing: 'border-box' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #F9A8A8', boxSizing: 'border-box' }}>
                         {hostProfile.name[0].toUpperCase()}
                       </div>
                     )}
@@ -433,7 +433,7 @@ export default function SessionPage() {
                       {avatarUrl ? (
                         <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #16141F', boxSizing: 'border-box' }} />
                       ) : (
-                        <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #16141F', boxSizing: 'border-box' }}>
+                        <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #16141F', boxSizing: 'border-box' }}>
                           {(memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
                         </div>
                       )}
@@ -448,7 +448,7 @@ export default function SessionPage() {
                 {members.slice(0, 5).map(m => {
                   const name = memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'
                   return (
-                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: '#B8B2CC', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <span style={{ color: '#4ADE80', fontSize: 10 }}>✓</span>}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
+                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: S.tx2, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <span style={{ color: S.sage, fontSize: 10 }}>✓</span>}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
                   )
                 })}
                 {members.length > 5 && <span style={{ fontSize: 12, color: S.tx2 }}>+{members.length - 5}</span>}
@@ -465,15 +465,15 @@ export default function SessionPage() {
                     {avatarUrl ? (
                       <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                     ) : (
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
                         {(name || '?')[0].toUpperCase()}
                       </div>
                     )}
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
                       {role && <div style={{ fontSize: 11, color: S.tx2 }}>{role}</div>}
                     </div>
-                    {m.status === 'checked_in' && <div style={{ fontSize: 11, color: '#4ADE80', fontWeight: 600 }}>Check-in</div>}
+                    {m.status === 'checked_in' && <div style={{ fontSize: 11, color: S.sage, fontWeight: 600 }}>Check-in</div>}
                   </button>
                 )
               })}
@@ -482,31 +482,31 @@ export default function SessionPage() {
               <>
                 <div role="presentation" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} onClick={() => setSheetMember(null)} />
                 <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, maxWidth: 480, margin: '0 auto', background: S.bg1, borderTopLeftRadius: 20, borderTopRightRadius: 20, border: '1px solid #2A2740', padding: '20px 20px 24px', zIndex: 50 }}>
-                  <div style={{ width: 36, height: 4, borderRadius: 2, background: '#7E7694', margin: '0 auto 16px' }} />
+                  <div style={{ width: 36, height: 4, borderRadius: 2, background: S.tx2, margin: '0 auto 16px' }} />
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
                     {memberAvatars[sheetMember.applicant_id] ? (
                       <img src={memberAvatars[sheetMember.applicant_id]} alt="" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: 'white' }}>
+                      <div style={{ width: 56, height: 56, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: 'white' }}>
                         {(memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
                       </div>
                     )}
                     <div>
-                      <div style={{ fontSize: 18, fontWeight: 700, color: '#F0EDFF' }}>{memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'}</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: S.tx }}>{memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'}</div>
                       {(memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role) && (
-                        <span style={{ display: 'inline-block', marginTop: 4, padding: '2px 10px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: 'white', background: 'linear-gradient(135deg,#F9A8A8,#F47272)' }}>
+                        <span style={{ display: 'inline-block', marginTop: 4, padding: '2px 10px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: 'white', background: S.p }}>
                           {memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role}
                         </span>
                       )}
                     </div>
                   </div>
                   {((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio) && (
-                    <p style={{ fontSize: 13, color: '#B8B2CC', lineHeight: 1.5, margin: '0 0 16px' }}>
+                    <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: '0 0 16px' }}>
                       {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').slice(0, 120)}
                       {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').length > 120 ? '…' : ''}
                     </p>
                   )}
-                  <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', cursor: 'pointer' }}>
+                  <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.p, border: 'none', cursor: 'pointer' }}>
                     Voir le profil complet
                   </button>
                 </div>
@@ -534,12 +534,12 @@ export default function SessionPage() {
                           {p.avatar_url ? (
                             <img src={p.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                           ) : (
-                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
                               {name[0].toUpperCase()}
                             </div>
                           )}
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{name}</div>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}</div>
                             <div style={{ fontSize: 11, color: S.tx2 }}>Candidature en attente</div>
                           </div>
                         </div>
@@ -553,7 +553,7 @@ export default function SessionPage() {
                               padding: '8px 10px',
                               borderRadius: 999,
                               border: '1px solid ' + (myVote === 'yes' ? S.p : '#F9A8A855'),
-                              background: myVote === 'yes' ? 'linear-gradient(135deg,#F9A8A8,#F47272)' : 'transparent',
+                              background: myVote === 'yes' ? S.p : 'transparent',
                               color: myVote === 'yes' ? S.bg : S.p,
                               fontSize: 13,
                               fontWeight: 600,
@@ -573,7 +573,7 @@ export default function SessionPage() {
                               borderRadius: 999,
                               border: '1px solid ' + (myVote === 'no' ? S.p : S.rule),
                               background: myVote === 'no' ? S.rule : 'transparent',
-                              color: myVote === 'no' ? S.p : '#7E7694',
+                              color: myVote === 'no' ? S.p : S.tx2,
                               fontSize: 13,
                               fontWeight: 600,
                               cursor: disabled ? 'default' : 'pointer',
@@ -612,18 +612,18 @@ export default function SessionPage() {
         )}
 
         {checkInDone && myApp?.status !== 'checked_in' && (
-          <div style={{ ...card, background: '#FBBF2414', borderColor: '#FBBF24', textAlign: 'center' }}>
-            <Clock size={24} style={{color:'#FBBF24',margin:'0 auto'}} />
-            <div style={{ fontSize: 14, color: '#FBBF24', marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
+          <div style={{ ...card, background: '#FBBF2414', borderColor: S.p, textAlign: 'center' }}>
+            <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
+            <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
             <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
           </div>
         )}
 
         {myApp?.status === 'checked_in' && (
-          <div style={{ ...card, background: '#14532d', borderColor: '#4ADE80', textAlign: 'center' }}>
+          <div style={{ ...card, background: '#14532d', borderColor: S.sage, textAlign: 'center' }}>
             <div style={{ fontSize: 20 }}>Bienvenue !</div>
-            <div style={{ fontSize: 14, color: '#4ADE80', marginTop: 4 }}>Check-in confirme</div>
-            {session.exact_address && <div style={{ fontSize: 14, color: '#F0EDFF', marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
+            <div style={{ fontSize: 14, color: S.sage, marginTop: 4 }}>Check-in confirme</div>
+            {session.exact_address && <div style={{ fontSize: 14, color: S.tx, marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
             {session.invite_code && (
               <>
               <button
@@ -634,7 +634,7 @@ export default function SessionPage() {
                     setTimeout(() => setInviteLinkCopied(false), 2000)
                   })
                 }}
-                style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid #4ADE80', background: inviteLinkCopied ? '#14532d' : 'transparent', color: '#4ADE80', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+                style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid #4ADE80', background: inviteLinkCopied ? '#14532d' : 'transparent', color: S.sage, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
               >
                 {inviteLinkCopied ? 'Lien copié !' : 'Partager le lien d\'invitation'}
               </button>
@@ -649,7 +649,7 @@ export default function SessionPage() {
                     setTimeout(() => setCopied(false), 2000)
                   })
                 }}
-                style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid #2A2740', background: copied ? '#14532d' : 'transparent', color: copied ? '#4ADE80' : '#7E7694', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid #2A2740', background: copied ? '#14532d' : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
               >
                 {copied ? 'Message copié !' : 'Copier message pour Grindr / WhatsApp'}
               </button>
@@ -659,7 +659,7 @@ export default function SessionPage() {
                     const url = window.location.origin + '/join/' + session.invite_code
                     navigator.share({ title: session.title, text: '🔥 ' + session.title + ' – Rejoins-nous !', url }).catch(() => {})
                   }}
-                  style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid #4ADE80', background: 'transparent', color: '#4ADE80', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                  style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid #4ADE80', background: 'transparent', color: S.sage, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
                 >
                   📤 Partager via...
                 </button>
@@ -670,7 +670,7 @@ export default function SessionPage() {
               <button onClick={() => navigate('/session/' + id + '/chat')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid #F9A8A844', background: '#F9A8A814', color: S.p, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 💬 Group Chat
               </button>
-              <button onClick={() => navigate('/session/' + id + '/dm')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid #2A2740', background: S.bg1, color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => navigate('/session/' + id + '/dm')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid #2A2740', background: S.bg1, color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 DM Host
               </button>
             </div>
@@ -687,14 +687,14 @@ export default function SessionPage() {
                 const name = memberNames[m.applicant_id] || 'Anonyme'
                 const avatar = memberAvatars[m.applicant_id]
                 return (
-                  <button key={m.applicant_id} onClick={() => navigate('/contacts/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid #2A2740', background: '#1F1D2B', cursor: 'pointer' }}>
+                  <button key={m.applicant_id} onClick={() => navigate('/contacts/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid #2A2740', background: S.bg2, cursor: 'pointer' }}>
       <OrbLayer />
                     {avatar ? (
                       <img src={avatar} alt="" style={{ width: 20, height: 20, borderRadius: '28%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 20, height: 20, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{name[0].toUpperCase()}</div>
+                      <div style={{ width: 20, height: 20, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{name[0].toUpperCase()}</div>
                     )}
-                    <span style={{ fontSize: 12, color: '#B8B2CC', fontWeight: 600 }}>{name}</span>
+                    <span style={{ fontSize: 12, color: S.tx2, fontWeight: 600 }}>{name}</span>
                   </button>
                 )
               })}
@@ -704,7 +704,7 @@ export default function SessionPage() {
 
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #2A2740', borderRadius: 12, color: '#F0EDFF', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #2A2740', borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               {pendingCount > 0 ? `Gerer (${pendingCount} en attente)` : 'Gerer la session'}
             </button>
             {session.invite_code && (
@@ -714,7 +714,7 @@ export default function SessionPage() {
                   setCopied(true)
                   setTimeout(() => setCopied(false), 2000)
                 })
-              }} style={{ width: '100%', padding: 14, background: copied ? '#14532d' : S.bg1, border: '1px solid ' + (copied ? '#4ADE80' : S.p), borderRadius: 12, color: copied ? '#4ADE80' : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+              }} style={{ width: '100%', padding: 14, background: copied ? '#14532d' : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                 {copied ? 'Lien copie !' : 'Partager le lien'}
               </button>
             )}
@@ -725,36 +725,36 @@ export default function SessionPage() {
           <div style={{ ...card }}>
             {myApp.status === 'pending' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: '#FBBF24', padding: '6px 12px', borderRadius: 99, background: '#FBBF2418', border: '1px solid #FBBF2444' }}>En attente de réponse...</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: '#FBBF2418', border: '1px solid #FBBF2444' }}>En attente de réponse...</span>
               </div>
             )}
             {myApp.status === 'accepted' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Accepté ✓</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Accepté ✓</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: '#14532d', borderRadius: 10, border: '1px solid #4ADE8044' }}>
-                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
-                    <p style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
+                    <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
+                    <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}
-                <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #4ADE80', borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
                 </button>
               </div>
             )}
             {myApp.status === 'rejected' && (
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#F87171', padding: '6px 12px', borderRadius: 99, background: '#F8717118', border: '1px solid #F8717144' }}>Non retenu</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: '#F8717118', border: '1px solid #F8717144' }}>Non retenu</span>
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: '#4ADE80', padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: '#4ADE8018', border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: '#14532d', borderRadius: 10, border: '1px solid #4ADE8044' }}>
-                    <p style={{ fontSize: 11, color: '#4ADE80', fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
-                    <p style={{ fontSize: 14, color: '#F0EDFF', fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
+                    <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
+                    <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}
-                <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #4ADE80', borderRadius: 12, color: '#4ADE80', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #4ADE80', borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
                 </button>
                 <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #F9A8A8', borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
@@ -776,10 +776,10 @@ export default function SessionPage() {
               <span style={{ fontSize: 11, color: S.tx2 }}>{reviewSummary.count} avis</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-              <span style={{ fontSize: 32, fontWeight: 800, color: '#FBBF24' }}>{reviewSummary.avg}</span>
+              <span style={{ fontSize: 32, fontWeight: 800, color: S.p }}>{reviewSummary.avg}</span>
               <div style={{ display: 'flex', gap: 2 }}>
                 {[1,2,3,4,5].map(n => (
-                  <span key={n} style={{ fontSize: 18, color: n <= Math.round(reviewSummary.avg) ? '#FBBF24' : '#453F5C' }}>★</span>
+                  <span key={n} style={{ fontSize: 18, color: n <= Math.round(reviewSummary.avg) ? S.p : S.tx3 }}>★</span>
                 ))}
               </div>
             </div>
@@ -787,7 +787,7 @@ export default function SessionPage() {
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                 {reviewSummary.topVibes.map(v => {
                   const vibeMap: Record<string, string> = { fun: '🎉 Fun', safe: '🛡️ Safe', intense: '🔥 Intense', chill: '😌 Chill', respectful: '🤝 Respectueux', awkward: '😬 Awkward', hot: '🌶️ Hot', welcoming: '👋 Accueillant' }
-                  return <span key={v} style={{ fontSize: 12, padding: '4px 10px', borderRadius: 99, background: '#1F1D2B', color: '#B8B2CC', border: '1px solid #2A2740' }}>{vibeMap[v] || v}</span>
+                  return <span key={v} style={{ fontSize: 12, padding: '4px 10px', borderRadius: 99, background: S.bg2, color: S.tx2, border: '1px solid #2A2740' }}>{vibeMap[v] || v}</span>
                 })}
               </div>
             )}
@@ -799,9 +799,9 @@ export default function SessionPage() {
       {session.status === 'ended' && myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
         <div style={{ padding: '0 16px 16px' }}>
           <div style={{ background: S.bg1, border: '1px solid #FBBF2444', borderRadius: 16, padding: 20, textAlign: 'center' }}>
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#F0EDFF', margin: '0 0 6px' }}>Comment c'était ?</p>
+            <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>Comment c'était ?</p>
             <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 14px' }}>Ton avis anonyme aide la communauté</p>
-            <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px #F4727244' }}>
+            <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: S.p, border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px #F4727244' }}>
               ⭐ Laisser un avis
             </button>
           </div>
@@ -811,11 +811,11 @@ export default function SessionPage() {
       {(!isHost && (showPostulerSuccess || (!myApp && session.status === 'open'))) && (
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>
           {showPostulerSuccess ? (
-            <button disabled style={{ width: '100%', padding: 16, background: '#14532d', border: '1px solid #4ADE80', borderRadius: 14, color: '#4ADE80', fontSize: 16, fontWeight: 700 }}>
+            <button disabled style={{ width: '100%', padding: 16, background: '#14532d', border: '1px solid #4ADE80', borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
               Candidature envoyee ✓
             </button>
           ) : (
-            <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+            <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
               Postuler a cette session
             </button>
           )}

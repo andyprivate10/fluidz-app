@@ -400,7 +400,7 @@ export default function HostDashboard() {
                 const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0 ? '\nRecherche : ' + Object.entries(rolesWanted).map(([r, c]) => c + ' ' + r).join(', ') : ''
                 const text = '🔥 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n👥 ' + counts.accepted + ' déjà là' : '') + '\nPostule ici !'
                 navigator.share({ title: sess.title || 'Session Fluidz', text, url }).catch(() => {})
-              }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid #4ADE8044',background:'transparent',color:'#4ADE80',cursor:'pointer'}}>
+              }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid #4ADE8044',background:'transparent',color:S.sage,cursor:'pointer'}}>
                 Partager via...
               </button>
             )}
@@ -556,7 +556,7 @@ export default function HostDashboard() {
 
                 {app.eps_json?.message && (
                   <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid #7DD3FC33',marginBottom:8}}>
-                    <p style={{fontSize:11,color:'#7DD3FC',fontWeight:700,margin:'0 0 2px'}}>Message au host</p>
+                    <p style={{fontSize:11,color:S.blue,fontWeight:700,margin:'0 0 2px'}}>Message au host</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0,lineHeight:1.4}}>{app.eps_json.message}</p>
                   </div>
                 )}
@@ -628,7 +628,7 @@ export default function HostDashboard() {
                           href: '/session/' + id,
                         })
                         showToast('Relance envoyée', 'success')
-                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:'#FBBF24',border:'1px solid #FBBF2444',background:'transparent',cursor:'pointer'}}>Relancer</button>
+                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid #FBBF2444',background:'transparent',cursor:'pointer'}}>Relancer</button>
                     )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>

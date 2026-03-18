@@ -1,3 +1,5 @@
+import { colors } from '../brand'
+const S = colors
 import { Component } from 'react'
 import type { ReactNode, ErrorInfo } from 'react'
 
@@ -20,7 +22,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         <div
           style={{
-            background: '#0C0A14',
+            background: S.bg,
             padding: 24,
             maxWidth: 390,
             margin: '0 auto',

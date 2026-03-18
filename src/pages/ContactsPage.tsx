@@ -144,7 +144,7 @@ export default function ContactsPage() {
               <button key={f} onClick={() => setFilter(f)} style={{
                 padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer',
                 border: '1px solid ' + (active ? S.p + '55' : S.rule),
-                background: active ? S.p + '14' : 'transparent',
+                background: active ? S.p2 : 'transparent',
                 color: active ? S.p : S.tx3,
                 whiteSpace: 'nowrap',
               }}>{label}</button>
