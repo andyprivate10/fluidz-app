@@ -341,6 +341,28 @@ export default function ApplyPage() {
             <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Ton Candidate Pack</h2>
             <p style={{fontSize:13,color:S.tx3,margin:0}}>Choisis ce que tu partages avec le host</p>
           </div>
+          {!guestMode && profile && (() => {
+            const pj = profile.profile_json || {}
+            const missing: string[] = []
+            if (!pj.avatar_url) missing.push('photo')
+            if (!pj.role) missing.push('rôle')
+            if (!pj.age && !pj.bio) missing.push('bio/âge')
+            if (!pj.height && !pj.weight) missing.push('physique')
+            if (missing.length === 0) return null
+            return (
+              <button type="button" onClick={() => navigate('/me')} style={{
+                width: '100%', padding: '10px 14px', borderRadius: 12, marginBottom: 14,
+                background: '#FBBF2414', border: '1px solid #FBBF2444', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
+              }}>
+                <span style={{ fontSize: 16 }}>⚠️</span>
+                <div>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#FBBF24' }}>Profil incomplet</p>
+                  <p style={{ margin: '2px 0 0', fontSize: 11, color: '#7E7694' }}>Manque : {missing.join(', ')}. Complète-le pour plus de chances !</p>
+                </div>
+              </button>
+            )
+          })()}
           <div style={{marginBottom:16}}>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Votre rôle</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
