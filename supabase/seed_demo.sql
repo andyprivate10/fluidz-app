@@ -111,16 +111,16 @@ BEGIN
   DELETE FROM sessions WHERE id IN (s1, s2, s3);
 
   -- Session 1: Marcus host, open (Dark Room)
-  INSERT INTO sessions (id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, lineup_json, group_chat_enabled)
-  VALUES (s1, marcus_id, 'Dark Room ce soir', 'Session privée. Discrétion totale. PrEP obligatoire.', 'Paris 4ème', '14 rue de la Roquette, code 4521', 'open', ARRAY['Dark Room','Top','Bottom'], 'darkroom1', '{"directions":[{"text":"Métro Bastille sortie 3"},{"text":"Rue de la Roquette direction nord"},{"text":"Code porte: 4521, 2ème étage gauche"}],"roles_wanted":{"Top":2,"Bottom":3,"Versa":1}}'::jsonb, true);
+  INSERT INTO sessions (id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, lineup_json, group_chat_enabled, is_public, approx_lat, approx_lng)
+  VALUES (s1, marcus_id, 'Dark Room ce soir', 'Session privée. Discrétion totale. PrEP obligatoire.', 'Paris 4ème', '14 rue de la Roquette, code 4521', 'open', ARRAY['Dark Room','Top','Bottom'], 'darkroom1', '{"directions":[{"text":"Métro Bastille sortie 3"},{"text":"Rue de la Roquette direction nord"},{"text":"Code porte: 4521, 2ème étage gauche"}],"roles_wanted":{"Top":2,"Bottom":3,"Versa":1}}'::jsonb, true, true, 48.8530, 2.3700);
 
   -- Session 2: Samir host, open
-  INSERT INTO sessions (id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, lineup_json)
-  VALUES (s2, samir_id, 'Plan muscu + after', 'Mecs sportifs bienvenus. Chill puis hot.', 'Paris 20ème', '23 rue de Ménilmontant', 'open', ARRAY['Musclés','Top','Bottom','Group'], 'muscleplan', '{"roles_wanted":{"Top":2,"Bottom":2}}'::jsonb);
+  INSERT INTO sessions (id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, lineup_json, is_public, approx_lat, approx_lng)
+  VALUES (s2, samir_id, 'Plan muscu + after', 'Mecs sportifs bienvenus. Chill puis hot.', 'Paris 20ème', '23 rue de Ménilmontant', 'open', ARRAY['Musclés','Top','Bottom','Group'], 'muscleplan', '{"roles_wanted":{"Top":2,"Bottom":2}}'::jsonb, true, 48.8680, 2.3630);
 
   -- Session 3: Alex host, ended
-  INSERT INTO sessions (id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, created_at)
-  VALUES (s3, alex_id, 'Soirée fétish', 'Soirée terminée. 6 participants.', 'Paris 10ème', '8 passage du Désir', 'ended', ARRAY['Fétichisme','SM léger'], 'fetish99', now() - interval '3 days');
+  INSERT INTO sessions (id, host_id, title, description, approx_area, exact_address, status, tags, invite_code, created_at, is_public, approx_lat, approx_lng)
+  VALUES (s3, alex_id, 'Soirée fétish', 'Soirée terminée. 6 participants.', 'Paris 10ème', '8 passage du Désir', 'ended', ARRAY['Fétichisme','SM léger'], 'fetish99', now() - interval '3 days', false, 48.8722, 2.3570);
 
   -- Applications Session 1
   INSERT INTO applications (session_id, applicant_id, status, checked_in, checked_in_at, eps_json) VALUES
