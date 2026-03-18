@@ -25,8 +25,9 @@ export default function EditSessionPage() {
   const [description, setDescription] = useState('')
   const [approxArea, setApproxArea] = useState('')
   const [exactAddress, setExactAddress] = useState('')
-  const [directions, setDirections] = useState<string[]>([''])
+  const [directions, setDirections] = useState<{text:string;photo_url?:string}[]>([{text:''}])
   const [tags, setTags] = useState<string[]>([])
+  const [lineupBase, setLineupBase] = useState<Record<string,unknown>>({})
 
   const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
 
@@ -44,8 +45,9 @@ export default function EditSessionPage() {
       setApproxArea(sess.approx_area || '')
       setExactAddress(sess.exact_address || '')
       setTags(sess.tags || [])
-      const dirs = sess.lineup_json?.directions || []
-      setDirections(dirs.length > 0 ? dirs : [''])
+      setLineupBase(sess.lineup_json || {})
+      const dirs = (sess.lineup_json?.directions || []).map((d: any) => typeof d === 'string' ? {text:d} : d)
+      setDirections(dirs.length > 0 ? dirs : [{text:''}])
       setLoading(false)
     }
     load()
@@ -58,14 +60,14 @@ export default function EditSessionPage() {
   const handleSave = async () => {
     if (!title.trim()) { showToast('Titre requis', 'error'); return }
     setSaving(true)
-    const directionsFiltered = directions.filter(d => (d || '').trim().length > 0)
+    const directionsFiltered = directions.filter(d => d.text.trim().length > 0 || d.photo_url)
     const { error } = await supabase.from('sessions').update({
       title: title.trim(),
       description: description.trim(),
       approx_area: approxArea.trim(),
       exact_address: exactAddress.trim() || null,
       tags,
-      lineup_json: directionsFiltered.length > 0 ? { directions: directionsFiltered } : {},
+      lineup_json: { ...lineupBase, directions: directionsFiltered },
     }).eq('id', id)
 
     if (error) {
@@ -134,15 +136,28 @@ export default function EditSessionPage() {
         <div>
           <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>Directions (étapes d'accès)</label>
           {directions.map((step, i) => (
-            <div key={i} style={{ display:'flex', gap:8, marginBottom:8 }}>
-              <span style={{ color:S.tx3, fontSize:13, fontWeight:600, minWidth:24, paddingTop:12 }}>{i+1}.</span>
-              <input value={step} onChange={e => { const next=[...directions]; next[i]=e.target.value; setDirections(next) }} placeholder={`Étape ${i+1}`} style={{ ...inp, flex:1 }} />
-              {directions.length > 1 && (
-                <button onClick={() => setDirections(directions.filter((_,j)=>j!==i))} style={{ padding:'10px 12px', borderRadius:10, fontSize:11, fontWeight:600, border:'1px solid '+S.red, background:'transparent', color:S.red, cursor:'pointer' }}>×</button>
+            <div key={i} style={{ marginBottom:8, padding:10, background:S.bg0, borderRadius:10, border:'1px solid '+S.border }}>
+              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                <span style={{ fontSize:12, fontWeight:700, color:S.p300 }}>#{i+1}</span>
+                <input value={step.text} onChange={e => { const next=[...directions]; next[i]={...next[i],text:e.target.value}; setDirections(next) }} placeholder="Ex: Rentre par le parking..." style={{ ...inp, flex:1, fontSize:13 }} />
+                {directions.length > 1 && (
+                  <button type="button" onClick={() => setDirections(directions.filter((_,j)=>j!==i))} style={{ padding:'6px 10px', borderRadius:8, fontSize:11, border:'1px solid '+S.red+'44', background:'transparent', color:S.red, cursor:'pointer' }}>×</button>
+                )}
+              </div>
+              {step.photo_url ? (
+                <div style={{ marginTop:6, position:'relative', display:'inline-block' }}>
+                  <img src={step.photo_url} alt="" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.border }} />
+                  <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-4, right:-4, width:16, height:16, borderRadius:'50%', background:S.red, border:'none', color:'#fff', fontSize:10, cursor:'pointer' }}>×</button>
+                </div>
+              ) : (
+                <label style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:6, padding:'4px 8px', borderRadius:6, border:'1px solid '+S.border, background:S.bg2, color:S.tx4, fontSize:10, fontWeight:600, cursor:'pointer' }}>
+                  📷 Photo
+                  <input type="file" accept="image/*" onChange={async (e) => { const f=e.target.files?.[0]; if(!f)return; const{compressImage:ci}=await import('../lib/media'); const c=await ci(f); const{data:{user}}=await supabase.auth.getUser(); if(!user)return; const path=user.id+'/dir_'+Date.now()+'.jpg'; const{error}=await supabase.storage.from('avatars').upload(path,c); if(error)return; const{data:{publicUrl}}=supabase.storage.from('avatars').getPublicUrl(path); const next=[...directions]; next[i]={...next[i],photo_url:publicUrl}; setDirections(next) }} style={{ display:'none' }} />
+                </label>
               )}
             </div>
           ))}
-          <button onClick={() => setDirections([...directions,''])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.border, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
+          <button type="button" onClick={() => setDirections([...directions,{text:''}])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.border, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
             + Ajouter une étape
           </button>
         </div>
