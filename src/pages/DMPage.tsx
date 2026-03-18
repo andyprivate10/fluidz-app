@@ -470,10 +470,12 @@ export default function DMPage() {
                   </span>
                 )}
                 <div style={{
-                  padding: message.has_media ? 4 : '10px 14px', fontSize: 15, maxWidth: '80%',
-                  background: isMine ? S.p : S.bg2,
+                  padding: message.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
+                  background: isMine ? 'linear-gradient(135deg, #F07858, #D0604A)' : S.bg2,
                   color: isMine ? 'white' : S.tx,
-                  borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                  borderRadius: isMine ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                  border: isMine ? 'none' : '1px solid ' + S.rule,
+                  boxShadow: isMine ? '0 2px 8px rgba(240,120,88,0.2)' : 'none',
                   overflow: 'hidden',
                 }}
                 onContextMenu={(e) => {

@@ -292,8 +292,9 @@ export default function GroupChatPage() {
   return (
     <div style={{
       display:'flex', flexDirection:'column', minHeight:'100vh',
-      background:S.bg, maxWidth:480, margin:'0 auto',
+      background:S.bg, maxWidth:480, margin:'0 auto', position:'relative' as const,
     }}>
+      <OrbLayer />
       {/* Header */}
       <div style={{
         padding:'12px 16px', display:'flex', alignItems:'center', gap:12,
@@ -392,15 +393,15 @@ export default function GroupChatPage() {
 
           return (
             <div key={msg.id} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
-      <OrbLayer />
               {showName && (
                 <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.p+'44' }}>{msg.sender_name}</button>
               )}
               <div style={{
-                maxWidth:'80%', padding: msg.has_media ? 4 : '8px 12px', borderRadius:16,
-                background: isMe ? S.p+'22' : S.bg2,
-                borderBottomRightRadius: isMe ? 4 : 16,
-                borderBottomLeftRadius: isMe ? 16 : 4,
+                maxWidth:'78%', padding: msg.has_media ? 4 : '8px 12px', borderRadius:18, lineHeight:1.45,
+                background: isMe ? S.p2 : S.bg2,
+                border: '1px solid ' + (isMe ? S.pbd : S.rule),
+                borderBottomRightRadius: isMe ? 4 : 18,
+                borderBottomLeftRadius: isMe ? 18 : 4,
                 overflow:'hidden',
               }}
               onContextMenu={(e) => {

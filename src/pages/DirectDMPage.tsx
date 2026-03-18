@@ -236,7 +236,7 @@ export default function DirectDMPage() {
         {messages.map(msg => (
           <div key={msg.id} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
             <div style={{
-              padding: msg.has_media ? 4 : '10px 14px', fontSize: 15, maxWidth: '80%',
+              padding: msg.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
               borderRadius: 16, background: isMe(msg.sender_id) ? S.p2 : S.bg2,
               borderBottomRightRadius: isMe(msg.sender_id) ? 4 : 16,
               borderBottomLeftRadius: isMe(msg.sender_id) ? 16 : 4,
