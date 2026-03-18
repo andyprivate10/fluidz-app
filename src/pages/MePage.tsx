@@ -411,7 +411,10 @@ export default function MePage() {
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+          <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#FBBF24', border: '1px solid #FBBF2444', background: '#FBBF2414', cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            🔔 Notifications
+          </button>
+          <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
             <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#F9A8A8', border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
               💕 Naughty Book
             </button>

@@ -136,6 +136,11 @@ export default function HostDashboard() {
           })
         }
       }
+      // Auto-add to contacts (both directions, connaissance level)
+      if (status === 'accepted' && user && app.applicant_id) {
+        await supabase.from('contacts').upsert({ user_id: user.id, contact_user_id: app.applicant_id, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
+        await supabase.from('contacts').upsert({ user_id: app.applicant_id, contact_user_id: user.id, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
+      }
     }
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
     setActionLoading(null)
