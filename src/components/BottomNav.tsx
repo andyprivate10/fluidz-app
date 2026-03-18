@@ -76,7 +76,7 @@ export default function BottomNav() {
     }}>
       {tabs.map((tab) => {
         const isActive = location.pathname === tab.path
-        const showBadge = (tab.path === '/me' && hasNewApplication) || (tab.path === '/notifications' && unreadNotifCount > 0)
+        const showBadge = (tab.path === '/me' && (hasNewApplication || unreadNotifCount > 0)) || (tab.path === '/chats' && unreadNotifCount > 0)
         const Icon = tab.icon
         return (
           <button
@@ -104,7 +104,7 @@ export default function BottomNav() {
                   transition: 'color 0.2s',
                 }}
               />
-              {showBadge && tab.path === '/notifications' && (
+              {showBadge && tab.path === '/chats' && (
                 <span style={{
                   position: 'absolute', top: -4, right: -8,
                   minWidth: 16, height: 16, padding: '0 4px',
