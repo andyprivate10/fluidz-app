@@ -130,9 +130,12 @@ export default function CreateSessionPage() {
     setSavingAddress(false)
   }
 
-  function pickSavedAddress(addr: { approx_area?: string; exact_address?: string }) {
+  function pickSavedAddress(addr: typeof savedAddresses[0]) {
     if (addr.approx_area) setApproxArea(addr.approx_area)
     if (addr.exact_address) setExactAddress(addr.exact_address)
+    if (addr.directions && addr.directions.length > 0) {
+      setDirections(addr.directions.map(d => typeof d === 'string' ? d : d.text))
+    }
   }
 
   const steps = ['template','details','address']
@@ -271,10 +274,10 @@ export default function CreateSessionPage() {
               <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresses sauvegardées</p>
               <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
                 {savedAddresses.map((addr, i) => (
-                  <button key={i} type="button" onClick={() => pickSavedAddress(addr)} style={{
+                  <button key={addr.id || i} type="button" onClick={() => pickSavedAddress(addr)} style={{
                     padding:'6px 12px',borderRadius:99,fontSize:12,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer',
                   }}>
-                    {(addr.exact_address || addr.approx_area || 'Adresse').slice(0, 24)}{(addr.exact_address || addr.approx_area || '').length > 24 ? '…' : ''}
+                    {addr.label || addr.approx_area || 'Adresse'}
                   </button>
                 ))}
               </div>
