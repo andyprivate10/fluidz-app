@@ -360,16 +360,33 @@ export default function PublicProfile() {
           </div>
         )}
 
-        {kinks.length > 0 && (
-          <div style={card}>
-            <div style={label}>Pratiques ({kinks.length})</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {kinks.map((k: string) => (
-                <span key={k} style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.border }}>{k}</span>
-              ))}
+        {kinks.length > 0 && (() => {
+          const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
+            'Dominant': { bg: '#F4727222', color: '#F47272', border: '#F4727244' },
+            'Soumis': { bg: '#F9A8A822', color: '#F9A8A8', border: '#F9A8A844' },
+            'SM léger': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
+            'SM hard': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
+            'Fist': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
+            'Group': { bg: '#7DD3FC22', color: '#7DD3FC', border: '#7DD3FC44' },
+            'Voyeur': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
+            'Exhib': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
+            'Fétichisme': { bg: '#34D39922', color: '#34D399', border: '#34D39944' },
+            'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
+            'Bears welcome': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
+          }
+          const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.border }
+          return (
+            <div style={card}>
+              <div style={label}>Pratiques ({kinks.length})</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {kinks.map((k: string) => {
+                  const c = kinkColors[k] || defaultStyle
+                  return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span>
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {p.limits && (
           <div style={{ ...card, borderColor: S.red + '55' }}>
