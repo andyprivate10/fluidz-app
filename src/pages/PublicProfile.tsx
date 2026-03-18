@@ -23,6 +23,7 @@ const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding
 const label: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }
 
 function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: string; myProfile: Record<string,unknown> | null }) {
+  const nav = useNavigate()
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
 
@@ -50,9 +51,10 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
   }
 
   if (sent) return (
-    <div style={{ marginTop: 8, padding: '10px 16px', borderRadius: 12, background: '#4ADE8014', border: '1px solid #4ADE8044', textAlign: 'center' }}>
+    <button onClick={() => nav('/dm/' + targetUserId)} style={{ marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12, background: '#4ADE8014', border: '1px solid #4ADE8044', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
       <span style={{ fontSize: 13, fontWeight: 600, color: '#4ADE80' }}>✓ Demande envoyée</span>
-    </div>
+      <span style={{ fontSize: 13, fontWeight: 600, color: '#7DD3FC' }}>→ Ouvrir le DM</span>
+    </button>
   )
 
   return (
