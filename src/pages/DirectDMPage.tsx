@@ -84,6 +84,14 @@ export default function DirectDMPage() {
       .limit(100)
     setMessages(msgs || [])
 
+    // Mark direct DM notifications as read
+    await supabase.from('notifications')
+      .update({ read_at: new Date().toISOString() })
+      .eq('user_id', user.id)
+      .eq('type', 'direct_dm')
+      .like('href', '%/dm/' + user.id + '%')
+      .is('read_at', null)
+
     // Realtime
     const channel = supabase.channel('direct-dm-' + sid)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'session_id=eq.' + sid }, (payload: any) => {
