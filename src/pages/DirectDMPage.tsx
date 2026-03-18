@@ -46,6 +46,9 @@ export default function DirectDMPage() {
   const [newMessage, setNewMessage] = useState('')
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioChunksRef = useRef<Blob[]>([])
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -153,6 +156,39 @@ export default function DirectDMPage() {
     setUploading(false)
   }
 
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mr = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+      audioChunksRef.current = []
+      mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
+      mr.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop())
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        if (blob.size < 100) return
+        setUploading(true)
+        const path = currentUser.id + '/dm_audio_' + Date.now() + '.webm'
+        const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
+        if (error) { setUploading(false); return }
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+        await supabase.from('messages').insert({
+          session_id: sessionId, sender_id: currentUser.id, text: '🎤 Audio',
+          sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
+          has_media: true, media_urls: [publicUrl],
+        })
+        setUploading(false)
+      }
+      mr.start()
+      mediaRecorderRef.current = mr
+      setRecording(true)
+    } catch { /* mic denied */ }
+  }
+
+  function stopRecording() {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') mediaRecorderRef.current.stop()
+    setRecording(false)
+  }
+
   const isMe = (senderId: string) => senderId === currentUser?.id
 
   return (
@@ -217,6 +253,10 @@ export default function DirectDMPage() {
           <Camera size={16} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} />
         </label>
+        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width: 40, height: 40, borderRadius: 12, border: 'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, animation: recording ? 'pulse 1s infinite' : 'none' }}>
+          {recording ? '⏹' : '🎤'}
+        </button>
+        <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input
           type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
