@@ -314,7 +314,7 @@ export default function SessionPage() {
               const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
               navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
             }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? '#4ADE8044' : S.rule), background: addressCopied ? '#4ADE8014' : 'transparent', color: addressCopied ? '#4ADE80' : '#7E7694' }}>
-              {addressCopied ? '✓ Copié' : '📋 Copier adresse + directions'}
+              {addressCopied ? '✓ Copié' : 'Copier adresse + directions'}
             </button>
           </div>
         ) : session.approx_area ? (

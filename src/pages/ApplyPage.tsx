@@ -356,7 +356,7 @@ export default function ApplyPage() {
                 background: '#FBBF2414', border: '1px solid #FBBF2444', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
               }}>
-                <span style={{ fontSize: 16 }}>⚠️</span>
+                <span style={{ fontSize: 14, color: S.orange }}>!</span>
                 <div>
                   <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#FBBF24' }}>Profil incomplet</p>
                   <p style={{ margin: '2px 0 0', fontSize: 11, color: '#7E7694' }}>Manque : {missing.join(', ')}. Complète-le pour plus de chances !</p>

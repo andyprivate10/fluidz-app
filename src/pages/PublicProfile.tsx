@@ -7,6 +7,7 @@ import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { MessageCircle, Sparkles } from 'lucide-react'
 
 const S = {
   ...colors,
@@ -130,7 +131,7 @@ function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; 
       fontSize: 13, fontWeight: 600, cursor: creating ? 'not-allowed' : 'pointer',
       opacity: creating ? 0.6 : 1,
     }}>
-      {creating ? 'Création...' : '💫 Créer session 1-to-1'}
+      {creating ? 'Création...' : <><Sparkles size={13} strokeWidth={1.5} style={{marginRight:3}} /> Session 1-to-1</>}
     </button>
   )
 }
@@ -326,12 +327,12 @@ export default function PublicProfile() {
 
         {/* Story button */}
         <button onClick={() => setShowStory(true)} style={{ marginTop: 10, padding: '8px 16px', borderRadius: 12, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 12px rgba(244,114,114,0.3)' }}>
-          ▶ Voir la Story
+          <span style={{marginRight:4}}>▶</span> Voir la Story
         </button>
         {/* Add to contacts button */}
         {/* Direct DM button */}
         <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          💬 DM direct
+          <MessageCircle size={13} strokeWidth={1.5} style={{marginRight:3}} /> DM direct
         </button>
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
         <AddContactButton targetUserId={userId!} />

@@ -401,7 +401,7 @@ export default function HostDashboard() {
                 const text = '🔥 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n👥 ' + counts.accepted + ' déjà là' : '') + '\nPostule ici !'
                 navigator.share({ title: sess.title || 'Session Fluidz', text, url }).catch(() => {})
               }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid #4ADE8044',background:'transparent',color:'#4ADE80',cursor:'pointer'}}>
-                📤 Partager via...
+                Partager via...
               </button>
             )}
             {/* Direct invite link */}
@@ -415,7 +415,7 @@ export default function HostDashboard() {
               }}
               style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sage+'44',background:S.sage+'14',color:S.sage,cursor:'pointer'}}
             >
-              ⚡ Copier lien invite directe (pas de vote)
+              Copier lien invite directe
             </button>
           </>
         )}

@@ -445,7 +445,7 @@ export default function GroupChatPage() {
             <input type="file" accept="image/*,video/*" onChange={e => { const f=e.target.files?.[0]; if(f) sendPhoto(f); e.target.value='' }} style={{ display:'none' }} disabled={uploading} />
           </label>
           <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width:38, height:38, borderRadius:10, border:'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor:'pointer', fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', animation: recording ? 'pulse 1s infinite' : 'none' }}>
-            {recording ? '⏹' : '🎤'}
+            {recording ? '■' : '●'}
           </button>
           <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
           <input
