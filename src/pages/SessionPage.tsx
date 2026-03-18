@@ -7,6 +7,7 @@ import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 const S = colors
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
@@ -70,6 +71,9 @@ export default function SessionPage() {
   }, [])
 
   const isHost = currentUser?.id === session?.host_id
+  const eventRole: 'host' | 'member' | 'candidate' = isHost ? 'host'
+    : (myApp?.status === 'accepted' || myApp?.status === 'checked_in') ? 'member'
+    : 'candidate'
 
   const loadData = useCallback(async () => {
     try {
@@ -283,7 +287,8 @@ export default function SessionPage() {
           <div style={{ width: 24, height: 24, border: '2px solid '+S.pbd, borderTopColor: S.p, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       )}
-      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+      <EventContextNav role={eventRole} sessionTitle={session.title} />
+      <div style={{ padding: '12px 24px 16px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: S.tx, flex: 1 }}>{session.title}</h1>
         </div>

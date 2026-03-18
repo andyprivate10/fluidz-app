@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 
 type Message = {
   id: string
@@ -345,6 +346,7 @@ export default function DMPage() {
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       <OrbLayer />
+      <EventContextNav role={isHost ? 'host' : isAccepted ? 'member' : 'candidate'} sessionTitle={session?.title} />
       {/* Header */}
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>

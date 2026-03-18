@@ -84,8 +84,10 @@ export default function BottomNav() {
   if (hidePaths.some(p => location.pathname.startsWith(p))) return null
   // Hide inside DM/chat pages (they have their own nav)
   if (/\/(dm|chat)/.test(location.pathname) && !location.pathname.startsWith('/chats')) return null
-  // Hide inside session context (contextual nav takes over)
-  if (/^\/session\/[^/]+\/(dm|chat|apply|host|candidate|review)/.test(location.pathname)) return null
+  // Hide inside ANY session context (contextual nav takes over)
+  if (/^\/session\/[a-f0-9-]+/.test(location.pathname)) return null
+  // Hide on join pages too
+  if (location.pathname.startsWith('/join/')) return null
 
   const active = tabs.find(t => {
     if (t.path === '/') return location.pathname === '/' || location.pathname.startsWith('/sessions')

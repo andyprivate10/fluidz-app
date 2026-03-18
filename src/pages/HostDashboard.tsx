@@ -6,6 +6,7 @@ import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
 
 const S = colors
 
@@ -306,8 +307,8 @@ export default function HostDashboard() {
   )
   return (
     <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative' as const}}>
-      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
-        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{marginRight:4,display:'inline'}} />Retour</button>
+      <EventContextNav role="host" sessionTitle={sess?.title} />
+      <div style={{padding:'12px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <div>
             <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}</div>
