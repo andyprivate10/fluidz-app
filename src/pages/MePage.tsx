@@ -471,9 +471,21 @@ export default function MePage() {
 
           {/* Preview button */}
           {user && (
-            <button onClick={() => navigate('/profile/' + user.id)} style={{ width: '100%', padding: '10px 16px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: '#F9A8A8', fontSize: 13, fontWeight: 600, cursor: 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              👁 Voir mon profil (comme les autres me voient)
-            </button>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: '#F9A8A8', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                👁 Voir mon profil
+              </button>
+              <button onClick={() => {
+                const url = window.location.origin + '/profile/' + user.id
+                if (navigator.share) {
+                  navigator.share({ title: displayName || 'Mon profil Fluidz', url }).catch(() => {})
+                } else {
+                  navigator.clipboard.writeText(url)
+                }
+              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: '#16141F', border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                📤 Partager mon profil
+              </button>
+            </div>
           )}
 
           {/* Profile views */}
