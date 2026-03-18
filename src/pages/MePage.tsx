@@ -400,6 +400,39 @@ export default function MePage() {
             </div>
           )}
 
+          {/* Profile completeness */}
+          {(() => {
+            const checks = [
+              { label: 'Pseudo', done: !!displayName && displayName !== 'Anonymous' },
+              { label: 'Photo', done: !!avatarUrl },
+              { label: 'Âge', done: !!age },
+              { label: 'Rôle', done: !!role },
+              { label: 'Bio', done: !!bio },
+              { label: 'Physique', done: !!height || !!weight || !!morphology },
+              { label: 'Pratiques', done: kinks.length > 0 },
+            ]
+            const done = checks.filter(c => c.done).length
+            const pct = Math.round((done / checks.length) * 100)
+            return (
+              <div style={{ marginBottom: 16, background: '#16141F', border: '1px solid #2A2740', borderRadius: 14, padding: 14 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#7E7694' }}>Profil {pct}% complet</span>
+                  <span style={{ fontSize: 11, color: pct === 100 ? '#4ADE80' : '#FBBF24', fontWeight: 600 }}>{done}/{checks.length}</span>
+                </div>
+                <div style={{ background: '#1F1D2B', borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
+                  <div style={{ width: `${pct}%`, background: pct === 100 ? '#4ADE80' : 'linear-gradient(90deg,#F9A8A8,#F47272)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {checks.map(c => (
+                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : '#1F1D2B', color: c.done ? '#4ADE80' : '#453F5C', fontWeight: 600, border: '1px solid ' + (c.done ? '#4ADE8044' : '#2A2740') }}>
+                      {c.done ? '✓' : '○'} {c.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )
+          })()}
+
           <Section title="Photos profil">
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>Visage, corps. Visible par défaut.</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
