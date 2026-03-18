@@ -89,11 +89,10 @@ export default function GroupChatPage() {
     const hostAccess = user.id === sess.host_id
     if (!hostAccess) {
       const { data: app } = await supabase.from('applications')
-        .select('status,created_at,checked_in_at')
+        .select('status,created_at,checked_in_at,checked_in')
         .eq('session_id', id).eq('applicant_id', user.id)
-        .eq('status', 'checked_in')
         .maybeSingle()
-      if (!app) {
+      if (!app || (app.status !== 'checked_in' && !(app.status === 'accepted' && app.checked_in))) {
         showToast('Accès réservé aux membres après check-in', 'error')
         navigate('/session/' + id)
         return
@@ -132,25 +131,15 @@ export default function GroupChatPage() {
     // Fetch messages (no-history: only after user's accept time)
     let acceptedAt: string | null = null
     if (!hostAccess) {
-      // Try with checked_in_at first, fall back to created_at if column doesn't exist
-      let appForTime: { checked_in_at?: string; created_at?: string } | null = null
-      const { data: d1, error: e1 } = await supabase.from('applications')
-        .select('created_at,checked_in_at')
+      // Get the user's application for time-based filtering
+      const { data: appForTime } = await supabase.from('applications')
+        .select('created_at,checked_in_at,status,checked_in')
         .eq('session_id', id).eq('applicant_id', user.id)
-        .eq('status', 'checked_in')
+        .in('status', ['checked_in', 'accepted'])
         .maybeSingle()
-      if (!e1 && d1) {
-        appForTime = d1 as { checked_in_at?: string; created_at?: string }
-      } else {
-        // Fallback without checked_in_at column
-        const { data: d2 } = await supabase.from('applications')
-          .select('created_at')
-          .eq('session_id', id).eq('applicant_id', user.id)
-          .eq('status', 'checked_in')
-          .maybeSingle()
-        appForTime = d2 as { created_at?: string } | null
+      if (appForTime) {
+        acceptedAt = appForTime.checked_in_at || appForTime.created_at || null
       }
-      acceptedAt = appForTime?.checked_in_at || appForTime?.created_at || null
       setMyAcceptedAt(acceptedAt)
     }
     await loadMessages(id!, acceptedAt)
@@ -366,7 +355,7 @@ export default function GroupChatPage() {
                   </div>
                 )}
                 <span style={{ fontSize:12, color:S.tx2 }}>{m.display_name}</span>
-                {m.status === 'checked_in' && <div style={{ width:6, height:6, borderRadius:'50%', background:S.green }} />}
+                {m.status === 'checked_in' || (m.status === 'accepted' && (m as any).checked_in) && <div style={{ width:6, height:6, borderRadius:'50%', background:S.green }} />}
               </button>
             ))}
           </div>
