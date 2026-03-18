@@ -203,23 +203,9 @@ export default function PublicProfile() {
         setLoading(false)
         return
       }
-      let canSee: boolean = false
-      if (user.id === userId) {
-        canSee = true
-      } else {
-        const { data: mySessionsAsHost } = await supabase.from('sessions').select('id').eq('host_id', user.id)
-        const { data: myApps } = await supabase.from('applications').select('session_id').eq('applicant_id', user.id)
-        const sessionIds = new Set<string>()
-        ;(mySessionsAsHost || []).forEach((s: { id: string }) => sessionIds.add(s.id))
-        ;(myApps || []).forEach((a: { session_id: string }) => sessionIds.add(a.session_id))
-        if (sessionIds.size > 0) {
-          const ids = Array.from(sessionIds)
-          const { data: sessionsWithThem } = await supabase.from('sessions').select('id').eq('host_id', userId).in('id', ids)
-          const { data: appsWithThem } = await supabase.from('applications').select('session_id').eq('applicant_id', userId).in('session_id', ids)
-          canSee = Boolean((sessionsWithThem && sessionsWithThem.length > 0) || (appsWithThem && appsWithThem.length > 0))
-        }
-      }
-      setAllowed(!!canSee)
+      // All logged-in users can see profiles (discoverable via Explore, contacts, links)
+      const canSee = true
+      setAllowed(canSee)
 
       if (canSee) {
         const { data: prof } = await supabase.from('user_profiles').select('display_name, profile_json, location_updated_at').eq('id', userId).maybeSingle()
