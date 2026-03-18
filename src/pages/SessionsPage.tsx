@@ -20,6 +20,19 @@ const statusLabel: Record<string, { text: string; color: string }> = {
   rejected: { text: 'Refusé', color: S.red },
 }
 
+
+function timeAgo(dateStr: string): string {
+  const ms = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(ms / 60000)
+  if (mins < 1) return "à l\'instant"
+  if (mins < 60) return 'il y a ' + mins + 'min'
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return 'il y a ' + hours + 'h'
+  const days = Math.floor(hours / 24)
+  if (days < 7) return 'il y a ' + days + 'j'
+  return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
+
 export default function SessionsPage() {
   const navigate = useNavigate()
   const [hosted, setHosted] = useState<Session[]>([])
@@ -107,7 +120,7 @@ export default function SessionsPage() {
                   </span>
                 </div>
                 {sess.approx_area && <div style={{ fontSize: 12, color: S.tx3, marginTop: 6 }}>{sess.approx_area}</div>}
-                <div style={{ fontSize: 11, color: S.tx4, marginTop: 4 }}>{new Date(sess.created_at).toLocaleDateString('fr-FR')}</div>
+                <div style={{ fontSize: 11, color: S.tx4, marginTop: 4 }}>{timeAgo(sess.created_at)}</div>
               </div>
             ))}
           </>
