@@ -77,6 +77,7 @@ export default function MePage() {
   const [msg, setMsg] = useState('')
   const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
   const [locationVisible, setLocationVisible] = useState(false)
+  const [profileViews, setProfileViews] = useState(0)
 
   const [displayName, setDisplayName] = useState('')
   const [age, setAge] = useState('')
@@ -159,6 +160,9 @@ export default function MePage() {
     if (data) {
       setDisplayName(data.display_name || '')
         setLocationVisible(!!(data as any).location_visible)
+        // Count profile views (last 7 days)
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', uid).eq('type', 'profile_view').gte('created_at', weekAgo).then(({ count }) => setProfileViews(count ?? 0))
       const p = data.profile_json || {}
       const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')
@@ -426,6 +430,13 @@ export default function MePage() {
           {user && (
             <div style={{ marginBottom: 16 }}>
               <VibeScoreCard userId={user.id} />
+            </div>
+          )}
+
+          {/* Profile views */}
+          {profileViews > 0 && (
+            <div style={{ marginBottom: 12, padding: '10px 14px', background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 13, color: '#B8B2CC' }}>👁 Vu par <strong style={{ color: '#F0EDFF' }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
           )}
 
