@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {Ghost, Copy, Check, ArrowRight} from 'lucide-react'
+import {Ghost, Copy, Check, ArrowRight, ArrowLeft} from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -168,8 +168,8 @@ export default function GhostSetupPage() {
             >
               {loading ? 'Création...' : 'Créer mon profil ghost'}
             </button>
-            <button onClick={() => setStep('name')} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer' }}>
-              ← Retour
+            <button onClick={() => setStep('name')} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <ArrowLeft size={16} strokeWidth={1.5} />Retour
             </button>
           </div>
         )}

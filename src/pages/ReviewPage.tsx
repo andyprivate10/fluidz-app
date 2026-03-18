@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import {Star, Send} from 'lucide-react'
+import {Star, Send, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -106,7 +106,7 @@ export default function ReviewPage() {
   return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       <div style={{ padding: '40px 20px 20px' }}>
-        <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour à la session</button>
+        <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour à la session</button>
 
         <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Comment c'était ?</h1>
         <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{session?.title || 'Session'}</p>
