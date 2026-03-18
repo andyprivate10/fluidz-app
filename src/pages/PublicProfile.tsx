@@ -21,6 +21,46 @@ function monthsAgo(isoDate: string): number {
 const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding: 16, border: '1px solid ' + S.border, marginBottom: 12 }
 const label: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }
 
+function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
+  const [sessions, setSessions] = useState<{ id: string; title: string }[]>([])
+  const [sending, setSending] = useState(false)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user || user.id === targetUserId) return
+      supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open').then(({ data }) => setSessions(data || []))
+    })
+  }, [targetUserId])
+
+  async function invite(sessionId: string) {
+    setSending(true)
+    const sess = sessions.find(s => s.id === sessionId)
+    await supabase.from('notifications').insert({
+      user_id: targetUserId,
+      session_id: sessionId,
+      type: 'session_invite',
+      title: '📩 Tu es invité !',
+      body: 'Tu es invité à "' + (sess?.title || 'une session') + '"',
+      href: '/session/' + sessionId,
+    })
+    setSending(false)
+  }
+
+  if (sessions.length === 0) return null
+  return (
+    <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+      {sessions.map(s => (
+        <button key={s.id} onClick={() => invite(s.id)} disabled={sending} style={{
+          padding: '6px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: sending ? 'not-allowed' : 'pointer',
+          border: '1px solid #4ADE8044', background: '#4ADE8014', color: '#4ADE80',
+        }}>
+          📩 Inviter à "{s.title}"
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>()
   const navigate = useNavigate()
@@ -150,6 +190,7 @@ export default function PublicProfile() {
         )}
         {/* Add to contacts button */}
         <AddContactButton targetUserId={userId!} />
+        <InviteToSessionButton targetUserId={userId!} />
       </div>
 
       <div style={{ padding: '16px 20px' }}>
