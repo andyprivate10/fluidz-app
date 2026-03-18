@@ -2,15 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { colors, radius, typeStyle } from '../brand'
+import OrbLayer from '../components/OrbLayer'
+import { Compass, BookOpen, MapPin, User, Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
 
-const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
-}
+const C = colors
+const R = radius
 
-type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number; invite_code?: string | null }
+type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number }
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -27,14 +26,9 @@ export default function HomePage() {
     if (!user) return
     setUserId(user.id)
 
-    // Check for post-auth redirect (deep linking)
     try {
       const redirect = localStorage.getItem('auth_redirect')
-      if (redirect) {
-        localStorage.removeItem('auth_redirect')
-        navigate(redirect)
-        return
-      }
+      if (redirect) { localStorage.removeItem('auth_redirect'); navigate(redirect); return }
     } catch (_) {}
 
     const { data: profData } = await supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle()
@@ -43,12 +37,11 @@ export default function HomePage() {
       const pj = (profData.profile_json || {}) as Record<string, unknown>
       const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
       if (isNewUser && profData.display_name !== 'Marcus' && profData.display_name !== 'Karim' && profData.display_name !== 'Yann') {
-        navigate('/onboarding')
-        return
+        navigate('/onboarding'); return
       }
     }
 
-    const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status')
+    const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status, tags')
       .eq('host_id', user.id).eq('status', 'open').neq('title', 'DM Direct')
       .order('created_at', { ascending: false }).limit(1)
     const hostSession = Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null
@@ -56,6 +49,8 @@ export default function HomePage() {
     if (hostSession) {
       const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).eq('status', 'pending')
       setHostPendingCount(count ?? 0)
+      const { count: mc } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).in('status', ['accepted', 'checked_in'])
+      if (hostSession) (hostSession as any).member_count = (mc || 0) + 1
     }
 
     const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title)')
@@ -68,169 +63,213 @@ export default function HomePage() {
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
-
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadData)
 
   function handleJoinCode() {
     const code = inviteCode.trim()
     if (!code) return
-    // If user pasted a full URL, extract the code
     const match = code.match(/\/join\/([a-zA-Z0-9]+)(\?.*)?/)
-    if (match) {
-      navigate('/join/' + match[1] + (match[2] || ''))
-    } else {
-      navigate('/join/' + code)
-    }
+    if (match) navigate('/join/' + match[1] + (match[2] || ''))
+    else navigate('/join/' + code)
+  }
+
+  // ─── Shared styles ────────────────────────────────────
+  const card: React.CSSProperties = {
+    background: C.bg1, border: `1px solid ${C.rule}`, borderRadius: R.card, padding: 16,
+  }
+  const chip: React.CSSProperties = {
+    ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.chip,
+    background: C.p3, color: C.p, border: `1px solid ${C.pbd}`,
   }
 
   return (
-    <div {...pullHandlers} style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: C.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
+      <OrbLayer />
       {pullIndicator}
 
-      <div style={{ padding: '48px 24px 24px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: S.p300, margin: '0 0 4px' }}>fluidz</h1>
-        {userId && displayName && (
-          <p style={{ fontSize: 15, color: S.tx2, margin: 0 }}>Hey {displayName} 👋</p>
-        )}
-        {!userId && (
-          <p style={{ fontSize: 14, color: S.tx2, margin: '8px 0 0', lineHeight: 1.5 }}>
+      {/* ─── Header ──────────────────────────────────── */}
+      <div style={{ position: 'relative', zIndex: 1, padding: '52px 24px 20px' }}>
+        <h1 style={{ ...typeStyle('hero'), color: C.p, margin: '0 0 6px' }}>fluidz</h1>
+        {userId && displayName ? (
+          <p style={{ ...typeStyle('body'), color: C.tx2, margin: 0 }}>Hey {displayName}</p>
+        ) : !userId ? (
+          <p style={{ ...typeStyle('body'), color: C.tx2, margin: '8px 0 0', lineHeight: 1.6 }}>
             Recrute ton groupe pour ce soir. Partage un lien, les candidats postulent, tu choisis.
           </p>
-        )}
+        ) : null}
+
+        {/* Quick nav */}
         {userId && (
-          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-            <button onClick={() => navigate('/explore')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>👤</div>
-              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Explorer</div>
-            </button>
-            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>💕</div>
-              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Contacts</div>
-            </button>
-            <button onClick={() => navigate('/addresses')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>📍</div>
-              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Adresses</div>
-            </button>
-            <button onClick={() => navigate('/me')} style={{ flex: 1, padding: '10px 8px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.border, cursor: 'pointer', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: S.tx }}>⭐</div>
-              <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginTop: 2 }}>Profil</div>
-            </button>
+          <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+            {[
+              { icon: Compass, label: 'Explorer', path: '/explore' },
+              { icon: BookOpen, label: 'Contacts', path: '/contacts' },
+              { icon: MapPin, label: 'Adresses', path: '/addresses' },
+              { icon: User, label: 'Profil', path: '/me' },
+            ].map(item => (
+              <button key={item.path} onClick={() => navigate(item.path)} style={{
+                flex: 1, padding: '10px 4px', borderRadius: R.block, background: C.bg2,
+                border: `1px solid ${C.rule}`, cursor: 'pointer', textAlign: 'center',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+              }}>
+                <item.icon size={16} strokeWidth={1.5} style={{ color: C.tx3 }} />
+                <span style={{ ...typeStyle('meta'), color: C.tx3 }}>{item.label}</span>
+              </button>
+            ))}
           </div>
         )}
       </div>
 
-      <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* ─── Content ─────────────────────────────────── */}
+      <div style={{ position: 'relative', zIndex: 1, padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 96 }}>
 
-        {/* Host's active session */}
+        {/* Host active session */}
         {latestHost && (
-          <div
-            onClick={() => navigate('/session/' + latestHost.id + '/host')}
-            style={{ background: S.bg1, border: '1px solid ' + S.p300 + '44', borderRadius: 16, padding: 16, cursor: 'pointer' }}
-          >
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ta session active</p>
-            <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>{latestHost.title}</p>
-            <p style={{ fontSize: 12, color: S.tx3, margin: '4px 0 0' }}>{latestHost.approx_area}</p>
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 4 }}>
-              {latestHost.member_count && latestHost.member_count > 1 && <span style={{ fontSize: 11, color: S.green, fontWeight: 600 }}>👥 {latestHost.member_count} membres</span>}
-              {latestHost.tags && latestHost.tags.length > 0 && latestHost.tags.slice(0, 3).map(t => <span key={t} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: S.p300 + '14', color: S.p300, fontWeight: 600 }}>{t}</span>)}
+          <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, border: `1px solid ${C.pbd}`, cursor: 'pointer' }}>
+            <p style={{ ...typeStyle('micro'), color: C.p, margin: '0 0 8px' }}>TA SESSION ACTIVE</p>
+            <p style={{ ...typeStyle('section'), color: C.tx, margin: 0 }}>{latestHost.title}</p>
+            {latestHost.approx_area && <p style={{ ...typeStyle('body'), color: C.tx2, margin: '4px 0 0' }}>{latestHost.approx_area}</p>}
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, flexWrap: 'wrap' }}>
+              {latestHost.member_count && latestHost.member_count > 1 && (
+                <span style={{ ...typeStyle('meta'), color: C.sage, fontWeight: 600 }}>{latestHost.member_count} membres</span>
+              )}
+              {latestHost.tags?.slice(0, 3).map(t => <span key={t} style={chip}>{t}</span>)}
             </div>
-            {hostPendingCount > 0 && <p style={{ fontSize: 12, fontWeight: 700, color: S.yellow, margin: '6px 0 0' }}>📩 {hostPendingCount} candidature{hostPendingCount > 1 ? 's' : ''} en attente</p>}
+            {hostPendingCount > 0 && (
+              <p style={{ ...typeStyle('label'), color: C.p, margin: '8px 0 0' }}>{hostPendingCount} candidature{hostPendingCount > 1 ? 's' : ''} en attente</p>
+            )}
           </div>
         )}
 
         {/* Pending applications */}
         {pendingApps.length > 0 && (
-          <div style={{ background: S.bg1, border: '1px solid ' + S.yellow + '44', borderRadius: 16, padding: 16 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.yellow, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Candidatures en attente</p>
+          <div style={{ ...card, border: `1px solid ${C.lavbd}` }}>
+            <p style={{ ...typeStyle('micro'), color: C.lav, margin: '0 0 10px' }}>CANDIDATURES EN ATTENTE</p>
             {pendingApps.map(app => (
-              <div
-                key={app.session_id}
-                onClick={() => navigate('/session/' + app.session_id)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', cursor: 'pointer', borderBottom: '1px solid ' + S.border }}
-              >
-                <p style={{ fontSize: 14, color: S.tx, margin: 0, fontWeight: 600 }}>{app.title}</p>
-                <span style={{ fontSize: 11, color: S.yellow, fontWeight: 600 }}></span>
+              <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: `1px solid ${C.rule}` }}>
+                <p style={{ ...typeStyle('label'), color: C.tx, margin: 0 }}>{app.title}</p>
+                <Clock size={14} style={{ color: C.lav }} />
               </div>
             ))}
           </div>
         )}
 
-        {/* Active sessions (accepted/checked-in) */}
+        {/* Active sessions */}
         {activeApps.length > 0 && (
-          <div style={{ background: S.bg1, border: '1px solid ' + S.green + '44', borderRadius: 16, padding: 16 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.green, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions actives</p>
+          <div style={{ ...card, border: `1px solid ${C.sagebd}` }}>
+            <p style={{ ...typeStyle('micro'), color: C.sage, margin: '0 0 10px' }}>SESSIONS ACTIVES</p>
             {activeApps.map(app => (
-              <div
-                key={app.session_id}
-                onClick={() => navigate('/session/' + app.session_id)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', cursor: 'pointer', borderBottom: '1px solid ' + S.border }}
-              >
-                <p style={{ fontSize: 14, color: S.tx, margin: 0, fontWeight: 600 }}>{app.title}</p>
-                <span style={{ fontSize: 11, color: S.green, fontWeight: 600 }}>{app.status === 'checked_in' ? 'Check-in ✓' : 'Accepté'}</span>
+              <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: `1px solid ${C.rule}` }}>
+                <p style={{ ...typeStyle('label'), color: C.tx, margin: 0 }}>{app.title}</p>
+                <CheckCircle2 size={14} style={{ color: app.status === 'checked_in' ? C.sage : C.tx3 }} />
               </div>
             ))}
           </div>
         )}
 
-        {/* Join with invite code */}
-        <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: S.tx2, margin: '0 0 10px' }}>Rejoindre avec un lien</p>
+        {/* Join code */}
+        <div style={card}>
+          <p style={{ ...typeStyle('label'), color: C.tx2, margin: '0 0 10px' }}>Rejoindre avec un lien</p>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
-              value={inviteCode}
-              onChange={e => setInviteCode(e.target.value)}
+              value={inviteCode} onChange={e => setInviteCode(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleJoinCode()}
               placeholder="Code ou lien d'invitation"
-              style={{ flex: 1, padding: '10px 14px', background: S.bg2, border: '1px solid ' + S.border, borderRadius: 10, color: S.tx, fontSize: 14, outline: 'none' }}
+              style={{
+                flex: 1, padding: '10px 14px', background: C.bg2, border: `1px solid ${C.rule}`,
+                borderRadius: R.icon, color: C.tx, fontSize: 13, outline: 'none', fontFamily: 'inherit',
+                letterSpacing: '-0.02em',
+              }}
             />
-            <button onClick={handleJoinCode} style={{ padding: '10px 16px', borderRadius: 10, background: S.grad, border: 'none', color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
-              →
+            <button onClick={handleJoinCode} style={{
+              padding: '10px 16px', borderRadius: R.icon, background: C.p, border: 'none',
+              color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+              display: 'flex', alignItems: 'center',
+            }}>
+              <ArrowRight size={16} strokeWidth={2} />
             </button>
           </div>
         </div>
 
-        {/* Empty state for logged-in users with no activity */}
+        {/* Empty state */}
         {userId && !latestHost && pendingApps.length === 0 && activeApps.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '24px 16px', background: S.bg1, borderRadius: 16, border: '1px solid ' + S.border }}>
-            <p style={{ fontSize: 32, margin: '0 0 8px' }}>🔥</p>
-            <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>Prêt pour ce soir ?</p>
-            <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 4px', lineHeight: 1.5 }}>Crée une session et partage le lien sur Grindr, ou explore les profils autour de toi.</p>
+          <div style={{ ...card, textAlign: 'center', padding: '28px 20px' }}>
+            <Flame size={28} style={{ color: C.p, margin: '0 auto 10px', display: 'block' }} strokeWidth={1.5} />
+            <p style={{ ...typeStyle('section'), color: C.tx, margin: '0 0 6px' }}>Prêt pour ce soir ?</p>
+            <p style={{ ...typeStyle('body'), color: C.tx2, lineHeight: 1.6 }}>
+              Crée une session et partage le lien, ou explore les profils autour de toi.
+            </p>
           </div>
         )}
 
-        {/* Create session CTA */}
+        {/* CTA — Create session */}
         {userId && (
           <>
-          <button
-            onClick={() => navigate('/session/create')}
-            style={{ width: '100%', padding: 16, background: S.grad, border: 'none', borderRadius: 14, color: '#fff', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.p400 + '44', marginTop: 4 }}
-          >
-            + Créer une session
-          </button>
-          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-            <button onClick={() => navigate('/session/create?tpl=darkroom')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx3, border: '1px solid ' + S.border, background: S.bg1, cursor: 'pointer' }}>🌙 Dark Room</button>
-            <button onClick={() => navigate('/session/create?tpl=chemical')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx3, border: '1px solid ' + S.border, background: S.bg1, cursor: 'pointer' }}>💊 Chemical</button>
-            <button onClick={() => navigate('/session/create?tpl=techno')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx3, border: '1px solid ' + S.border, background: S.bg1, cursor: 'pointer' }}>🎧 Techno</button>
-          </div>
+            <button onClick={() => navigate('/session/create')} style={{
+              position: 'relative', overflow: 'hidden', width: '100%', padding: 16,
+              background: C.p, border: 'none', borderRadius: R.btn, color: '#fff',
+              ...typeStyle('section'), cursor: 'pointer',
+              boxShadow: `0 4px 24px ${C.pbd}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}>
+              <Plus size={18} strokeWidth={2.5} />
+              Créer une session
+              {/* Shimmer */}
+              <div style={{
+                position: 'absolute', top: 0, bottom: 0, width: '60%',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                animation: 'shimmer 3s ease-in-out infinite',
+              }} />
+            </button>
+
+            <div style={{ display: 'flex', gap: 8 }}>
+              {['Dark Room', 'Chemical', 'Techno'].map(tpl => (
+                <button key={tpl} onClick={() => navigate('/session/create?tpl=' + tpl.toLowerCase().replace(' ', ''))}
+                  style={{
+                    flex: 1, padding: '10px 6px', borderRadius: R.chip, ...typeStyle('meta'),
+                    color: C.tx3, border: `1px solid ${C.rule}`, background: C.bg1, cursor: 'pointer',
+                  }}>
+                  {tpl}
+                </button>
+              ))}
+            </div>
           </>
         )}
 
-        {/* Login CTA for non-logged-in */}
+        {/* Logged out CTAs */}
         {!userId && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-            <button onClick={() => navigate('/login?next=/session/create')} style={{ width: '100%', padding: 16, background: S.grad, border: 'none', borderRadius: 14, color: '#fff', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.p400 + '44' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <button onClick={() => navigate('/login?next=/session/create')} style={{
+              position: 'relative', overflow: 'hidden', width: '100%', padding: 16,
+              background: C.p, border: 'none', borderRadius: R.btn, color: '#fff',
+              ...typeStyle('section'), cursor: 'pointer', boxShadow: `0 4px 24px ${C.pbd}`,
+            }}>
               Créer une session
+              <div style={{
+                position: 'absolute', top: 0, bottom: 0, width: '60%',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                animation: 'shimmer 3s ease-in-out infinite',
+              }} />
             </button>
-            <button onClick={() => navigate('/login')} style={{ width: '100%', padding: 14, borderRadius: 14, color: S.tx2, border: '1px solid ' + S.border, background: 'transparent', cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
+            <button onClick={() => navigate('/login')} style={{
+              width: '100%', padding: 14, borderRadius: R.btn, ...typeStyle('label'),
+              color: C.tx2, border: `1px solid ${C.rule}`, background: 'transparent', cursor: 'pointer',
+            }}>
               Se connecter
             </button>
-            <button onClick={() => navigate('/ghost/setup')} style={{ width: '100%', padding: 12, borderRadius: 14, color: S.tx4, border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 600, fontSize: 13 }}>
-              Mode Ghost (24h, sans compte) →
+            <button onClick={() => navigate('/ghost/setup')} style={{
+              width: '100%', padding: 12, borderRadius: R.btn, ...typeStyle('meta'),
+              color: C.lav, border: 'none', background: C.lavbg, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              <Ghost size={14} strokeWidth={1.5} />
+              Mode Ghost (24h, sans compte)
             </button>
           </div>
         )}
       </div>
-
     </div>
   )
 }
