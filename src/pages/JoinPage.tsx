@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { MapPin, Lock, Users, ChevronRight, Ghost } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -142,7 +143,7 @@ export default function JoinPage() {
 
   // Direct join loading screen
   if (isDirect && directJoining) return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: '#F9A8A8', animation: 'spin 0.8s linear infinite', marginBottom: 16 }} />
       <p style={{ color: S.tx2, fontSize: 15, fontWeight: 600 }}>Rejoindre la session...</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
@@ -169,6 +170,7 @@ export default function JoinPage() {
       padding:'24px', 
       position: 'relative', overflow: 'hidden',
     }}>
+      <OrbLayer />
       {/* Subtle glow background */}
       <div style={{
         position:'absolute', top:'-30%', left:'50%', transform:'translateX(-50%)',

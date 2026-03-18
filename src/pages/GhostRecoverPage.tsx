@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { Ghost, ArrowRight, Mail } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -109,7 +110,8 @@ export default function GhostRecoverPage() {
   const timeLeft = ghost ? Math.max(0, Math.floor((new Date(ghost.expires_at).getTime() - Date.now()) / 3600000)) : 0
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <OrbLayer />
       <div style={{ width: '100%', maxWidth: 400 }}>
 
         <div style={{ textAlign: 'center', marginBottom: 32 }}>

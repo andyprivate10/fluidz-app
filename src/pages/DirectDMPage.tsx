@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { ArrowLeft, Send, Camera } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 function formatTime(d: string): string {
   const dt = new Date(d)
@@ -194,7 +195,7 @@ export default function DirectDMPage() {
   const isMe = (senderId: string) => senderId === currentUser?.id
 
   if (loading) return (
-    <div style={{ background: S.bg, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
+    <div style={{ background: S.bg, height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
       <div style={{ padding: '16px', borderBottom: '1px solid ' + S.rule, background: S.bg1, display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg2 }} />
         <div style={{ width: 120, height: 16, borderRadius: 8, background: S.bg2 }} />
@@ -208,7 +209,8 @@ export default function DirectDMPage() {
   )
 
   return (
-    <div style={{ background: S.bg, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
+    <div style={{ background: S.bg, height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
+      <OrbLayer />
       {/* Header */}
       <header style={{ padding: '12px 16px', borderBottom: '1px solid ' + S.rule, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>

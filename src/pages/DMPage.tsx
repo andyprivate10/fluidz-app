@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 type Message = {
   id: string
@@ -344,7 +345,7 @@ export default function DMPage() {
 
   return (
     <div style={{
-      background: S.bg, height: '100vh', display: 'flex', flexDirection: 'column',
+      background: S.bg, height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column',
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       {/* Header */}
@@ -466,6 +467,7 @@ export default function DMPage() {
                 alignItems: isMine ? 'flex-end' : 'flex-start',
                 padding: '0 24px',
               }}>
+      <OrbLayer />
                 {!isMine && (
                   <span style={{ color: S.tx3, fontSize: 11, marginBottom: 2 }}>
                     {message.sender_name}

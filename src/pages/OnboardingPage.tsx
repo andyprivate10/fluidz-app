@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
 import { User as UserIcon, Camera, Sparkles, ChevronRight } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -100,7 +101,8 @@ export default function OnboardingPage() {
   const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? '#FBBF24' : completeness <= 3 ? '#7DD3FC' : S.sage
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
+      <OrbLayer />
 
       {/* Progress bar */}
       <div style={{ padding: '16px 20px 0' }}>

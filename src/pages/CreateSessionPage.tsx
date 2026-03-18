@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { Moon, Pill, Headphones, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -259,6 +260,7 @@ export default function CreateSessionPage() {
                 const count = rolesWanted[role] || 0
                 return (
                   <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p+'18' : S.bg2,border:'1px solid '+(count > 0 ? S.p+'44' : S.rule)}}>
+      <OrbLayer />
                     <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p : S.tx3}}>{role}</span>
                     <div style={{display:'flex',alignItems:'center',gap:4}}>
                       <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[role]||0)>0) n[role]=(n[role]||0)-1; if(n[role]===0) delete n[role]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.rule,background:S.bg,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>

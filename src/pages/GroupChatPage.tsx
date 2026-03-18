@@ -6,6 +6,7 @@ import { showToast } from '../components/Toast'
 import { ArrowLeft, Send, Users, Shield, Camera } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 type Message = {
   id: string
@@ -395,6 +396,7 @@ export default function GroupChatPage() {
 
           return (
             <div key={msg.id} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
+      <OrbLayer />
               {showName && (
                 <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.p+'44' }}>{msg.sender_name}</button>
               )}

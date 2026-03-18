@@ -6,6 +6,7 @@ import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -372,6 +373,7 @@ export default function PublicProfile() {
           const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
             <div style={card}>
+      <OrbLayer />
               <div style={label}>Pratiques ({kinks.length})</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {kinks.map((k: string) => {

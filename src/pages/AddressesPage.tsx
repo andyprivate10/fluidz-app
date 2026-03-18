@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
 import { MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -139,7 +140,7 @@ export default function AddressesPage() {
   function removeStep(index: number) { setDirections(prev => prev.filter((_, i) => i !== index)) }
 
   return (
-    <div style={{ background:S.bg, minHeight:'100vh', maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
+    <div style={{ background:S.bg, minHeight:'100vh', position: 'relative' as const, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
       <div style={{ padding:'40px 20px 16px' }}>
         <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}>← Retour</button>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
@@ -167,6 +168,7 @@ export default function AddressesPage() {
           const isExpanded = expandedId === addr.id
           return (
             <div key={addr.id} style={{ background:S.bg1,border:'1px solid '+S.rule,borderRadius:16,overflow:'hidden' }}>
+      <OrbLayer />
               <div onClick={() => setExpandedId(isExpanded ? null : addr.id)} style={{ padding:16,cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
                 <div>
                   <p style={{ fontSize:15,fontWeight:700,color:S.tx,margin:0 }}>{addr.label}</p>

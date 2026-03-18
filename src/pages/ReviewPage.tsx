@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Star, Send } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -101,13 +102,13 @@ export default function ReviewPage() {
   }
 
   if (loading) return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       <div style={{ padding: '40px 20px 20px' }}>
         <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour à la session</button>
 
@@ -176,6 +177,7 @@ export default function ReviewPage() {
 
           {/* Comment */}
           <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
+      <OrbLayer />
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Commentaire (optionnel, anonyme)</p>
             <textarea
               value={comment}

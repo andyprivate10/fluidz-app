@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -288,6 +289,7 @@ export default function CandidateProfilePage() {
           const def = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
             <div style={card}>
+      <OrbLayer />
               <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {kinks.map((k: string) => {

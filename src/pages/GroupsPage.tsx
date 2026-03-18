@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Plus, Users, Trash2, ChevronRight, X } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -252,6 +253,7 @@ export default function GroupsPage() {
                           background: on ? newColor + '18' : S.bg2,
                           outline: on ? `1px solid ${newColor}44` : 'none',
                         }}>
+      <OrbLayer />
                           {c.avatar_url ? (
                             <img src={c.avatar_url} alt="" style={{ width:28, height:28, borderRadius:'28%', objectFit:'cover' }} />
                           ) : (

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { Ghost, Copy, Check, ArrowRight } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -106,7 +107,8 @@ export default function GhostSetupPage() {
   }
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <OrbLayer />
       <div style={{ width: '100%', maxWidth: 400 }}>
 
         {/* Header */}

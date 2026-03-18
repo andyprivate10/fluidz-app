@@ -6,6 +6,7 @@ import { Clock, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 const S = { ...colors, red: "#F87171", orange: "#FBBF24", blue: "#7DD3FC", grad: colors.p }
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
@@ -13,7 +14,7 @@ type Member = { applicant_id: string; eps_json: Record<string, string>; status: 
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
-const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
+const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
 const card: React.CSSProperties = { background: S.bg1, border: '1px solid #2A2740', borderRadius: 16, padding: 16 }
 
 export default function SessionPage() {
@@ -687,6 +688,7 @@ export default function SessionPage() {
                 const avatar = memberAvatars[m.applicant_id]
                 return (
                   <button key={m.applicant_id} onClick={() => navigate('/contacts/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid #2A2740', background: '#1F1D2B', cursor: 'pointer' }}>
+      <OrbLayer />
                     {avatar ? (
                       <img src={avatar} alt="" style={{ width: 20, height: 20, borderRadius: '28%', objectFit: 'cover' }} />
                     ) : (

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -90,6 +91,7 @@ export default function EditSessionPage() {
 
   return (
     <div style={{ minHeight:'100vh', background:S.bg, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
+      <OrbLayer />
       <div style={{ padding:'40px 20px 16px', borderBottom:'1px solid '+S.rule }}>
         <button onClick={() => navigate('/session/' + id + '/host')} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', marginBottom:12, padding:0 }}>← Host Dashboard</button>
         <h1 style={{ fontSize:22, fontWeight:800, color:S.tx, margin:0 }}>Modifier la session</h1>

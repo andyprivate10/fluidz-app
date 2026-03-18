@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { ChevronRight, Edit3, Trash2 } from 'lucide-react'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 const S = {
   ...colors,
@@ -145,14 +146,14 @@ export default function ContactDetailPage() {
   }
 
   if (loading) return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
       <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: S.p, animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
 
   if (!profile) return (
-    <div style={{ background: S.bg, minHeight: '100vh', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, padding: 24 }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer' }}>← Retour</button>
       <p style={{ color: S.red, marginTop: 16 }}>Profil introuvable.</p>
     </div>
@@ -162,7 +163,7 @@ export default function ContactDetailPage() {
   
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       {/* Header */}
       <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour</button>
@@ -288,6 +289,7 @@ export default function ContactDetailPage() {
                 const t = TYPE_LABELS[inter.type] || { icon: '•', label: inter.type, color: S.tx3 }
                 return (
                   <div key={inter.id} style={{ display: 'flex', gap: 10, marginBottom: i < interactions.length - 1 ? 14 : 0, position: 'relative' }}>
+      <OrbLayer />
                     {/* Dot */}
                     <div style={{ position: 'absolute', left: -17, top: 4, width: 10, height: 10, borderRadius: '50%', background: S.bg1, border: '2px solid ' + t.color, zIndex: 1 }} />
                     {/* Content */}

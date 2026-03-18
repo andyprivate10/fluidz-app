@@ -7,6 +7,7 @@ import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 
 
 const S = {
@@ -106,8 +107,9 @@ export default function ContactsPage() {
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadContacts)
 
   return (
-    <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
       {pullIndicator}
+      <OrbLayer />
       {/* Header */}
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
