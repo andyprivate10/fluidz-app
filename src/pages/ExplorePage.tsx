@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, Users } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
@@ -236,7 +236,7 @@ export default function ExplorePage() {
               border: '1px solid ' + (exploreTab === t ? S.pbd : S.rule),
               background: exploreTab === t ? S.p2 : 'transparent',
               color: exploreTab === t ? S.p : S.tx2,
-            }}>{t === 'profils' ? '👤 Profils' : '🎉 Sessions'}</button>
+            }}>{t === 'profils' ? 'Profils' : 'Sessions'}</button>
           ))}
         </div>
       </div>
@@ -351,8 +351,8 @@ export default function ExplorePage() {
                 </div>
                 {s.description && <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 6px', lineHeight: 1.4 }}>{s.description.slice(0, 80)}{s.description.length > 80 ? '...' : ''}</p>}
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
-                  {s.approx_area && <span style={{ fontSize: 12, color: S.tx2 }}>📍 {s.approx_area}</span>}
-                  {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2 }}>👥 {s.member_count}</span>}
+                  {s.approx_area && <span style={{ fontSize: 12, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} /> {s.approx_area}</span>}
+                  {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}</span>}
                   {s.created_at && <span style={{ fontSize: 10, color: S.tx3 }}>{(() => { const m = Math.floor((Date.now() - new Date(s.created_at).getTime()) / 60000); return m < 60 ? m + 'min' : Math.floor(m / 60) + 'h' })()}</span>}
                 </div>
                 {s.tags && s.tags.length > 0 && (

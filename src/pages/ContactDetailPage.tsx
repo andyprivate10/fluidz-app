@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { ChevronRight, Edit3, Trash2 } from 'lucide-react'
+import { ChevronRight, Edit3, Trash2, MessageCircle } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -27,11 +27,11 @@ type Interaction = {
 }
 
 const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }> = {
-  co_event: { icon: '🎉', label: 'Même event', color: S.p },
-  dm: { icon: '💬', label: 'DM envoyé', color: S.blue },
-  added_contact: { icon: '➕', label: 'Ajouté au carnet', color: S.sage },
-  relation_change: { icon: '🔄', label: 'Relation modifiée', color: S.orange },
-  voted: { icon: '🗳️', label: 'Vote', color: S.tx3 },
+  co_event: { icon: '◎', label: 'Même event', color: S.p },
+  dm: { icon: '↗', label: 'DM envoyé', color: S.blue },
+  added_contact: { icon: '+', label: 'Ajouté au carnet', color: S.sage },
+  relation_change: { icon: '⟳', label: 'Relation modifiée', color: S.orange },
+  voted: { icon: '▣', label: 'Vote', color: S.tx3 },
 }
 
 function timeAgo(dateStr: string): string {
@@ -314,8 +314,8 @@ export default function ContactDetailPage() {
         </div>
 
         {/* Direct DM */}
-        <button onClick={() => navigate('/dm/' + contactUserId)} style={{ width: '100%', padding: '12px', borderRadius: 12, background: S.bg1, border: '1px solid #F9A8A844', color: S.p, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          💬 Envoyer un DM
+        <button onClick={() => navigate('/dm/' + contactUserId)} style={{ width: '100%', padding: '12px', borderRadius: 12, background: S.bg1, border: '1px solid '+S.pbd, color: S.p, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <MessageCircle size={15} strokeWidth={1.5} /> Envoyer un DM
         </button>
 
         {/* Invite to session */}

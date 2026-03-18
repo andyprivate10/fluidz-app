@@ -13,10 +13,10 @@ const S = {
 }
 
 const VIBE_TAGS = [
-  { id: 'fun', label: '🎉 Fun', color: S.sage },
-  { id: 'safe', label: '🛡️ Safe', color: S.blue },
-  { id: 'intense', label: '🔥 Intense', color: S.p },
-  { id: 'chill', label: '😌 Chill', color: S.p },
+  { id: 'fun', label: 'Fun', color: S.sage },
+  { id: 'safe', label: 'Safe', color: S.blue },
+  { id: 'intense', label: 'Intense', color: S.p },
+  { id: 'chill', label: 'Chill', color: S.p },
   { id: 'respectful', label: '🤝 Respectueux', color: S.sage },
   { id: 'awkward', label: '😬 Awkward', color: S.red },
   { id: 'hot', label: '🌶️ Hot', color: S.p },
@@ -126,7 +126,7 @@ export default function ReviewPage() {
       ) : submitted ? (
         <div style={{ padding: '0 20px' }}>
           <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
+            
             <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>Merci !</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>Ton avis est anonyme et aide la communauté</p>
             <button onClick={() => navigate('/')} style={{ padding: '12px 24px', borderRadius: 12, background: S.grad, color: '#fff', border: 'none', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
