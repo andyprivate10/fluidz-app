@@ -594,9 +594,20 @@ export default function HostDashboard() {
                       <span style={{fontSize:12,color:S.green,fontWeight:600}}>Arrivé ✓</span>
                     )}
                     {app.status === 'accepted' && !app.checked_in && (
-                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>Accepté — adresse débloquée</span>
+                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>Accepté — en route</span>
                     )}
                     <button onClick={() => navigate('/session/' + id + '/dm/' + app.applicant_id)} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p300,border:'1px solid '+S.p300+'55',background:'transparent',cursor:'pointer'}}>DM</button>
+                    {app.status === 'accepted' && !app.checked_in && (
+                      <button onClick={async () => {
+                        await supabase.from('notifications').insert({
+                          user_id: app.applicant_id, session_id: id, type: 'nudge',
+                          title: '⏰ On t\'attend !',
+                          body: (sess?.title || 'La session') + ' — tu arrives bientôt ?',
+                          href: '/session/' + id,
+                        })
+                        showToast('Relance envoyée', 'success')
+                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:'#FBBF24',border:'1px solid #FBBF2444',background:'transparent',cursor:'pointer'}}>Relancer</button>
+                    )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>
                 )}
