@@ -41,6 +41,11 @@ export default function BottomNav() {
     if (/\/session\/[^/]+\/host/.test(location.pathname)) setHasNewApplication(false)
   }, [location.pathname])
 
+  // Update document title with unread count
+  useEffect(() => {
+    document.title = unreadNotifCount > 0 ? `(${unreadNotifCount}) Fluidz` : 'Fluidz'
+  }, [unreadNotifCount])
+
   // Hide on DM and dev pages
   if (location.pathname.includes('/dm') || location.pathname.includes('/chat') || location.pathname.includes('/host') || location.pathname.includes('/apply') || location.pathname.includes('/candidate') || location.pathname.includes('/ghost') || location.pathname.includes('/login') || location.pathname.includes('/onboarding') || location.pathname.includes('/review') || location.pathname.includes('/edit') || location.pathname.includes('/dev/')) return null
 
