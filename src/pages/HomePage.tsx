@@ -167,12 +167,19 @@ export default function HomePage() {
 
         {/* Create session CTA */}
         {userId && (
+          <>
           <button
             onClick={() => navigate('/session/create')}
             style={{ width: '100%', padding: 16, background: S.grad, border: 'none', borderRadius: 14, color: '#fff', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.p400 + '44', marginTop: 4 }}
           >
             + Créer une session
           </button>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <button onClick={() => navigate('/session/create?tpl=darkroom')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx3, border: '1px solid ' + S.border, background: S.bg1, cursor: 'pointer' }}>🌙 Dark Room</button>
+            <button onClick={() => navigate('/session/create?tpl=chemical')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx3, border: '1px solid ' + S.border, background: S.bg1, cursor: 'pointer' }}>💊 Chemical</button>
+            <button onClick={() => navigate('/session/create?tpl=techno')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx3, border: '1px solid ' + S.border, background: S.bg1, cursor: 'pointer' }}>🎧 Techno</button>
+          </div>
+          </>
         )}
 
         {/* Login CTA for non-logged-in */}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Moon, Pill, Headphones, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -34,6 +34,8 @@ const inp: React.CSSProperties = {
 
 export default function CreateSessionPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const tplParam = searchParams.get('tpl')
   const [user, setUser] = useState<any>(null)
   const [_template, setTemplate] = useState('custom')
   const [title, setTitle] = useState('')
@@ -50,6 +52,17 @@ export default function CreateSessionPage() {
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
+
+  useEffect(() => {
+    if (tplParam) {
+      const qt = QUICK_TEMPLATES.find(t => t.label.toLowerCase().replace(' ', '') === tplParam)
+      if (qt) {
+        setTitle(qt.title); setDescription(qt.description); setSelectedTags(qt.tags)
+        setRolesWanted(qt.roles); setDirections([{ text: '' }])
+        setTemplate(tplParam as any); setStep('details')
+      }
+    }
+  }, [tplParam])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
