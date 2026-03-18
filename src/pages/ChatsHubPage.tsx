@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { MessageCircle, Users, User } from 'lucide-react'
+import { MessageCircle, Users } from 'lucide-react'
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
@@ -40,12 +40,12 @@ export default function ChatsHubPage() {
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'all' | 'dm' | 'group'>('all')
-  const [userId, setUserId] = useState<string | null>(null)
+  
 
   const loadThreads = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
-    setUserId(user.id)
+    
 
     // Get all sessions where user is host or accepted member
     const [{ data: hosted }, { data: applied }] = await Promise.all([

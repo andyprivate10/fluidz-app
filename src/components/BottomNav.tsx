@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Home, Zap, Bell, User, Compass, MessageCircle } from 'lucide-react'
+import { Home, Zap, User, Compass, MessageCircle } from 'lucide-react'
 
 export default function BottomNav() {
   const navigate = useNavigate()
