@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
-import { Camera } from 'lucide-react'
+import { Camera, ArrowLeft } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
@@ -349,13 +349,13 @@ export default function DMPage() {
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       {/* Header */}
-      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}>&larr;</button>
+          <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}><ArrowLeft size={18} strokeWidth={1.5} /></button>
           {peerAvatar ? (
-            <img src={peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
+            <img src={peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
           ) : peerName ? (
-            <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{peerName[0].toUpperCase()}</div>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{peerName[0].toUpperCase()}</div>
           ) : null}
           <div>
             <h1 style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>
@@ -369,7 +369,7 @@ export default function DMPage() {
           </div>
         </div>
         {peerId && (
-          <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
+          <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
             Voir profil
           </button>
         )}
@@ -385,25 +385,25 @@ export default function DMPage() {
       )}
 
       {showCheckInBanner && !showCheckInConfirmed && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.sage, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
             Tu as été accepté(e) ! 🎉 Clique quand tu arrives.
           </div>
-          <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', cursor: 'pointer' }}>
+          <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', cursor: 'pointer' }}>
             Je suis là ✓
           </button>
         </div>
       )}
 
       {showCheckInConfirmed && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#FBBF2414', border: '1px solid #FBBF2444', borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: '#FBBF24', fontWeight: 600, textAlign: 'center' }}>Check-in envoyé — en attente de confirmation du host</div>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.p2, border: '1px solid #FBBF2444', borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.p, fontWeight: 600, textAlign: 'center' }}>Check-in envoyé — en attente de confirmation du host</div>
         </div>
       )}
 
       {!isHost && appStatus === 'rejected' && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#F8717114', border: '1px solid #F8717144', borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: '#F87171', fontWeight: 600, textAlign: 'center' }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: 'rgba(248,113,113,0.08)', border: '1px solid #F8717144', borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.red, fontWeight: 600, textAlign: 'center' }}>
             Candidature refusee
           </div>
         </div>
@@ -411,7 +411,7 @@ export default function DMPage() {
 
       {/* Address revealed */}
       {isAccepted && session?.exact_address && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: S.sage, marginBottom: 4 }}>
             Adresse revelee
           </div>
@@ -422,19 +422,19 @@ export default function DMPage() {
             <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sage + '44', background: 'transparent', cursor: 'pointer' }}>
               📋 Copier
             </button>
-            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: '#7DD3FC', border: '1px solid #7DD3FC44', background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid #7DD3FC44', background: 'transparent', cursor: 'pointer' }}>
               🗺️ Maps
             </button>
           </div>
           {session.lineup_json?.directions && session.lineup_json.directions.length > 0 && (
             <div style={{ padding: '8px 16px 0' }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#7E7694', margin: '0 0 4px' }}>ACCÈS</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx2, margin: '0 0 4px' }}>ACCÈS</p>
               {session.lineup_json.directions.map((step: any, i: number) => {
                 const text = typeof step === 'string' ? step : step.text
                 const photo = typeof step === 'string' ? undefined : step.photo_url
                 return (
                   <div key={i} style={{ marginBottom: 6 }}>
-                    <p style={{ fontSize: 12, color: '#B8B2CC', margin: 0, lineHeight: 1.4 }}>{i + 1}. {text}</p>
+                    <p style={{ fontSize: 12, color: S.tx2, margin: 0, lineHeight: 1.4 }}>{i + 1}. {text}</p>
                     {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 180, height: 100, objectFit: 'cover', borderRadius: 8, marginTop: 4, border: '1px solid #2A2740' }} />}
                   </div>
                 )
@@ -453,7 +453,7 @@ export default function DMPage() {
             <div style={{ alignSelf: 'flex-start' }}><SkeletonLine width={240} height={44} style={{ borderRadius: 16 }} /></div>
           </div>
         ) : loadError ? (
-          <p style={{ color: '#F87171', margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>Impossible de charger les données. Réessaie.</p>
+          <p style={{ color: S.red, margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>Impossible de charger les données. Réessaie.</p>
         ) : messages.length === 0 ? (
           <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
             Aucun message. Envoie le premier !
@@ -494,12 +494,12 @@ export default function DMPage() {
                     const isAudio = url.endsWith('.webm') || url.includes('audio')
                     const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
                     if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
-                    if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 10, display: 'block' }} />
-                    return <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: 10, display: 'block' }} />
+                    if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 12, display: 'block' }} />
+                    return <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block' }} />
                   })}
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
                     message.text.includes('google.com/maps') ? (
-                      <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: '#4ADE8018', borderRadius: 8, color: '#4ADE80', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                      <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: '#4ADE8018', borderRadius: 8, color: S.sage, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
                         {message.text.split('\n')[0]} 🗺
                       </a>
                     ) : <span>{message.text}</span>
@@ -524,10 +524,10 @@ export default function DMPage() {
           <Camera size={18} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={uploading} />
         </label>
-        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
+        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
           {recording ? '■' : '●'}
         </button>
-        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? '#4ADE80' : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.rule }}>
+        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.rule }}>
           {sharingLocation ? '📍' : '📌'}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
