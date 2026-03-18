@@ -7,11 +7,7 @@ import {User as UserIcon, Camera, Sparkles, ChevronRight, ArrowLeft} from 'lucid
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const S = colors
 
 const ROLES = ['Top', 'Bottom', 'Versa', 'Side']
 const MORPHOS = ['Mince', 'Sportif', 'Athlétique', 'Moyen', 'Costaud', 'Musclé']

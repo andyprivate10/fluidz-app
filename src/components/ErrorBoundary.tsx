@@ -34,7 +34,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             alignItems: 'center',
           }}
         >
-          <p style={{ color: '#F87171', fontSize: 16, margin: 0, textAlign: 'center' }}>
+          <p style={{ color: S.red, fontSize: 16, margin: 0, textAlign: 'center' }}>
             Quelque chose s'est mal pass&eacute;.
           </p>
           <button

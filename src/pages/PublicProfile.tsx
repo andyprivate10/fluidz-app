@@ -9,11 +9,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import {MessageCircle, Sparkles, ArrowLeft} from 'lucide-react'
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const S = colors
 
 function monthsAgo(isoDate: string): number {
   const d = new Date(isoDate)

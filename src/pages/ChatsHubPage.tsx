@@ -183,7 +183,7 @@ export default function ChatsHubPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                   <span style={{
                     ...typeStyle('meta'), fontWeight: 600, flexShrink: 0,
-                    color: t.type === 'direct' ? '#7DD3FC' : t.type === 'group' ? C.lav : C.sage,
+                    color: t.type === 'direct' ? C.blue : t.type === 'group' ? C.lav : C.sage,
                   }}>
                     {t.type === 'direct' ? 'Direct' : t.type === 'group' ? 'Groupe' : t.isHost ? 'Host' : 'Session'}
                   </span>

@@ -120,10 +120,10 @@ export default function LoginPage() {
             {/* Dev */}
             {isDev && (
               <div style={{ marginTop: 16, background: C.bg2, borderRadius: R.block, padding: 14, border: `1px solid ${C.rule2}` }}>
-                <p style={{ ...typeStyle('micro'), color: '#F87171', margin: '0 0 8px' }}>DEV LOGIN</p>
+                <p style={{ ...typeStyle('micro'), color: C.red, margin: '0 0 8px' }}>DEV LOGIN</p>
                 <input value={devEmail} onChange={e => setDevEmail(e.target.value)} placeholder="email" style={{ ...inp, fontSize: 12, padding: '8px 12px', marginBottom: 6 }} />
                 <input value={devPass} onChange={e => setDevPass(e.target.value)} placeholder="password" type="password" style={{ ...inp, fontSize: 12, padding: '8px 12px', marginBottom: 6 }} />
-                <button onClick={devLogin} style={{ width: '100%', padding: 8, borderRadius: R.chip, ...typeStyle('label'), color: '#F87171', border: `1px solid rgba(248,113,113,0.24)`, background: 'transparent', cursor: 'pointer' }}>DEV Sign in</button>
+                <button onClick={devLogin} style={{ width: '100%', padding: 8, borderRadius: R.chip, ...typeStyle('label'), color: C.red, border: `1px solid rgba(248,113,113,0.24)`, background: 'transparent', cursor: 'pointer' }}>DEV Sign in</button>
               </div>
             )}
           </div>

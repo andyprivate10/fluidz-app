@@ -6,11 +6,7 @@ import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const S = colors
 
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,

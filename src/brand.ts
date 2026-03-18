@@ -32,6 +32,12 @@ export const colors = {
   lav:     '#9080BA',
   lavbg:   'rgba(144,128,186,0.08)',
   lavbd:   'rgba(144,128,186,0.18)',
+
+  // Semantic
+  red:    '#F87171',
+  orange: '#FBBF24',
+  blue:   '#7DD3FC',
+  grad:   '#F07858',
 } as const
 
 // ─── Typography ───────────────────────────────────────

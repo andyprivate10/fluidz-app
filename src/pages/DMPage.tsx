@@ -18,11 +18,7 @@ type Message = {
   media_urls?: string[]
 }
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const S = colors
 
 function formatRelative(dateStr: string): string {
   const d = new Date(dateStr)

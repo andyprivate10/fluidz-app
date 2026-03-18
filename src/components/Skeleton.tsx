@@ -1,10 +1,6 @@
 import { colors } from '../brand'
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const S = colors
 
 export function SkeletonLine({ width = '100%', height = 14, style }: { width?: string | number; height?: number; style?: React.CSSProperties }) {
   return (

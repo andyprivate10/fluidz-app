@@ -16,7 +16,7 @@ const statusMap: Record<string, { text: string; color: string; Icon: typeof Cloc
   pending:    { text: 'En attente',  color: C.lav,  Icon: Clock },
   accepted:   { text: 'Accepté',     color: C.sage, Icon: CheckCircle2 },
   checked_in: { text: 'Check-in',    color: C.sage, Icon: CheckCircle2 },
-  rejected:   { text: 'Refusé',      color: '#F87171', Icon: XCircle },
+  rejected:   { text: 'Refusé',      color: C.red, Icon: XCircle },
 }
 
 function timeAgo(dateStr: string): string {
@@ -105,7 +105,7 @@ export default function SessionsPage() {
                     <p style={{ ...typeStyle('section'), color: C.tx, margin: 0, flex: 1 }}>{sess.title}</p>
                     <span style={{
                       ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.pill, marginLeft: 8,
-                      color: isOpen ? C.sage : isEnded ? '#F87171' : C.tx3,
+                      color: isOpen ? C.sage : isEnded ? C.red : C.tx3,
                       background: isOpen ? C.sagebg : isEnded ? 'rgba(248,113,113,0.08)' : C.bg2,
                       border: `1px solid ${isOpen ? C.sagebd : isEnded ? 'rgba(248,113,113,0.18)' : C.rule}`,
                       display: 'flex', alignItems: 'center', gap: 4,

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { calculateVibeScore, vibeScoreBadge } from '../lib/vibeScore'
 import type { VibeScoreData } from '../lib/vibeScore'
 import { colors } from '../brand'
-const S = { ...colors, red: "#F87171", orange: "#FBBF24", blue: "#7DD3FC", grad: colors.p }
+const S = colors
 
 /**
  * Inline Vibe Score badge — shows score + level label

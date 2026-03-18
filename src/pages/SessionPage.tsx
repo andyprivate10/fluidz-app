@@ -7,7 +7,7 @@ import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-const S = { ...colors, red: "#F87171", orange: "#FBBF24", blue: "#7DD3FC", grad: colors.p }
+const S = colors
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }

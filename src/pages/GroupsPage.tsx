@@ -6,11 +6,7 @@ import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
-const S = {
-  ...colors,
-  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
-  grad: colors.p,
-}
+const S = colors
 
 const GROUP_COLORS = [S.p, S.sage, S.blue, S.p, '#A78BFA', S.red, '#34D399', '#FB923C']
 

@@ -14,12 +14,7 @@ const ROLES = ['Top','Bottom','Versa','Side']
 const PREP_OPTIONS = ['Actif','Inactif','Non']
 const KINKS_LIST = ['Fist', 'SM léger', 'SM hard', 'Bareback', 'Group', 'Exhib', 'Voyeur', 'Fétichisme', 'Jeux de rôle']
 
-const S = {
-  ...colors,
-  red: '#F87171',
-  blue: '#3B82F6',
-  grad: colors.p,
-}
+const S = colors
 
 function monthsAgo(isoDate: string): number | null {
   if (!isoDate) return null
