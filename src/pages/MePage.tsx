@@ -76,6 +76,7 @@ export default function MePage() {
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
   const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
+  const [locationVisible, setLocationVisible] = useState(false)
 
   const [displayName, setDisplayName] = useState('')
   const [age, setAge] = useState('')
@@ -157,6 +158,7 @@ export default function MePage() {
       .maybeSingle()
     if (data) {
       setDisplayName(data.display_name || '')
+        setLocationVisible(!!(data as any).location_visible)
       const p = data.profile_json || {}
       const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')
@@ -387,7 +389,25 @@ export default function MePage() {
             Se déconnecter
           </button>
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          {/* Gallery visibility toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: '#16141F', border: '1px solid #2A2740', borderRadius: 12 }}>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#F0EDFF', margin: 0 }}>Visible dans la galerie</p>
+              <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>Les profils à proximité te voient</p>
+            </div>
+            <button onClick={async () => {
+              const nv = !locationVisible
+              if (user) { await supabase.from('user_profiles').update({ location_visible: nv }).eq('id', user.id) }
+              setLocationVisible(nv)
+            }} style={{
+              width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
+              background: locationVisible ? '#4ADE80' : '#2A2740', transition: 'background 0.2s',
+            }}>
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: locationVisible ? 21 : 3, transition: 'left 0.2s' }} />
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#F9A8A8', border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
               💕 Naughty Book
             </button>
