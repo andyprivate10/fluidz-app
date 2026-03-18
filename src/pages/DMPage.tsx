@@ -60,6 +60,9 @@ export default function DMPage() {
 
   const [displayName, setDisplayName] = useState<string>('')
   const [uploading, setUploading] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioChunksRef = useRef<Blob[]>([])
 
   const isHost = currentUser?.id === session?.host_id
   const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
@@ -179,6 +182,40 @@ export default function DMPage() {
 
     return () => { supabase.removeChannel(channel) }
   }, [id, peerIdParam])
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mr = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+      audioChunksRef.current = []
+      mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
+      mr.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop())
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        if (blob.size < 100) return
+        setUploading(true)
+        const { data: { user: u } } = await supabase.auth.getUser()
+        if (!u) { setUploading(false); return }
+        const path = `${u.id}/audio_${Date.now()}.webm`
+        const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
+        if (error) { setUploading(false); return }
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+        const name = displayName || u.email || 'Moi'
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '🎤 Audio', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id, has_media: true, media_urls: [publicUrl] })
+        setUploading(false)
+      }
+      mr.start()
+      mediaRecorderRef.current = mr
+      setRecording(true)
+    } catch { /* mic permission denied */ }
+  }
+
+  function stopRecording() {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop()
+    }
+    setRecording(false)
+  }
 
   // Auto-scroll to bottom when a new message is sent or received
   useEffect(() => {
@@ -378,7 +415,9 @@ export default function DMPage() {
                   overflow: 'hidden',
                 }}>
                   {message.has_media && message.media_urls?.map((url: string, mi: number) => (
-                    <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: message.has_media && !message.text?.replace('📷 Photo','').trim() ? 12 : 8, display: 'block', marginBottom: message.text?.replace('📷 Photo','').trim() ? 6 : 0 }} />
+                    url.endsWith('.webm') || url.includes('audio') ? (
+                      <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
+                    ) : <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: message.has_media && !message.text?.replace('📷 Photo','').trim() ? 12 : 8, display: 'block', marginBottom: message.text?.replace('📷 Photo','').trim() ? 6 : 0 }} />
                   ))}
                   {message.text && message.text !== '📷 Photo' && <span>{message.text}</span>}
                 </div>
@@ -401,6 +440,10 @@ export default function DMPage() {
           <Camera size={18} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={uploading} />
         </label>
+        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
+          {recording ? '⏹' : '🎤'}
+        </button>
+        <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input
           type="text"
           value={newMessage}

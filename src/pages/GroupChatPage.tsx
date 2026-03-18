@@ -50,6 +50,9 @@ export default function GroupChatPage() {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioChunksRef = useRef<Blob[]>([])
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [session, setSession] = useState<{ title: string; host_id: string; group_chat_enabled: boolean } | null>(null)
   const [members, setMembers] = useState<Member[]>([])
@@ -208,6 +211,37 @@ export default function GroupChatPage() {
       })
     } catch {}
     setUploading(false)
+  }
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mr = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+      audioChunksRef.current = []
+      mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
+      mr.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop())
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        if (blob.size < 100) return
+        setUploading(true)
+        const { data: { user: u } } = await supabase.auth.getUser()
+        if (!u) { setUploading(false); return }
+        const path = u.id + '/audio_' + Date.now() + '.webm'
+        const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
+        if (error) { setUploading(false); return }
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '🎤 Audio', sender_name: displayName || 'Anonyme', room_type: 'group', has_media: true, media_urls: [publicUrl] })
+        setUploading(false)
+      }
+      mr.start()
+      mediaRecorderRef.current = mr
+      setRecording(true)
+    } catch { /* mic permission denied */ }
+  }
+
+  function stopRecording() {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') mediaRecorderRef.current.stop()
+    setRecording(false)
   }
 
   async function sendMessage() {
@@ -373,6 +407,9 @@ export default function GroupChatPage() {
                 overflow:'hidden',
               }}>
                 {msg.has_media && msg.media_urls?.map((url: string, mi: number) => (
+                  url.endsWith('.webm') || url.includes('audio') ? (
+                    <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 220, height: 36 }} />
+                  ) :
                   <img key={mi} src={url} alt="" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block', marginBottom: msg.text !== '📷 Photo' ? 4 : 0 }} />
                 ))}
                 {msg.text !== '📷 Photo' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
@@ -393,8 +430,12 @@ export default function GroupChatPage() {
         }}>
           <label style={{ display:'flex', alignItems:'center', justifyContent:'center', width:40, height:40, borderRadius:'50%', background:S.bg2, border:'1px solid '+S.border, cursor: uploading?'not-allowed':'pointer', flexShrink:0, opacity: uploading?0.5:1 }}>
             <Camera size={16} style={{ color:S.tx3 }} />
-            <input type="file" accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(f)sendPhoto(f);e.target.value=''}} style={{display:'none'}} disabled={uploading} />
+            <input type="file" accept="image/*,video/*" onChange={e => { const f=e.target.files?.[0]; if(f) sendPhoto(f); e.target.value='' }} style={{ display:'none' }} disabled={uploading} />
           </label>
+          <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width:38, height:38, borderRadius:10, border:'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor:'pointer', fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', animation: recording ? 'pulse 1s infinite' : 'none' }}>
+            {recording ? '⏹' : '🎤'}
+          </button>
+          <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
           <input
             ref={inputRef}
             value={newMessage}
