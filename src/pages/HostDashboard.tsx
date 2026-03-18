@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Clock } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
@@ -314,7 +314,7 @@ export default function HostDashboard() {
         <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <div>
-            <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:'#7E7694',background:'#2A2740',padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>⏱ {elapsed}</span>}</div>
+            <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}</div>
             <p style={{fontSize:13,color:S.tx3,margin:0}}>{sess?.approx_area}</p>
           </div>
           <button onClick={toggleStatus} style={{

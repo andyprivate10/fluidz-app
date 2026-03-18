@@ -289,11 +289,11 @@ export default function SessionPage() {
           <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
           {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#B8B2CC', background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length}</span>}
           {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#4ADE80', background: '#4ADE8018', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length + 1}</span>}
-          {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>⏱ {elapsed}</span>}
+          {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
           {session.status === 'open' && session.created_at && (() => {
             const mins = Math.floor((Date.now() - new Date(session.created_at).getTime()) / 60000)
             const label = mins < 60 ? mins + 'min' : Math.floor(mins / 60) + 'h' + (mins % 60 > 0 ? String(mins % 60).padStart(2, '0') : '')
-            return <span style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>⏱ {label}</span>
+            return <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.rule, padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{label}</span>
           })()}
         </div>
         {session.tags && session.tags.length > 0 && (
@@ -319,7 +319,7 @@ export default function SessionPage() {
           </div>
         ) : session.approx_area ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-            <span style={{ fontSize: 13, color: '#7E7694' }}>Autour de {session.approx_area}</span>
+            <span style={{ fontSize: 13, color: S.tx2 }}>Autour de {session.approx_area}</span>
             {!isHost && <span style={{ fontSize: 11, color: '#453F5C' }}>🔒 Adresse révélée après acceptation</span>}
           </div>
         ) : null}
@@ -340,7 +340,7 @@ export default function SessionPage() {
 
         {session.description && (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>DESCRIPTION</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>DESCRIPTION</div>
             <div style={{ fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>{session.description}</div>
           </div>
         )}
@@ -361,7 +361,7 @@ export default function SessionPage() {
           })
           return (
             <div style={card}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>RÔLES RECHERCHÉS</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>RÔLES RECHERCHÉS</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {Object.entries(wanted).map(([role, count]) => {
                   const have = currentRoles[role] || 0
@@ -389,7 +389,7 @@ export default function SessionPage() {
 
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>ACCÈS</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>ACCÈS</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {session.lineup_json.directions.map((step, i) => {
                 const text = typeof step === 'string' ? step : step.text
@@ -410,7 +410,7 @@ export default function SessionPage() {
 
         {members.length > 0 && (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP · {members.length + 1}</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 12 }}>LINEUP · {members.length + 1}</div>
             <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {/* Host first */}
@@ -441,7 +441,7 @@ export default function SessionPage() {
                   )
                 })}
                 {members.length > 5 && (
-                  <span style={{ marginLeft: 6, fontSize: 13, fontWeight: 600, color: '#7E7694' }}>+{members.length - 5}</span>
+                  <span style={{ marginLeft: 6, fontSize: 13, fontWeight: 600, color: S.tx2 }}>+{members.length - 5}</span>
                 )}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
@@ -451,7 +451,7 @@ export default function SessionPage() {
                     <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: '#B8B2CC', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <span style={{ color: '#4ADE80', fontSize: 10 }}>✓</span>}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
                   )
                 })}
-                {members.length > 5 && <span style={{ fontSize: 12, color: '#7E7694' }}>+{members.length - 5}</span>}
+                {members.length > 5 && <span style={{ fontSize: 12, color: S.tx2 }}>+{members.length - 5}</span>}
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
@@ -471,7 +471,7 @@ export default function SessionPage() {
                     )}
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
-                      {role && <div style={{ fontSize: 11, color: '#7E7694' }}>{role}</div>}
+                      {role && <div style={{ fontSize: 11, color: S.tx2 }}>{role}</div>}
                     </div>
                     {m.status === 'checked_in' && <div style={{ fontSize: 11, color: '#4ADE80', fontWeight: 600 }}>Check-in</div>}
                   </button>
@@ -517,9 +517,9 @@ export default function SessionPage() {
 
         {members.length >= 3 ? (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>VOTE CONSULTATIF</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>VOTE CONSULTATIF</div>
             {pendingApps.filter(p => !currentUser || p.applicant_id !== currentUser.id).length === 0 ? (
-              <p style={{ fontSize: 13, color: '#7E7694', margin: '4px 0 0' }}>Aucune candidature en attente de vote pour le moment.</p>
+              <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>Aucune candidature en attente de vote pour le moment.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {pendingApps
@@ -540,7 +540,7 @@ export default function SessionPage() {
                           )}
                           <div style={{ flex: 1 }}>
                             <div style={{ fontSize: 14, fontWeight: 600, color: '#F0EDFF' }}>{name}</div>
-                            <div style={{ fontSize: 11, color: '#7E7694' }}>Candidature en attente</div>
+                            <div style={{ fontSize: 11, color: S.tx2 }}>Candidature en attente</div>
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: 8 }}>
@@ -583,7 +583,7 @@ export default function SessionPage() {
                             <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> Non</span>
                           </button>
                         </div>
-                        <div style={{ fontSize: 12, color: '#7E7694', textAlign: 'right' }}>
+                        <div style={{ fontSize: 12, color: S.tx2, textAlign: 'right' }}>
                           {yesCount} oui · {noCount} non
                         </div>
                       </div>
@@ -591,13 +591,13 @@ export default function SessionPage() {
                   })}
               </div>
             )}
-            <p style={{ fontSize: 11, color: '#7E7694', marginTop: 8 }}>
+            <p style={{ fontSize: 11, color: S.tx2, marginTop: 8 }}>
               Vote consultatif : visible par tous les membres. Le host tranche la décision finale.
             </p>
           </div>
         ) : (
           <div style={card}>
-            <p style={{ fontSize: 13, color: '#7E7694', margin: 0 }}>Vote disponible dès 3 membres</p>
+            <p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>Vote disponible dès 3 membres</p>
           </div>
         )}
 
@@ -615,7 +615,7 @@ export default function SessionPage() {
           <div style={{ ...card, background: '#FBBF2414', borderColor: '#FBBF24', textAlign: 'center' }}>
             <Clock size={24} style={{color:'#FBBF24',margin:'0 auto'}} />
             <div style={{ fontSize: 14, color: '#FBBF24', marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
-            <p style={{ fontSize: 12, color: '#7E7694', marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
+            <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
           </div>
         )}
 
@@ -680,8 +680,8 @@ export default function SessionPage() {
         {/* Suggest adding co-participants to Naughty Book */}
         {myApp?.status === 'checked_in' && members.length > 0 && (
           <div style={{ ...card, borderColor: '#F9A8A833' }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: '#7E7694', margin: '0 0 8px' }}>AJOUTER AU CARNET ?</p>
-            <p style={{ fontSize: 12, color: '#7E7694', margin: '0 0 10px' }}>Tu peux ajouter les membres de cette session à ton Naughty Book</p>
+            <p style={{ fontSize: 12, fontWeight: 700, color: S.tx2, margin: '0 0 8px' }}>AJOUTER AU CARNET ?</p>
+            <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 10px' }}>Tu peux ajouter les membres de cette session à ton Naughty Book</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {members.filter(m => m.applicant_id !== currentUser?.id).slice(0, 6).map(m => {
                 const name = memberNames[m.applicant_id] || 'Anonyme'
@@ -772,8 +772,8 @@ export default function SessionPage() {
         <div style={{ padding: '0 16px 12px' }}>
           <div style={{ background: S.bg1, border: '1px solid #2A2740', borderRadius: 16, padding: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#7E7694', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avis des participants</span>
-              <span style={{ fontSize: 11, color: '#7E7694' }}>{reviewSummary.count} avis</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avis des participants</span>
+              <span style={{ fontSize: 11, color: S.tx2 }}>{reviewSummary.count} avis</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
               <span style={{ fontSize: 32, fontWeight: 800, color: '#FBBF24' }}>{reviewSummary.avg}</span>
@@ -800,7 +800,7 @@ export default function SessionPage() {
         <div style={{ padding: '0 16px 16px' }}>
           <div style={{ background: S.bg1, border: '1px solid #FBBF2444', borderRadius: 16, padding: 20, textAlign: 'center' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#F0EDFF', margin: '0 0 6px' }}>Comment c'était ?</p>
-            <p style={{ fontSize: 12, color: '#7E7694', margin: '0 0 14px' }}>Ton avis anonyme aide la communauté</p>
+            <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 14px' }}>Ton avis anonyme aide la communauté</p>
             <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px #F4727244' }}>
               ⭐ Laisser un avis
             </button>
