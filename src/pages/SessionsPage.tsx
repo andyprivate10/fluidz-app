@@ -61,7 +61,7 @@ export default function SessionsPage() {
       {pullIndicator}
 
       {/* Header */}
-      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 16px', borderBottom: `1px solid ${C.rule}` }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 16px', borderBottom: `1px solid ${C.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <h1 style={{ ...typeStyle('title'), color: C.tx, margin: '0 0 14px' }}>Sessions</h1>
         <div style={{ display: 'flex', gap: 8 }}>
           {([['hosted', 'Mes sessions', hosted.length, C.p], ['applied', 'Candidatures', applied.length, C.sage]] as const).map(([k, label, count, color]) => (

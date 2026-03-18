@@ -111,7 +111,7 @@ export default function ChatsHubPage() {
       <OrbLayer />
       {pullIndicator}
 
-      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${C.rule}` }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${C.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <h1 style={{ ...typeStyle('title'), color: C.tx, margin: '0 0 14px' }}>Messages</h1>
         <div style={{ display: 'flex', gap: 6 }}>
           {tabDefs.map(({ k, label }) => {

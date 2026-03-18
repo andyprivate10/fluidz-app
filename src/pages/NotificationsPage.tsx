@@ -64,7 +64,7 @@ export default function NotificationsPage() {
       <OrbLayer />
       {pullIndicator}
 
-      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${C.rule}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${C.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
           <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', ...typeStyle('body'), color: C.tx2, cursor: 'pointer', padding: 0, marginBottom: 8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
           <h1 style={{ ...typeStyle('title'), color: C.tx, margin: 0 }}>Notifications</h1>

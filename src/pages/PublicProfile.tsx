@@ -36,7 +36,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
     await supabase.from('notifications').insert({
       user_id: targetUserId,
       type: 'contact_request',
-      title: '💕 ' + name + ' s\'intéresse à toi',
+      title: name + ' s\'intéresse à toi',
       body: role ? role + ' · Veut en voir plus' : 'Veut entrer en contact',
       href: '/profile/' + user.id,
     })
