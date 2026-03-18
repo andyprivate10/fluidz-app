@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Home, Zap, Bell, User, Compass } from 'lucide-react'
+import { Home, Zap, Bell, User, Compass, MessageCircle } from 'lucide-react'
 
 export default function BottomNav() {
   const navigate = useNavigate()
@@ -52,8 +52,8 @@ export default function BottomNav() {
   const tabs = [
     { path: '/', icon: Home, label: 'Home' },
     { path: '/sessions', icon: Zap, label: 'Sessions' },
+    { path: '/chats', icon: MessageCircle, label: 'Chats' },
     { path: '/explore', icon: Compass, label: 'Explore' },
-    { path: '/notifications', icon: Bell, label: 'Notifs' },
     { path: '/me', icon: User, label: 'Moi' },
   ]
 

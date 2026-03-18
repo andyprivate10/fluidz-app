@@ -436,6 +436,13 @@ export default function MePage() {
             </div>
           )}
 
+          {/* Preview button */}
+          {user && (
+            <button onClick={() => navigate('/profile/' + user.id)} style={{ width: '100%', padding: '10px 16px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: '#F9A8A8', fontSize: 13, fontWeight: 600, cursor: 'pointer', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              👁 Voir mon profil (comme les autres me voient)
+            </button>
+          )}
+
           {/* Profile views */}
           {profileViews > 0 && (
             <div style={{ marginBottom: 12, padding: '10px 14px', background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

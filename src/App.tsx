@@ -28,6 +28,7 @@ import GroupsPage from './pages/GroupsPage'
 import ContactDetailPage from './pages/ContactDetailPage'
 import ReviewPage from './pages/ReviewPage'
 import ExplorePage from './pages/ExplorePage'
+import ChatsHubPage from './pages/ChatsHubPage'
 import AddressesPage from './pages/AddressesPage'
 import BottomNav from './components/BottomNav'
 
@@ -51,6 +52,7 @@ const routes = [
   { path: '/me', element: <MePage /> },
   { path: '/contacts', element: <ContactsPage /> },
   { path: '/explore', element: <ExplorePage /> },
+  { path: '/chats', element: <ChatsHubPage /> },
   { path: '/addresses', element: <AddressesPage /> },
   { path: '/contacts/:contactUserId', element: <ContactDetailPage /> },
   { path: '/groups', element: <GroupsPage /> },
