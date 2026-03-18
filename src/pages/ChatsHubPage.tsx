@@ -51,9 +51,11 @@ export default function ChatsHubPage() {
     
 
     // Get all sessions where user is host or accepted member
-    const [{ data: hosted }, { data: applied }] = await Promise.all([
+    const [{ data: hosted }, { data: applied }, { data: dmPeerMsgs }] = await Promise.all([
       supabase.from('sessions').select('id, title, host_id').eq('host_id', user.id),
       supabase.from('applications').select('session_id, sessions(id, title, host_id)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
+      // Also find sessions where user received DMs (dm_peer_id = user)
+      supabase.from('messages').select('session_id').eq('dm_peer_id', user.id).limit(50),
     ])
 
     const sessionMap = new Map<string, { title: string; hostId: string; isHost: boolean }>()
@@ -63,6 +65,13 @@ export default function ChatsHubPage() {
         sessionMap.set(a.session_id, { title: a.sessions.title, hostId: a.sessions.host_id, isHost: false })
       }
     })
+
+    // Load DM Direct sessions where user is receiver (not host)
+    const dmPeerSessionIds = [...new Set((dmPeerMsgs || []).map((m: any) => m.session_id))].filter(sid => !sessionMap.has(sid))
+    if (dmPeerSessionIds.length > 0) {
+      const { data: dmSessions } = await supabase.from('sessions').select('id, title, host_id').in('id', dmPeerSessionIds)
+      ;(dmSessions || []).forEach((s: any) => sessionMap.set(s.id, { title: s.title, hostId: s.host_id, isHost: false }))
+    }
 
     const sessionIds = Array.from(sessionMap.keys())
     if (sessionIds.length === 0) { setThreads([]); setLoading(false); return }
@@ -151,7 +160,7 @@ export default function ChatsHubPage() {
               border: '1px solid ' + (tab === k ? S.p300 + '55' : S.border),
               background: tab === k ? S.p300 + '14' : 'transparent',
               color: tab === k ? S.p300 : S.tx3,
-            }}>{l} {k !== 'all' ? `(${threads.filter(t => k === 'dm' ? t.type === 'dm_session' : t.type === 'group').length})` : ''}</button>
+            }}>{l} {k !== 'all' ? `(${threads.filter(t => k === 'direct' ? (t as any).type === 'direct' : k === 'dm' ? t.type === 'dm_session' : t.type === 'group').length})` : ''}</button>
           ))}
         </div>
       </div>
