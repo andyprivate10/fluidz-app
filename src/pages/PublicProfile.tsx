@@ -22,6 +22,51 @@ function monthsAgo(isoDate: string): number {
 const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding: 16, border: '1px solid ' + S.border, marginBottom: 12 }
 const label: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }
 
+function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: string; myProfile: Record<string,unknown> | null }) {
+  const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+
+  async function sendRequest() {
+    setSending(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setSending(false); return }
+    const name = (myProfile as any)?.display_name || user.email || 'Quelqu\'un'
+    const role = (myProfile as any)?.role || ''
+    const avatar = (myProfile as any)?.avatar_url || ''
+    // Send notification with profile preview
+    await supabase.from('notifications').insert({
+      user_id: targetUserId,
+      type: 'contact_request',
+      title: '💕 ' + name + ' s\'intéresse à toi',
+      body: role ? role + ' · Veut en voir plus' : 'Veut entrer en contact',
+      href: '/profile/' + user.id,
+    })
+    // Log interaction
+    await supabase.from('interaction_log').insert({
+      user_id: user.id, target_user_id: targetUserId,
+      type: 'contact_request', meta: { role, avatar },
+    })
+    setSent(true); setSending(false)
+  }
+
+  if (sent) return (
+    <div style={{ marginTop: 8, padding: '10px 16px', borderRadius: 12, background: '#4ADE8014', border: '1px solid #4ADE8044', textAlign: 'center' }}>
+      <span style={{ fontSize: 13, fontWeight: 600, color: '#4ADE80' }}>✓ Demande envoyée</span>
+    </div>
+  )
+
+  return (
+    <button onClick={sendRequest} disabled={sending} style={{
+      marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12,
+      background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none',
+      color: '#fff', fontSize: 14, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer',
+      boxShadow: '0 2px 12px rgba(244,114,114,0.3)', opacity: sending ? 0.7 : 1,
+    }}>
+      {sending ? 'Envoi...' : '💕 Tu m\'intéresses · Entrer en contact'}
+    </button>
+  )
+}
+
 function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
   const [sessions, setSessions] = useState<{ id: string; title: string }[]>([])
   const [sending, setSending] = useState(false)
@@ -68,6 +113,7 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showStory, setShowStory] = useState(false)
+  const [myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
   const [allowed, setAllowed] = useState<boolean>(false)
 
   useEffect(() => {
@@ -104,6 +150,9 @@ export default function PublicProfile() {
         if (!cancelled) setProfile(prof)
       }
       setLoading(false)
+      // Load my profile for contact request button
+      const { data: mp } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
+      if (mp) setMyProfile({ display_name: mp.display_name, ...(mp.profile_json as Record<string,unknown> || {}) })
       // Log profile view
       if (user?.id && userId && user.id !== userId) {
         supabase.from('interaction_log').insert({
@@ -195,6 +244,7 @@ export default function PublicProfile() {
           ▶ Voir la Story
         </button>
         {/* Add to contacts button */}
+        <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
         <AddContactButton targetUserId={userId!} />
         <InviteToSessionButton targetUserId={userId!} />
       </div>
