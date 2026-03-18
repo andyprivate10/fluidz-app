@@ -14,7 +14,7 @@ type Message = {
 
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',
+  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
   border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
   grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
 }
@@ -50,6 +50,8 @@ export default function DMPage() {
   const [appStatus, setAppStatus] = useState<string | null>(null)
   const [peerId, setPeerId] = useState<string | null>(peerIdParam || null)
   const [peerName, setPeerName] = useState<string>('')
+  const [peerAvatar, setPeerAvatar] = useState<string>('')
+  const [peerRole, setPeerRole] = useState<string>('')
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -108,8 +110,10 @@ export default function DMPage() {
           setPeerId(pid)
           // Fetch peer display name
           if (pid) {
-            const { data: peerProf } = await supabase.from('user_profiles').select('display_name').eq('id', pid).maybeSingle()
+            const { data: peerProf } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', pid).maybeSingle()
             if (peerProf?.display_name) setPeerName(peerProf.display_name)
+            if ((peerProf as any)?.profile_json?.avatar_url) setPeerAvatar((peerProf as any).profile_json.avatar_url)
+            if ((peerProf as any)?.profile_json?.role) setPeerRole((peerProf as any).profile_json.role)
           }
         }
 
@@ -226,13 +230,20 @@ export default function DMPage() {
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}>&larr;</button>
+          {peerAvatar ? (
+            <img src={peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.border, flexShrink: 0 }} />
+          ) : peerName ? (
+            <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{peerName[0].toUpperCase()}</div>
+          ) : null}
           <div>
-            <h1 style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>
-              {session?.title ?? 'DM'}
+            <h1 style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>
+              {peerName || (session?.title ?? 'DM')}
             </h1>
-            <p style={{ color: S.tx3, fontSize: 12, margin: 0 }}>
-              {isHost ? (peerName ? `DM avec ${peerName}` : 'Tu es le host') : (peerName ? `DM avec ${peerName}` : 'Message avec le host')}
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {peerRole && <span style={{ fontSize: 11, color: S.p300, fontWeight: 600 }}>{peerRole}</span>}
+              {peerRole && <span style={{ fontSize: 11, color: S.tx4 }}>·</span>}
+              <span style={{ fontSize: 11, color: S.tx3 }}>{session?.title ?? ''}</span>
+            </div>
           </div>
         </div>
         {peerId && (
