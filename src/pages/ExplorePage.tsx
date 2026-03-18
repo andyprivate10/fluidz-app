@@ -51,6 +51,7 @@ export default function ExplorePage() {
   const [showFilters, setShowFilters] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [sessionSearch, setSessionSearch] = useState('')
+  const [myViewCount, setMyViewCount] = useState(0)
   const [exploreTab, setExploreTab] = useState<'profils'|'sessions'>('profils')
   const [nearbySessions, setNearbySessions] = useState<any[]>([])
 
@@ -59,7 +60,13 @@ export default function ExplorePage() {
       if (!user) { navigate('/login?next=/explore'); return }
       setUserId(user.id)
       // Load current visibility setting
-      supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng').eq('id', user.id).maybeSingle().then(({ data }) => {
+      supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng').eq('id', user.id).maybeSingle().then(async (res) => {
+        // Also load profile view count
+        const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
+        const { count } = await supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', user.id).eq('type', 'profile_view').gte('created_at', weekAgo)
+        setMyViewCount(count ?? 0)
+        return res
+      }).then(({ data }) => {
         if (data) {
           setVisible(!!data.location_visible)
           if (data.approx_lat && data.approx_lng) { setMyLat(data.approx_lat); setMyLng(data.approx_lng) }
@@ -168,7 +175,7 @@ export default function ExplorePage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>Autour de moi</h1>
-            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? `${filtered.length} profils` : `${nearbySessions.length} sessions`} à proximité</p>
+            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? `${filtered.length} profils` : `${nearbySessions.length} sessions`} à proximité{myViewCount > 0 ? ` · Vu par ${myViewCount} cette semaine` : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.green + '44' : S.border), background: visible ? S.green + '14' : 'transparent', color: visible ? S.green : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
