@@ -40,6 +40,8 @@ export default function OnboardingPage() {
       setUser(u)
       // Load existing profile if any
       supabase.from('user_profiles').select('display_name,profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
+        // Skip if onboarding already done
+        if (prof?.profile_json?.onboarding_done) { navigate('/'); return }
         if (prof?.display_name && prof.display_name !== 'Anonymous') setDisplayName(prof.display_name)
         const pj = prof?.profile_json || {}
         if (pj.age) setAge(String(pj.age))
