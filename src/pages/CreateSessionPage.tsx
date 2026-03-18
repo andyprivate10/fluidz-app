@@ -20,10 +20,10 @@ const TEMPLATES: { id: string; label: string; icon: LucideIcon; tags: string[]; 
 
 const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
 
-const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: string[] }[] = [
-  { label: 'Dark Room', icon: Moon, title: 'Dark Room ce soir', tags: ['Dark Room', 'Top', 'Bottom'] },
-  { label: 'Chemical', icon: Pill, title: 'Chemical ce soir', tags: ['Chemical', 'Top', 'Bottom'] },
-  { label: 'Techno', icon: Headphones, title: 'Techno ce soir', tags: ['Techno', 'Top', 'Bottom'] },
+const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: string[]; description: string; roles: Record<string, number> }[] = [
+  { label: 'Dark Room', icon: Moon, title: 'Dark Room ce soir 🌙', tags: ['Dark Room', 'Top', 'Bottom'], description: 'Soirée dark room privée. Respect et discrétion.', roles: { Top: 2, Bottom: 2 } },
+  { label: 'Chemical', icon: Pill, title: 'Plan chem ce soir 💊', tags: ['Chemical'], description: 'Plan chem entre adultes consentants. Safe space.', roles: { Top: 1, Bottom: 2, Versa: 1 } },
+  { label: 'Techno', icon: Headphones, title: 'After techno 🎧', tags: ['Techno', 'Musclés'], description: 'Décompression post-club. Énergie haute.', roles: {} },
 ]
 
 const inp: React.CSSProperties = {
@@ -183,7 +183,7 @@ export default function CreateSessionPage() {
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>Il pré-remplira les tags et le titre</p>
           <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
             {QUICK_TEMPLATES.map(qt => (
-              <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setSelectedTags(qt.tags); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
+              <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setDescription(qt.description); setSelectedTags(qt.tags); setRolesWanted(qt.roles); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
                 padding:'12px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.border,background:S.bg1,color:S.tx,cursor:'pointer',display:'flex',alignItems:'center',gap:8,
               }}>
                 <span><qt.icon size={16} /></span>
