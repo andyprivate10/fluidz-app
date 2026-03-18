@@ -62,6 +62,15 @@ export default function PublicProfile() {
         if (!cancelled) setProfile(prof)
       }
       setLoading(false)
+      // Log profile view
+      if (user?.id && userId && user.id !== userId) {
+        supabase.from('interaction_log').insert({
+          user_id: user.id,
+          target_user_id: userId,
+          type: 'profile_view' as any,
+          meta: {},
+        }).then(() => {})
+      }
     }
     run()
     return () => { cancelled = true }
