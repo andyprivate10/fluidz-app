@@ -74,18 +74,14 @@ export default function DirectDMPage() {
     const { data: me } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
     setDisplayName(me?.display_name || user.email || 'Moi')
 
-    // Ensure a "direct DM session" exists
+    // Ensure a "direct DM session" exists (upsert to avoid race condition)
     const sid = directDmSessionId(user.id, peerId!)
     setSessionId(sid)
 
-    // Check if session exists
-    const { data: existing } = await supabase.from('sessions').select('id').eq('id', sid).maybeSingle()
-    if (!existing) {
-      await supabase.from('sessions').insert({
-        id: sid, host_id: user.id, title: 'DM Direct', status: 'open',
-        description: 'Direct message', approx_area: '',
-      }).select('id').single()
-    }
+    await supabase.from('sessions').upsert({
+      id: sid, host_id: user.id, title: 'DM Direct', status: 'open',
+      description: 'Direct message', approx_area: '',
+    }, { onConflict: 'id' })
 
     // Load messages
     const { data: msgs } = await supabase.from('messages')

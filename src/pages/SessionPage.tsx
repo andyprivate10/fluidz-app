@@ -285,6 +285,7 @@ export default function SessionPage() {
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#F0EDFF', flex: 1 }}>{session.title}</h1>
           <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
           {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#B8B2CC', background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length}</span>}
+          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#4ADE80', background: '#4ADE8018', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length + 1}</span>}
           {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>⏱ {elapsed}</span>}
           {session.status === 'open' && session.created_at && (() => {
             const mins = Math.floor((Date.now() - new Date(session.created_at).getTime()) / 60000)
