@@ -79,6 +79,7 @@ export default function MePage() {
   const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
   const [locationVisible, setLocationVisible] = useState(false)
   const [profileViews, setProfileViews] = useState(0)
+  const [contactRequests, setContactRequests] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
 
   async function mergeGhost(mergeId: string, userId: string) {
@@ -191,6 +192,7 @@ export default function MePage() {
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', uid).eq('type', 'profile_view').gte('created_at', weekAgo).then(({ count }) => setProfileViews(count ?? 0))
         supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', uid).is('read_at', null).then(({ count }) => setUnreadCount(count ?? 0))
+        supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', uid).eq('type', 'contact_request').is('read_at', null).then(({ count }) => setContactRequests(count ?? 0))
       const p = data.profile_json || {}
       const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')
@@ -479,6 +481,14 @@ export default function MePage() {
             <div style={{ marginBottom: 12, padding: '10px 14px', background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: '#B8B2CC' }}>👁 Vu par <strong style={{ color: '#F0EDFF' }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
+          )}
+
+          {/* Contact requests */}
+          {contactRequests > 0 && (
+            <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: '#F9A8A814', border: '1px solid #F9A8A844', borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 13, color: '#F9A8A8', fontWeight: 600 }}>💕 {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
+              <span style={{ fontSize: 11, color: '#7E7694' }}>Voir →</span>
+            </button>
           )}
 
           {/* Profile completeness */}
