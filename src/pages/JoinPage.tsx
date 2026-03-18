@@ -210,15 +210,15 @@ export default function JoinPage() {
               <span style={{fontSize:11,color:'#453F5C'}}>Adresse exacte révélée après acceptation</span>
             </div>
 
-            {hostName && (
-              <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,margin:'0 0 12px'}}>
+            {hostName && session.host_id && (
+              <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,margin:'0 0 12px',background:'none',border:'none',cursor:'pointer',padding:0}}>
                 {hostAvatar ? (
-                  <img src={hostAvatar} alt="" style={{width:22,height:22,borderRadius:'28%',objectFit:'cover',border:'1px solid #2A2740'}} />
+                  <img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'28%',objectFit:'cover',border:'1px solid #2A2740'}} />
                 ) : (
-                  <div style={{width:22,height:22,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,color:'#F9A8A8',fontWeight:700}}>{hostName[0]}</div>
+                  <div style={{width:28,height:28,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:'#F9A8A8',fontWeight:700}}>{hostName[0]}</div>
                 )}
-                <span style={{fontSize:12,color:S.tx3}}>par <span style={{color:S.p300,fontWeight:600}}>{hostName}</span></span>
-              </div>
+                <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p300,fontWeight:600,textDecoration:'underline',textDecorationColor:'#F9A8A844'}}>{hostName}</span></span>
+              </button>
             )}
 
             {session.description && (
