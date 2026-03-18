@@ -161,7 +161,7 @@ export default function ContactDetailPage() {
   return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       {/* Header */}
-      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
+      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>

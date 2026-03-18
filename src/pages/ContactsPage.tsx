@@ -107,7 +107,7 @@ export default function ContactsPage() {
       {pullIndicator}
       <OrbLayer />
       {/* Header */}
-      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule }}>
+      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>Naughty Book</h1>

@@ -608,7 +608,7 @@ export default function SessionPage() {
         )}
 
         {checkInDone && myApp?.status !== 'checked_in' && (
-          <div style={{ ...card, background: '#FBBF2414', borderColor: S.p, textAlign: 'center' }}>
+          <div style={{ ...card, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
             <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
             <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
             <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
@@ -721,7 +721,7 @@ export default function SessionPage() {
           <div style={{ ...card }}>
             {myApp.status === 'pending' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: '#FBBF2418', border: '1px solid #FBBF2444' }}>En attente de réponse...</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid #FBBF2444' }}>En attente de réponse...</span>
               </div>
             )}
             {myApp.status === 'accepted' && (
@@ -739,7 +739,7 @@ export default function SessionPage() {
               </div>
             )}
             {myApp.status === 'rejected' && (
-              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: '#F8717118', border: '1px solid #F8717144' }}>Non retenu</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: 'rgba(248,113,113,0.08)', border: '1px solid #F8717144' }}>Non retenu</span>
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

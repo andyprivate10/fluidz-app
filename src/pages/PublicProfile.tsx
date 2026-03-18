@@ -263,7 +263,7 @@ export default function PublicProfile() {
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96 }}>
-      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
+      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
 
         {hasMedia && (
@@ -357,7 +357,7 @@ export default function PublicProfile() {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
             'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
             'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
-            'SM léger': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
+            'SM léger': { bg: S.p2, color: S.p, border: S.pbd },
             'SM hard': { bg: 'rgba(248,113,113,0.13)', color: S.red, border: 'rgba(248,113,113,0.27)' },
             'Fist': { bg: 'rgba(248,113,113,0.13)', color: S.red, border: 'rgba(248,113,113,0.27)' },
             'Group': { bg: 'rgba(125,211,252,0.13)', color: S.blue, border: 'rgba(125,211,252,0.27)' },
@@ -365,7 +365,7 @@ export default function PublicProfile() {
             'Exhib': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Fétichisme': { bg: '#34D39922', color: '#34D399', border: '#34D39944' },
             'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
-            'Bears welcome': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
+            'Bears welcome': { bg: S.p2, color: S.p, border: S.pbd },
           }
           const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (

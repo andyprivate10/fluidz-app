@@ -273,7 +273,7 @@ export default function CandidateProfilePage() {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
             'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
             'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
-            'SM léger': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
+            'SM léger': { bg: S.p2, color: S.p, border: S.pbd },
             'SM hard': { bg: 'rgba(248,113,113,0.13)', color: S.red, border: 'rgba(248,113,113,0.27)' },
             'Fist': { bg: 'rgba(248,113,113,0.13)', color: S.red, border: 'rgba(248,113,113,0.27)' },
             'Group': { bg: 'rgba(125,211,252,0.13)', color: S.blue, border: 'rgba(125,211,252,0.27)' },
@@ -281,7 +281,7 @@ export default function CandidateProfilePage() {
             'Exhib': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Fétichisme': { bg: '#34D39922', color: '#34D399', border: '#34D39944' },
             'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
-            'Bears welcome': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
+            'Bears welcome': { bg: S.p2, color: S.p, border: S.pbd },
           }
           const def = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
