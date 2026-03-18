@@ -287,9 +287,9 @@ export default function PublicProfile() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {!hasMedia && (
             p.avatar_url ? (
-              <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', flexShrink: 0, border: '2px solid ' + S.rule }} />
+              <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid ' + S.rule }} />
             ) : (
-              <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, color: 'white', flexShrink: 0 }}>
                 {(profile.display_name || '?')[0].toUpperCase()}
               </div>
             )
@@ -331,7 +331,7 @@ export default function PublicProfile() {
         </button>
         {/* Add to contacts button */}
         {/* Direct DM button */}
-        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: S.bg1, border: '1px solid '+S.rule, color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           <MessageCircle size={13} strokeWidth={1.5} style={{marginRight:3}} /> DM direct
         </button>
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
@@ -362,9 +362,9 @@ export default function PublicProfile() {
             'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
             'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
             'SM léger': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
-            'SM hard': { bg: '#F8717122', color: S.red, border: '#F8717144' },
-            'Fist': { bg: '#F8717122', color: S.red, border: '#F8717144' },
-            'Group': { bg: '#7DD3FC22', color: S.blue, border: '#7DD3FC44' },
+            'SM hard': { bg: 'rgba(248,113,113,0.13)', color: S.red, border: 'rgba(248,113,113,0.27)' },
+            'Fist': { bg: 'rgba(248,113,113,0.13)', color: S.red, border: 'rgba(248,113,113,0.27)' },
+            'Group': { bg: 'rgba(125,211,252,0.13)', color: S.blue, border: 'rgba(125,211,252,0.27)' },
             'Voyeur': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Exhib': { bg: '#A78BFA22', color: '#A78BFA', border: '#A78BFA44' },
             'Fétichisme': { bg: '#34D39922', color: '#34D399', border: '#34D39944' },

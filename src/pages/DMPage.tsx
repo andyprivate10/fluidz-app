@@ -435,7 +435,7 @@ export default function DMPage() {
                 return (
                   <div key={i} style={{ marginBottom: 6 }}>
                     <p style={{ fontSize: 12, color: S.tx2, margin: 0, lineHeight: 1.4 }}>{i + 1}. {text}</p>
-                    {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 180, height: 100, objectFit: 'cover', borderRadius: 8, marginTop: 4, border: '1px solid #2A2740' }} />}
+                    {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 180, height: 100, objectFit: 'cover', borderRadius: 8, marginTop: 4, border: '1px solid '+S.rule }} />}
                   </div>
                 )
               })}

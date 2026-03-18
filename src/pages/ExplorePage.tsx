@@ -248,7 +248,7 @@ export default function ExplorePage() {
             type="text" value={searchText} onChange={e => setSearchText(e.target.value)}
             placeholder="Rechercher un profil..." style={{
               width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
-              border: '1px solid #2A2740', color: S.tx, fontSize: 13, outline: 'none',
+              border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
               fontFamily: 'inherit', boxSizing: 'border-box',
             }}
           />
@@ -325,7 +325,7 @@ export default function ExplorePage() {
             <input type="text" value={sessionSearch} onChange={e => setSessionSearch(e.target.value)}
               placeholder="Rechercher une session..." style={{
                 width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
-                border: '1px solid #2A2740', color: S.tx, fontSize: 13, outline: 'none',
+                border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
                 fontFamily: 'inherit', boxSizing: 'border-box',
               }} />
           </div>
@@ -337,12 +337,12 @@ export default function ExplorePage() {
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {nearbySessions.filter((s: any) => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).map((s: any) => (
-              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: S.bg1, border: '1px solid #2A2740', borderRadius: 16, padding: 14, cursor: 'pointer' }}>
+              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 14, cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                   {s.host_avatar ? (
-                    <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid #2A2740' }} />
+                    <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule }} />
                   ) : (
-                    <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
                   )}
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0 }}>{s.title}</p>

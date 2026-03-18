@@ -189,9 +189,9 @@ export default function GroupsPage() {
               <div style={{ display:'flex', gap:-4, marginTop:10 }}>
                 {group.members.slice(0, 6).map((m, i) => (
                   m.avatar_url ? (
-                    <img key={m.contact_user_id} src={m.avatar_url} alt="" style={{ width:28, height:28, borderRadius:'28%', objectFit:'cover', border:'2px solid '+S.bg1, marginLeft: i > 0 ? -6 : 0 }} />
+                    <img key={m.contact_user_id} src={m.avatar_url} alt="" style={{ width:28, height:28, borderRadius:'50%', objectFit:'cover', border:'2px solid '+S.bg1, marginLeft: i > 0 ? -6 : 0 }} />
                   ) : (
-                    <div key={m.contact_user_id} style={{ width:28, height:28, borderRadius:'28%', background:group.color+'33', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, fontWeight:700, color:group.color, border:'2px solid '+S.bg1, marginLeft: i > 0 ? -6 : 0 }}>
+                    <div key={m.contact_user_id} style={{ width:28, height:28, borderRadius:'50%', background:group.color+'33', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, fontWeight:700, color:group.color, border:'2px solid '+S.bg1, marginLeft: i > 0 ? -6 : 0 }}>
                       {m.display_name[0]?.toUpperCase()}
                     </div>
                   )
@@ -255,9 +255,9 @@ export default function GroupsPage() {
                         }}>
       <OrbLayer />
                           {c.avatar_url ? (
-                            <img src={c.avatar_url} alt="" style={{ width:28, height:28, borderRadius:'28%', objectFit:'cover' }} />
+                            <img src={c.avatar_url} alt="" style={{ width:28, height:28, borderRadius:'50%', objectFit:'cover' }} />
                           ) : (
-                            <div style={{ width:28, height:28, borderRadius:'28%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff' }}>{c.display_name[0]?.toUpperCase()}</div>
+                            <div style={{ width:28, height:28, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff' }}>{c.display_name[0]?.toUpperCase()}</div>
                           )}
                           <span style={{ fontSize:13, fontWeight:600, color: on ? S.tx : S.tx3 }}>{c.display_name}</span>
                           {on && <span style={{ marginLeft:'auto', fontSize:14, color:newColor }}>✓</span>}

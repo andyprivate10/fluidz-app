@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
+import { colors } from '../brand'
+const S = colors
 
 /**
  * LazyImage — loads image only when visible in viewport
@@ -34,7 +36,7 @@ export default function LazyImage({
       style={{
         position: 'relative',
         overflow: 'hidden',
-        background: loaded ? 'transparent' : 'linear-gradient(135deg, #1F1D2B 0%, #2A2740 100%)',
+        background: loaded ? 'transparent' : 'linear-gradient(135deg, '+S.bg2+' 0%, '+S.bg3+' 100%)',
         ...style,
       }}
       className={className}

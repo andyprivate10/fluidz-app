@@ -178,9 +178,9 @@ export default function ContactsPage() {
               {/* Avatar */}
               <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
                 {contact.avatar_url ? (
-                  <img src={contact.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+                  <img src={contact.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
                 ) : (
-                  <div style={{ width: 44, height: 44, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff' }}>
                     {(contact.display_name || '?')[0].toUpperCase()}
                   </div>
                 )}

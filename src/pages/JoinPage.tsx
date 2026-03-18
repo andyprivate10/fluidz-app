@@ -175,7 +175,7 @@ export default function JoinPage() {
       <div style={{
         position:'absolute', top:'-30%', left:'50%', transform:'translateX(-50%)',
         width:400, height:400, borderRadius:'50%',
-        background:'radial-gradient(circle, rgba(249,168,168,0.06) 0%, transparent 70%)',
+        background:'radial-gradient(circle, rgba(240,120,88,0.04) 0%, transparent 70%)',
         pointerEvents:'none',
       }} />
 
@@ -215,9 +215,9 @@ export default function JoinPage() {
             {hostName && session.host_id && (
               <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,margin:'0 0 12px',background:'none',border:'none',cursor:'pointer',padding:0}}>
                 {hostAvatar ? (
-                  <img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'28%',objectFit:'cover',border:'1px solid #2A2740'}} />
+                  <img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule}} />
                 ) : (
-                  <div style={{width:28,height:28,borderRadius:'28%',background:S.p2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
+                  <div style={{width:28,height:28,borderRadius:'50%',background:S.p2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
                 )}
                 <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:S.pbd}}>{hostName}</span></span>
               </button>
@@ -246,9 +246,9 @@ export default function JoinPage() {
                   {lineup.slice(0, 5).map((m) => (
                     <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:S.bg+'cc',borderRadius:12,border:'1px solid '+S.rule}}>
                       {m.avatar_url ? (
-                        <img src={m.avatar_url} alt="" style={{width:36,height:36,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
+                        <img src={m.avatar_url} alt="" style={{width:36,height:36,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
                       ) : (
-                        <div style={{width:36,height:36,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'#fff',flexShrink:0}}>
+                        <div style={{width:36,height:36,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'#fff',flexShrink:0}}>
                           {(m.display_name || '?')[0].toUpperCase()}
                         </div>
                       )}
@@ -295,7 +295,7 @@ export default function JoinPage() {
               <button onClick={() => navigate('/login?next=/join/' + code)} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
                 color:'#fff',background:S.grad,border:'none',cursor:'pointer',
-                boxShadow:'0 4px 24px rgba(244,114,114,0.3)',
+                boxShadow:'0 4px 24px rgba(240,120,88,0.28)',
               }}>
                 Postuler →
               </button>
@@ -314,7 +314,7 @@ export default function JoinPage() {
               <button onClick={quickApply} disabled={quickApplying} style={{
                 width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
                 color:'#fff',background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
-                boxShadow:'0 4px 24px rgba(244,114,114,0.3)',opacity:quickApplying?0.7:1,
+                boxShadow:'0 4px 24px rgba(240,120,88,0.28)',opacity:quickApplying?0.7:1,
               }}>
                 {quickApplying ? 'Envoi...' : 'Postuler →'}
               </button>
@@ -329,7 +329,7 @@ export default function JoinPage() {
             <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
               width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
               color:'#fff',background:S.grad,border:'none',cursor:'pointer',
-              boxShadow:'0 4px 24px rgba(244,114,114,0.3)',
+              boxShadow:'0 4px 24px rgba(240,120,88,0.28)',
             }}>
               Postuler →
             </button>

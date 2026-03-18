@@ -62,7 +62,7 @@ export function VibeScoreCard({ userId }: { userId: string }) {
   ]
 
   return (
-    <div style={{ background: S.bg1, border: '1px solid #2A2740', borderRadius: 16, padding: 16 }}>
+    <div style={{ background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 28, fontWeight: 800, color: badge.color }}>⚡ {data.score}</span>

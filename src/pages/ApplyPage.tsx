@@ -541,9 +541,9 @@ export default function ApplyPage() {
             <p style={{fontSize:11,fontWeight:700,color:S.p,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>Ce que le host verra</p>
             <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:10}}>
               {profile?.profile_json?.avatar_url ? (
-                <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.rule}} />
+                <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule}} />
               ) : (
-                <div style={{width:40,height:40,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,color:'#fff'}}>{(profile?.display_name || '?')[0].toUpperCase()}</div>
+                <div style={{width:40,height:40,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,color:'#fff'}}>{(profile?.display_name || '?')[0].toUpperCase()}</div>
               )}
               <div>
                 <p style={{margin:0,fontSize:14,fontWeight:700,color:S.tx}}>{guestMode ? guestDisplayName || 'Invité' : profile?.display_name || 'Anonyme'}</p>

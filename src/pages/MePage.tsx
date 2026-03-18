@@ -428,7 +428,7 @@ export default function MePage() {
           </button>
 
           {/* Gallery visibility toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Visible dans la galerie</p>
               <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>Les profils à proximité te voient</p>
@@ -452,11 +452,11 @@ export default function MePage() {
             <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p2, cursor: 'pointer' }}>
               <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> Naughty Book
             </button>
-            <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
               <Users size={13} strokeWidth={1.5} style={{marginRight:3}} /> Groupes
             </button>
           </div>
-          <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <MapPin size={13} strokeWidth={1.5} style={{marginRight:3}} /> Mes adresses
           </button>
         </div>
@@ -486,7 +486,7 @@ export default function MePage() {
                 } else {
                   navigator.clipboard.writeText(url)
                 }
-              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid '+S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                 <Share2 size={13} strokeWidth={1.5} style={{marginRight:3}} /> Partager
               </button>
             </div>
@@ -494,7 +494,7 @@ export default function MePage() {
 
           {/* Profile views */}
           {profileViews > 0 && (
-            <div style={{ marginBottom: 12, padding: '10px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ marginBottom: 12, padding: '10px 14px', background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: S.tx2 }}><Eye size={12} strokeWidth={1.5} style={{marginRight:3}} /> Vu par <strong style={{ color: S.tx }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
           )}
@@ -521,7 +521,7 @@ export default function MePage() {
             const done = checks.filter(c => c.done).length
             const pct = Math.round((done / checks.length) * 100)
             return (
-              <div style={{ marginBottom: 16, background: S.bg1, border: '1px solid #2A2740', borderRadius: 14, padding: 14 }}>
+              <div style={{ marginBottom: 16, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 14, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2 }}>Profil {pct}% complet</span>
                   <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
@@ -531,7 +531,7 @@ export default function MePage() {
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (
-                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? '#4ADE8044' : S.rule) }}>
+                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? S.sagebd : S.rule) }}>
                       {c.done ? '✓' : '○'} {c.label}
                     </span>
                   ))}

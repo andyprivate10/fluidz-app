@@ -19,7 +19,7 @@ export function SkeletonLine({ width = '100%', height = 14, style }: { width?: s
 export function SkeletonCircle({ size = 40 }: { size?: number }) {
   return (
     <div style={{
-      width: size, height: size, borderRadius: '28%', background: S.bg2,
+      width: size, height: size, borderRadius: '50%', background: S.bg2,
       animation: 'skeletonPulse 1.5s ease-in-out infinite',
       flexShrink: 0,
     }} />
