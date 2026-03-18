@@ -74,7 +74,16 @@ function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user || user.id === targetUserId) return
-      supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open').then(({ data }) => setSessions(data || []))
+      // Load sessions where user is host OR accepted member
+      Promise.all([
+        supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open'),
+        supabase.from('applications').select('session_id, sessions(id, title)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
+      ]).then(([{ data: hosted }, { data: member }]) => {
+        const all = new Map<string, { id: string; title: string }>()
+        ;(hosted || []).forEach((s: any) => all.set(s.id, s))
+        ;(member || []).forEach((a: any) => { if (a.sessions) all.set(a.sessions.id, { id: a.sessions.id, title: a.sessions.title }) })
+        setSessions([...all.values()])
+      })
     })
   }, [targetUserId])
 
