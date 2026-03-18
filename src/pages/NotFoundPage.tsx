@@ -25,6 +25,11 @@ export default function NotFoundPage() {
         }}>
           Retour à l'accueil
         </button>
+        <div style={{ display:'flex', gap:12, marginTop:20, flexWrap:'wrap', justifyContent:'center' }}>
+          <button onClick={() => navigate('/login')} style={{ padding:'8px 16px', borderRadius:10, fontSize:13, fontWeight:600, color:'#7E7694', border:'1px solid #2A2740', background:'transparent', cursor:'pointer' }}>Se connecter</button>
+          <button onClick={() => navigate('/sessions')} style={{ padding:'8px 16px', borderRadius:10, fontSize:13, fontWeight:600, color:'#7E7694', border:'1px solid #2A2740', background:'transparent', cursor:'pointer' }}>Mes sessions</button>
+          <button onClick={() => navigate('/contacts')} style={{ padding:'8px 16px', borderRadius:10, fontSize:13, fontWeight:600, color:'#7E7694', border:'1px solid #2A2740', background:'transparent', cursor:'pointer' }}>Mon carnet</button>
+        </div>
       </div>
     </div>
   )
