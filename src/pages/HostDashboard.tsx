@@ -89,6 +89,11 @@ export default function HostDashboard() {
   }
 
   async function decide(appId: string, status: 'accepted'|'rejected') {
+    if (status === 'rejected') {
+      const app = apps.find(a => a.id === appId)
+      const name = app?.user_profiles?.display_name || 'ce candidat'
+      if (!window.confirm('Refuser ' + name + ' ?')) return
+    }
     setActionLoading(appId)
     await supabase.from('applications').update({ status }).eq('id', appId)
     const app = apps.find(a => a.id === appId)
