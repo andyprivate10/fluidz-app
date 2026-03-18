@@ -61,6 +61,8 @@ export default function DMPage() {
   const [displayName, setDisplayName] = useState<string>('')
   const [uploading, setUploading] = useState(false)
   const [recording, setRecording] = useState(false)
+  const [sharingLocation, setSharingLocation] = useState(false)
+  const locationWatchRef = useRef<number | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
 
@@ -216,6 +218,53 @@ export default function DMPage() {
     }
     setRecording(false)
   }
+
+  async function shareLocation() {
+    if (sharingLocation) {
+      if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current)
+      locationWatchRef.current = null
+      setSharingLocation(false)
+      const { data: { user: u } } = await supabase.auth.getUser()
+      if (u) {
+        const name = displayName || u.email || 'Moi'
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '📍 Partage de position terminé', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id })
+      }
+      return
+    }
+    if (!navigator.geolocation) return
+    setSharingLocation(true)
+    const { data: { user: u } } = await supabase.auth.getUser()
+    if (!u) { setSharingLocation(false); return }
+    const name = displayName || u.email || 'Moi'
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude, longitude } = pos.coords
+      const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
+      await supabase.from('messages').insert({
+        session_id: id, sender_id: u.id,
+        text: `📍 Ma position\n${mapUrl}`,
+        sender_name: name, room_type: 'dm',
+        dm_peer_id: peerIdParam || session?.host_id,
+      })
+    }, () => { setSharingLocation(false) })
+    locationWatchRef.current = navigator.geolocation.watchPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords
+        const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
+        await supabase.from('messages').insert({
+          session_id: id, sender_id: u.id,
+          text: `📍 Position mise à jour\n${mapUrl}`,
+          sender_name: name, room_type: 'dm',
+          dm_peer_id: peerIdParam || session?.host_id,
+        })
+      },
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 30000, timeout: 15000 }
+    )
+  }
+
+  useEffect(() => {
+    return () => { if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current) }
+  }, [])
 
   // Auto-scroll to bottom when a new message is sent or received
   useEffect(() => {
@@ -421,7 +470,13 @@ export default function DMPage() {
                     if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 10, display: 'block' }} />
                     return <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: 10, display: 'block' }} />
                   })}
-                  {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && <span>{message.text}</span>}
+                  {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
+                    message.text.includes('google.com/maps') ? (
+                      <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: '#4ADE8018', borderRadius: 8, color: '#4ADE80', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                        {message.text.split('\n')[0]} 🗺
+                      </a>
+                    ) : <span>{message.text}</span>
+                  )}
                 </div>
                 <span style={{ color: S.tx3, fontSize: 10, marginTop: 2 }}>
                   {formatRelative(message.created_at)}
@@ -444,6 +499,9 @@ export default function DMPage() {
         </label>
         <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
           {recording ? '⏹' : '🎤'}
+        </button>
+        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? '#4ADE80' : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.border }}>
+          {sharingLocation ? '📍' : '📌'}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input
