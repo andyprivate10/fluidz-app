@@ -362,9 +362,22 @@ export default function SessionPage() {
 
         {members.length > 0 && (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 12 }}>LINEUP · {members.length + 1}</div>
             <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
+                {/* Host first */}
+                {hostProfile && (
+                  <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{ display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer', position: 'relative' }}>
+                    {hostProfile.avatar ? (
+                      <img src={hostProfile.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #F9A8A8', boxSizing: 'border-box' }} />
+                    ) : (
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #F9A8A8', boxSizing: 'border-box' }}>
+                        {hostProfile.name[0].toUpperCase()}
+                      </div>
+                    )}
+                    <span style={{ position: 'absolute', top: -4, right: -4, fontSize: 10 }}>👑</span>
+                  </button>
+                )}
                 {members.slice(0, 5).map((m, i) => {
                   const avatarUrl = memberAvatars[m.applicant_id]
                   return (
