@@ -4,6 +4,14 @@ import { supabase } from '../lib/supabase'
 import { ArrowLeft, Send, Camera } from 'lucide-react'
 import { compressImage } from '../lib/media'
 
+function formatTime(d: string): string {
+  const dt = new Date(d)
+  const now = new Date()
+  const sameDay = dt.toDateString() === now.toDateString()
+  if (sameDay) return dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+  return dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+}
+
 const S = {
   bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
   tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
@@ -163,7 +171,7 @@ export default function DirectDMPage() {
         )}
         <div style={{ flex: 1 }} onClick={() => navigate('/profile/' + peerId)}>
           <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }}>{peerProfile?.name || 'Chargement...'}</p>
-          {peerProfile?.role && <p style={{ fontSize: 11, color: S.p300, margin: 0 }}>{peerProfile.role}</p>}
+          {peerProfile?.role && <span style={{ fontSize: 11, color: S.p300 }}>{peerProfile.role}</span>}
         </div>
       </header>
 
@@ -194,6 +202,9 @@ export default function DirectDMPage() {
               {msg.text && msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && (
                 <span style={{ color: S.tx }}>{msg.text}</span>
               )}
+              <div style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start', alignItems: 'center', gap: 4, marginTop: 2, padding: msg.has_media ? '0 8px 4px' : 0 }}>
+                <span style={{ fontSize: 10, color: S.tx4 }}>{formatTime(msg.created_at)}</span>
+              </div>
             </div>
           </div>
         ))}
