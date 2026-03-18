@@ -6,7 +6,7 @@ import { Clock, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: string[]; roles_wanted?: Record<string, number> } }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
@@ -373,11 +373,21 @@ export default function SessionPage() {
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
           <div style={card}>
             <div style={{ fontSize: 12, fontWeight: 600, color: '#7E7694', marginBottom: 8 }}>ACCÈS</div>
-            <ol style={{ margin: 0, paddingLeft: 20, fontSize: 14, color: '#B8B2CC', lineHeight: 1.6 }}>
-              {session.lineup_json.directions.map((step, i) => (
-                <li key={i} style={{ marginBottom: 6 }}>{step}</li>
-              ))}
-            </ol>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {session.lineup_json.directions.map((step, i) => {
+                const text = typeof step === 'string' ? step : step.text
+                const photo = typeof step === 'string' ? undefined : step.photo_url
+                return (
+                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#F9A8A8', minWidth: 22 }}>{i + 1}.</span>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 14, color: '#B8B2CC', margin: 0, lineHeight: 1.5 }}>{text}</p>
+                      {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 240, height: 140, objectFit: 'cover', borderRadius: 10, marginTop: 6, border: '1px solid #2A2740' }} />}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         ) : null}
 

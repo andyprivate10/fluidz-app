@@ -299,9 +299,16 @@ export default function DMPage() {
           {session.lineup_json?.directions && session.lineup_json.directions.length > 0 && (
             <div style={{ padding: '8px 16px 0' }}>
               <p style={{ fontSize: 11, fontWeight: 700, color: '#7E7694', margin: '0 0 4px' }}>ACCÈS</p>
-              {session.lineup_json.directions.map((step: string, i: number) => (
-                <p key={i} style={{ fontSize: 12, color: '#B8B2CC', margin: '2px 0', lineHeight: 1.4 }}>{i + 1}. {step}</p>
-              ))}
+              {session.lineup_json.directions.map((step: any, i: number) => {
+                const text = typeof step === 'string' ? step : step.text
+                const photo = typeof step === 'string' ? undefined : step.photo_url
+                return (
+                  <div key={i} style={{ marginBottom: 6 }}>
+                    <p style={{ fontSize: 12, color: '#B8B2CC', margin: 0, lineHeight: 1.4 }}>{i + 1}. {text}</p>
+                    {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 180, height: 100, objectFit: 'cover', borderRadius: 8, marginTop: 4, border: '1px solid #2A2740' }} />}
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
