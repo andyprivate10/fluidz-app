@@ -217,9 +217,9 @@ export default function JoinPage() {
                 {hostAvatar ? (
                   <img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'28%',objectFit:'cover',border:'1px solid #2A2740'}} />
                 ) : (
-                  <div style={{width:28,height:28,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
+                  <div style={{width:28,height:28,borderRadius:'28%',background:S.p2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
                 )}
-                <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:'#F9A8A844'}}>{hostName}</span></span>
+                <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:S.pbd}}>{hostName}</span></span>
               </button>
             )}
 

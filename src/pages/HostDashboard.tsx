@@ -139,14 +139,14 @@ export default function HostDashboard() {
         const { count } = await supabase.from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('session_id', id)
-          .eq('sender_name', '🛡️ Fluidz')
+          .eq('sender_name', 'Fluidz')
           .eq('dm_peer_id', app.applicant_id)
         if (!count || count === 0) {
           await supabase.from('messages').insert({
             session_id: id,
             sender_id: user.id,
             text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
-            sender_name: '🛡️ Fluidz',
+            sender_name: 'Fluidz',
             room_type: 'dm',
             dm_peer_id: app.applicant_id,
           })

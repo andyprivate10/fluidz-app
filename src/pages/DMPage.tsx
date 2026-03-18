@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
-import { Camera, ArrowLeft } from 'lucide-react'
+import { Camera, ArrowLeft, Copy, Map, MapPin } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
@@ -387,7 +387,7 @@ export default function DMPage() {
       {showCheckInBanner && !showCheckInConfirmed && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.sage, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
-            Tu as été accepté(e) ! 🎉 Clique quand tu arrives.
+            Tu as été accepté(e) ! Clique quand tu arrives.
           </div>
           <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', cursor: 'pointer' }}>
             Je suis là ✓
@@ -420,10 +420,10 @@ export default function DMPage() {
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
             <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sage + '44', background: 'transparent', cursor: 'pointer' }}>
-              📋 Copier
+              <Copy size={11} strokeWidth={1.5} style={{marginRight:2}} /> Copier
             </button>
             <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid #7DD3FC44', background: 'transparent', cursor: 'pointer' }}>
-              🗺️ Maps
+              <Map size={11} strokeWidth={1.5} style={{marginRight:2}} /> Maps
             </button>
           </div>
           {session.lineup_json?.directions && session.lineup_json.directions.length > 0 && (
@@ -500,7 +500,7 @@ export default function DMPage() {
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
                     message.text.includes('google.com/maps') ? (
                       <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: '#4ADE8018', borderRadius: 8, color: S.sage, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-                        {message.text.split('\n')[0]} 🗺
+                        {message.text.split('\n')[0]} 
                       </a>
                     ) : <span>{message.text}</span>
                   )}
@@ -528,7 +528,7 @@ export default function DMPage() {
           {recording ? '■' : '●'}
         </button>
         <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.rule }}>
-          {sharingLocation ? '📍' : '📌'}
+          {sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input

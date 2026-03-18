@@ -360,7 +360,7 @@ export default function PublicProfile() {
         {kinks.length > 0 && (() => {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
             'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
-            'Soumis': { bg: '#F9A8A822', color: S.p, border: '#F9A8A844' },
+            'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
             'SM léger': { bg: '#FBBF2422', color: S.p, border: '#FBBF2444' },
             'SM hard': { bg: '#F8717122', color: S.red, border: '#F8717144' },
             'Fist': { bg: '#F8717122', color: S.red, border: '#F8717144' },

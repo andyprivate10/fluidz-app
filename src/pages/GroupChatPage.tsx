@@ -349,9 +349,9 @@ export default function GroupChatPage() {
                 background:S.bg2, borderRadius:99, border:'none', cursor:'pointer',
               }}>
                 {m.avatar_url ? (
-                  <img src={m.avatar_url} alt="" style={{ width:18, height:18, borderRadius:'28%', objectFit:'cover' }} />
+                  <img src={m.avatar_url} alt="" style={{ width:18, height:18, borderRadius:'50%', objectFit:'cover' }} />
                 ) : (
-                  <div style={{ width:18, height:18, borderRadius:'28%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color:'#fff' }}>
+                  <div style={{ width:18, height:18, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color:'#fff' }}>
                     {m.display_name[0]?.toUpperCase()}
                   </div>
                 )}
@@ -383,7 +383,7 @@ export default function GroupChatPage() {
       <div style={{ flex:1, overflowY:'auto', padding:'12px 16px', display:'flex', flexDirection:'column', gap:2 }}>
         {messages.map((msg, i) => {
           const isMe = msg.sender_id === currentUser?.id
-          const isSystem = msg.sender_name?.startsWith('🛡️') || msg.sender_name === 'Fluidz'
+          const isSystem = msg.sender_name === 'Fluidz' || msg.sender_name?.startsWith('🛡')
           const showName = !isMe && (i === 0 || messages[i-1]?.sender_id !== msg.sender_id)
 
           if (isSystem) {
