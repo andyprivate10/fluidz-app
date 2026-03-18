@@ -44,7 +44,7 @@ export default function CreateSessionPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'template'|'details'|'address'>('template')
-  const [savedAddresses, setSavedAddresses] = useState<{ approx_area?: string; exact_address?: string }[]>([])
+  const [savedAddresses, setSavedAddresses] = useState<{ id?: string; label?: string; approx_area?: string; exact_address?: string; directions?: { text: string; photo_url?: string }[] }[]>([])
   const [savingAddress, setSavingAddress] = useState(false)
   const [directions, setDirections] = useState<string[]>([''])
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})

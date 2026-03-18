@@ -419,6 +419,9 @@ export default function MePage() {
               👥 Groupes
             </button>
           </div>
+          <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#B8B2CC', border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            📍 Mes adresses
+          </button>
         </div>
       )}
 
