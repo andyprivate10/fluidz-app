@@ -287,21 +287,27 @@ export default function DMPage() {
     if (!id || !currentUser) return
     setUploading(true)
     try {
-      const { compressImage } = await import('../lib/media')
-      const compressed = await compressImage(file)
-      const path = currentUser.id + '/chat_' + Date.now() + '.jpg'
-      const { error } = await supabase.storage.from('avatars').upload(path, compressed)
+      const isVideo = file.type.startsWith('video/')
+      let uploadFile: Blob = file
+      let ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
+      let label = isVideo ? '🎬 Vidéo' : '📷 Photo'
+
+      if (!isVideo) {
+        const { compressImage } = await import('../lib/media')
+        uploadFile = await compressImage(file)
+      }
+
+      const path = currentUser.id + '/chat_' + Date.now() + '.' + ext
+      const { error } = await supabase.storage.from('avatars').upload(path, uploadFile, {
+        contentType: isVideo ? file.type : 'image/jpeg',
+      })
       if (error) { setUploading(false); return }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       await supabase.from('messages').insert({
-        session_id: id,
-        sender_id: currentUser.id,
-        text: '📷 Photo',
+        session_id: id, sender_id: currentUser.id, text: label,
         sender_name: displayName || currentUser.email || '',
-        room_type: 'dm',
-        dm_peer_id: peerId || undefined,
-        has_media: true,
-        media_urls: [publicUrl],
+        room_type: 'dm', dm_peer_id: peerId || undefined,
+        has_media: true, media_urls: [publicUrl],
       })
     } catch { /* ignore */ }
     setUploading(false)

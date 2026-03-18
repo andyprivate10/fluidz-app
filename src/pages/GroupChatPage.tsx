@@ -198,14 +198,24 @@ export default function GroupChatPage() {
     if (!currentUser || !id) return
     setUploading(true)
     try {
-      const { compressImage } = await import('../lib/media')
-      const c = await compressImage(file)
-      const path = currentUser.id + '/gchat_' + Date.now() + '.jpg'
-      const { error } = await supabase.storage.from('avatars').upload(path, c)
+      const isVideo = file.type.startsWith('video/')
+      let uploadFile: Blob = file
+      let ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
+      let label = isVideo ? '🎬 Vidéo' : '📷 Photo'
+
+      if (!isVideo) {
+        const { compressImage } = await import('../lib/media')
+        uploadFile = await compressImage(file)
+      }
+
+      const path = currentUser.id + '/gchat_' + Date.now() + '.' + ext
+      const { error } = await supabase.storage.from('avatars').upload(path, uploadFile, {
+        contentType: isVideo ? file.type : 'image/jpeg',
+      })
       if (error) { setUploading(false); return }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       await supabase.from('messages').insert({
-        session_id: id, sender_id: currentUser.id, text: '📷 Photo',
+        session_id: id, sender_id: currentUser.id, text: label,
         sender_name: displayName || 'Anonyme', room_type: 'group',
         has_media: true, media_urls: [publicUrl],
       })
