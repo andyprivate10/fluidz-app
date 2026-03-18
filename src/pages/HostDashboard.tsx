@@ -148,7 +148,7 @@ export default function HostDashboard() {
         type: 'check_in_confirmed',
         message: `Check-in confirmé pour "${sess.title}" ✓`,
         title: `Check-in confirmé pour "${sess.title}" ✓`,
-        body: "Tu peux maintenant partager le lien d'invitation.",
+        body: sess.exact_address ? '📍 ' + sess.exact_address + " — Tu peux maintenant partager le lien." : "Tu peux maintenant partager le lien d'invitation.",
         href: `/session/${id}`,
       })
       // Auto-track co_event interactions with all other checked-in members
