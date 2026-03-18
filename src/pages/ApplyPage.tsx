@@ -125,11 +125,17 @@ export default function ApplyPage() {
   async function load(uid: string) {
     setLoadError(false)
     try {
-      const [{ data: prof }, { data: sess }, { data: lastApp }] = await Promise.all([
+      const [{ data: prof }, { data: sess }, { data: lastApp }, { data: existingApp }] = await Promise.all([
         supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
         supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
         supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
+        supabase.from('applications').select('status').eq('applicant_id', uid).eq('session_id', id).maybeSingle(),
       ])
+      // Already applied to this session → redirect
+      if (existingApp) {
+        navigate('/session/' + id)
+        return
+      }
       if (prof) {
         setProfile(prof)
         // Pre-fill role from profile
