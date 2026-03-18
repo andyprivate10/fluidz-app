@@ -6,7 +6,7 @@ import { Clock, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; tags?: string[]; lineup_json?: { directions?: string[]; roles_wanted?: Record<string, number> } }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: string[]; roles_wanted?: Record<string, number> } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
@@ -41,6 +41,21 @@ export default function SessionPage() {
   const [voteLoadingId, setVoteLoadingId] = useState<string | null>(null)
   const [reviewSummary, setReviewSummary] = useState<{ avg: number; count: number; topVibes: string[] } | null>(null)
   const touchStartY = useRef(0)
+  const [elapsed, setElapsed] = useState('')
+
+  // Session timer
+  useEffect(() => {
+    if (!session?.created_at || session.status === 'ended') return
+    const update = () => {
+      const ms = Date.now() - new Date(session.created_at!).getTime()
+      const mins = Math.floor(ms / 60000)
+      if (mins < 60) setElapsed(mins + 'min')
+      else { const h = Math.floor(mins / 60); const m = mins % 60; setElapsed(h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '')) }
+    }
+    update()
+    const iv = setInterval(update, 60000)
+    return () => clearInterval(iv)
+  }, [session?.created_at, session?.status])
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)')
@@ -269,6 +284,12 @@ export default function SessionPage() {
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#F0EDFF', flex: 1 }}>{session.title}</h1>
           <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
           {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#B8B2CC', background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length}</span>}
+          {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>⏱ {elapsed}</span>}
+          {session.status === 'open' && session.created_at && (() => {
+            const mins = Math.floor((Date.now() - new Date(session.created_at).getTime()) / 60000)
+            const label = mins < 60 ? mins + 'min' : Math.floor(mins / 60) + 'h' + (mins % 60 > 0 ? String(mins % 60).padStart(2, '0') : '')
+            return <span style={{ fontSize: 11, fontWeight: 600, color: '#7E7694', background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>⏱ {label}</span>
+          })()}
         </div>
         {session.tags && session.tags.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
