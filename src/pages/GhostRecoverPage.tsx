@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Ghost, ArrowRight, Mail } from 'lucide-react'
+import {Ghost, ArrowRight, Mail, ArrowLeft} from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -151,7 +151,7 @@ export default function GhostRecoverPage() {
             >
               {loading ? 'Recherche...' : 'Récupérer'}
             </button>
-            <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer' }}>← Retour</button>
+            <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
           </div>
         ) : (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

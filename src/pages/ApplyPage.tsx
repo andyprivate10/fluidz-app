@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { showToast } from '../components/Toast'
 import { supabase } from '../lib/supabase'
-import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye } from 'lucide-react'
+import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye, ArrowLeft } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -280,7 +280,7 @@ export default function ApplyPage() {
   )
   if (dataLoading) return (
     <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
-      <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
+      <div style={{ width: 32, height: 32, border: "3px solid "+S.pbd, borderTopColor: S.p, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
     </div>
   )
   if (loadError) return (
@@ -291,7 +291,7 @@ export default function ApplyPage() {
   return (
     <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid ' + S.rule}}>
-        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
+        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{marginRight:4,display:'inline'}} />Retour</button>
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Postuler</h1>
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.title} · {session.approx_area}</p>}
       </div>
@@ -564,7 +564,7 @@ export default function ApplyPage() {
             <p style={{fontSize:12,color:S.tx3,margin:0}}>{enabled.length} section{enabled.length > 1 ? 's' : ''} : {enabled.map(sid => ALL_SECTIONS.find(s => s.id === sid)?.label).filter(Boolean).join(', ') || '—'}</p>
           </div>
           <div style={{display:'flex',gap:10,marginTop:8}}>
-            <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.rule,background:S.bg2,cursor:'pointer'}}>← Retour</button>
+            <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.rule,background:S.bg2,cursor:'pointer'}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
             <button onClick={submit} disabled={loading || isRateLimited || (guestMode && guestDisplayName.trim().length < 2)} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
               {loading ? <><span style={{display:'inline-block',width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.8s linear infinite'}} /> Envoi...</> : isRateLimited ? 'Attends quelques minutes' : 'Envoyer ma candidature'}
             </button>

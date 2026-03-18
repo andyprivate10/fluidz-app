@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Bell, CheckCheck } from 'lucide-react'
+import {Bell, CheckCheck, ArrowLeft} from 'lucide-react'
 
 const C = colors
 const R = radius
@@ -66,7 +66,7 @@ export default function NotificationsPage() {
 
       <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${C.rule}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', ...typeStyle('body'), color: C.tx2, cursor: 'pointer', padding: 0, marginBottom: 8 }}>← Retour</button>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', ...typeStyle('body'), color: C.tx2, cursor: 'pointer', padding: 0, marginBottom: 8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
           <h1 style={{ ...typeStyle('title'), color: C.tx, margin: 0 }}>Notifications</h1>
         </div>
         {notifs.some(n => !n.read_at) && (

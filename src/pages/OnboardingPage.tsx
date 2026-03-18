@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
-import { User as UserIcon, Camera, Sparkles, ChevronRight } from 'lucide-react'
+import {User as UserIcon, Camera, Sparkles, ChevronRight, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -185,7 +185,7 @@ export default function OnboardingPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}>←</button>
+            <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
             <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               Suivant <ChevronRight size={18} />
             </button>
@@ -224,7 +224,7 @@ export default function OnboardingPage() {
 
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => setStep(2)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}>←</button>
+              <button onClick={() => setStep(2)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
               <button onClick={save} disabled={saving || !displayName.trim()} style={{
                 flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
                 background: S.grad, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',

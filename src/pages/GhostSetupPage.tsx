@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Ghost, Copy, Check, ArrowRight } from 'lucide-react'
+import {Ghost, Copy, Check, ArrowRight} from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'

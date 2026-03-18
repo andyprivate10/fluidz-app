@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Plus, Users, Trash2, ChevronRight, X } from 'lucide-react'
+import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -143,7 +143,7 @@ export default function GroupsPage() {
       {/* Header */}
       <div style={{ padding:'40px 20px 16px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
-          <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', padding:0, marginBottom:8 }}>← Retour</button>
+          <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', padding:0, marginBottom:8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
           <h1 style={{ fontSize:22, fontWeight:800, color:S.tx, margin:0 }}>Mes Groupes</h1>
           <p style={{ fontSize:12, color:S.tx3, margin:'2px 0 0' }}>{groups.length} groupe{groups.length !== 1 ? 's' : ''}</p>
         </div>

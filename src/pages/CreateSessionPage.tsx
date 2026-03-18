@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Moon, Pill, Headphones, Sparkles } from 'lucide-react'
+import {Moon, Pill, Headphones, Sparkles, ArrowLeft} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -184,7 +184,7 @@ export default function CreateSessionPage() {
   return (
     <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule}}>
-        <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
+        <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Nouvelle session</h1>
         <p style={{fontSize:13,color:S.tx3,margin:0}}>Étape {stepIdx+1}/3</p>
       </div>

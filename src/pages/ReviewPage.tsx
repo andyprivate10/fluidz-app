@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Star, Send } from 'lucide-react'
+import {Star, Send} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -103,7 +103,7 @@ export default function ReviewPage() {
 
   if (loading) return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
+      <div style={{ width: 32, height: 32, border: "3px solid "+S.pbd, borderTopColor: S.p, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
     </div>
   )
 

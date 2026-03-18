@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
-import { MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X } from 'lucide-react'
+import {MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -142,7 +142,7 @@ export default function AddressesPage() {
   return (
     <div style={{ background:S.bg, minHeight:'100vh', position: 'relative' as const, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
       <div style={{ padding:'40px 20px 16px' }}>
-        <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}>← Retour</button>
+        <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <div>
             <h1 style={{ fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 2px' }}>Mes adresses</h1>

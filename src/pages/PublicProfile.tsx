@@ -7,7 +7,7 @@ import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Sparkles } from 'lucide-react'
+import {MessageCircle, Sparkles, ArrowLeft} from 'lucide-react'
 
 const S = {
   ...colors,
@@ -239,14 +239,14 @@ export default function PublicProfile() {
 
   if (allowed === false) return (
     <div style={{ minHeight: '100vh', background: S.bg, padding: 24 }}>
-      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}>← Retour</button>
+      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
       <p style={{ color: S.tx2, marginTop: 24, textAlign: 'center' }}>Ce profil est réservé aux membres d&apos;une même session.</p>
     </div>
   )
 
   if (!profile) return (
     <div style={{ minHeight: '100vh', background: S.bg, padding: 24 }}>
-      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}>← Retour</button>
+      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
       <p style={{ color: S.red, marginTop: 16 }}>Profil introuvable.</p>
     </div>
   )
@@ -268,7 +268,7 @@ export default function PublicProfile() {
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96 }}>
       <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour</button>
+        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
 
         {hasMedia && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, marginBottom: 16, scrollbarWidth: 'none' }}>

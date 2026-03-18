@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ThumbsUp, ThumbsDown, Clock } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Clock, ArrowLeft } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
@@ -300,7 +300,7 @@ export default function HostDashboard() {
 
   if (loading) return (
     <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
-      <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
+      <div style={{ width: 32, height: 32, border: "3px solid "+S.pbd, borderTopColor: S.p, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
     </div>
   )
   if (loadError) return (
@@ -309,9 +309,9 @@ export default function HostDashboard() {
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
-      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule}}>
-        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative' as const}}>
+      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
+        <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{marginRight:4,display:'inline'}} />Retour</button>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <div>
             <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}</div>
@@ -319,7 +319,7 @@ export default function HostDashboard() {
           </div>
           <button onClick={toggleStatus} style={{
             padding:'6px 14px',borderRadius:99,fontSize:12,fontWeight:700,border:'none',cursor:'pointer',
-            background: sess?.status==='open' ? S.sage+'22' : S.bg3,
+            background: sess?.status==='open' ? S.sagebg : S.bg3,
             color: sess?.status==='open' ? S.sage : S.tx3,
           }}>
             {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
@@ -350,7 +350,7 @@ export default function HostDashboard() {
                   setTimeout(() => setLinkCopied(false), 2000)
                 })
               }}
-              style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:linkCopied ? S.sage+'22' : 'transparent',color:linkCopied ? S.sage : S.p,cursor:'pointer',width:'100%'}}
+              style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:linkCopied ? S.sagebg : 'transparent',color:linkCopied ? S.sage : S.p,cursor:'pointer',width:'100%'}}
             >
               {linkCopied ? 'Lien copié' : 'Partager'}
             </button>
@@ -370,7 +370,7 @@ export default function HostDashboard() {
                     setTimeout(() => setGrinderCopied(false), 2000)
                   })
                 }}
-                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sage+'22' : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
+                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sagebg : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
               >
                 {grinderCopied ? 'Copié !' : 'Copier message Grindr'}
               </button>
@@ -387,7 +387,7 @@ export default function HostDashboard() {
                     setTimeout(() => setMessageCopied(false), 2000)
                   })
                 }}
-                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sage+'22' : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
+                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
               >
                 {messageCopied ? 'Copié ✓' : 'Copier le message'}
               </button>
@@ -413,7 +413,7 @@ export default function HostDashboard() {
                   setTimeout(() => setLinkCopied(false), 2000)
                 })
               }}
-              style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sage+'44',background:S.sage+'14',color:S.sage,cursor:'pointer'}}
+              style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:S.sagebg,color:S.sage,cursor:'pointer'}}
             >
               Copier lien invite directe
             </button>
@@ -438,8 +438,8 @@ export default function HostDashboard() {
                     <span key={role} style={{
                       fontSize:12,fontWeight:600,padding:'4px 10px',borderRadius:99,
                       color: filled ? S.sage : S.p,
-                      background: filled ? S.sage+'18' : S.p+'18',
-                      border: '1px solid '+(filled ? S.sage+'44' : S.p+'44'),
+                      background: filled ? S.sage+'18' : S.p2,
+                      border: '1px solid '+(filled ? S.sagebd : S.pbd),
                     }}>
                       {have}/{count} {role}{filled ? ' ✓' : ''}
                     </span>
@@ -536,7 +536,7 @@ export default function HostDashboard() {
                       <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{displayName}</Link>
                     </p>
                     {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.rule}}>Ghost</span>}
-                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p+'18',color:S.p,border:'1px solid '+S.p+'33'}}>{displayRole}</span>}
+                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.p+'33'}}>{displayRole}</span>}
                     {!isGhost && <VibeScoreBadge userId={app.applicant_id} />}
                   </div>
                   <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Voir profil</button>
@@ -595,7 +595,7 @@ export default function HostDashboard() {
                       <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
                         ✕ Refuser
                       </button>
-                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.p+'44'}}>
+                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
                         {actionLoading===app.id ? '...' : '✓ Accepter'}
                       </button>
                     </div>
@@ -607,7 +607,7 @@ export default function HostDashboard() {
                     {app.status === 'accepted' && app.checked_in === true && (
                       <>
                         <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>Arrivée à confirmer</span>
-                        <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sage+'22',cursor:'pointer'}}>
+                        <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sagebg,cursor:'pointer'}}>
                           {actionLoading===app.id ? '...' : 'Confirmer ✓'}
                         </button>
                       </>
