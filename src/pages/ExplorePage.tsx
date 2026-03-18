@@ -50,6 +50,7 @@ export default function ExplorePage() {
   const [geoError, setGeoError] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [sessionSearch, setSessionSearch] = useState('')
   const [exploreTab, setExploreTab] = useState<'profils'|'sessions'>('profils')
   const [nearbySessions, setNearbySessions] = useState<any[]>([])
 
@@ -285,14 +286,23 @@ export default function ExplorePage() {
         )}
       </>) : (
         <>
-          {nearbySessions.length === 0 && !loading && (
+          {/* Session search */}
+          <div style={{ marginBottom: 10 }}>
+            <input type="text" value={sessionSearch} onChange={e => setSessionSearch(e.target.value)}
+              placeholder="Rechercher une session..." style={{
+                width: '100%', padding: '10px 14px', borderRadius: 12, background: '#1F1D2B',
+                border: '1px solid #2A2740', color: '#F0EDFF', fontSize: 13, outline: 'none',
+                fontFamily: 'inherit', boxSizing: 'border-box',
+              }} />
+          </div>
+          {nearbySessions.filter(s => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).length === 0 && !loading && (
             <div style={{ textAlign: 'center', padding: 40, color: '#7E7694' }}>
               <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>Pas de sessions publiques</p>
               <p style={{ fontSize: 12 }}>Les sessions publiques à proximité apparaîtront ici</p>
             </div>
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {nearbySessions.map((s: any) => (
+            {nearbySessions.filter((s: any) => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).map((s: any) => (
               <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 14, cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                   {s.host_avatar ? (
