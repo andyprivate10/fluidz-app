@@ -48,6 +48,8 @@ export default function ExplorePage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [geoError, setGeoError] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [exploreTab, setExploreTab] = useState<'profils'|'sessions'>('profils')
+  const [nearbySessions, setNearbySessions] = useState<any[]>([])
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -77,6 +79,21 @@ export default function ExplorePage() {
           setVisible(true)
         }
         loadNearby(lat, lng)
+        // Load public sessions nearby
+        const delta = 0.15
+        const { data: pubSess } = await supabase.from('sessions')
+          .select('id, title, approx_area, tags, host_id, approx_lat, approx_lng, created_at')
+          .eq('is_public', true).eq('status', 'open')
+          .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
+          .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
+          .limit(20)
+        if (pubSess && pubSess.length > 0) {
+          const hIds = [...new Set(pubSess.map((s: any) => s.host_id))]
+          const { data: hProfs } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', hIds)
+          const hMap = new Map<string, { name: string; avatar?: string }>()
+          ;(hProfs || []).forEach((p: any) => hMap.set(p.id, { name: p.display_name, avatar: p.profile_json?.avatar_url }))
+          setNearbySessions(pubSess.map((s: any) => ({ ...s, host_name: hMap.get(s.host_id)?.name || 'Host', host_avatar: hMap.get(s.host_id)?.avatar })))
+        }
       },
       () => { setGeoError(true); setLoading(false) },
       { enableHighAccuracy: false, timeout: 10000 }
@@ -137,7 +154,7 @@ export default function ExplorePage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>Autour de moi</h1>
-            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{filtered.length} profil{filtered.length !== 1 ? 's' : ''} à proximité</p>
+            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? `${filtered.length} profils` : `${nearbySessions.length} sessions`} à proximité</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.green + '44' : S.border), background: visible ? S.green + '14' : 'transparent', color: visible ? S.green : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
@@ -162,10 +179,23 @@ export default function ExplorePage() {
             ))}
           </div>
         )}
+
+        {/* Explore tabs */}
+        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+          {(['profils', 'sessions'] as const).map(t => (
+            <button key={t} onClick={() => setExploreTab(t)} style={{
+              flex: 1, padding: '7px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              border: '1px solid ' + (exploreTab === t ? '#F9A8A855' : '#2A2740'),
+              background: exploreTab === t ? '#F9A8A814' : 'transparent',
+              color: exploreTab === t ? '#F9A8A8' : '#7E7694',
+            }}>{t === 'profils' ? '👤 Profils' : '🎉 Sessions'}</button>
+          ))}
+        </div>
       </div>
 
       {/* Content */}
       <div style={{ padding: 12 }}>
+      {exploreTab === 'profils' ? (<>
         {geoError && (
           <div style={{ textAlign: 'center', padding: 32, color: S.tx3 }}>
             <MapPin size={32} style={{ color: S.tx4, marginBottom: 8 }} />
@@ -223,6 +253,41 @@ export default function ExplorePage() {
             ))}
           </div>
         )}
+      </>) : (
+        <>
+          {nearbySessions.length === 0 && !loading && (
+            <div style={{ textAlign: 'center', padding: 40, color: '#7E7694' }}>
+              <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>Pas de sessions publiques</p>
+              <p style={{ fontSize: 12 }}>Les sessions publiques à proximité apparaîtront ici</p>
+            </div>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {nearbySessions.map((s: any) => (
+              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 14, cursor: 'pointer' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                  {s.host_avatar ? (
+                    <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid #2A2740' }} />
+                  ) : (
+                    <div style={{ width: 32, height: 32, borderRadius: '28%', background: 'linear-gradient(135deg,#F9A8A8,#F47272)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
+                  )}
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#F0EDFF', margin: 0 }}>{s.title}</p>
+                    <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>par {s.host_name}</p>
+                  </div>
+                </div>
+                {s.approx_area && <p style={{ fontSize: 12, color: '#B8B2CC', margin: '0 0 6px' }}>📍 {s.approx_area}</p>}
+                {s.tags && s.tags.length > 0 && (
+                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                    {s.tags.slice(0, 5).map((tag: string) => (
+                      <span key={tag} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#F9A8A818', color: '#F9A8A8', fontWeight: 600 }}>{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
       </div>
     </div>
   )
