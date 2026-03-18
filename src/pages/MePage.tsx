@@ -7,6 +7,7 @@ import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { Bell, BookOpen, Users, MapPin, Eye, Share2, Heart } from 'lucide-react'
 
 const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
 const ROLES = ['Top','Bottom','Versa','Side']
@@ -429,7 +430,7 @@ export default function MePage() {
           {/* Gallery visibility toggle */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#F0EDFF', margin: 0 }}>Visible dans la galerie</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Visible dans la galerie</p>
               <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>Les profils à proximité te voient</p>
             </div>
             <button onClick={async () => {
@@ -444,19 +445,19 @@ export default function MePage() {
             </button>
           </div>
 
-          <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#FBBF24', border: '1px solid #FBBF2444', background: '#FBBF2414', cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            🔔 Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
+          <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.p + '44', background: S.p3, cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <Bell size={14} strokeWidth={1.5} style={{marginRight:4}} /> Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
           </button>
           <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
-              💕 Naughty Book
+            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.p + '44', background: S.p + '14', cursor: 'pointer' }}>
+              <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> Naughty Book
             </button>
-            <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#B8B2CC', border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>
-              👥 Groupes
+            <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer' }}>
+              <Users size={13} strokeWidth={1.5} style={{marginRight:3}} /> Groupes
             </button>
           </div>
-          <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#B8B2CC', border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            📍 Mes adresses
+          <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid #2A2740', background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <MapPin size={13} strokeWidth={1.5} style={{marginRight:3}} /> Mes adresses
           </button>
         </div>
       )}
@@ -475,8 +476,8 @@ export default function MePage() {
           {/* Preview button */}
           {user && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid #F9A8A844', color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                👁 Voir mon profil
+              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.p + '44', color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                <Eye size={13} strokeWidth={1.5} style={{marginRight:3}} /> Voir mon profil
               </button>
               <button onClick={() => {
                 const url = window.location.origin + '/profile/' + user.id
@@ -485,8 +486,8 @@ export default function MePage() {
                 } else {
                   navigator.clipboard.writeText(url)
                 }
-              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                📤 Partager mon profil
+              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                <Share2 size={13} strokeWidth={1.5} style={{marginRight:3}} /> Partager
               </button>
             </div>
           )}
@@ -494,14 +495,14 @@ export default function MePage() {
           {/* Profile views */}
           {profileViews > 0 && (
             <div style={{ marginBottom: 12, padding: '10px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: '#B8B2CC' }}>👁 Vu par <strong style={{ color: '#F0EDFF' }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
+              <span style={{ fontSize: 13, color: S.tx2 }}><Eye size={12} strokeWidth={1.5} style={{marginRight:3}} /> Vu par <strong style={{ color: S.tx }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
           )}
 
           {/* Contact requests */}
           {contactRequests > 0 && (
-            <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: '#F9A8A814', border: '1px solid #F9A8A844', borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: S.p, fontWeight: 600 }}>💕 {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
+            <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: S.p + '14', border: '1px solid ' + S.p + '44', borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 13, color: S.p, fontWeight: 600, display:'flex', alignItems:'center', gap:4 }}><Heart size={13} strokeWidth={1.5} /> {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
               <span style={{ fontSize: 11, color: '#7E7694' }}>Voir →</span>
             </button>
           )}
