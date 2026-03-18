@@ -62,12 +62,12 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
   const d = sl.data
   const anim: React.CSSProperties = { animation: 'sfu 0.4s ease' }
   const bgMap: Record<string, string> = {
-    intro: 'radial-gradient(ellipse at 30% 50%, #1a0a2e 0%, #0C0A14 70%)',
+    intro: 'radial-gradient(ellipse at 30% 50%, #1a0a2e 0%, '+S.bg+' 70%)',
     photo: '#000',
-    stats: 'radial-gradient(ellipse at 70% 30%, #1a1025 0%, #0C0A14 70%)',
-    role: 'radial-gradient(ellipse at 50% 50%, #2a0a1e 0%, #0C0A14 70%)',
-    kinks: 'radial-gradient(ellipse at 50% 70%, #1a0a2e 0%, #0C0A14 70%)',
-    outro: 'radial-gradient(ellipse at 50% 50%, #2a1020 0%, #0C0A14 60%)',
+    stats: 'radial-gradient(ellipse at 70% 30%, #1a1025 0%, '+S.bg+' 70%)',
+    role: 'radial-gradient(ellipse at 50% 50%, #2a0a1e 0%, '+S.bg+' 70%)',
+    kinks: 'radial-gradient(ellipse at 50% 70%, #1a0a2e 0%, '+S.bg+' 70%)',
+    outro: 'radial-gradient(ellipse at 50% 50%, #2a1020 0%, '+S.bg+' 60%)',
   }
 
   return (

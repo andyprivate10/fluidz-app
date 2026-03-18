@@ -62,7 +62,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
   }
 
   if (sent) return (
-    <button onClick={() => nav('/dm/' + targetUserId)} style={{ marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12, background: '#4ADE8014', border: '1px solid #4ADE8044', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+    <button onClick={() => nav('/dm/' + targetUserId)} style={{ marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12, background: S.sagebg, border: '1px solid '+S.sagebd, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
       <span style={{ fontSize: 13, fontWeight: 600, color: S.sage }}>✓ Demande envoyée</span>
       <span style={{ fontSize: 13, fontWeight: 600, color: S.blue }}>→ Ouvrir le DM</span>
     </button>
@@ -75,7 +75,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
       color: '#fff', fontSize: 14, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer',
       boxShadow: '0 2px 12px rgba(244,114,114,0.3)', opacity: sending ? 0.7 : 1,
     }}>
-      {sending ? 'Envoi...' : '💕 Tu m\'intéresses · Entrer en contact'}
+      {sending ? 'Envoi...' : 'Tu m\'intéresses · Entrer en contact'}
     </button>
   )
 }
@@ -115,7 +115,7 @@ function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; 
     await supabase.from('notifications').insert({
       user_id: targetUserId, session_id: sess.id,
       type: 'session_invite',
-      title: '💫 Session privée avec ' + myName,
+      title: ' Session privée avec ' + myName,
       body: myName + ' veut te rencontrer en privé',
       href: '/session/' + sess.id,
     })
@@ -176,9 +176,9 @@ function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
       {sessions.map(s => (
         <button key={s.id} onClick={() => invite(s.id)} disabled={sending} style={{
           padding: '6px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: sending ? 'not-allowed' : 'pointer',
-          border: '1px solid #4ADE8044', background: '#4ADE8014', color: S.sage,
+          border: '1px solid '+S.sagebd, background: S.sagebg, color: S.sage,
         }}>
-          📩 Inviter à "{s.title}"
+          Inviter à "{s.title}"
         </button>
       ))}
     </div>

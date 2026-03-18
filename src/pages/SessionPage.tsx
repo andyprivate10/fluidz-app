@@ -299,7 +299,7 @@ export default function SessionPage() {
         {session.tags && session.tags.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
             {session.tags.map(tag => (
-              <span key={tag} style={{ fontSize: 12, fontWeight: 600, color: S.p, padding: '4px 10px', borderRadius: 99, background: S.p2, border: '1px solid #F9A8A844' }}>{tag}</span>
+              <span key={tag} style={{ fontSize: 12, fontWeight: 600, color: S.p, padding: '4px 10px', borderRadius: 99, background: S.p2, border: '1px solid '+S.pbd }}>{tag}</span>
             ))}
           </div>
         )}
@@ -313,7 +313,7 @@ export default function SessionPage() {
               }).join('\n')
               const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
               navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
-            }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? '#4ADE8014' : 'transparent', color: addressCopied ? S.sage : S.tx2 }}>
+            }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx2 }}>
               {addressCopied ? '✓ Copié' : 'Copier adresse + directions'}
             </button>
           </div>
@@ -417,9 +417,9 @@ export default function SessionPage() {
                 {hostProfile && (
                   <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{ display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer', position: 'relative' }}>
                     {hostProfile.avatar ? (
-                      <img src={hostProfile.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #F9A8A8', boxSizing: 'border-box' }} />
+                      <img src={hostProfile.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid '+S.p, boxSizing: 'border-box' }} />
                     ) : (
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #F9A8A8', boxSizing: 'border-box' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid '+S.p, boxSizing: 'border-box' }}>
                         {hostProfile.name[0].toUpperCase()}
                       </div>
                     )}
@@ -431,9 +431,9 @@ export default function SessionPage() {
                   return (
                     <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ marginLeft: i === 0 ? 0 : -8, display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
                       {avatarUrl ? (
-                        <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #16141F', boxSizing: 'border-box' }} />
+                        <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid '+S.bg1, boxSizing: 'border-box' }} />
                       ) : (
-                        <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid #16141F', boxSizing: 'border-box' }}>
+                        <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid '+S.bg1, boxSizing: 'border-box' }}>
                           {(memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
                         </div>
                       )}
@@ -605,7 +605,7 @@ export default function SessionPage() {
           <button
             onClick={handleCheckIn}
             disabled={checkInLoading}
-            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,#4ADE80,#16a34a)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
+            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,'+S.sage+',#16a34a)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
           >
             {checkInLoading ? 'Enregistrement...' : 'Je suis arrive ! Check-in'}
           </button>
@@ -620,7 +620,7 @@ export default function SessionPage() {
         )}
 
         {myApp?.status === 'checked_in' && (
-          <div style={{ ...card, background: 'rgba(107,168,136,0.12)', borderColor: S.sage, textAlign: 'center' }}>
+          <div style={{ ...card, background: S.sagebg, borderColor: S.sage, textAlign: 'center' }}>
             <div style={{ fontSize: 20 }}>Bienvenue !</div>
             <div style={{ fontSize: 14, color: S.sage, marginTop: 4 }}>Check-in confirme</div>
             {session.exact_address && <div style={{ fontSize: 14, color: S.tx, marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
@@ -634,7 +634,7 @@ export default function SessionPage() {
                     setTimeout(() => setInviteLinkCopied(false), 2000)
                   })
                 }}
-                style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid '+S.sage, background: inviteLinkCopied ? 'rgba(107,168,136,0.12)' : 'transparent', color: S.sage, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+                style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid '+S.sage, background: inviteLinkCopied ? S.sagebg : 'transparent', color: S.sage, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
               >
                 {inviteLinkCopied ? 'Lien copié !' : 'Partager le lien d\'invitation'}
               </button>
@@ -649,7 +649,7 @@ export default function SessionPage() {
                     setTimeout(() => setCopied(false), 2000)
                   })
                 }}
-                style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.rule, background: copied ? 'rgba(107,168,136,0.12)' : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.rule, background: copied ? S.sagebg : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
               >
                 {copied ? 'Message copié !' : 'Copier message pour Grindr / WhatsApp'}
               </button>
@@ -667,7 +667,7 @@ export default function SessionPage() {
               </>
             )}
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-              <button onClick={() => navigate('/session/' + id + '/chat')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid #F9A8A844', background: S.p2, color: S.p, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => navigate('/session/' + id + '/chat')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid '+S.pbd, background: S.p2, color: S.p, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 <MessageCircle size={13} strokeWidth={1.5} style={{marginRight:4}} /> Group Chat
               </button>
               <button onClick={() => navigate('/session/' + id + '/dm')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid '+S.rule, background: S.bg1, color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
@@ -714,7 +714,7 @@ export default function SessionPage() {
                   setCopied(true)
                   setTimeout(() => setCopied(false), 2000)
                 })
-              }} style={{ width: '100%', padding: 14, background: copied ? 'rgba(107,168,136,0.12)' : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+              }} style={{ width: '100%', padding: 14, background: copied ? S.sagebg : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                 {copied ? 'Lien copie !' : 'Partager le lien'}
               </button>
             )}
@@ -730,9 +730,9 @@ export default function SessionPage() {
             )}
             {myApp.status === 'accepted' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid #4ADE8044' }}>Accepté ✓</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}>Accepté ✓</span>
                 {session.exact_address && (
-                  <div style={{ padding: '10px 12px', background: 'rgba(107,168,136,0.12)', borderRadius: 10, border: '1px solid #4ADE8044' }}>
+                  <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
                     <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
@@ -747,9 +747,9 @@ export default function SessionPage() {
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid #4ADE8044' }}>Check-in confirmé ✓</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}>Check-in confirmé ✓</span>
                 {session.exact_address && (
-                  <div style={{ padding: '10px 12px', background: 'rgba(107,168,136,0.12)', borderRadius: 10, border: '1px solid #4ADE8044' }}>
+                  <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
                     <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
@@ -757,7 +757,7 @@ export default function SessionPage() {
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
                 </button>
-                <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid #F9A8A8', borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+                <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.p, borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Group Chat
                 </button>
               </div>
@@ -809,9 +809,9 @@ export default function SessionPage() {
       )}
 
       {(!isHost && (showPostulerSuccess || (!myApp && session.status === 'open'))) && (
-        <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, #0C0A14 60%, transparent)', zIndex: 50 }}>
+        <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, '+S.bg+' 60%, transparent)', zIndex: 50 }}>
           {showPostulerSuccess ? (
-            <button disabled style={{ width: '100%', padding: 16, background: 'rgba(107,168,136,0.12)', border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
+            <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
               Candidature envoyee ✓
             </button>
           ) : (

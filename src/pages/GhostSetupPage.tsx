@@ -114,7 +114,7 @@ export default function GhostSetupPage() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: '0 0 6px' }}>Mode Ghost 👻</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: '0 0 6px' }}>Mode Ghost ◌</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0, lineHeight: 1.5 }}>
             Profil temporaire 24h. Pas d'email, pas de compte. Tu peux le convertir plus tard.
           </p>

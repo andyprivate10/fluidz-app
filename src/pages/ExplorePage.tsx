@@ -271,7 +271,7 @@ export default function ExplorePage() {
 
         {loading && !geoError && (
           <div style={{ textAlign: 'center', padding: 40 }}>
-            <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: S.p, animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+            <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid '+S.pbd, borderTopColor: S.p, animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
             <p style={{ color: S.tx3, fontSize: 13 }}>Recherche de profils...</p>
             <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
           </div>

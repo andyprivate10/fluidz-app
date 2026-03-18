@@ -17,10 +17,10 @@ const VIBE_TAGS = [
   { id: 'safe', label: 'Safe', color: S.blue },
   { id: 'intense', label: 'Intense', color: S.p },
   { id: 'chill', label: 'Chill', color: S.p },
-  { id: 'respectful', label: '🤝 Respectueux', color: S.sage },
+  { id: 'respectful', label: 'Respectueux', color: S.sage },
   { id: 'awkward', label: '😬 Awkward', color: S.red },
   { id: 'hot', label: '🌶️ Hot', color: S.p },
-  { id: 'welcoming', label: '👋 Accueillant', color: S.blue },
+  { id: 'welcoming', label: 'Accueillant', color: S.blue },
 ]
 
 type Participant = { applicant_id: string; display_name: string; avatar_url?: string; role?: string }

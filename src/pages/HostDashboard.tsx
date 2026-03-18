@@ -400,7 +400,7 @@ export default function HostDashboard() {
                 const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0 ? '\nRecherche : ' + Object.entries(rolesWanted).map(([r, c]) => c + ' ' + r).join(', ') : ''
                 const text = '🔥 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n👥 ' + counts.accepted + ' déjà là' : '') + '\nPostule ici !'
                 navigator.share({ title: sess.title || 'Session Fluidz', text, url }).catch(() => {})
-              }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid #4ADE8044',background:'transparent',color:S.sage,cursor:'pointer'}}>
+              }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:'transparent',color:S.sage,cursor:'pointer'}}>
                 Partager via...
               </button>
             )}

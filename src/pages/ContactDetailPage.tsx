@@ -14,8 +14,8 @@ const S = {
 }
 
 const RELATIONS = [
-  { level: 'connaissance', label: 'Connaissance', icon: '👋', color: S.tx3 },
-  { level: 'close', label: 'Close', icon: '🤝', color: S.sage },
+  { level: 'connaissance', label: 'Connaissance', icon: '○', color: S.tx3 },
+  { level: 'close', label: 'Close', icon: '◉', color: S.sage },
   { level: 'favori', label: 'Favori', icon: '⭐', color: S.p },
 ] as const
 
@@ -147,7 +147,7 @@ export default function ContactDetailPage() {
 
   if (loading) return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: S.p, animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid '+S.pbd, borderTopColor: S.p, animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )

@@ -499,7 +499,7 @@ export default function DMPage() {
                   })}
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
                     message.text.includes('google.com/maps') ? (
-                      <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: '#4ADE8018', borderRadius: 8, color: S.sage, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                      <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: S.sagebg, borderRadius: 8, color: S.sage, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
                         {message.text.split('\n')[0]} 
                       </a>
                     ) : <span>{message.text}</span>
@@ -527,7 +527,7 @@ export default function DMPage() {
         <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
           {recording ? '■' : '●'}
         </button>
-        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.rule }}>
+        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? S.sagebg : S.bg2, color: sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>
           {sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>

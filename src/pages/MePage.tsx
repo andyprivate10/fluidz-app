@@ -527,11 +527,11 @@ export default function MePage() {
                   <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
                 </div>
                 <div style={{ background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
-                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,#F9A8A8,#F47272)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
+                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,'+S.p+',#c0503a)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (
-                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? S.sagebd : S.rule) }}>
+                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? S.sagebg : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? S.sagebd : S.rule) }}>
                       {c.done ? '✓' : '○'} {c.label}
                     </span>
                   ))}

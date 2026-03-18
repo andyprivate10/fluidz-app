@@ -383,7 +383,7 @@ export default function GroupChatPage() {
       <div style={{ flex:1, overflowY:'auto', padding:'12px 16px', display:'flex', flexDirection:'column', gap:2 }}>
         {messages.map((msg, i) => {
           const isMe = msg.sender_id === currentUser?.id
-          const isSystem = msg.sender_name === 'Fluidz' || msg.sender_name?.startsWith('🛡')
+          const isSystem = msg.sender_name === 'Fluidz' || msg.sender_name?.startsWith('')
           const showName = !isMe && (i === 0 || messages[i-1]?.sender_id !== msg.sender_id)
 
           if (isSystem) {
