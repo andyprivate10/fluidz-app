@@ -414,12 +414,14 @@ export default function DMPage() {
                   borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                   overflow: 'hidden',
                 }}>
-                  {message.has_media && message.media_urls?.map((url: string, mi: number) => (
-                    url.endsWith('.webm') || url.includes('audio') ? (
-                      <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
-                    ) : <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: message.has_media && !message.text?.replace('📷 Photo','').trim() ? 12 : 8, display: 'block', marginBottom: message.text?.replace('📷 Photo','').trim() ? 6 : 0 }} />
-                  ))}
-                  {message.text && message.text !== '📷 Photo' && <span>{message.text}</span>}
+                  {message.has_media && message.media_urls?.map((url: string, mi: number) => {
+                    const isAudio = url.endsWith('.webm') || url.includes('audio')
+                    const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
+                    if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
+                    if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 10, display: 'block' }} />
+                    return <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: 10, display: 'block' }} />
+                  })}
+                  {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && <span>{message.text}</span>}
                 </div>
                 <span style={{ color: S.tx3, fontSize: 10, marginTop: 2 }}>
                   {formatRelative(message.created_at)}

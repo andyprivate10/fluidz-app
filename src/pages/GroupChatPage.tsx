@@ -406,13 +406,14 @@ export default function GroupChatPage() {
                 borderBottomLeftRadius: isMe ? 16 : 4,
                 overflow:'hidden',
               }}>
-                {msg.has_media && msg.media_urls?.map((url: string, mi: number) => (
-                  url.endsWith('.webm') || url.includes('audio') ? (
-                    <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 220, height: 36 }} />
-                  ) :
-                  <img key={mi} src={url} alt="" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block', marginBottom: msg.text !== '📷 Photo' ? 4 : 0 }} />
-                ))}
-                {msg.text !== '📷 Photo' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
+                {msg.has_media && msg.media_urls?.map((url: string, mi: number) => {
+                  const isAudio = url.endsWith('.webm') || url.includes('audio')
+                  const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
+                  if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 220, height: 36 }} />
+                  if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 240, borderRadius: 10, display: 'block' }} />
+                  return <img key={mi} src={url} alt="" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block' }} />
+                })}
+                {msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && msg.text !== '🎬 Vidéo' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
                 <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatTime(msg.created_at)}</p>
               </div>
             </div>
