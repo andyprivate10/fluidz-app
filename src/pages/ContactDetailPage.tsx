@@ -4,18 +4,18 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { ChevronRight, Edit3, Trash2 } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',red:'#F87171',blue:'#7DD3FC',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const RELATIONS = [
   { level: 'connaissance', label: 'Connaissance', icon: '👋', color: S.tx3 },
-  { level: 'close', label: 'Close', icon: '🤝', color: S.green },
-  { level: 'favori', label: 'Favori', icon: '⭐', color: S.p300 },
+  { level: 'close', label: 'Close', icon: '🤝', color: S.sage },
+  { level: 'favori', label: 'Favori', icon: '⭐', color: S.p },
 ] as const
 
 type Interaction = {
@@ -26,10 +26,10 @@ type Interaction = {
 }
 
 const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }> = {
-  co_event: { icon: '🎉', label: 'Même event', color: S.p300 },
+  co_event: { icon: '🎉', label: 'Même event', color: S.p },
   dm: { icon: '💬', label: 'DM envoyé', color: S.blue },
-  added_contact: { icon: '➕', label: 'Ajouté au carnet', color: S.green },
-  relation_change: { icon: '🔄', label: 'Relation modifiée', color: S.yellow },
+  added_contact: { icon: '➕', label: 'Ajouté au carnet', color: S.sage },
+  relation_change: { icon: '🔄', label: 'Relation modifiée', color: S.orange },
   voted: { icon: '🗳️', label: 'Vote', color: S.tx3 },
 }
 
@@ -145,14 +145,14 @@ export default function ContactDetailPage() {
   }
 
   if (loading) return (
-    <div style={{ background: S.bg0, minHeight: '100vh', display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: '#F9A8A8', animation: 'spin 0.8s linear infinite' }} />
+    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+      <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: S.p, animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
 
   if (!profile) return (
-    <div style={{ background: S.bg0, minHeight: '100vh', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', padding: 24 }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer' }}>← Retour</button>
       <p style={{ color: S.red, marginTop: 16 }}>Profil introuvable.</p>
     </div>
@@ -162,14 +162,14 @@ export default function ContactDetailPage() {
   
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       {/* Header */}
-      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.border }}>
+      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour</button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {pj.avatar_url ? (
-            <img src={pj.avatar_url as string} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.border }} />
+            <img src={pj.avatar_url as string} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
             <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: '#fff' }}>
               {profile.display_name[0]?.toUpperCase()}
@@ -182,10 +182,10 @@ export default function ContactDetailPage() {
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
               {pj.age ? <span style={{ fontSize: 12, color: S.tx3 }}>{`${pj.age}`} ans</span> : null}
-              {pj.role ? <span style={{ fontSize: 12, color: S.p300, fontWeight: 600 }}>{`${pj.role}`}</span> : null}
+              {pj.role ? <span style={{ fontSize: 12, color: S.p, fontWeight: 600 }}>{`${pj.role}`}</span> : null}
             </div>
           </div>
-          <button onClick={() => navigate('/profile/' + contactUserId)} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 12, color: S.tx3, border: '1px solid ' + S.border, background: 'transparent', cursor: 'pointer' }}>
+          <button onClick={() => navigate('/profile/' + contactUserId)} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 12, color: S.tx3, border: '1px solid ' + S.rule, background: 'transparent', cursor: 'pointer' }}>
             Profil <ChevronRight size={12} style={{ verticalAlign: 'middle' }} />
           </button>
         </div>
@@ -198,7 +198,7 @@ export default function ContactDetailPage() {
               return (
                 <button key={r.level} onClick={() => updateRelation(r.level)} style={{
                   flex: 1, padding: '8px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                  border: '1px solid ' + (active ? r.color + '55' : S.border),
+                  border: '1px solid ' + (active ? r.color + '55' : S.rule),
                   background: active ? r.color + '14' : 'transparent',
                   color: active ? r.color : S.tx4,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
@@ -213,7 +213,7 @@ export default function ContactDetailPage() {
 
       <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {/* Notes */}
-        <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+        <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Notes privées</span>
             <button onClick={() => setEditingNotes(!editingNotes)} style={{ background: 'none', border: 'none', color: S.tx4, cursor: 'pointer', padding: 2 }}>
@@ -222,8 +222,8 @@ export default function ContactDetailPage() {
           </div>
           {editingNotes ? (
             <div>
-              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} placeholder="Notes perso (privées)..." maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.border, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
-              <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.green + '22', color: S.green, border: '1px solid ' + S.green + '44', cursor: 'pointer' }}>Sauvegarder</button>
+              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} placeholder="Notes perso (privées)..." maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+              <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.sage + '22', color: S.sage, border: '1px solid ' + S.sage + '44', cursor: 'pointer' }}>Sauvegarder</button>
             </div>
           ) : (
             <p style={{ fontSize: 13, color: contact?.notes ? S.tx2 : S.tx4, margin: 0, lineHeight: 1.5 }}>
@@ -235,15 +235,15 @@ export default function ContactDetailPage() {
         {/* Stats */}
         {contact && (
           <div style={{ display: 'flex', gap: 8 }}>
-            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.border, borderRadius: 12, padding: 12, textAlign: 'center' }}>
+            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{interactions.filter(i => i.type === 'co_event').length}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Events ensemble</div>
             </div>
-            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.border, borderRadius: 12, padding: 12, textAlign: 'center' }}>
+            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{interactions.filter(i => i.type === 'dm').length}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>DMs</div>
             </div>
-            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.border, borderRadius: 12, padding: 12, textAlign: 'center' }}>
+            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{timeAgo(contact.created_at)}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Ajouté</div>
             </div>
@@ -252,20 +252,20 @@ export default function ContactDetailPage() {
 
         {/* Common sessions */}
         {commonSessions.length > 0 && (
-          <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+          <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions en commun ({commonSessions.length})</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
               {commonSessions.map(s => (
                 <button key={s.id} onClick={() => navigate('/session/' + s.id)} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '8px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.border,
+                  padding: '8px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule,
                   cursor: 'pointer', width: '100%', textAlign: 'left',
                 }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: S.tx }}>{s.title}</span>
                   <span style={{
                     fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
-                    color: s.status === 'open' ? S.green : s.status === 'ended' ? S.red : S.tx4,
-                    background: s.status === 'open' ? S.green + '18' : s.status === 'ended' ? S.red + '18' : S.bg3,
+                    color: s.status === 'open' ? S.sage : s.status === 'ended' ? S.red : S.tx4,
+                    background: s.status === 'open' ? S.sage + '18' : s.status === 'ended' ? S.red + '18' : S.bg3,
                   }}>{s.status === 'open' ? 'Active' : s.status === 'ended' ? 'Terminée' : s.status}</span>
                 </button>
               ))}
@@ -274,7 +274,7 @@ export default function ContactDetailPage() {
         )}
 
         {/* Timeline */}
-        <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+        <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
           <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Historique</span>
 
           {interactions.length === 0 ? (
@@ -282,7 +282,7 @@ export default function ContactDetailPage() {
           ) : (
             <div style={{ marginTop: 12, position: 'relative', paddingLeft: 20 }}>
               {/* Vertical line */}
-              <div style={{ position: 'absolute', left: 6, top: 4, bottom: 4, width: 2, background: S.border, borderRadius: 1 }} />
+              <div style={{ position: 'absolute', left: 6, top: 4, bottom: 4, width: 2, background: S.rule, borderRadius: 1 }} />
 
               {interactions.slice(0, 20).map((inter, i) => {
                 const t = TYPE_LABELS[inter.type] || { icon: '•', label: inter.type, color: S.tx3 }
@@ -312,19 +312,19 @@ export default function ContactDetailPage() {
         </div>
 
         {/* Direct DM */}
-        <button onClick={() => navigate('/dm/' + contactUserId)} style={{ width: '100%', padding: '12px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: '#F9A8A8', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <button onClick={() => navigate('/dm/' + contactUserId)} style={{ width: '100%', padding: '12px', borderRadius: 12, background: S.bg1, border: '1px solid #F9A8A844', color: S.p, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           💬 Envoyer un DM
         </button>
 
         {/* Invite to session */}
         {activeSessions.length > 0 && (
-          <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+          <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inviter à une session</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
               {activeSessions.map(s => (
                 <button key={s.id} onClick={() => inviteToSession(s.id)} disabled={inviting} style={{
                   width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600,
-                  border: '1px solid ' + S.p300 + '44', background: S.p300 + '14', color: S.p300,
+                  border: '1px solid ' + S.p + '44', background: S.p + '14', color: S.p,
                   cursor: inviting ? 'not-allowed' : 'pointer', textAlign: 'left',
                 }}>
                   📩 Inviter à "{s.title}"

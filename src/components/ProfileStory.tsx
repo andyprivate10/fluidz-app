@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',
-  p300:'#F9A8A8',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 type ProfileData = { display_name: string; profile_json: Record<string, unknown> }
@@ -85,7 +86,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
       <div style={{ flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:24 }}>
         {sl.type === 'intro' && (
           <div style={{ textAlign:'center',...anim }}>
-            {d.avatar ? <img src={v(d.avatar)} alt="" style={{ width:120,height:120,borderRadius:'28%',objectFit:'cover',border:'3px solid '+S.p300,marginBottom:20 }} /> : null}
+            {d.avatar ? <img src={v(d.avatar)} alt="" style={{ width:120,height:120,borderRadius:'28%',objectFit:'cover',border:'3px solid '+S.p,marginBottom:20 }} /> : null}
             <h1 style={{ fontSize:36,fontWeight:800,color:S.tx,margin:'0 0 8px' }}>{v(d.name)}</h1>
             <div style={{ display:'flex',gap:12,justifyContent:'center' }}>
               {d.age ? <span style={{ fontSize:18,color:S.tx2 }}>{v(d.age)} ans</span> : null}
@@ -101,7 +102,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
               {d.height ? <div><div style={{ fontSize:40,fontWeight:800,color:S.tx }}>{v(d.height)}</div><div style={{ fontSize:14,color:S.tx3 }}>cm</div></div> : null}
               {d.weight ? <div><div style={{ fontSize:40,fontWeight:800,color:S.tx }}>{v(d.weight)}</div><div style={{ fontSize:14,color:S.tx3 }}>kg</div></div> : null}
             </div>
-            {d.morphology ? <p style={{ fontSize:20,color:S.p300,fontWeight:700,marginTop:16 }}>{v(d.morphology)}</p> : null}
+            {d.morphology ? <p style={{ fontSize:20,color:S.p,fontWeight:700,marginTop:16 }}>{v(d.morphology)}</p> : null}
           </div>
         )}
         {sl.type === 'role' && (
@@ -123,7 +124,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
             <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>Pratiques</p>
             <div style={{ display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center',maxWidth:340 }}>
               {(d.kinks as string[]).map((k: string, i: number) => {
-                const c = kinkColors[k] || S.p300
+                const c = kinkColors[k] || S.p
                 return <span key={i} style={{ padding:'8px 16px',borderRadius:99,fontSize:15,fontWeight:600,color:c,background:c+'22',border:'1px solid '+c+'44',animation:`sfu 0.3s ease ${i*0.1}s both` }}>{k}</span>
               })}
             </div>
@@ -134,7 +135,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
           <div style={{ textAlign:'center',...anim }}>
             <p style={{ fontSize:48,marginBottom:12 }}>🔥</p>
             <h2 style={{ fontSize:28,fontWeight:800,color:S.tx,margin:'0 0 8px' }}>{v(d.name)}</h2>
-            {d.role ? <p style={{ fontSize:20,color:S.p300,fontWeight:700 }}>{v(d.role)}</p> : null}
+            {d.role ? <p style={{ fontSize:20,color:S.p,fontWeight:700 }}>{v(d.role)}</p> : null}
           </div>
         )}
       </div>

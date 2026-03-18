@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Plus, Users, Trash2, ChevronRight, X } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',red:'#F87171',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const GROUP_COLORS = ['#F9A8A8', '#4ADE80', '#7DD3FC', '#FBBF24', '#A78BFA', '#F87171', '#34D399', '#FB923C']
@@ -135,10 +135,10 @@ export default function GroupsPage() {
     setSelectedMembers(prev => prev.includes(uid) ? prev.filter(x => x !== uid) : [...prev, uid])
   }
 
-  const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.border, outline:'none', fontSize:14, fontFamily:'inherit', boxSizing:'border-box' }
+  const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.rule, outline:'none', fontSize:14, fontFamily:'inherit', boxSizing:'border-box' }
 
   return (
-    <div style={{ background:S.bg0, minHeight:'100vh', maxWidth:480, margin:'0 auto', paddingBottom:96 }}>
+    <div style={{ background:S.bg, minHeight:'100vh', maxWidth:480, margin:'0 auto', paddingBottom:96 }}>
       {/* Header */}
       <div style={{ padding:'40px 20px 16px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
@@ -164,7 +164,7 @@ export default function GroupsPage() {
         )}
 
         {groups.map(group => (
-          <div key={group.id} style={{ background:S.bg1, border:'1px solid '+S.border, borderRadius:16, padding:16 }}>
+          <div key={group.id} style={{ background:S.bg1, border:'1px solid '+S.rule, borderRadius:16, padding:16 }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }} onClick={() => openEdit(group)}>
                 <div style={{ width:12, height:12, borderRadius:4, background:group.color, flexShrink:0 }} />

@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom'
+import { colors } from '../brand'
+const S = { ...colors, red: "#F87171", orange: "#FBBF24", blue: "#7DD3FC", grad: colors.p }
 
 export default function NotFoundPage() {
   const navigate = useNavigate()
   return (
     <div style={{
-      minHeight:'100vh', background:'#0C0A14', display:'flex', flexDirection:'column',
+      minHeight:'100vh', background:S.bg, display:'flex', flexDirection:'column',
       alignItems:'center', justifyContent:'center', padding:24,
        position:'relative', overflow:'hidden',
     }}>
@@ -15,7 +17,7 @@ export default function NotFoundPage() {
         pointerEvents:'none',
       }} />
       <div className="animate-fade-in" style={{textAlign:'center',position:'relative',zIndex:1}}>
-        <p style={{fontSize:72,fontWeight:800,color:'#F9A8A8',margin:'0 0 8px',lineHeight:1}}>404</p>
+        <p style={{fontSize:72,fontWeight:800,color:S.p,margin:'0 0 8px',lineHeight:1}}>404</p>
         <p style={{fontSize:18,fontWeight:700,color:'#F0EDFF',marginBottom:8}}>Page introuvable</p>
         <p style={{fontSize:14,color:'#7E7694',marginBottom:32,lineHeight:1.5}}>Ce lien ne mène nulle part.<br />Peut-être qu'il a expiré.</p>
         <button onClick={() => navigate('/')} style={{

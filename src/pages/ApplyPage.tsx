@@ -3,12 +3,12 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { showToast } from '../components/Toast'
 import { supabase } from '../lib/supabase'
 import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',green:'#4ADE80',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const ROLE_OPTIONS = ['Top', 'Bottom', 'Versa', 'Side']
@@ -270,7 +270,7 @@ export default function ApplyPage() {
   }
 
   if (!user && !guestMode) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',alignItems:'center',justifyContent:'center'}}>
+    <div style={{minHeight:'100vh',background:S.bg,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{textAlign:'center',padding:24}}>
         <p style={{color:S.tx3,marginBottom:16}}>Connecte-toi pour postuler</p>
         <button onClick={() => navigate('/login?next=' + encodeURIComponent('/session/' + id + '/apply'))} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer'}}>Se connecter</button>
@@ -278,35 +278,35 @@ export default function ApplyPage() {
     </div>
   )
   if (dataLoading) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
+    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
       <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
   if (loadError) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
+    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
       <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
-      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid ' + S.border}}>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
+      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid ' + S.rule}}>
         <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Postuler</h1>
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.title} · {session.approx_area}</p>}
       </div>
 
       {(profile || guestMode) && (
-        <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.border}}>
+        <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.rule}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>Aperçu de ton profil (ce qui sera partagé)</div>
           {guestMode ? (
-            <input value={guestDisplayName} onChange={e=>setGuestDisplayName(e.target.value)} placeholder="Ton pseudo *" style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:10,padding:'10px 14px',border:'1px solid '+S.border,fontSize:14,marginBottom:8,boxSizing:'border-box'}} />
+            <input value={guestDisplayName} onChange={e=>setGuestDisplayName(e.target.value)} placeholder="Ton pseudo *" style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:10,padding:'10px 14px',border:'1px solid '+S.rule,fontSize:14,marginBottom:8,boxSizing:'border-box'}} />
           ) : (
             <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile?.display_name || 'Anonyme'}</div>
           )}
           {(selectedRole || (profile?.profile_json as any)?.role || (profile?.profile_json as any)?.bio) && !guestMode && (
             <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
               {(selectedRole || (profile?.profile_json as any)?.role) && (
-                <span style={{color:S.p300,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p300+'22',border:'1px solid '+S.p300+'44',marginRight:6}}>
+                <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p+'22',border:'1px solid '+S.p+'44',marginRight:6}}>
                   {selectedRole || (profile?.profile_json as any)?.role}
                 </span>
               )}
@@ -316,7 +316,7 @@ export default function ApplyPage() {
           {guestMode && (selectedRole || guestDisplayName) && (
             <div style={{fontSize:13,color:S.tx2}}>
               {guestDisplayName && <span style={{fontWeight:600,color:S.tx}}>{guestDisplayName}</span>}
-              {selectedRole && <span style={{color:S.p300,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p300+'22',marginLeft:6}}>{selectedRole}</span>}
+              {selectedRole && <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p+'22',marginLeft:6}}>{selectedRole}</span>}
             </div>
           )}
         </div>
@@ -331,7 +331,7 @@ export default function ApplyPage() {
 
       <div style={{display:'flex',padding:'12px 20px',gap:6}}>
         {(['pack','note','done'] as const).map((s, i) => (
-          <div key={s} style={{flex:1,height:3,borderRadius:99,background:(['pack','note','done'].indexOf(step) >= i) ? S.p300 : S.bg3,transition:'background 0.3s'}} />
+          <div key={s} style={{flex:1,height:3,borderRadius:99,background:(['pack','note','done'].indexOf(step) >= i) ? S.p : S.bg3,transition:'background 0.3s'}} />
         ))}
       </div>
 
@@ -371,7 +371,7 @@ export default function ApplyPage() {
                 return (
                   <button key={role} type="button" onClick={() => setSelectedRole(on ? '' : role)} style={{
                     padding:'6px 14px',borderRadius:99,fontSize:13,fontWeight:600,
-                    border:on?'none':'1px solid '+S.border,
+                    border:on?'none':'1px solid '+S.rule,
                     background:on?S.grad:S.bg2,color:on?'#fff':S.tx3,cursor:'pointer',
                   }}>{role}</button>
                 )
@@ -401,23 +401,23 @@ export default function ApplyPage() {
               const preview = getPreview(sec.id)
               return (
                 <div key={sec.id} onClick={() => toggle(sec.id)} style={{
-                  background: on ? S.p300 + '10' : S.bg1,
-                  border: '1px solid ' + (on ? S.p300 + '55' : S.border),
+                  background: on ? S.p + '10' : S.bg1,
+                  border: '1px solid ' + (on ? S.p + '55' : S.rule),
                   borderRadius:14,padding:'12px 14px',cursor:'pointer',
                   display:'flex',alignItems:'center',justifyContent:'space-between',transition:'all 0.2s',
                 }}>
                   <div style={{display:'flex',alignItems:'center',gap:10,flex:1,minWidth:0}}>
-                    <sec.icon size={18} style={{color:on?S.p300:S.tx4,flexShrink:0}} />
+                    <sec.icon size={18} style={{color:on?S.p:S.tx4,flexShrink:0}} />
                     <div style={{flex:1,minWidth:0}}>
                       <p style={{margin:0,fontSize:14,fontWeight:600,color:on?S.tx:S.tx3}}>{sec.label}</p>
                       {on && preview ? (
-                        <p style={{margin:0,fontSize:12,color:S.p300,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{preview}</p>
+                        <p style={{margin:0,fontSize:12,color:S.p,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{preview}</p>
                       ) : (
                         <p style={{margin:0,fontSize:11,color:S.tx4}}>{sec.desc}</p>
                       )}
                     </div>
                   </div>
-                  <div style={{width:20,height:20,borderRadius:99,background:on?S.grad:'transparent',border:on?'none':'2px solid '+S.border,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                  <div style={{width:20,height:20,borderRadius:99,background:on?S.grad:'transparent',border:on?'none':'2px solid '+S.rule,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
                     {on && <span style={{color:'#fff',fontSize:11,fontWeight:800}}>✓</span>}
                   </div>
                 </div>
@@ -458,14 +458,14 @@ export default function ApplyPage() {
               const setSelP = albumKey === 'profil' ? setSelectedPhotosProfil : setSelectedPhotosAdulte
               const selV = selectedVideosAdulte
               const setSelV = setSelectedVideosAdulte
-              const accentColor = albumKey === 'profil' ? S.p300 : S.p400
+              const accentColor = albumKey === 'profil' ? S.p : S.p
               return (
                 <div style={{marginTop:6,marginLeft:28,padding:10,background:S.bg1,borderRadius:12,border:'1px solid '+accentColor+'33'}}>
                   <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                     {allP.map((url: string) => {
                       const on = selP.includes(url)
                       return (
-                        <button key={url} type="button" onClick={() => setSelP((prev: string[]) => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.border,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
+                        <button key={url} type="button" onClick={() => setSelP((prev: string[]) => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                           <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                           {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
                         </button>
@@ -474,7 +474,7 @@ export default function ApplyPage() {
                     {allV.map((url: string) => {
                       const on = selV.includes(url)
                       return (
-                        <button key={url} type="button" onClick={() => setSelV((prev: string[]) => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:66,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.border,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
+                        <button key={url} type="button" onClick={() => setSelV((prev: string[]) => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:66,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                           <video src={url} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                           {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
                         </button>
@@ -488,7 +488,7 @@ export default function ApplyPage() {
             return (
               <>
                 {/* BLOC PROFIL */}
-                {renderBlocToggle('Profil', BLOC_PROFIL, S.green)}
+                {renderBlocToggle('Profil', BLOC_PROFIL, S.sage)}
                 <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
                   {BLOC_PROFIL.map(sec => (
                     <div key={sec.id}>
@@ -499,7 +499,7 @@ export default function ApplyPage() {
                 </div>
 
                 {/* BLOC ADULTE */}
-                {renderBlocToggle('Adulte', BLOC_ADULTE, S.p400)}
+                {renderBlocToggle('Adulte', BLOC_ADULTE, S.p)}
                 <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
                   {BLOC_ADULTE.map(sec => (
                     <div key={sec.id}>
@@ -516,10 +516,10 @@ export default function ApplyPage() {
           })()}
 
           {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>Ton pseudo est requis</p>}
-          <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
-            <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p300,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
+          <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
+            <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p400 + '44'}}>
+          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.p + '44'}}>
             Continuer →
           </button>
         </div>
@@ -529,24 +529,24 @@ export default function ApplyPage() {
         <div style={{padding:'16px 20px'}}>
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Pour cette session</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 8px'}}>Un mot pour le host ? Dispo, ambiance...</p>
-          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30...' rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.border,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30...' rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
           <div style={{marginBottom:12}}>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>Message au host (optionnel)</p>
-            <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.border,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
+            <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           </div>
           {/* Visual preview */}
-          <div style={{padding:'14px',background:S.bg1,borderRadius:14,border:'1px solid '+S.border,marginBottom:12}}>
-            <p style={{fontSize:11,fontWeight:700,color:S.p300,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>Ce que le host verra</p>
+          <div style={{padding:'14px',background:S.bg1,borderRadius:14,border:'1px solid '+S.rule,marginBottom:12}}>
+            <p style={{fontSize:11,fontWeight:700,color:S.p,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>Ce que le host verra</p>
             <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:10}}>
               {profile?.profile_json?.avatar_url ? (
-                <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.border}} />
+                <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.rule}} />
               ) : (
                 <div style={{width:40,height:40,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,color:'#fff'}}>{(profile?.display_name || '?')[0].toUpperCase()}</div>
               )}
               <div>
                 <p style={{margin:0,fontSize:14,fontWeight:700,color:S.tx}}>{guestMode ? guestDisplayName || 'Invité' : profile?.display_name || 'Anonyme'}</p>
                 <div style={{display:'flex',gap:6,marginTop:2}}>
-                  {selectedRole && <span style={{fontSize:11,color:S.p300,fontWeight:600}}>{selectedRole}</span>}
+                  {selectedRole && <span style={{fontSize:11,color:S.p,fontWeight:600}}>{selectedRole}</span>}
                   {profile?.profile_json?.age && enabled.includes('basics') && <span style={{fontSize:11,color:S.tx3}}>{profile.profile_json.age} ans</span>}
                 </div>
               </div>
@@ -554,7 +554,7 @@ export default function ApplyPage() {
             {selectedPhotosProfil.length > 0 && enabled.includes('photos_profil') && (
               <div style={{display:'flex',gap:6,overflowX:'auto',marginBottom:8}}>
                 {selectedPhotosProfil.slice(0,3).map((url: string, i: number) => (
-                  <img key={i} src={url} alt="" style={{width:56,height:72,borderRadius:10,objectFit:'cover',border:'1px solid '+S.border,flexShrink:0}} />
+                  <img key={i} src={url} alt="" style={{width:56,height:72,borderRadius:10,objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
                 ))}
                 {selectedPhotosProfil.length > 3 && <span style={{fontSize:11,color:S.tx4,alignSelf:'center'}}>+{selectedPhotosProfil.length-3}</span>}
               </div>
@@ -562,7 +562,7 @@ export default function ApplyPage() {
             <p style={{fontSize:12,color:S.tx3,margin:0}}>{enabled.length} section{enabled.length > 1 ? 's' : ''} : {enabled.map(sid => ALL_SECTIONS.find(s => s.id === sid)?.label).filter(Boolean).join(', ') || '—'}</p>
           </div>
           <div style={{display:'flex',gap:10,marginTop:8}}>
-            <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.border,background:S.bg2,cursor:'pointer'}}>← Retour</button>
+            <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.rule,background:S.bg2,cursor:'pointer'}}>← Retour</button>
             <button onClick={submit} disabled={loading || isRateLimited || (guestMode && guestDisplayName.trim().length < 2)} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
               {loading ? <><span style={{display:'inline-block',width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.8s linear infinite'}} /> Envoi...</> : isRateLimited ? 'Attends quelques minutes' : 'Envoyer ma candidature'}
             </button>

@@ -3,12 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Star, Send } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const VIBE_TAGS = [
@@ -101,13 +101,13 @@ export default function ReviewPage() {
   }
 
   if (loading) return (
-    <div style={{ background: S.bg0, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       <div style={{ padding: '40px 20px 20px' }}>
         <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour à la session</button>
 
@@ -117,14 +117,14 @@ export default function ReviewPage() {
 
       {alreadyReviewed && !submitted ? (
         <div style={{ padding: '0 20px' }}>
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.green + '44' }}>
-            <p style={{ fontSize: 16, fontWeight: 700, color: S.green, margin: 0 }}>Tu as déjà laissé un avis ✓</p>
+          <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
+            <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>Tu as déjà laissé un avis ✓</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '8px 0 0' }}>Merci pour ton retour !</p>
           </div>
         </div>
       ) : submitted ? (
         <div style={{ padding: '0 20px' }}>
-          <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.green + '44' }}>
+          <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
             <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>Merci !</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>Ton avis est anonyme et aide la communauté</p>
@@ -136,7 +136,7 @@ export default function ReviewPage() {
       ) : (
         <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Star rating */}
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.border }}>
+          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Note globale</p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
               {[1, 2, 3, 4, 5].map(n => (
@@ -150,14 +150,14 @@ export default function ReviewPage() {
               ))}
             </div>
             {rating > 0 && (
-              <p style={{ textAlign: 'center', fontSize: 12, color: S.yellow, marginTop: 8 }}>
+              <p style={{ textAlign: 'center', fontSize: 12, color: S.orange, marginTop: 8 }}>
                 {rating === 1 ? 'Bof' : rating === 2 ? 'Moyen' : rating === 3 ? 'Bien' : rating === 4 ? 'Très bien' : 'Incroyable !'}
               </p>
             )}
           </div>
 
           {/* Vibe tags */}
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.border }}>
+          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Vibes (optionnel)</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {VIBE_TAGS.map(tag => {
@@ -165,7 +165,7 @@ export default function ReviewPage() {
                 return (
                   <button key={tag.id} onClick={() => setSelectedTags(prev => on ? prev.filter(t => t !== tag.id) : [...prev, tag.id])} style={{
                     padding: '6px 14px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                    border: on ? 'none' : '1px solid ' + S.border,
+                    border: on ? 'none' : '1px solid ' + S.rule,
                     background: on ? tag.color + '22' : S.bg2,
                     color: on ? tag.color : S.tx3,
                   }}>{tag.label}</button>
@@ -175,7 +175,7 @@ export default function ReviewPage() {
           </div>
 
           {/* Comment */}
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.border }}>
+          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Commentaire (optionnel, anonyme)</p>
             <textarea
               value={comment}
@@ -183,7 +183,7 @@ export default function ReviewPage() {
               placeholder="Comment ça s'est passé ?"
               maxLength={500}
               rows={3}
-              style={{ width: '100%', padding: 12, background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12, color: S.tx, fontSize: 14, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }}
+              style={{ width: '100%', padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 14, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }}
             />
           </div>
 
@@ -194,7 +194,7 @@ export default function ReviewPage() {
             cursor: submitting || rating === 0 ? 'not-allowed' : 'pointer',
             opacity: submitting || rating === 0 ? 0.6 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            boxShadow: rating > 0 ? '0 4px 20px ' + S.p400 + '44' : 'none',
+            boxShadow: rating > 0 ? '0 4px 20px ' + S.p + '44' : 'none',
           }}>
             <Send size={16} />
             {submitting ? 'Envoi...' : 'Envoyer mon avis'}

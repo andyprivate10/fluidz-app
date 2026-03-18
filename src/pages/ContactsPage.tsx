@@ -6,13 +6,13 @@ import { Users, Search } from 'lucide-react'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
+import { colors } from '../brand'
 
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 type Contact = {
@@ -30,8 +30,8 @@ type Contact = {
 
 const RELATION_STYLES = {
   connaissance: { label: 'Connaissance', color: S.tx3, icon: '👋' },
-  close: { label: 'Close', color: S.green, icon: '🤝' },
-  favori: { label: 'Favori', color: S.p300, icon: '⭐' },
+  close: { label: 'Close', color: S.sage, icon: '🤝' },
+  favori: { label: 'Favori', color: S.p, icon: '⭐' },
 }
 
 export default function ContactsPage() {
@@ -106,17 +106,17 @@ export default function ContactsPage() {
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadContacts)
 
   return (
-    <div {...pullHandlers} style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
       {pullIndicator}
       {/* Header */}
-      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
+      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>Naughty Book</h1>
             <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => navigate('/groups')} style={{ padding: '6px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.border, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <button onClick={() => navigate('/groups')} style={{ padding: '6px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
               <Users size={14} /> Groupes
             </button>
           </div>
@@ -129,7 +129,7 @@ export default function ContactsPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher un contact..."
-            style={{ width: '100%', padding: '10px 14px 10px 38px', background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12, color: S.tx, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '10px 14px 10px 38px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
           />
         </div>
 
@@ -141,9 +141,9 @@ export default function ContactsPage() {
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                border: '1px solid ' + (active ? S.p300 + '55' : S.border),
-                background: active ? S.p300 + '14' : 'transparent',
-                color: active ? S.p300 : S.tx3,
+                border: '1px solid ' + (active ? S.p + '55' : S.rule),
+                background: active ? S.p + '14' : 'transparent',
+                color: active ? S.p : S.tx3,
                 whiteSpace: 'nowrap',
               }}>{label}</button>
             )
@@ -172,11 +172,11 @@ export default function ContactsPage() {
         {filtered.map(contact => {
           const rel = RELATION_STYLES[contact.relation_level]
           return (
-            <div key={contact.id} style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div key={contact.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
               {/* Avatar */}
               <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
                 {contact.avatar_url ? (
-                  <img src={contact.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.border }} />
+                  <img src={contact.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
                 ) : (
                   <div style={{ width: 44, height: 44, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff' }}>
                     {(contact.display_name || '?')[0].toUpperCase()}
@@ -191,7 +191,7 @@ export default function ContactsPage() {
                   <span style={{ fontSize: 10, color: rel.color, fontWeight: 600 }}>{rel.icon}</span>
                   <VibeScoreBadge userId={contact.contact_user_id} />
                 </div>
-                {contact.role && <p style={{ fontSize: 12, color: S.p300, margin: '2px 0 0' }}>{contact.role}</p>}
+                {contact.role && <p style={{ fontSize: 12, color: S.p, margin: '2px 0 0' }}>{contact.role}</p>}
                 {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.notes}</p>}
               </div>
 

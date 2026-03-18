@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { ArrowLeft, Send, Users, Shield, Camera } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
+import { colors } from '../brand'
 
 type Message = {
   id: string
@@ -25,10 +26,9 @@ type Member = {
 }
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 function formatTime(dateStr: string): string {
@@ -274,7 +274,7 @@ export default function GroupChatPage() {
 
   if (!session) {
     return (
-      <div style={{ minHeight:'100vh', background:S.bg0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12 }}>
+      <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12 }}>
         <p style={{ color:S.tx3, fontSize:14 }}>Session introuvable</p>
         <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>Retour</button>
       </div>
@@ -283,7 +283,7 @@ export default function GroupChatPage() {
 
   if (!session.group_chat_enabled && !isHost) {
     return (
-      <div style={{ minHeight:'100vh', background:S.bg0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12, padding:24 }}>
+      <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12, padding:24 }}>
         <Shield size={32} style={{ color:S.tx3 }} />
         <p style={{ color:S.tx, fontSize:16, fontWeight:600, textAlign:'center' }}>Group chat pas encore activé</p>
         <p style={{ color:S.tx3, fontSize:13, textAlign:'center' }}>Le host doit activer le group chat pour cette session.</p>
@@ -295,12 +295,12 @@ export default function GroupChatPage() {
   return (
     <div style={{
       display:'flex', flexDirection:'column', minHeight:'100vh',
-      background:S.bg0, maxWidth:480, margin:'0 auto',
+      background:S.bg, maxWidth:480, margin:'0 auto',
     }}>
       {/* Header */}
       <div style={{
         padding:'12px 16px', display:'flex', alignItems:'center', gap:12,
-        borderBottom:'1px solid '+S.border, background:S.bg1,
+        borderBottom:'1px solid '+S.rule, background:S.bg1,
         paddingTop:'calc(12px + env(safe-area-inset-top, 0px))',
       }}>
         <button onClick={() => navigate('/session/' + id)} style={{ background:'none', border:'none', cursor:'pointer', padding:4 }}>
@@ -315,7 +315,7 @@ export default function GroupChatPage() {
           </p>
         </div>
         <button onClick={() => setShowMembers(!showMembers)} style={{
-          background:'none', border:'1px solid '+S.border, borderRadius:10, padding:'6px 10px',
+          background:'none', border:'1px solid '+S.rule, borderRadius:10, padding:'6px 10px',
           cursor:'pointer', display:'flex', alignItems:'center', gap:4,
         }}>
           <Users size={14} style={{ color:S.tx3 }} />
@@ -324,9 +324,9 @@ export default function GroupChatPage() {
         {isHost && (
           <button onClick={toggleGroupChat} style={{
             padding:'6px 10px', borderRadius:10, fontSize:11, fontWeight:600, cursor:'pointer',
-            background: session.group_chat_enabled ? S.green+'18' : S.p400+'18',
-            color: session.group_chat_enabled ? S.green : S.p400,
-            border:'1px solid ' + (session.group_chat_enabled ? S.green+'44' : S.p400+'44'),
+            background: session.group_chat_enabled ? S.sage+'18' : S.p+'18',
+            color: session.group_chat_enabled ? S.sage : S.p,
+            border:'1px solid ' + (session.group_chat_enabled ? S.sage+'44' : S.p+'44'),
           }}>
             {session.group_chat_enabled ? 'ON' : 'OFF'}
           </button>
@@ -335,11 +335,11 @@ export default function GroupChatPage() {
 
       {/* Members panel */}
       {showMembers && (
-        <div style={{ padding:'12px 16px', background:S.bg1, borderBottom:'1px solid '+S.border }}>
+        <div style={{ padding:'12px 16px', background:S.bg1, borderBottom:'1px solid '+S.rule }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
             {/* Host */}
             <div style={{ display:'flex', alignItems:'center', gap:6, padding:'4px 10px', background:S.bg2, borderRadius:99 }}>
-              <div style={{ width:6, height:6, borderRadius:'50%', background:S.p300 }} />
+              <div style={{ width:6, height:6, borderRadius:'50%', background:S.p }} />
               <span style={{ fontSize:12, color:S.tx2 }}>Host</span>
             </div>
             {members.map(m => (
@@ -355,7 +355,7 @@ export default function GroupChatPage() {
                   </div>
                 )}
                 <span style={{ fontSize:12, color:S.tx2 }}>{m.display_name}</span>
-                {m.status === 'checked_in' || (m.status === 'accepted' && (m as any).checked_in) && <div style={{ width:6, height:6, borderRadius:'50%', background:S.green }} />}
+                {m.status === 'checked_in' || (m.status === 'accepted' && (m as any).checked_in) && <div style={{ width:6, height:6, borderRadius:'50%', background:S.sage }} />}
               </button>
             ))}
           </div>
@@ -364,8 +364,8 @@ export default function GroupChatPage() {
 
       {/* Not enabled banner for host */}
       {isHost && !session.group_chat_enabled && (
-        <div style={{ padding:'10px 16px', background:S.p400+'12', borderBottom:'1px solid '+S.p400+'33' }}>
-          <p style={{ margin:0, fontSize:12, color:S.p300 }}>
+        <div style={{ padding:'10px 16px', background:S.p+'12', borderBottom:'1px solid '+S.p+'33' }}>
+          <p style={{ margin:0, fontSize:12, color:S.p }}>
             Le group chat est désactivé. Clique "ON" pour l'activer pour les membres.
           </p>
         </div>
@@ -396,11 +396,11 @@ export default function GroupChatPage() {
           return (
             <div key={msg.id} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
               {showName && (
-                <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p300, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.p300+'44' }}>{msg.sender_name}</button>
+                <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.p+'44' }}>{msg.sender_name}</button>
               )}
               <div style={{
                 maxWidth:'80%', padding: msg.has_media ? 4 : '8px 12px', borderRadius:16,
-                background: isMe ? S.p300+'22' : S.bg2,
+                background: isMe ? S.p+'22' : S.bg2,
                 borderBottomRightRadius: isMe ? 4 : 16,
                 borderBottomLeftRadius: isMe ? 16 : 4,
                 overflow:'hidden',
@@ -434,11 +434,11 @@ export default function GroupChatPage() {
       {/* Input */}
       {canChat && (session.group_chat_enabled || isHost) && (
         <div style={{
-          padding:'10px 16px', borderTop:'1px solid '+S.border, background:S.bg1,
+          padding:'10px 16px', borderTop:'1px solid '+S.rule, background:S.bg1,
           paddingBottom:'calc(10px + env(safe-area-inset-bottom, 0px))',
           display:'flex', gap:8, alignItems:'center',
         }}>
-          <label style={{ display:'flex', alignItems:'center', justifyContent:'center', width:40, height:40, borderRadius:'50%', background:S.bg2, border:'1px solid '+S.border, cursor: uploading?'not-allowed':'pointer', flexShrink:0, opacity: uploading?0.5:1 }}>
+          <label style={{ display:'flex', alignItems:'center', justifyContent:'center', width:40, height:40, borderRadius:'50%', background:S.bg2, border:'1px solid '+S.rule, cursor: uploading?'not-allowed':'pointer', flexShrink:0, opacity: uploading?0.5:1 }}>
             <Camera size={16} style={{ color:S.tx3 }} />
             <input type="file" accept="image/*,video/*" onChange={e => { const f=e.target.files?.[0]; if(f) sendPhoto(f); e.target.value='' }} style={{ display:'none' }} disabled={uploading} />
           </label>
@@ -453,7 +453,7 @@ export default function GroupChatPage() {
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
             placeholder="Message au groupe..."
             style={{
-              flex:1, padding:'10px 14px', borderRadius:99, border:'1px solid '+S.border,
+              flex:1, padding:'10px 14px', borderRadius:99, border:'1px solid '+S.rule,
               background:S.bg2, color:S.tx, fontSize:14, outline:'none',
             }}
           />

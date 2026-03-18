@@ -5,12 +5,12 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',red:'#F87171',blue:'#7DD3FC',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 function monthsAgo(iso: string): string {
@@ -110,17 +110,17 @@ export default function CandidateProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-        <div style={{ width: 32, height: 32, border: '3px solid ' + S.p300, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+        <div style={{ width: 32, height: 32, border: '3px solid ' + S.p, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>
     )
   }
 
   if (!app) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: S.tx3 }}>Candidature introuvable</p>
-        <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p300, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>← Retour</button>
+        <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>← Retour</button>
       </div>
     )
   }
@@ -157,10 +157,10 @@ export default function CandidateProfilePage() {
     : (eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : []))
   const hasAdulteMedia = photosAdulte.length > 0 || videosAdulte.length > 0
 
-  const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16, marginBottom: 12 }
+  const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 12 }
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto' }}>
+    <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto' }}>
 
       {/* Photo gallery */}
       {candidatePhotos.length > 0 && (
@@ -172,7 +172,7 @@ export default function CandidateProfilePage() {
               {hasAdulteMedia && <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Profil</p>}
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosProfil.map((url: string, i: number) => (
-                  <LazyImage key={i} src={url} style={{ width: photosProfil.length === 1 && !hasAdulteMedia ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+                  <LazyImage key={i} src={url} style={{ width: photosProfil.length === 1 && !hasAdulteMedia ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
                 ))}
               </div>
             </>
@@ -180,14 +180,14 @@ export default function CandidateProfilePage() {
           {/* Adulte photos/videos */}
           {hasAdulteMedia && (
             <>
-              <p style={{ fontSize: 11, fontWeight: 700, color: S.p400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosAdulte.map((url: string, i: number) => (
-                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.p400 + '55' }} />
+                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.p + '55' }} />
                 ))}
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                    <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.p400 + '55' }} />
+                    <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.p + '55' }} />
                     <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
                   </div>
                 ))}
@@ -198,11 +198,11 @@ export default function CandidateProfilePage() {
           {photosProfil.length === 0 && !hasAdulteMedia && candidatePhotos.length > 0 && (
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
               {candidatePhotos.map((url: string, i: number) => (
-                <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+                <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
               ))}
               {candidateVideos.map((url: string, i: number) => (
                 <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                  <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.border }} />
+                  <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.rule }} />
                   <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
                 </div>
               ))}
@@ -220,7 +220,7 @@ export default function CandidateProfilePage() {
         {/* Avatar + Name */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {avatarUrl ? (
-            <img src={avatarUrl} alt="" style={{ width: 64, height: 64, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.border }} />
+            <img src={avatarUrl} alt="" style={{ width: 64, height: 64, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
             <div style={{ width: 64, height: 64, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#fff' }}>
               {displayName[0]?.toUpperCase()}
@@ -245,9 +245,9 @@ export default function CandidateProfilePage() {
         <div style={{ marginTop: 12 }}>
           <span style={{
             fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 99,
-            color: app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow,
-            background: (app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow) + '18',
-            border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.green : app.status === 'rejected' ? S.red : S.yellow) + '44',
+            color: app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange,
+            background: (app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange) + '18',
+            border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange) + '44',
           }}>
             {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : 'En attente'}
           </span>
@@ -285,7 +285,7 @@ export default function CandidateProfilePage() {
             'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
             'Bears welcome': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
           }
-          const def = { bg: S.bg2, color: S.tx2, border: S.border }
+          const def = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
             <div style={card}>
               <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
@@ -313,7 +313,7 @@ export default function CandidateProfilePage() {
             <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Santé</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {health.prep_status === 'Actif' && (
-                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.green, background: S.green + '18', border: '1px solid ' + S.green + '44' }}>PrEP actif</span>
+                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.sage, background: S.sage + '18', border: '1px solid ' + S.sage + '44' }}>PrEP actif</span>
               )}
               {health.prep_status && health.prep_status !== 'Actif' && (
                 <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
@@ -335,16 +335,16 @@ export default function CandidateProfilePage() {
 
         {/* Message au host */}
         {messageText && (
-          <div style={{ ...card, borderColor: S.p300 + '44' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
+          <div style={{ ...card, borderColor: S.p + '44' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
             <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
           </div>
         )}
 
         {/* Occasion note */}
         {eps.occasion_note && eps.occasion_note !== messageText && (
-          <div style={{ ...card, borderColor: S.p300 + '33' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p300, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
+          <div style={{ ...card, borderColor: S.p + '33' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
             <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
           </div>
         )}
@@ -362,7 +362,7 @@ export default function CandidateProfilePage() {
         <div style={{
           position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
           width: '100%', maxWidth: 480, padding: '12px 20px 28px',
-          background: 'linear-gradient(to top, ' + S.bg0 + ' 70%, transparent)', display: 'flex', gap: 10,
+          background: 'linear-gradient(to top, ' + S.bg + ' 70%, transparent)', display: 'flex', gap: 10,
         }}>
           <button onClick={() => handleDecision('rejected')} disabled={actioning} style={{
             flex: 1, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
@@ -373,7 +373,7 @@ export default function CandidateProfilePage() {
           <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
             flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
             color: '#fff', background: S.grad, border: 'none', cursor: 'pointer',
-            boxShadow: '0 4px 16px ' + S.p400 + '44',
+            boxShadow: '0 4px 16px ' + S.p + '44',
           }}>
             {actioning ? '...' : '✓ Accepter'}
           </button>

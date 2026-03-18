@@ -5,6 +5,7 @@ import { Camera } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
+import { colors } from '../brand'
 
 type Message = {
   id: string
@@ -17,10 +18,9 @@ type Message = {
 }
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 function formatRelative(dateStr: string): string {
@@ -344,15 +344,15 @@ export default function DMPage() {
 
   return (
     <div style={{
-      background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column',
+      background: S.bg, height: '100vh', display: 'flex', flexDirection: 'column',
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       {/* Header */}
-      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.border, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}>&larr;</button>
           {peerAvatar ? (
-            <img src={peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.border, flexShrink: 0 }} />
+            <img src={peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
           ) : peerName ? (
             <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{peerName[0].toUpperCase()}</div>
           ) : null}
@@ -361,14 +361,14 @@ export default function DMPage() {
               {peerName || (session?.title ?? 'DM')}
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              {peerRole && <span style={{ fontSize: 11, color: S.p300, fontWeight: 600 }}>{peerRole}</span>}
+              {peerRole && <span style={{ fontSize: 11, color: S.p, fontWeight: 600 }}>{peerRole}</span>}
               {peerRole && <span style={{ fontSize: 11, color: S.tx4 }}>·</span>}
               <span style={{ fontSize: 11, color: S.tx3 }}>{session?.title ?? ''}</span>
             </div>
           </div>
         </div>
         {peerId && (
-          <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.border, background: 'transparent', cursor: 'pointer' }}>
+          <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
             Voir profil
           </button>
         )}
@@ -376,16 +376,16 @@ export default function DMPage() {
 
       {/* Status banner */}
       {!isHost && appStatus === 'pending' && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: S.yellow+'14', border: '1px solid '+S.yellow+'44', borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: S.yellow, fontWeight: 600, textAlign: 'center' }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.orange+'14', border: '1px solid '+S.orange+'44', borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.orange, fontWeight: 600, textAlign: 'center' }}>
             Candidature en attente...
           </div>
         </div>
       )}
 
       {showCheckInBanner && !showCheckInConfirmed && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.green, borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: S.green, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 13, color: S.sage, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
             Tu as été accepté(e) ! 🎉 Clique quand tu arrives.
           </div>
           <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', cursor: 'pointer' }}>
@@ -410,15 +410,15 @@ export default function DMPage() {
 
       {/* Address revealed */}
       {isAccepted && session?.exact_address && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.green, borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: S.green, marginBottom: 4 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: '#14532d', border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: S.sage, marginBottom: 4 }}>
             Adresse revelee
           </div>
           <div style={{ fontSize: 14, color: S.tx, fontWeight: 600 }}>
             {session.exact_address}
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-            <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.green, border: '1px solid ' + S.green + '44', background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sage + '44', background: 'transparent', cursor: 'pointer' }}>
               📋 Copier
             </button>
             <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: '#7DD3FC', border: '1px solid #7DD3FC44', background: 'transparent', cursor: 'pointer' }}>
@@ -473,7 +473,7 @@ export default function DMPage() {
                 )}
                 <div style={{
                   padding: message.has_media ? 4 : '10px 14px', fontSize: 15, maxWidth: '80%',
-                  background: isMine ? S.p400 : S.bg2,
+                  background: isMine ? S.p : S.bg2,
                   color: isMine ? 'white' : S.tx,
                   borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                   overflow: 'hidden',
@@ -515,17 +515,17 @@ export default function DMPage() {
 
       {/* Input bar */}
       <div style={{
-        background: S.bg1, padding: 16, borderTop: '1px solid '+S.border,
+        background: S.bg1, padding: 16, borderTop: '1px solid '+S.rule,
         display: 'flex', gap: 8, flexShrink: 0,
       }}>
-        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.border, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
+        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
           <Camera size={18} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={uploading} />
         </label>
         <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? '#F87171' : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
           {recording ? '⏹' : '🎤'}
         </button>
-        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? '#4ADE80' : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.border }}>
+        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? '#4ADE8022' : S.bg2, color: sharingLocation ? '#4ADE80' : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid #4ADE8044' : '1px solid ' + S.rule }}>
           {sharingLocation ? '📍' : '📌'}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
@@ -536,7 +536,7 @@ export default function DMPage() {
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder={uploading ? 'Envoi photo...' : 'Ton message...'}
           style={{
-            flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.border,
+            flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
             borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
             fontFamily: 'inherit',
           }}

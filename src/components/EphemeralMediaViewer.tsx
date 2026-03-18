@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { Eye, Clock, Lock } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',red:'#F87171',yellow:'#FBBF24',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 type EphemeralMedia = {
@@ -113,15 +114,15 @@ export default function EphemeralMediaViewer({ mediaId, onClose }: { mediaId: st
   if (!viewing && media) return (
     <div style={overlay}>
       <div style={{ textAlign: 'center', padding: 40 }}>
-        <Eye size={40} style={{ color: S.p300, marginBottom: 12 }} />
+        <Eye size={40} style={{ color: S.p, marginBottom: 12 }} />
         <p style={{ color: S.tx, fontSize: 16, fontWeight: 700, margin: '0 0 8px' }}>Contenu éphémère</p>
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 20 }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: S.yellow }}>{media.max_views - media.views_count}</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: S.orange }}>{media.max_views - media.views_count}</div>
             <div style={{ fontSize: 11, color: S.tx3 }}>vues restantes</div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: S.p300 }}>{media.max_duration_sec}s</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: S.p }}>{media.max_duration_sec}s</div>
             <div style={{ fontSize: 11, color: S.tx3 }}>durée max</div>
           </div>
         </div>
@@ -145,7 +146,7 @@ export default function EphemeralMediaViewer({ mediaId, onClose }: { mediaId: st
       {/* Timer bar */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: S.bg2, zIndex: 2 }}>
         <div style={{
-          height: '100%', background: timeLeft > 5 ? S.p300 : S.red,
+          height: '100%', background: timeLeft > 5 ? S.p : S.red,
           width: `${(timeLeft / (media?.max_duration_sec || 30)) * 100}%`,
           transition: 'width 1s linear',
           borderRadius: 2,

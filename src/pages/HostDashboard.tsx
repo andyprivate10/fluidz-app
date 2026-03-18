@@ -4,12 +4,12 @@ import { supabase } from '../lib/supabase'
 import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',green:'#4ADE80',yellow:'#FBBF24',orange:'#F97316',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 export default function HostDashboard() {
@@ -298,18 +298,18 @@ export default function HostDashboard() {
   const totalAccepted = counts.accepted
 
   if (loading) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
+    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
       <div className="w-8 h-8 border-4 border-peach300 border-t-transparent rounded-full animate-spin" />
     </div>
   )
   if (loadError) return (
-    <div style={{minHeight:'100vh',background:S.bg0,display:'flex',justifyContent:'center',paddingTop:80}}>
+    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
       <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
-      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.border}}>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
+      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule}}>
         <button onClick={() => navigate(-1)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <div>
@@ -318,15 +318,15 @@ export default function HostDashboard() {
           </div>
           <button onClick={toggleStatus} style={{
             padding:'6px 14px',borderRadius:99,fontSize:12,fontWeight:700,border:'none',cursor:'pointer',
-            background: sess?.status==='open' ? S.green+'22' : S.bg3,
-            color: sess?.status==='open' ? S.green : S.tx3,
+            background: sess?.status==='open' ? S.sage+'22' : S.bg3,
+            color: sess?.status==='open' ? S.sage : S.tx3,
           }}>
             {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
           </button>
         </div>
         {sess?.status !== 'ended' && (
           <div style={{display:'flex',gap:8,marginTop:12}}>
-            <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
+            <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
               Modifier
             </button>
             <button onClick={closeSession} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>
@@ -335,7 +335,7 @@ export default function HostDashboard() {
           </div>
         )}
 
-        <button onClick={() => navigate('/session/' + id + '/chat')} style={{marginTop:8,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:'pointer',width:'100%'}}>
+        <button onClick={() => navigate('/session/' + id + '/chat')} style={{marginTop:8,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:'transparent',color:S.p,cursor:'pointer',width:'100%'}}>
           Group Chat
         </button>
 
@@ -349,11 +349,11 @@ export default function HostDashboard() {
                   setTimeout(() => setLinkCopied(false), 2000)
                 })
               }}
-              style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:linkCopied ? S.green+'22' : 'transparent',color:linkCopied ? S.green : S.p300,cursor:'pointer',width:'100%'}}
+              style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:linkCopied ? S.sage+'22' : 'transparent',color:linkCopied ? S.sage : S.p,cursor:'pointer',width:'100%'}}
             >
               {linkCopied ? 'Lien copié' : 'Partager'}
             </button>
-            <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
+            <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
               <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
               <button
                 onClick={() => {
@@ -369,7 +369,7 @@ export default function HostDashboard() {
                     setTimeout(() => setGrinderCopied(false), 2000)
                   })
                 }}
-                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:grinderCopied ? S.green+'22' : 'transparent',color:grinderCopied ? S.green : S.p300,cursor:'pointer',marginBottom:8}}
+                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sage+'22' : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
               >
                 {grinderCopied ? 'Copié !' : 'Copier message Grindr'}
               </button>
@@ -386,7 +386,7 @@ export default function HostDashboard() {
                     setTimeout(() => setMessageCopied(false), 2000)
                   })
                 }}
-                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:messageCopied ? S.green+'22' : 'transparent',color:messageCopied ? S.green : S.p300,cursor:'pointer'}}
+                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sage+'22' : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
               >
                 {messageCopied ? 'Copié ✓' : 'Copier le message'}
               </button>
@@ -412,7 +412,7 @@ export default function HostDashboard() {
                   setTimeout(() => setLinkCopied(false), 2000)
                 })
               }}
-              style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.green+'44',background:S.green+'14',color:S.green,cursor:'pointer'}}
+              style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sage+'44',background:S.sage+'14',color:S.sage,cursor:'pointer'}}
             >
               ⚡ Copier lien invite directe (pas de vote)
             </button>
@@ -427,7 +427,7 @@ export default function HostDashboard() {
             if (r) currentRoles[r] = (currentRoles[r] || 0) + 1
           })
           return (
-            <div style={{marginTop:12,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.border}}>
+            <div style={{marginTop:12,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule}}>
               <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>RÔLES</div>
               <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                 {Object.entries(wanted).map(([role, count]) => {
@@ -436,9 +436,9 @@ export default function HostDashboard() {
                   return (
                     <span key={role} style={{
                       fontSize:12,fontWeight:600,padding:'4px 10px',borderRadius:99,
-                      color: filled ? S.green : S.p300,
-                      background: filled ? S.green+'18' : S.p300+'18',
-                      border: '1px solid '+(filled ? S.green+'44' : S.p300+'44'),
+                      color: filled ? S.sage : S.p,
+                      background: filled ? S.sage+'18' : S.p+'18',
+                      border: '1px solid '+(filled ? S.sage+'44' : S.p+'44'),
                     }}>
                       {have}/{count} {role}{filled ? ' ✓' : ''}
                     </span>
@@ -451,9 +451,9 @@ export default function HostDashboard() {
 
         {/* Arrival stats */}
         {totalAccepted > 0 && (
-          <div style={{marginTop:16,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.border,display:'flex',justifyContent:'space-around',textAlign:'center'}}>
+          <div style={{marginTop:16,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule,display:'flex',justifyContent:'space-around',textAlign:'center'}}>
             <div>
-              <div style={{fontSize:20,fontWeight:800,color:S.green}}>{arrivedCount}</div>
+              <div style={{fontSize:20,fontWeight:800,color:S.sage}}>{arrivedCount}</div>
               <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>Arrivés</div>
             </div>
             {waitingCount > 0 && (
@@ -467,17 +467,17 @@ export default function HostDashboard() {
               <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>En route</div>
             </div>
             <div>
-              <div style={{fontSize:20,fontWeight:800,color:S.p300}}>{totalAccepted}</div>
+              <div style={{fontSize:20,fontWeight:800,color:S.p}}>{totalAccepted}</div>
               <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>Total</div>
             </div>
           </div>
         )}
 
         <div style={{display:'flex',gap:8,marginTop:16}}>
-          {([['pending','En attente',S.yellow],['accepted','Acceptés',S.green],['rejected','Refusés',S.red]] as const).map(([t,l,c]) => (
+          {([['pending','En attente',S.orange],['accepted','Acceptés',S.sage],['rejected','Refusés',S.red]] as const).map(([t,l,c]) => (
             <button key={t} onClick={() => setTab(t as any)} style={{
               flex:1,padding:'8px 4px',borderRadius:10,fontSize:12,fontWeight:600,cursor:'pointer',
-              border:'1px solid '+(tab===t ? c+'55' : S.border),
+              border:'1px solid '+(tab===t ? c+'55' : S.rule),
               background: tab===t ? c+'14' : S.bg2,
               color: tab===t ? c : S.tx3,
             }}>
@@ -488,16 +488,16 @@ export default function HostDashboard() {
       </div>
 
       <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
-        <div style={{padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
+        <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Broadcast</div>
-          <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder="Message à envoyer à tous les membres..." rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.border,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
+          <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder="Message à envoyer à tous les membres..." rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
           <button onClick={sendBroadcast} disabled={broadcastSending || !broadcastText.trim()} style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'none',background:S.grad,color:'#fff',cursor: broadcastSending || !broadcastText.trim() ? 'not-allowed' : 'pointer',opacity: broadcastSending || !broadcastText.trim() ? 0.7 : 1}}>
             {broadcastSending ? 'Envoi...' : 'Envoyer à tous'}
           </button>
         </div>
         {/* Group invite */}
         {myGroups.length > 0 && (
-          <div style={{padding:12,borderRadius:10,border:'1px solid '+S.border,background:S.bg2}}>
+          <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
             <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Inviter un groupe</div>
             <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
               {myGroups.map(g => (
@@ -527,18 +527,18 @@ export default function HostDashboard() {
           const displayName = prof?.display_name || snapshot?.display_name || 'Anonyme'
           const displayRole = pj.role || snapshot?.role
           return (
-            <div key={app.id} style={{background:S.bg1,borderRadius:18,border:'1px solid '+S.border,overflow:'hidden'}}>
+            <div key={app.id} style={{background:S.bg1,borderRadius:18,border:'1px solid '+S.rule,overflow:'hidden'}}>
               <div style={{padding:'16px'}}>
                 <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:10}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
                     <p style={{margin:'0 0 2px',fontSize:16,fontWeight:800,color:S.tx}}>
                       <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{displayName}</Link>
                     </p>
-                    {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.border}}>Ghost</span>}
-                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p300+'18',color:S.p300,border:'1px solid '+S.p300+'33'}}>{displayRole}</span>}
+                    {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.rule}}>Ghost</span>}
+                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p+'18',color:S.p,border:'1px solid '+S.p+'33'}}>{displayRole}</span>}
                     {!isGhost && <VibeScoreBadge userId={app.applicant_id} />}
                   </div>
-                  <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Voir profil</button>
+                  <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Voir profil</button>
                 </div>
 
                 {(pj.age || snapshot?.age) && <p style={{fontSize:13,color:S.tx3,margin:'0 0 4px'}}>{(pj.age || snapshot.age)} ans{pj.location || snapshot?.location ? ' · ' + (pj.location || snapshot.location) : ''}</p>}
@@ -547,7 +547,7 @@ export default function HostDashboard() {
                 {(pj.morphology || (isGhost && snapshot?.morphology)) && (
                   <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:8}}>
                     {[pj.morphology || snapshot?.morphology, ...(pj.kinks||snapshot?.kinks||[]).slice(0,3)].filter(Boolean).map((t:string,i:number) => (
-                      <span key={i} style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:S.bg2,color:S.tx3,border:'1px solid '+S.border}}>{t}</span>
+                      <span key={i} style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:S.bg2,color:S.tx3,border:'1px solid '+S.rule}}>{t}</span>
                     ))}
                     {(pj.kinks||snapshot?.kinks||[]).length > 3 && <span style={{fontSize:11,color:S.tx4}}>+{(pj.kinks||snapshot?.kinks).length-3}</span>}
                   </div>
@@ -561,8 +561,8 @@ export default function HostDashboard() {
                 )}
 
                 {app.eps_json?.occasion_note && (
-                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p300+'33',marginBottom:8}}>
-                    <p style={{fontSize:11,color:S.p300,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
+                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p+'33',marginBottom:8}}>
+                    <p style={{fontSize:11,color:S.p,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0}}>{app.eps_json.occasion_note}</p>
                   </div>
                 )}
@@ -582,9 +582,9 @@ export default function HostDashboard() {
                       const no = appVotes.filter(v => v.vote === 'no').length
                       if (yes + no === 0) return null
                       return (
-                        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'6px 10px',background:S.bg2,borderRadius:10,border:'1px solid '+S.border}}>
+                        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'6px 10px',background:S.bg2,borderRadius:10,border:'1px solid '+S.rule}}>
                           <span style={{fontSize:12,color:S.tx3}}>Votes :</span>
-                          <span style={{fontSize:13,fontWeight:700,color:S.green,display:'flex',alignItems:'center',gap:4}}><ThumbsUp size={14} /> {yes}</span>
+                          <span style={{fontSize:13,fontWeight:700,color:S.sage,display:'flex',alignItems:'center',gap:4}}><ThumbsUp size={14} /> {yes}</span>
                           <span style={{fontSize:13,fontWeight:700,color:S.red,display:'flex',alignItems:'center',gap:4}}><ThumbsDown size={14} /> {no}</span>
                         </div>
                       )
@@ -593,7 +593,7 @@ export default function HostDashboard() {
                       <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
                         ✕ Refuser
                       </button>
-                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.p400+'44'}}>
+                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 16px '+S.p+'44'}}>
                         {actionLoading===app.id ? '...' : '✓ Accepter'}
                       </button>
                     </div>
@@ -605,18 +605,18 @@ export default function HostDashboard() {
                     {app.status === 'accepted' && app.checked_in === true && (
                       <>
                         <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orange+'22',border:'1px solid '+S.orange+'44'}}>Arrivée à confirmer</span>
-                        <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.green,border:'1px solid '+S.green,background:S.green+'22',cursor:'pointer'}}>
+                        <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sage+'22',cursor:'pointer'}}>
                           {actionLoading===app.id ? '...' : 'Confirmer ✓'}
                         </button>
                       </>
                     )}
                     {app.status === 'checked_in' && (
-                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>Arrivé ✓</span>
+                      <span style={{fontSize:12,color:S.sage,fontWeight:600}}>Arrivé ✓</span>
                     )}
                     {app.status === 'accepted' && !app.checked_in && (
-                      <span style={{fontSize:12,color:S.green,fontWeight:600}}>Accepté — en route</span>
+                      <span style={{fontSize:12,color:S.sage,fontWeight:600}}>Accepté — en route</span>
                     )}
-                    <button onClick={() => navigate('/session/' + id + '/dm/' + app.applicant_id)} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p300,border:'1px solid '+S.p300+'55',background:'transparent',cursor:'pointer'}}>DM</button>
+                    <button onClick={() => navigate('/session/' + id + '/dm/' + app.applicant_id)} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid '+S.p+'55',background:'transparent',cursor:'pointer'}}>DM</button>
                     {app.status === 'accepted' && !app.checked_in && (
                       <button onClick={async () => {
                         await supabase.from('notifications').insert({
@@ -628,7 +628,7 @@ export default function HostDashboard() {
                         showToast('Relance envoyée', 'success')
                       }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:'#FBBF24',border:'1px solid #FBBF2444',background:'transparent',cursor:'pointer'}}>Relancer</button>
                     )}
-                    <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer'}}>Annuler</button>
+                    <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>
                 )}
               </div>

@@ -3,12 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Moon, Pill, Headphones, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',red:'#F87171',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const TEMPLATES: { id: string; label: string; icon: LucideIcon; tags: string[]; desc: string }[] = [
@@ -28,7 +28,7 @@ const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: s
 
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
-  padding:'12px 16px',border:'1px solid '+S.border,outline:'none',
+  padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',
   fontSize:14,fontFamily:'inherit',boxSizing:'border-box' as const,
 }
 
@@ -157,22 +157,22 @@ export default function CreateSessionPage() {
 
   if (createdSession) {
     return (
-      <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
+      <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
         <div style={{padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 8px'}}>Session créée !</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>Partage le lien avec ton message</p>
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
             {(['grindr','whatsapp','telegram'] as const).map(app => (
               <button key={app} onClick={() => copyShareMessage(app)} style={{
-                padding:'14px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.border,
-                background: copyFeedback === app ? S.p300+'22' : S.bg1, color: copyFeedback === app ? S.p300 : S.tx2,
+                padding:'14px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.rule,
+                background: copyFeedback === app ? S.p+'22' : S.bg1, color: copyFeedback === app ? S.p : S.tx2,
                 cursor:'pointer',textAlign:'left',
               }}>
                 {copyFeedback === app ? 'Copié !' : (app === 'grindr' ? 'Copier pour Grindr' : app === 'whatsapp' ? 'Copier pour WhatsApp' : 'Copier pour Telegram')}
               </button>
             ))}
           </div>
-          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p400+'44'}}>
+          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:'pointer',boxShadow:'0 4px 20px '+S.p+'44'}}>
             Aller à la session
           </button>
         </div>
@@ -181,8 +181,8 @@ export default function CreateSessionPage() {
   }
 
   return (
-    <div style={{minHeight:'100vh',background:S.bg0,paddingBottom:96}}>
-      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.border}}>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
+      <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule}}>
         <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}>← Retour</button>
         <h1 style={{fontSize:22,fontWeight:800,color:S.tx,margin:'0 0 4px'}}>Nouvelle session</h1>
         <p style={{fontSize:13,color:S.tx3,margin:0}}>Étape {stepIdx+1}/3</p>
@@ -190,7 +190,7 @@ export default function CreateSessionPage() {
 
       <div style={{display:'flex',padding:'12px 20px 0',gap:6}}>
         {steps.map((s,i) => (
-          <div key={s} style={{flex:1,height:3,borderRadius:99,background:i<=stepIdx?S.p300:S.bg3,transition:'background 0.3s'}} />
+          <div key={s} style={{flex:1,height:3,borderRadius:99,background:i<=stepIdx?S.p:S.bg3,transition:'background 0.3s'}} />
         ))}
       </div>
 
@@ -201,7 +201,7 @@ export default function CreateSessionPage() {
           <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
             {QUICK_TEMPLATES.map(qt => (
               <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setDescription(qt.description); setSelectedTags(qt.tags); setRolesWanted(qt.roles); setDirections([{ text: '' }]); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
-                padding:'12px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.border,background:S.bg1,color:S.tx,cursor:'pointer',display:'flex',alignItems:'center',gap:8,
+                padding:'12px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,cursor:'pointer',display:'flex',alignItems:'center',gap:8,
               }}>
                 <span><qt.icon size={16} /></span>
                 <span>{qt.label}</span>
@@ -211,11 +211,11 @@ export default function CreateSessionPage() {
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
             {TEMPLATES.map(t => (
               <div key={t.id} onClick={() => pickTemplate(t)} style={{
-                background:S.bg1,border:'1px solid '+S.border,borderRadius:16,
+                background:S.bg1,border:'1px solid '+S.rule,borderRadius:16,
                 padding:'16px',cursor:'pointer',display:'flex',alignItems:'center',gap:14,
                 transition:'all 0.2s',
               }}>
-                <span><t.icon size={28} style={{color:S.p300}} /></span>
+                <span><t.icon size={28} style={{color:S.p}} /></span>
                 <div>
                   <p style={{margin:'0 0 2px',fontSize:15,fontWeight:700,color:S.tx}}>{t.label}</p>
                   <p style={{margin:0,fontSize:12,color:S.tx3}}>{t.desc}</p>
@@ -244,7 +244,7 @@ export default function CreateSessionPage() {
                 return (
                   <button key={tag} onClick={()=>toggleTag(tag)} style={{
                     padding:'6px 14px',borderRadius:99,fontSize:13,fontWeight:600,
-                    border:on?'none':'1px solid '+S.border,
+                    border:on?'none':'1px solid '+S.rule,
                     background:on?S.grad:S.bg2,color:on?'#fff':S.tx3,cursor:'pointer',
                   }}>{tag}</button>
                 )
@@ -258,12 +258,12 @@ export default function CreateSessionPage() {
               {['Top', 'Bottom', 'Versa', 'Side'].map(role => {
                 const count = rolesWanted[role] || 0
                 return (
-                  <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p300+'18' : S.bg2,border:'1px solid '+(count > 0 ? S.p300+'44' : S.border)}}>
-                    <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p300 : S.tx3}}>{role}</span>
+                  <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p+'18' : S.bg2,border:'1px solid '+(count > 0 ? S.p+'44' : S.rule)}}>
+                    <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p : S.tx3}}>{role}</span>
                     <div style={{display:'flex',alignItems:'center',gap:4}}>
-                      <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[role]||0)>0) n[role]=(n[role]||0)-1; if(n[role]===0) delete n[role]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.border,background:S.bg0,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>
+                      <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[role]||0)>0) n[role]=(n[role]||0)-1; if(n[role]===0) delete n[role]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.rule,background:S.bg,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>
                       <span style={{fontSize:14,fontWeight:700,color:S.tx,minWidth:16,textAlign:'center'}}>{count}</span>
-                      <button onClick={()=>setRolesWanted(prev => ({...prev,[role]:(prev[role]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.p300+'44',background:S.p300+'18',color:S.p300,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
+                      <button onClick={()=>setRolesWanted(prev => ({...prev,[role]:(prev[role]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.p+'44',background:S.p+'18',color:S.p,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
                     </div>
                   </div>
                 )
@@ -275,7 +275,7 @@ export default function CreateSessionPage() {
               </p>
             )}
           </div>
-          <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.p400+'44',marginTop:4}}>
+          <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.p+'44',marginTop:4}}>
             Continuer →
           </button>
         </div>
@@ -289,7 +289,7 @@ export default function CreateSessionPage() {
               <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
                 {savedAddresses.map((addr, i) => (
                   <button key={addr.id || i} type="button" onClick={() => pickSavedAddress(addr)} style={{
-                    padding:'6px 12px',borderRadius:99,fontSize:12,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer',
+                    padding:'6px 12px',borderRadius:99,fontSize:12,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer',
                   }}>
                     {addr.label || addr.approx_area || 'Adresse'}
                   </button>
@@ -298,7 +298,7 @@ export default function CreateSessionPage() {
             </div>
           )}
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Zone approximative <span style={{color:S.p300}}>*</span></p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Zone approximative <span style={{color:S.p}}>*</span></p>
             <input value={approxArea} onChange={e=>setApproxArea(e.target.value)} placeholder='Paris 11ème, Métro Bastille' style={inp} />
             <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Visible par tous les candidats</p>
           </div>
@@ -311,9 +311,9 @@ export default function CreateSessionPage() {
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Accès</p>
             <p style={{fontSize:12,color:S.tx4,marginBottom:8}}>Étapes pour arriver (visibles par les membres acceptés)</p>
             {directions.map((step, i) => (
-              <div key={i} style={{marginBottom:8,padding:10,background:S.bg0,borderRadius:10,border:'1px solid '+S.border}}>
+              <div key={i} style={{marginBottom:8,padding:10,background:S.bg,borderRadius:10,border:'1px solid '+S.rule}}>
                 <div style={{display:'flex',gap:8,alignItems:'center'}}>
-                  <span style={{fontSize:12,fontWeight:700,color:S.p300}}>#{i+1}</span>
+                  <span style={{fontSize:12,fontWeight:700,color:S.p}}>#{i+1}</span>
                   <input value={step.text} onChange={e=>{ const next=[...directions]; next[i]={...next[i],text:e.target.value}; setDirections(next) }} placeholder={'Ex: Rentre par le parking...'} style={{...inp,flex:1,fontSize:13}} />
                   {directions.length > 1 && (
                     <button type="button" onClick={()=>setDirections(directions.filter((_,j)=>j!==i))} style={{padding:'6px 10px',borderRadius:8,fontSize:11,border:'1px solid '+S.red+'44',background:'transparent',color:S.red,cursor:'pointer'}}>×</button>
@@ -321,23 +321,23 @@ export default function CreateSessionPage() {
                 </div>
                 {step.photo_url ? (
                   <div style={{marginTop:6,position:'relative',display:'inline-block'}}>
-                    <img src={step.photo_url} alt="" style={{width:80,height:60,objectFit:'cover',borderRadius:8,border:'1px solid '+S.border}} />
+                    <img src={step.photo_url} alt="" style={{width:80,height:60,objectFit:'cover',borderRadius:8,border:'1px solid '+S.rule}} />
                     <button type="button" onClick={()=>{ const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{position:'absolute',top:-4,right:-4,width:16,height:16,borderRadius:'50%',background:S.red,border:'none',color:'#fff',fontSize:10,cursor:'pointer'}}>×</button>
                   </div>
                 ) : (
-                  <label style={{display:'inline-flex',alignItems:'center',gap:4,marginTop:6,padding:'4px 8px',borderRadius:6,border:'1px solid '+S.border,background:S.bg2,color:S.tx4,fontSize:10,fontWeight:600,cursor:'pointer'}}>
+                  <label style={{display:'inline-flex',alignItems:'center',gap:4,marginTop:6,padding:'4px 8px',borderRadius:6,border:'1px solid '+S.rule,background:S.bg2,color:S.tx4,fontSize:10,fontWeight:600,cursor:'pointer'}}>
                     📷 Photo
                     <input type="file" accept="image/*" onChange={async (e)=>{ const f=e.target.files?.[0]; if(!f)return; const { compressImage: ci } = await import('../lib/media'); const c = await ci(f); const { data:{ user } } = await supabase.auth.getUser(); if(!user) return; const path=user.id+'/dir_'+Date.now()+'.jpg'; const {error}=await supabase.storage.from('avatars').upload(path,c); if(error) return; const {data:{publicUrl}}=supabase.storage.from('avatars').getPublicUrl(path); const next=[...directions]; next[i]={...next[i],photo_url:publicUrl}; setDirections(next) }} style={{display:'none'}} />
                   </label>
                 )}
               </div>
             ))}
-            <button type="button" onClick={()=>setDirections([...directions,{text:''}])} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.border,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
+            <button type="button" onClick={()=>setDirections([...directions,{text:''}])} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
               Ajouter une étape
             </button>
           </div>
           {/* Public toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Publier dans l'app</p>
               <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore pour les profils à proximité</p>
@@ -350,14 +350,14 @@ export default function CreateSessionPage() {
             </button>
           </div>
 
-          <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p300,background:'transparent',color:S.p300,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
+          <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:'transparent',color:S.p,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
             {savingAddress ? 'Sauvegarde...' : 'Sauvegarder cette adresse'}
           </button>
-          <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border}}>
+          <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}>L'adresse exacte n'est jamais visible avant acceptation</p>
           </div>
           {error && <p style={{color:'#F47272',fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:'#F4727215',borderRadius:10}}>{error}</p>}
-          <button onClick={create} disabled={loading||!title||!approxArea} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.p400+'44',marginTop:4}}>
+          <button onClick={create} disabled={loading||!title||!approxArea} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.p+'44',marginTop:4}}>
             {loading ? 'Création...' : 'Créer la session'}
           </button>
         </div>

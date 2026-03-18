@@ -427,7 +427,7 @@ export default function MePage() {
           </button>
 
           {/* Gallery visibility toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: '#16141F', border: '1px solid #2A2740', borderRadius: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12 }}>
             <div>
               <p style={{ fontSize: 13, fontWeight: 600, color: '#F0EDFF', margin: 0 }}>Visible dans la galerie</p>
               <p style={{ fontSize: 11, color: '#7E7694', margin: '2px 0 0' }}>Les profils à proximité te voient</p>
@@ -438,7 +438,7 @@ export default function MePage() {
               setLocationVisible(nv)
             }} style={{
               width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-              background: locationVisible ? '#4ADE80' : '#2A2740', transition: 'background 0.2s',
+              background: locationVisible ? '#4ADE80' : S.rule, transition: 'background 0.2s',
             }}>
               <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: locationVisible ? 21 : 3, transition: 'left 0.2s' }} />
             </button>
@@ -475,7 +475,7 @@ export default function MePage() {
           {/* Preview button */}
           {user && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid #F9A8A844', color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                 👁 Voir mon profil
               </button>
               <button onClick={() => {
@@ -485,7 +485,7 @@ export default function MePage() {
                 } else {
                   navigator.clipboard.writeText(url)
                 }
-              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: '#16141F', border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                 📤 Partager mon profil
               </button>
             </div>
@@ -493,7 +493,7 @@ export default function MePage() {
 
           {/* Profile views */}
           {profileViews > 0 && (
-            <div style={{ marginBottom: 12, padding: '10px 14px', background: '#16141F', border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ marginBottom: 12, padding: '10px 14px', background: S.bg1, border: '1px solid #2A2740', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: '#B8B2CC' }}>👁 Vu par <strong style={{ color: '#F0EDFF' }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
           )}
@@ -520,7 +520,7 @@ export default function MePage() {
             const done = checks.filter(c => c.done).length
             const pct = Math.round((done / checks.length) * 100)
             return (
-              <div style={{ marginBottom: 16, background: '#16141F', border: '1px solid #2A2740', borderRadius: 14, padding: 14 }}>
+              <div style={{ marginBottom: 16, background: S.bg1, border: '1px solid #2A2740', borderRadius: 14, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#7E7694' }}>Profil {pct}% complet</span>
                   <span style={{ fontSize: 11, color: pct === 100 ? '#4ADE80' : '#FBBF24', fontWeight: 600 }}>{done}/{checks.length}</span>
@@ -530,7 +530,7 @@ export default function MePage() {
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (
-                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : '#1F1D2B', color: c.done ? '#4ADE80' : '#453F5C', fontWeight: 600, border: '1px solid ' + (c.done ? '#4ADE8044' : '#2A2740') }}>
+                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? '#4ADE8018' : '#1F1D2B', color: c.done ? '#4ADE80' : '#453F5C', fontWeight: 600, border: '1px solid ' + (c.done ? '#4ADE8044' : S.rule) }}>
                       {c.done ? '✓' : '○'} {c.label}
                     </span>
                   ))}

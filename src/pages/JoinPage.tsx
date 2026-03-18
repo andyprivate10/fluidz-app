@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { MapPin, Lock, Users, ChevronRight, Ghost } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',red:'#F87171',yellow:'#FBBF24',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 export default function JoinPage() {
@@ -142,7 +142,7 @@ export default function JoinPage() {
 
   // Direct join loading screen
   if (isDirect && directJoining) return (
-    <div style={{ background: S.bg0, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid #F9A8A844', borderTopColor: '#F9A8A8', animation: 'spin 0.8s linear infinite', marginBottom: 16 }} />
       <p style={{ color: S.tx2, fontSize: 15, fontWeight: 600 }}>Rejoindre la session...</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
@@ -156,15 +156,15 @@ export default function JoinPage() {
   }
 
   const statusLabels: Record<string, { text: string; color: string }> = {
-    pending: { text: 'Candidature en attente...', color: S.yellow },
-    accepted: { text: 'Tu es accepté !', color: S.green },
-    checked_in: { text: 'Check-in confirmé', color: S.green },
+    pending: { text: 'Candidature en attente...', color: S.orange },
+    accepted: { text: 'Tu es accepté !', color: S.sage },
+    checked_in: { text: 'Check-in confirmé', color: S.sage },
     rejected: { text: 'Non retenu', color: S.red },
   }
 
   return (
     <div style={{
-      minHeight:'100vh', background:S.bg0,
+      minHeight:'100vh', background:S.bg,
       display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
       padding:'24px', 
       position: 'relative', overflow: 'hidden',
@@ -179,7 +179,7 @@ export default function JoinPage() {
 
       {status === 'loading' && (
         <div className="animate-fade-in" style={{textAlign:'center'}}>
-          <div style={{width:32,height:32,border:'3px solid '+S.p300,borderTopColor:'transparent',borderRadius:'50%',animation:'spin 0.8s linear infinite',margin:'0 auto 12px'}} />
+          <div style={{width:32,height:32,border:'3px solid '+S.p,borderTopColor:'transparent',borderRadius:'50%',animation:'spin 0.8s linear infinite',margin:'0 auto 12px'}} />
           <p style={{color:S.tx3,fontSize:14}}>Vérification du lien...</p>
         </div>
       )}
@@ -198,11 +198,11 @@ export default function JoinPage() {
       {status === 'found' && session && (
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
           {/* Main card */}
-          <div style={{background:S.bg1,borderRadius:24,padding:'28px 24px',border:'1px solid '+S.border,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3)'}}>
+          <div style={{background:S.bg1,borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3)'}}>
             <h1 style={{fontSize:24,fontWeight:800,color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
 
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:4}}>
-              <MapPin size={14} style={{color:S.p300}} />
+              <MapPin size={14} style={{color:S.p}} />
               <span style={{fontSize:13,color:S.tx3}}>{session.approx_area}</span>
             </div>
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:4,marginBottom:8}}>
@@ -217,7 +217,7 @@ export default function JoinPage() {
                 ) : (
                   <div style={{width:28,height:28,borderRadius:'28%',background:'#F9A8A822',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:'#F9A8A8',fontWeight:700}}>{hostName[0]}</div>
                 )}
-                <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p300,fontWeight:600,textDecoration:'underline',textDecorationColor:'#F9A8A844'}}>{hostName}</span></span>
+                <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:'#F9A8A844'}}>{hostName}</span></span>
               </button>
             )}
 
@@ -228,7 +228,7 @@ export default function JoinPage() {
             {session.tags && session.tags.length > 0 && (
               <div style={{display:'flex',flexWrap:'wrap',gap:6,justifyContent:'center',marginBottom:16}}>
                 {session.tags.map((tag: string) => (
-                  <span key={tag} style={{fontSize:12,fontWeight:600,color:S.p300,padding:'4px 12px',borderRadius:99,background:S.p300+'14',border:'1px solid '+S.p300+'33'}}>{tag}</span>
+                  <span key={tag} style={{fontSize:12,fontWeight:600,color:S.p,padding:'4px 12px',borderRadius:99,background:S.p+'14',border:'1px solid '+S.p+'33'}}>{tag}</span>
                 ))}
               </div>
             )}
@@ -242,9 +242,9 @@ export default function JoinPage() {
                 </div>
                 <div className="stagger-children" style={{display:'flex',flexDirection:'column',gap:6}}>
                   {lineup.slice(0, 5).map((m) => (
-                    <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:S.bg0+'cc',borderRadius:12,border:'1px solid '+S.border}}>
+                    <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:S.bg+'cc',borderRadius:12,border:'1px solid '+S.rule}}>
                       {m.avatar_url ? (
-                        <img src={m.avatar_url} alt="" style={{width:36,height:36,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.border,flexShrink:0}} />
+                        <img src={m.avatar_url} alt="" style={{width:36,height:36,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
                       ) : (
                         <div style={{width:36,height:36,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'#fff',flexShrink:0}}>
                           {(m.display_name || '?')[0].toUpperCase()}
@@ -252,7 +252,7 @@ export default function JoinPage() {
                       )}
                       <div style={{flex:1,minWidth:0}}>
                         <p style={{margin:0,fontSize:13,fontWeight:600,color:S.tx}}>{m.display_name || 'Anonyme'}</p>
-                        {m.role && <p style={{margin:0,fontSize:11,color:S.p300}}>{m.role}</p>}
+                        {m.role && <p style={{margin:0,fontSize:11,color:S.p}}>{m.role}</p>}
                       </div>
                       <ChevronRight size={14} style={{color:S.tx4,flexShrink:0}} />
                     </div>
@@ -263,7 +263,7 @@ export default function JoinPage() {
             )}
 
             {/* Locked address */}
-            <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:S.bg0+'cc',borderRadius:12,border:'1px solid '+S.border}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:S.bg+'cc',borderRadius:12,border:'1px solid '+S.rule}}>
               <Lock size={14} style={{color:S.tx4,flexShrink:0}} />
               <p style={{fontSize:12,color:S.tx3,margin:0}}>Adresse révélée après acceptation</p>
             </div>
@@ -275,7 +275,7 @@ export default function JoinPage() {
               <div style={{
                 padding:'14px 20px', borderRadius:14, marginBottom:10,
                 background: statusLabels[myAppStatus]?.color + '14',
-                border: '1px solid ' + (statusLabels[myAppStatus]?.color || S.border) + '44',
+                border: '1px solid ' + (statusLabels[myAppStatus]?.color || S.rule) + '44',
               }}>
                 <p style={{margin:0,fontSize:15,fontWeight:700,color:statusLabels[myAppStatus]?.color || S.tx}}>
                   {statusLabels[myAppStatus]?.text || myAppStatus}
@@ -283,7 +283,7 @@ export default function JoinPage() {
               </div>
               <button onClick={() => navigate('/session/' + session.id)} style={{
                 width:'100%',padding:'14px',borderRadius:14,fontWeight:600,fontSize:14,
-                color:S.tx2,border:'1px solid '+S.border,background:'transparent',cursor:'pointer',
+                color:S.tx2,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
               }}>
                 Voir la session
               </button>
@@ -301,7 +301,7 @@ export default function JoinPage() {
                 navigate('/ghost/setup?session_id=' + session.id + (code ? '&invite_code=' + code : ''))
               }} style={{
                 width:'100%',padding:'14px',borderRadius:14,fontWeight:600,fontSize:14,
-                color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer',
+                color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
                 display:'flex',alignItems:'center',justifyContent:'center',gap:8,
               }}>
                 <Ghost size={16} /> Sans compte (24h)
@@ -318,7 +318,7 @@ export default function JoinPage() {
               </button>
               <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
                 width:'100%',padding:'12px',borderRadius:14,fontWeight:600,fontSize:13,
-                color:S.tx3,border:'1px solid '+S.border,background:'transparent',cursor:'pointer',
+                color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
               }}>
                 Personnaliser ma candidature
               </button>

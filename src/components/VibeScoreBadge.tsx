@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { calculateVibeScore, vibeScoreBadge } from '../lib/vibeScore'
 import type { VibeScoreData } from '../lib/vibeScore'
+import { colors } from '../brand'
+const S = { ...colors, red: "#F87171", orange: "#FBBF24", blue: "#7DD3FC", grad: colors.p }
 
 /**
  * Inline Vibe Score badge — shows score + level label
@@ -54,13 +56,13 @@ export function VibeScoreCard({ userId }: { userId: string }) {
     { label: 'Reviews', value: data.breakdown.reviews, max: 30, color: '#4ADE80' },
     { label: 'Participation', value: data.breakdown.participation, max: 20, color: '#FBBF24' },
     { label: 'Fiabilité', value: data.breakdown.noReports, max: 15, color: '#7DD3FC' },
-    { label: 'Check-in', value: data.breakdown.checkInRate, max: 15, color: '#F9A8A8' },
+    { label: 'Check-in', value: data.breakdown.checkInRate, max: 15, color: S.p },
     { label: 'Profil', value: data.breakdown.profileComplete, max: 10, color: '#B8B2CC' },
     { label: 'Ancienneté', value: data.breakdown.seniority, max: 10, color: '#7E7694' },
   ]
 
   return (
-    <div style={{ background: '#16141F', border: '1px solid #2A2740', borderRadius: 16, padding: 16 }}>
+    <div style={{ background: S.bg1, border: '1px solid #2A2740', borderRadius: 16, padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 28, fontWeight: 800, color: badge.color }}>⚡ {data.score}</span>

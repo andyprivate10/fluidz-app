@@ -2,17 +2,17 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',red:'#F87171',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
-  padding:'12px 16px',border:'1px solid '+S.border,outline:'none',
+  padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',
   fontSize:14,fontFamily:'inherit',boxSizing:'border-box' as const,
 }
 
@@ -83,14 +83,14 @@ export default function EditSessionPage() {
   }
 
   if (loading) return (
-    <div style={{ minHeight:'100vh', background:S.bg0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+    <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center' }}>
       <p style={{ color:S.tx3 }}>Chargement...</p>
     </div>
   )
 
   return (
-    <div style={{ minHeight:'100vh', background:S.bg0, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
-      <div style={{ padding:'40px 20px 16px', borderBottom:'1px solid '+S.border }}>
+    <div style={{ minHeight:'100vh', background:S.bg, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
+      <div style={{ padding:'40px 20px 16px', borderBottom:'1px solid '+S.rule }}>
         <button onClick={() => navigate('/session/' + id + '/host')} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', marginBottom:12, padding:0 }}>← Host Dashboard</button>
         <h1 style={{ fontSize:22, fontWeight:800, color:S.tx, margin:0 }}>Modifier la session</h1>
       </div>
@@ -115,9 +115,9 @@ export default function EditSessionPage() {
             {SESSION_TAGS.map(tag => (
               <button key={tag} onClick={() => toggleTag(tag)} style={{
                 padding:'6px 14px', borderRadius:50, fontSize:12, fontWeight:600, cursor:'pointer',
-                border:'1px solid '+(tags.includes(tag) ? S.p300+'88' : S.border),
-                background: tags.includes(tag) ? S.p300+'18' : S.bg2,
-                color: tags.includes(tag) ? S.p300 : S.tx3,
+                border:'1px solid '+(tags.includes(tag) ? S.p+'88' : S.rule),
+                background: tags.includes(tag) ? S.p+'18' : S.bg2,
+                color: tags.includes(tag) ? S.p : S.tx3,
               }}>{tag}</button>
             ))}
           </div>
@@ -139,9 +139,9 @@ export default function EditSessionPage() {
         <div>
           <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>Directions (étapes d'accès)</label>
           {directions.map((step, i) => (
-            <div key={i} style={{ marginBottom:8, padding:10, background:S.bg0, borderRadius:10, border:'1px solid '+S.border }}>
+            <div key={i} style={{ marginBottom:8, padding:10, background:S.bg, borderRadius:10, border:'1px solid '+S.rule }}>
               <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-                <span style={{ fontSize:12, fontWeight:700, color:S.p300 }}>#{i+1}</span>
+                <span style={{ fontSize:12, fontWeight:700, color:S.p }}>#{i+1}</span>
                 <input value={step.text} onChange={e => { const next=[...directions]; next[i]={...next[i],text:e.target.value}; setDirections(next) }} placeholder="Ex: Rentre par le parking..." style={{ ...inp, flex:1, fontSize:13 }} />
                 {directions.length > 1 && (
                   <button type="button" onClick={() => setDirections(directions.filter((_,j)=>j!==i))} style={{ padding:'6px 10px', borderRadius:8, fontSize:11, border:'1px solid '+S.red+'44', background:'transparent', color:S.red, cursor:'pointer' }}>×</button>
@@ -149,24 +149,24 @@ export default function EditSessionPage() {
               </div>
               {step.photo_url ? (
                 <div style={{ marginTop:6, position:'relative', display:'inline-block' }}>
-                  <img src={step.photo_url} alt="" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.border }} />
+                  <img src={step.photo_url} alt="" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.rule }} />
                   <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-4, right:-4, width:16, height:16, borderRadius:'50%', background:S.red, border:'none', color:'#fff', fontSize:10, cursor:'pointer' }}>×</button>
                 </div>
               ) : (
-                <label style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:6, padding:'4px 8px', borderRadius:6, border:'1px solid '+S.border, background:S.bg2, color:S.tx4, fontSize:10, fontWeight:600, cursor:'pointer' }}>
+                <label style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:6, padding:'4px 8px', borderRadius:6, border:'1px solid '+S.rule, background:S.bg2, color:S.tx4, fontSize:10, fontWeight:600, cursor:'pointer' }}>
                   📷 Photo
                   <input type="file" accept="image/*" onChange={async (e) => { const f=e.target.files?.[0]; if(!f)return; const{compressImage:ci}=await import('../lib/media'); const c=await ci(f); const{data:{user}}=await supabase.auth.getUser(); if(!user)return; const path=user.id+'/dir_'+Date.now()+'.jpg'; const{error}=await supabase.storage.from('avatars').upload(path,c); if(error)return; const{data:{publicUrl}}=supabase.storage.from('avatars').getPublicUrl(path); const next=[...directions]; next[i]={...next[i],photo_url:publicUrl}; setDirections(next) }} style={{ display:'none' }} />
                 </label>
               )}
             </div>
           ))}
-          <button type="button" onClick={() => setDirections([...directions,{text:''}])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.border, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
+          <button type="button" onClick={() => setDirections([...directions,{text:''}])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.rule, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
             + Ajouter une étape
           </button>
         </div>
 
         {/* Public toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
           <div>
             <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Publier dans l'app</p>
             <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore</p>
@@ -183,7 +183,7 @@ export default function EditSessionPage() {
         <button onClick={handleSave} disabled={saving} style={{
           width:'100%', padding:16, background:S.grad, border:'none', borderRadius:14,
           color:'#fff', fontSize:16, fontWeight:700, cursor: saving ? 'not-allowed' : 'pointer',
-          boxShadow:'0 4px 20px '+S.p400+'44', opacity: saving ? 0.7 : 1, marginTop:8,
+          boxShadow:'0 4px 20px '+S.p+'44', opacity: saving ? 0.7 : 1, marginTop:8,
         }}>
           {saving ? 'Enregistrement...' : 'Enregistrer les modifications'}
         </button>

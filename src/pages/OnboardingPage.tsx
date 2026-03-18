@@ -4,12 +4,12 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { compressImage } from '../lib/media'
 import { User as UserIcon, Camera, Sparkles, ChevronRight } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const ROLES = ['Top', 'Bottom', 'Versa', 'Side']
@@ -17,7 +17,7 @@ const MORPHOS = ['Mince', 'Sportif', 'Athlétique', 'Moyen', 'Costaud', 'Musclé
 
 const inp: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
-  padding:'14px 16px', border:'1px solid '+S.border, outline:'none',
+  padding:'14px 16px', border:'1px solid '+S.rule, outline:'none',
   fontSize:15, fontFamily:'inherit', boxSizing:'border-box',
 }
 
@@ -97,10 +97,10 @@ export default function OnboardingPage() {
   const progress = step === 1 ? 33 : step === 2 ? 66 : 100
   const completeness = [displayName.trim(), age, role, avatarUrl].filter(Boolean).length
   const completenessLabel = completeness <= 1 ? 'Débutant' : completeness <= 2 ? 'En route' : completeness <= 3 ? 'Presque complet' : 'Complet ✓'
-  const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? '#FBBF24' : completeness <= 3 ? '#7DD3FC' : S.green
+  const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? '#FBBF24' : completeness <= 3 ? '#7DD3FC' : S.sage
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
+    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
 
       {/* Progress bar */}
       <div style={{ padding: '16px 20px 0' }}>
@@ -117,7 +117,7 @@ export default function OnboardingPage() {
       {step === 1 && (
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
-            <UserIcon size={32} style={{ color: S.p300, marginBottom: 8 }} />
+            <UserIcon size={32} style={{ color: S.p, marginBottom: 8 }} />
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Dis-nous qui tu es</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Les bases pour ton profil</p>
           </div>
@@ -149,7 +149,7 @@ export default function OnboardingPage() {
       {step === 2 && (
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
-            <Sparkles size={32} style={{ color: S.p300, marginBottom: 8 }} />
+            <Sparkles size={32} style={{ color: S.p, marginBottom: 8 }} />
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Tes préférences</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Optionnel mais augmente tes chances</p>
           </div>
@@ -160,7 +160,7 @@ export default function OnboardingPage() {
               {ROLES.map(r => (
                 <button key={r} onClick={() => setRole(role === r ? '' : r)} style={{
                   padding: '10px 20px', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer',
-                  border: role === r ? 'none' : '1px solid ' + S.border,
+                  border: role === r ? 'none' : '1px solid ' + S.rule,
                   background: role === r ? S.grad : S.bg2,
                   color: role === r ? '#fff' : S.tx3,
                 }}>{r}</button>
@@ -174,16 +174,16 @@ export default function OnboardingPage() {
               {MORPHOS.map(m => (
                 <button key={m} onClick={() => setMorpho(morpho === m ? '' : m)} style={{
                   padding: '8px 16px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  border: morpho === m ? 'none' : '1px solid ' + S.border,
-                  background: morpho === m ? S.p300 + '22' : S.bg2,
-                  color: morpho === m ? S.p300 : S.tx3,
+                  border: morpho === m ? 'none' : '1px solid ' + S.rule,
+                  background: morpho === m ? S.p + '22' : S.bg2,
+                  color: morpho === m ? S.p : S.tx3,
                 }}>{m}</button>
               ))}
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.border, cursor: 'pointer' }}>←</button>
+            <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}>←</button>
             <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               Suivant <ChevronRight size={18} />
             </button>
@@ -199,7 +199,7 @@ export default function OnboardingPage() {
       {step === 3 && (
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
-            <Camera size={32} style={{ color: S.p300, marginBottom: 8 }} />
+            <Camera size={32} style={{ color: S.p, marginBottom: 8 }} />
             <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 4px' }}>Ajoute une photo</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Les profils avec photo ont 5x plus de chances</p>
           </div>
@@ -207,9 +207,9 @@ export default function OnboardingPage() {
           {/* Avatar preview */}
           <div style={{ position: 'relative', width: 140, height: 140 }}>
             {avatarUrl ? (
-              <img src={avatarUrl} alt="" style={{ width: 140, height: 140, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.p300 }} />
+              <img src={avatarUrl} alt="" style={{ width: 140, height: 140, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.p }} />
             ) : (
-              <div style={{ width: 140, height: 140, borderRadius: '28%', background: S.bg2, border: '2px dashed ' + S.border, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 140, height: 140, borderRadius: '28%', background: S.bg2, border: '2px dashed ' + S.rule, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Camera size={40} style={{ color: S.tx4 }} />
               </div>
             )}
@@ -218,16 +218,16 @@ export default function OnboardingPage() {
               <input type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
             </label>
           </div>
-          {uploading && <p style={{ fontSize: 12, color: S.p300 }}>Upload en cours...</p>}
+          {uploading && <p style={{ fontSize: 12, color: S.p }}>Upload en cours...</p>}
 
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => setStep(2)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.border, cursor: 'pointer' }}>←</button>
+              <button onClick={() => setStep(2)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}>←</button>
               <button onClick={save} disabled={saving || !displayName.trim()} style={{
                 flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
                 background: S.grad, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
                 opacity: saving || !displayName.trim() ? 0.6 : 1,
-                boxShadow: '0 4px 20px ' + S.p400 + '44',
+                boxShadow: '0 4px 20px ' + S.p + '44',
               }}>
                 {saving ? 'Sauvegarde...' : avatarUrl ? 'Terminer ✓' : 'Terminer sans photo'}
               </button>

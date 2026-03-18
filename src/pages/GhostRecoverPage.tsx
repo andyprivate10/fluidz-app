@@ -3,12 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Ghost, ArrowRight, Mail } from 'lucide-react'
 import { showToast } from '../components/Toast'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',yellow:'#FBBF24',red:'#F87171',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 export default function GhostRecoverPage() {
@@ -101,7 +101,7 @@ export default function GhostRecoverPage() {
 
   const inp: React.CSSProperties = {
     width: '100%', background: S.bg2, color: S.tx, borderRadius: 14,
-    padding: '14px 16px', border: '1px solid ' + S.border, outline: 'none',
+    padding: '14px 16px', border: '1px solid ' + S.rule, outline: 'none',
     fontSize: 16, fontFamily: 'inherit', boxSizing: 'border-box',
     textAlign: 'center',
   }
@@ -109,11 +109,11 @@ export default function GhostRecoverPage() {
   const timeLeft = ghost ? Math.max(0, Math.floor((new Date(ghost.expires_at).getTime() - Date.now()) / 3600000)) : 0
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ width: '100%', maxWidth: 400 }}>
 
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Ghost size={40} style={{ color: S.p300, marginBottom: 12 }} />
+          <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
           <h1 style={{ fontSize: 24, fontWeight: 800, color: S.tx, margin: '0 0 6px' }}>Récupérer mon profil</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Entre ton code de session et ton PIN</p>
         </div>
@@ -153,15 +153,15 @@ export default function GhostRecoverPage() {
           </div>
         ) : (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ background: S.bg1, border: '1px solid ' + S.green + '44', borderRadius: 20, padding: 24, textAlign: 'center' }}>
-              <div style={{ fontSize: 14, color: S.green, fontWeight: 700, marginBottom: 12 }}>Profil retrouvé ✓</div>
+            <div style={{ background: S.bg1, border: '1px solid ' + S.sage + '44', borderRadius: 20, padding: 24, textAlign: 'center' }}>
+              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 12 }}>Profil retrouvé ✓</div>
               <div style={{ fontSize: 20, fontWeight: 800, color: S.tx, marginBottom: 4 }}>{ghost.display_name}</div>
               <div style={{ fontSize: 12, color: S.tx3 }}>
                 ⏳ {timeLeft > 0 ? `${timeLeft}h restantes` : 'Expire bientôt'}
               </div>
               {Object.keys(ghost.profile_json || {}).length > 0 && (
                 <div style={{ marginTop: 12, display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
-                  {ghost.profile_json.role && <span style={{ fontSize: 11, color: S.p300, background: S.p300 + '14', padding: '2px 8px', borderRadius: 99 }}>{ghost.profile_json.role}</span>}
+                  {ghost.profile_json.role && <span style={{ fontSize: 11, color: S.p, background: S.p + '14', padding: '2px 8px', borderRadius: 99 }}>{ghost.profile_json.role}</span>}
                   {ghost.profile_json.age && <span style={{ fontSize: 11, color: S.tx2, background: S.bg2, padding: '2px 8px', borderRadius: 99 }}>{ghost.profile_json.age} ans</span>}
                 </div>
               )}
@@ -172,12 +172,12 @@ export default function GhostRecoverPage() {
             </button>
 
             {!showConvert ? (
-              <button onClick={() => setShowConvert(true)} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.green, border: '1px solid ' + S.green + '44', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <button onClick={() => setShowConvert(true)} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.sage, border: '1px solid ' + S.sage + '44', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                 <Mail size={16} /> Sauvegarder en vrai compte
               </button>
             ) : (
-              <div style={{ background: S.bg1, borderRadius: 16, padding: 16, border: '1px solid ' + S.green + '33' }}>
-                <p style={{ fontSize: 12, color: S.green, fontWeight: 700, margin: '0 0 10px' }}>Convertir en compte permanent</p>
+              <div style={{ background: S.bg1, borderRadius: 16, padding: 16, border: '1px solid ' + S.sage + '33' }}>
+                <p style={{ fontSize: 12, color: S.sage, fontWeight: 700, margin: '0 0 10px' }}>Convertir en compte permanent</p>
                 <input
                   value={convertEmail}
                   onChange={e => setConvertEmail(e.target.value)}
@@ -188,7 +188,7 @@ export default function GhostRecoverPage() {
                 <button
                   onClick={handleConvert}
                   disabled={converting || !convertEmail.trim()}
-                  style={{ width: '100%', padding: 12, borderRadius: 12, fontWeight: 700, fontSize: 14, color: '#fff', background: S.green, border: 'none', cursor: converting ? 'not-allowed' : 'pointer', opacity: converting || !convertEmail.trim() ? 0.7 : 1 }}
+                  style={{ width: '100%', padding: 12, borderRadius: 12, fontWeight: 700, fontSize: 14, color: '#fff', background: S.sage, border: 'none', cursor: converting ? 'not-allowed' : 'pointer', opacity: converting || !convertEmail.trim() ? 0.7 : 1 }}
                 >
                   {converting ? 'Envoi...' : 'Envoyer le lien de confirmation'}
                 </button>

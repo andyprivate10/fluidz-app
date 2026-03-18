@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ArrowLeft, Send, Camera } from 'lucide-react'
 import { compressImage } from '../lib/media'
+import { colors } from '../brand'
 
 function formatTime(d: string): string {
   const dt = new Date(d)
@@ -13,10 +14,9 @@ function formatTime(d: string): string {
 }
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 type Message = { id: string; text: string; sender_id: string; created_at: string; sender_name: string; has_media?: boolean; media_urls?: string[] }
@@ -194,8 +194,8 @@ export default function DirectDMPage() {
   const isMe = (senderId: string) => senderId === currentUser?.id
 
   if (loading) return (
-    <div style={{ background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
-      <div style={{ padding: '16px', borderBottom: '1px solid ' + S.border, background: S.bg1, display: 'flex', alignItems: 'center', gap: 12 }}>
+    <div style={{ background: S.bg, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
+      <div style={{ padding: '16px', borderBottom: '1px solid ' + S.rule, background: S.bg1, display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg2 }} />
         <div style={{ width: 120, height: 16, borderRadius: 8, background: S.bg2 }} />
       </div>
@@ -208,14 +208,14 @@ export default function DirectDMPage() {
   )
 
   return (
-    <div style={{ background: S.bg0, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
+    <div style={{ background: S.bg, height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
       {/* Header */}
-      <header style={{ padding: '12px 16px', borderBottom: '1px solid ' + S.border, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
+      <header style={{ padding: '12px 16px', borderBottom: '1px solid ' + S.rule, background: S.bg1, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
           <ArrowLeft size={20} />
         </button>
         {peerProfile?.avatar ? (
-          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.border }} />
+          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
         ) : (
           <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
             {(peerProfile?.name || '?')[0].toUpperCase()}
@@ -223,7 +223,7 @@ export default function DirectDMPage() {
         )}
         <div style={{ flex: 1 }} onClick={() => navigate('/profile/' + peerId)}>
           <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }}>{peerProfile?.name || 'Chargement...'}</p>
-          {peerProfile?.role && <span style={{ fontSize: 11, color: S.p300 }}>{peerProfile.role}</span>}
+          {peerProfile?.role && <span style={{ fontSize: 11, color: S.p }}>{peerProfile.role}</span>}
         </div>
       </header>
 
@@ -239,7 +239,7 @@ export default function DirectDMPage() {
           <div key={msg.id} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
             <div style={{
               padding: msg.has_media ? 4 : '10px 14px', fontSize: 15, maxWidth: '80%',
-              borderRadius: 16, background: isMe(msg.sender_id) ? S.p300 + '22' : S.bg2,
+              borderRadius: 16, background: isMe(msg.sender_id) ? S.p + '22' : S.bg2,
               borderBottomRightRadius: isMe(msg.sender_id) ? 4 : 16,
               borderBottomLeftRadius: isMe(msg.sender_id) ? 16 : 4,
               overflow: 'hidden',
@@ -274,8 +274,8 @@ export default function DirectDMPage() {
       </div>
 
       {/* Input */}
-      <div style={{ background: S.bg1, padding: 12, borderTop: '1px solid ' + S.border, display: 'flex', gap: 8, flexShrink: 0 }}>
-        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.border, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
+      <div style={{ background: S.bg1, padding: 12, borderTop: '1px solid ' + S.rule, display: 'flex', gap: 8, flexShrink: 0 }}>
+        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
           <Camera size={16} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} />
         </label>
@@ -286,7 +286,7 @@ export default function DirectDMPage() {
         <input
           type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
-          placeholder="Message..." style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: 'inherit' }}
+          placeholder="Message..." style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: 'inherit' }}
         />
         <button onClick={handleSend} disabled={!newMessage.trim() || sending} style={{ width: 40, height: 40, borderRadius: 12, background: newMessage.trim() ? S.grad : S.bg2, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Send size={16} style={{ color: newMessage.trim() ? '#fff' : S.tx4 }} />

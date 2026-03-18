@@ -3,12 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Mail, Ghost } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg0:'#0C0A14',bg1:'#16141F',bg2:'#1F1D2B',bg3:'#2A2740',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',tx4:'#453F5C',
-  border:'#2A2740',p300:'#F9A8A8',p400:'#F47272',green:'#4ADE80',
-  grad:'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 export default function LoginPage() {
@@ -79,26 +79,26 @@ export default function LoginPage() {
 
   const inp: React.CSSProperties = {
     width: '100%', background: S.bg2, color: S.tx, borderRadius: 14,
-    padding: '14px 16px', border: '1px solid ' + S.border, outline: 'none',
+    padding: '14px 16px', border: '1px solid ' + S.rule, outline: 'none',
     fontSize: 15, fontFamily: 'inherit', boxSizing: 'border-box',
   }
 
   return (
-    <div style={{ background: S.bg0, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ width: '100%', maxWidth: 400 }}>
 
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <h1 style={{ fontSize: 36, fontWeight: 800, color: S.p300, margin: '0 0 8px' }}>fluidz</h1>
+          <h1 style={{ fontSize: 36, fontWeight: 800, color: S.p, margin: '0 0 8px' }}>fluidz</h1>
           <p style={{ color: S.tx3, fontSize: 14, margin: 0 }}>Recrute ton groupe pour ce soir</p>
         </div>
 
         {step === 'email' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {/* Magic link */}
-            <div style={{ background: S.bg1, borderRadius: 20, padding: 20, border: '1px solid ' + S.border }}>
+            <div style={{ background: S.bg1, borderRadius: 20, padding: 20, border: '1px solid ' + S.rule }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Mail size={18} style={{ color: S.p300 }} />
+                <Mail size={18} style={{ color: S.p }} />
                 <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>Connexion par email</span>
               </div>
               <input
@@ -118,7 +118,7 @@ export default function LoginPage() {
                   color: '#fff', background: S.grad, border: 'none', marginTop: 12,
                   cursor: loading || !email.trim() ? 'not-allowed' : 'pointer',
                   opacity: loading || !email.trim() ? 0.6 : 1,
-                  boxShadow: '0 4px 20px ' + S.p400 + '44',
+                  boxShadow: '0 4px 20px ' + S.p + '44',
                 }}
               >
                 {loading ? 'Envoi...' : 'Envoyer le lien magique →'}
@@ -127,9 +127,9 @@ export default function LoginPage() {
 
             {/* Separator */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ flex: 1, height: 1, background: S.border }} />
+              <div style={{ flex: 1, height: 1, background: S.rule }} />
               <span style={{ fontSize: 12, color: S.tx4, fontWeight: 600 }}>ou</span>
-              <div style={{ flex: 1, height: 1, background: S.border }} />
+              <div style={{ flex: 1, height: 1, background: S.rule }} />
             </div>
 
             {/* Ghost mode */}
@@ -137,7 +137,7 @@ export default function LoginPage() {
               onClick={() => navigate('/ghost/setup' + (next !== '/' ? '?invite_code=' + next.split('/').pop() : ''))}
               style={{
                 width: '100%', padding: 14, borderRadius: 14, fontWeight: 600, fontSize: 14,
-                color: S.tx3, border: '1px solid ' + S.border, background: S.bg1,
+                color: S.tx3, border: '1px solid ' + S.rule, background: S.bg1,
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}
             >
@@ -166,17 +166,17 @@ export default function LoginPage() {
 
         {step === 'sent' && (
           <div className="animate-slide-up" style={{ textAlign: 'center' }}>
-            <div style={{ background: S.bg1, borderRadius: 20, padding: 28, border: '1px solid ' + S.green + '44' }}>
+            <div style={{ background: S.bg1, borderRadius: 20, padding: 28, border: '1px solid ' + S.sage + '44' }}>
               <div style={{ fontSize: 40, marginBottom: 12 }}>✉️</div>
               <h2 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>Lien envoyé !</h2>
               <p style={{ color: S.tx2, fontSize: 14, margin: '0 0 16px', lineHeight: 1.5 }}>
                 Ouvre <strong>{email}</strong> et clique sur le lien pour te connecter.
               </p>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 16 }}>
-                <a href="https://mail.google.com" target="_blank" rel="noopener" style={{ padding: '8px 16px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.border, color: S.tx2, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+                <a href="https://mail.google.com" target="_blank" rel="noopener" style={{ padding: '8px 16px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
                   Ouvrir Gmail
                 </a>
-                <a href="https://outlook.live.com" target="_blank" rel="noopener" style={{ padding: '8px 16px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.border, color: S.tx2, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+                <a href="https://outlook.live.com" target="_blank" rel="noopener" style={{ padding: '8px 16px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
                   Ouvrir Outlook
                 </a>
               </div>
@@ -184,7 +184,7 @@ export default function LoginPage() {
                 onClick={handleMagicLink}
                 disabled={cooldown > 0 || loading}
                 style={{
-                  background: 'none', border: 'none', color: cooldown > 0 ? S.tx4 : S.p300,
+                  background: 'none', border: 'none', color: cooldown > 0 ? S.tx4 : S.p,
                   fontSize: 13, cursor: cooldown > 0 ? 'not-allowed' : 'pointer', fontWeight: 600,
                 }}
               >

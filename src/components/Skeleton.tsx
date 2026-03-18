@@ -1,6 +1,9 @@
+import { colors } from '../brand'
+
 const S = {
-  bg2: '#1F1D2B',
-  border: '#2A2740',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 export function SkeletonLine({ width = '100%', height = 14, style }: { width?: string | number; height?: number; style?: React.CSSProperties }) {
@@ -25,7 +28,7 @@ export function SkeletonCircle({ size = 40 }: { size?: number }) {
 
 export function SkeletonCard({ lines = 3 }: { lines?: number }) {
   return (
-    <div style={{ background: '#16141F', border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+    <div style={{ background: '#16141F', border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
       <SkeletonLine width="60%" height={16} style={{ marginBottom: 10 }} />
       {Array.from({ length: lines - 1 }).map((_, i) => (
         <SkeletonLine key={i} width={`${70 + Math.random() * 30}%`} style={{ marginBottom: 8 }} />
@@ -49,7 +52,7 @@ export function SkeletonProfile() {
 export function SkeletonSessionPage() {
   return (
     <div style={{ background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto' }}>
-      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid ' + S.border, background: '#16141F' }}>
+      <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid ' + S.rule, background: '#16141F' }}>
         <SkeletonLine width="70%" height={22} style={{ marginBottom: 10 }} />
         <div style={{ display: 'flex', gap: 6 }}>
           <SkeletonLine width={60} height={24} style={{ borderRadius: 99 }} />
@@ -59,7 +62,7 @@ export function SkeletonSessionPage() {
       </div>
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <SkeletonCard lines={2} />
-        <div style={{ background: '#16141F', border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+        <div style={{ background: '#16141F', border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
           <SkeletonLine width="30%" height={12} style={{ marginBottom: 12 }} />
           <SkeletonProfile />
           <SkeletonProfile />
@@ -79,7 +82,7 @@ export function SkeletonSessionPage() {
 export function SkeletonChatPage() {
   return (
     <div style={{ background: '#0C0A14', height: '100vh', display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid ' + S.border, background: '#16141F' }}>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid ' + S.rule, background: '#16141F' }}>
         <SkeletonLine width="50%" height={18} style={{ marginBottom: 6 }} />
         <SkeletonLine width="30%" height={12} />
       </div>
@@ -117,7 +120,7 @@ export function SkeletonHomePage() {
 export function SkeletonContactsPage() {
   return (
     <div style={{ background: '#0C0A14', minHeight: '100vh', maxWidth: 480, margin: '0 auto' }}>
-      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
+      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule }}>
         <SkeletonLine width="50%" height={22} style={{ marginBottom: 6 }} />
         <SkeletonLine width="30%" height={12} style={{ marginBottom: 16 }} />
         <SkeletonLine width="100%" height={38} style={{ borderRadius: 12, marginBottom: 10 }} />

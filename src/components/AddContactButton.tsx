@@ -2,19 +2,20 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { showToast } from './Toast'
 import { UserPlus, UserCheck, Star, Heart } from 'lucide-react'
+import { colors } from '../brand'
 
 const S = {
-  bg1:'#16141F',bg2:'#1F1D2B',
-  tx:'#F0EDFF',tx2:'#B8B2CC',tx3:'#7E7694',
-  border:'#2A2740',p300:'#F9A8A8',green:'#4ADE80',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 type RelationLevel = 'connaissance' | 'close' | 'favori'
 
 const RELATIONS: { level: RelationLevel; label: string; icon: typeof UserPlus; color: string }[] = [
   { level: 'connaissance', label: 'Connaissance', icon: UserPlus, color: S.tx3 },
-  { level: 'close', label: 'Close', icon: Heart, color: S.green },
-  { level: 'favori', label: 'Favori', icon: Star, color: S.p300 },
+  { level: 'close', label: 'Close', icon: Heart, color: S.sage },
+  { level: 'favori', label: 'Favori', icon: Star, color: S.p },
 ]
 
 export default function AddContactButton({ targetUserId }: { targetUserId: string }) {
@@ -70,9 +71,9 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
         style={{
           display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 12,
           fontSize: 13, fontWeight: 600, cursor: 'pointer',
-          border: '1px solid ' + (currentRelation ? S.green + '44' : S.border),
-          background: currentRelation ? S.green + '14' : S.bg2,
-          color: currentRelation ? S.green : S.tx3,
+          border: '1px solid ' + (currentRelation ? S.sage + '44' : S.rule),
+          background: currentRelation ? S.sage + '14' : S.bg2,
+          color: currentRelation ? S.sage : S.tx3,
         }}
       >
         {currentRelation ? <UserCheck size={14} /> : <UserPlus size={14} />}
@@ -82,7 +83,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
       {showSelector && (
         <div style={{
           position: 'absolute', top: '100%', left: 0, marginTop: 6, zIndex: 50,
-          background: S.bg1, border: '1px solid ' + S.border, borderRadius: 14,
+          background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 14,
           padding: 8, minWidth: 180, boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
         }}>
           {RELATIONS.map(r => {
@@ -106,7 +107,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
               width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
               borderRadius: 10, border: 'none', cursor: 'pointer', textAlign: 'left',
               background: 'transparent', color: '#F87171', marginTop: 4,
-              borderTop: '1px solid ' + S.border, paddingTop: 12,
+              borderTop: '1px solid ' + S.rule, paddingTop: 12,
             }}>
               <span style={{ fontSize: 13, fontWeight: 600 }}>Retirer du carnet</span>
             </button>

@@ -5,12 +5,12 @@ import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
+import { colors } from '../brand'
 
 const S = {
-  bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B', bg3: '#2A2740',
-  tx: '#F0EDFF', tx2: '#B8B2CC', tx3: '#7E7694',
-  border: '#2A2740', p300: '#F9A8A8', p400: '#F47272', red: '#F87171', green: '#4ADE80', blue: '#3B82F6',
-  grad: 'linear-gradient(135deg,#F9A8A8,#F47272)',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 function monthsAgo(isoDate: string): number {
@@ -19,7 +19,7 @@ function monthsAgo(isoDate: string): number {
   return Math.max(0, Math.floor((now.getTime() - d.getTime()) / (30.44 * 24 * 60 * 60 * 1000)))
 }
 
-const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding: 16, border: '1px solid ' + S.border, marginBottom: 12 }
+const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding: 16, border: '1px solid ' + S.rule, marginBottom: 12 }
 const label: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }
 
 function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: string; myProfile: Record<string,unknown> | null }) {
@@ -230,20 +230,20 @@ export default function PublicProfile() {
   }, [userId])
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <p style={{ color: S.tx3 }}>Chargement...</p>
     </div>
   )
 
   if (allowed === false) return (
-    <div style={{ minHeight: '100vh', background: S.bg0, padding: 24 }}>
+    <div style={{ minHeight: '100vh', background: S.bg, padding: 24 }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}>← Retour</button>
       <p style={{ color: S.tx2, marginTop: 24, textAlign: 'center' }}>Ce profil est réservé aux membres d&apos;une même session.</p>
     </div>
   )
 
   if (!profile) return (
-    <div style={{ minHeight: '100vh', background: S.bg0, padding: 24 }}>
+    <div style={{ minHeight: '100vh', background: S.bg, padding: 24 }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}>← Retour</button>
       <p style={{ color: S.red, marginTop: 16 }}>Profil introuvable.</p>
     </div>
@@ -264,18 +264,18 @@ export default function PublicProfile() {
   const hasMedia = allPhotos.length > 0 || allVideos.length > 0
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
-      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.border }}>
+    <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96 }}>
+      <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}>← Retour</button>
 
         {hasMedia && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, marginBottom: 16, scrollbarWidth: 'none' }}>
             {allPhotos.map((url: string, i: number) => (
-              <LazyImage key={i} src={url} style={{ width: allPhotos.length === 1 && allVideos.length === 0 ? '100%' : 120, height: 160, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.border }} />
+              <LazyImage key={i} src={url} style={{ width: allPhotos.length === 1 && allVideos.length === 0 ? '100%' : 120, height: 160, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
             ))}
             {allVideos.map((url: string, i: number) => (
               <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                <video src={url} controls style={{ width: 120, height: 160, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.border }} />
+                <video src={url} controls style={{ width: 120, height: 160, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} />
                 <div style={{ position: 'absolute', bottom: 6, right: 6, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
               </div>
             ))}
@@ -285,7 +285,7 @@ export default function PublicProfile() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {!hasMedia && (
             p.avatar_url ? (
-              <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', flexShrink: 0, border: '2px solid ' + S.border }} />
+              <img src={p.avatar_url} alt="" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', flexShrink: 0, border: '2px solid ' + S.rule }} />
             ) : (
               <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, color: 'white', flexShrink: 0 }}>
                 {(profile.display_name || '?')[0].toUpperCase()}
@@ -329,7 +329,7 @@ export default function PublicProfile() {
         </button>
         {/* Add to contacts button */}
         {/* Direct DM button */}
-        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: '#16141F', border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: S.bg1, border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           💬 DM direct
         </button>
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
@@ -357,8 +357,8 @@ export default function PublicProfile() {
 
         {kinks.length > 0 && (() => {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
-            'Dominant': { bg: '#F4727222', color: '#F47272', border: '#F4727244' },
-            'Soumis': { bg: '#F9A8A822', color: '#F9A8A8', border: '#F9A8A844' },
+            'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
+            'Soumis': { bg: '#F9A8A822', color: S.p, border: '#F9A8A844' },
             'SM léger': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
             'SM hard': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
             'Fist': { bg: '#F8717122', color: '#F87171', border: '#F8717144' },
@@ -369,7 +369,7 @@ export default function PublicProfile() {
             'Jeux de rôle': { bg: '#FB923C22', color: '#FB923C', border: '#FB923C44' },
             'Bears welcome': { bg: '#FBBF2422', color: '#FBBF24', border: '#FBBF2444' },
           }
-          const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.border }
+          const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
             <div style={card}>
               <div style={label}>Pratiques ({kinks.length})</div>
@@ -395,7 +395,7 @@ export default function PublicProfile() {
             <div style={label}>Santé</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
               {(p.health?.prep_status || p.prep) === 'Actif' && (
-                <span style={{ fontSize: 13, fontWeight: 600, color: S.green, padding: '4px 12px', borderRadius: 99, background: S.green + '22', border: '1px solid ' + S.green + '44' }}>PrEP Actif ✓</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '4px 12px', borderRadius: 99, background: S.sage + '22', border: '1px solid ' + S.sage + '44' }}>PrEP Actif ✓</span>
               )}
               {p.health?.dernier_test && (
                 <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '4px 12px', borderRadius: 99, background: S.blue + '22', border: '1px solid ' + S.blue + '44' }}>

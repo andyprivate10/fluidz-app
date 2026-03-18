@@ -2,13 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { colors } from '../brand'
 
 type Notif = { id: string; user_id: string; type: string; title: string; body: string; href: string | null; read_at: string | null; created_at: string }
 
 const S = {
-  bg0: '#0C0A14', bg1: '#16141F', bg2: '#1F1D2B',
-  tx: '#F0EDFF', tx2: '#B8B2CC', tx3: '#7E7694', tx4: '#453F5C',
-  border: '#2A2740', p300: '#F9A8A8', orange: '#FBBF24',
+  ...colors,
+  red: '#F87171', orange: '#FBBF24', blue: '#7DD3FC',
+  grad: colors.p,
 }
 
 const TYPE_ICONS: Record<string, string> = {
@@ -95,21 +96,21 @@ export default function NotificationsPage() {
 
   if (!user) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: S.tx3 }}>Connecte-toi pour voir tes notifications.</p>
       </div>
     )
   }
 
   return (
-    <div {...pullHandlers} style={{ minHeight: '100vh', background: S.bg0, paddingBottom: 96 }}>
+    <div {...pullHandlers} style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96 }}>
       {pullIndicator}
-      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.border }}>
+      <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}>← Retour</button>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: 0 }}>Notifications</h1>
           {list.some(n => n.read_at == null) && (
-            <button onClick={markAllRead} disabled={markingAll} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, border: '1px solid ' + S.border, background: S.bg1, color: S.tx2, cursor: 'pointer' }}>
+            <button onClick={markAllRead} disabled={markingAll} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, border: '1px solid ' + S.rule, background: S.bg1, color: S.tx2, cursor: 'pointer' }}>
               {markingAll ? '...' : 'Tout marquer comme lu'}
             </button>
           )}
@@ -128,7 +129,7 @@ export default function NotificationsPage() {
                 key={n.id}
                 onClick={() => handleNotifClick(n)}
                 style={{
-                  width: '100%', textAlign: 'left', padding: 16, borderRadius: 14, border: '1px solid ' + S.border,
+                  width: '100%', textAlign: 'left', padding: 16, borderRadius: 14, border: '1px solid ' + S.rule,
                   background: n.read_at ? S.bg1 : S.bg1, cursor: 'pointer', fontFamily: 'inherit', position: 'relative', borderLeft: n.read_at ? 'none' : '3px solid #F9A8A8',
                 }}
               >
