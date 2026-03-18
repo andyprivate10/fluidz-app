@@ -55,6 +55,7 @@ export default function ContactDetailPage() {
   const [interactions, setInteractions] = useState<Interaction[]>([])
   const [loading, setLoading] = useState(true)
   const [editingNotes, setEditingNotes] = useState(false)
+  const [commonSessions, setCommonSessions] = useState<{ id: string; title: string; status: string }[]>([])
   const [activeSessions, setActiveSessions] = useState<{ id: string; title: string }[]>([])
   const [inviting, setInviting] = useState(false)
   const [notesText, setNotesText] = useState('')
@@ -78,6 +79,22 @@ export default function ContactDetailPage() {
     setContact(ct)
     setNotesText(ct?.notes || '')
     setInteractions(interactions || [])
+
+    // Load common sessions (both users were accepted)
+    const { data: myApps } = await supabase.from('applications').select('session_id').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
+    const { data: theirApps } = await supabase.from('applications').select('session_id').eq('applicant_id', contactUserId).in('status', ['accepted', 'checked_in'])
+    // Also check sessions I host
+    const { data: myHosted } = await supabase.from('sessions').select('id').eq('host_id', user.id)
+    const { data: theyHosted } = await supabase.from('sessions').select('id').eq('host_id', contactUserId)
+
+    const mySessionIds = new Set([...(myApps || []).map(a => a.session_id), ...(myHosted || []).map(s => s.id)])
+    const theirSessionIds = new Set([...(theirApps || []).map(a => a.session_id), ...(theyHosted || []).map(s => s.id)])
+    const commonIds = [...mySessionIds].filter(id => theirSessionIds.has(id))
+
+    if (commonIds.length > 0) {
+      const { data: sessions } = await supabase.from('sessions').select('id, title, status').in('id', commonIds).order('created_at', { ascending: false })
+      setCommonSessions(sessions || [])
+    }
     // Load my active sessions for invite
     const { data: mySessions } = await supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open')
     setActiveSessions(mySessions || [])
@@ -229,6 +246,29 @@ export default function ContactDetailPage() {
             <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.border, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{timeAgo(contact.created_at)}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Ajouté</div>
+            </div>
+          </div>
+        )}
+
+        {/* Common sessions */}
+        {commonSessions.length > 0 && (
+          <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions en commun ({commonSessions.length})</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
+              {commonSessions.map(s => (
+                <button key={s.id} onClick={() => navigate('/session/' + s.id)} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '8px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.border,
+                  cursor: 'pointer', width: '100%', textAlign: 'left',
+                }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: S.tx }}>{s.title}</span>
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+                    color: s.status === 'open' ? S.green : s.status === 'ended' ? S.red : S.tx4,
+                    background: s.status === 'open' ? S.green + '18' : s.status === 'ended' ? S.red + '18' : S.bg3,
+                  }}>{s.status === 'open' ? 'Active' : s.status === 'ended' ? 'Terminée' : s.status}</span>
+                </button>
+              ))}
             </div>
           </div>
         )}
