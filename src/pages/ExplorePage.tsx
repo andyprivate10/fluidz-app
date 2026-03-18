@@ -21,6 +21,7 @@ type NearbyProfile = {
   age?: number
   morphology?: string
   distance?: number // km
+  lastSeen?: string
 }
 
 const ROLE_FILTERS = ['Tous', 'Top', 'Bottom', 'Versa', 'Side']
@@ -116,7 +117,7 @@ export default function ExplorePage() {
     // Approximate bounding box (~10km)
     const delta = 0.1
     const { data } = await supabase.from('user_profiles')
-      .select('id, display_name, profile_json, approx_lat, approx_lng')
+      .select('id, display_name, profile_json, approx_lat, approx_lng, location_updated_at')
       .eq('location_visible', true)
       .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
       .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
@@ -134,6 +135,7 @@ export default function ExplorePage() {
         age: pj.age,
         morphology: pj.morphology,
         distance: dist ? Math.round(dist * 10) / 10 : undefined,
+        lastSeen: p.location_updated_at,
       }
     })
     mapped.sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
@@ -251,6 +253,9 @@ export default function ExplorePage() {
                   </div>
                   {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p300 }}>{p.role}</span>}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                    {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 1800000 && (
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80', display: 'inline-block' }} title="En ligne" />
+                    )}
                     {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
                     <VibeScoreBadge userId={p.id} size="sm" />
                   </div>
