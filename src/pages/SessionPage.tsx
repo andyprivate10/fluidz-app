@@ -624,7 +624,9 @@ export default function SessionPage() {
               <button
                 onClick={() => {
                   const url = window.location.origin + '/join/' + session.invite_code
-                  const text = '🔥 ' + session.title + (session.approx_area ? ' – ' + session.approx_area : '') + ' – Rejoins-nous : ' + url
+                  const rolesW = session.lineup_json?.roles_wanted as Record<string,number> | undefined
+                  const rolesText = rolesW && Object.keys(rolesW).length > 0 ? ' – Recherche ' + Object.entries(rolesW).map(([r,c]) => c+' '+r).join(', ') : ''
+                  const text = '🔥 ' + session.title + (session.approx_area ? ' – ' + session.approx_area : '') + rolesText + ' – ' + (members.length+1) + ' déjà là – Rejoins-nous : ' + url
                   navigator.clipboard.writeText(text).then(() => {
                     setCopied(true)
                     setTimeout(() => setCopied(false), 2000)
