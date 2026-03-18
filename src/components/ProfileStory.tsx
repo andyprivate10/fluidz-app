@@ -52,9 +52,17 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
   if (!sl) return null
   const d = sl.data
   const anim: React.CSSProperties = { animation: 'sfu 0.4s ease' }
+  const bgMap: Record<string, string> = {
+    intro: 'radial-gradient(ellipse at 30% 50%, #1a0a2e 0%, #0C0A14 70%)',
+    photo: '#000',
+    stats: 'radial-gradient(ellipse at 70% 30%, #1a1025 0%, #0C0A14 70%)',
+    role: 'radial-gradient(ellipse at 50% 50%, #2a0a1e 0%, #0C0A14 70%)',
+    kinks: 'radial-gradient(ellipse at 50% 70%, #1a0a2e 0%, #0C0A14 70%)',
+    outro: 'radial-gradient(ellipse at 50% 50%, #2a1020 0%, #0C0A14 60%)',
+  }
 
   return (
-    <div style={{ position:'fixed',inset:0,zIndex:9999,background:'#000',display:'flex',flexDirection:'column' }}>
+    <div style={{ position:'fixed',inset:0,zIndex:9999,background:bgMap[sl.type]||'#000',display:'flex',flexDirection:'column',transition:'background 0.5s ease' }}>
       <div style={{ display:'flex',gap:3,padding:'12px 12px 0',zIndex:20 }}>
         {slides.map((_,i) => (
           <div key={i} style={{ flex:1,height:3,background:'rgba(255,255,255,0.2)',borderRadius:2,overflow:'hidden' }}>
