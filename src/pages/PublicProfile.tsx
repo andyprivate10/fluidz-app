@@ -309,6 +309,10 @@ export default function PublicProfile() {
           ▶ Voir la Story
         </button>
         {/* Add to contacts button */}
+        {/* Direct DM button */}
+        <button onClick={() => navigate('/dm/' + userId)} style={{ marginTop: 8, width: '100%', padding: '10px 16px', borderRadius: 12, background: '#16141F', border: '1px solid #2A2740', color: '#B8B2CC', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          💬 DM direct
+        </button>
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
         <AddContactButton targetUserId={userId!} />
         <InviteToSessionButton targetUserId={userId!} />

@@ -271,6 +271,11 @@ export default function ContactDetailPage() {
           )}
         </div>
 
+        {/* Direct DM */}
+        <button onClick={() => navigate('/dm/' + contactUserId)} style={{ width: '100%', padding: '12px', borderRadius: 12, background: '#16141F', border: '1px solid #F9A8A844', color: '#F9A8A8', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          💬 Envoyer un DM
+        </button>
+
         {/* Invite to session */}
         {activeSessions.length > 0 && (
           <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>

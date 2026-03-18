@@ -39,7 +39,7 @@ export default function ChatsHubPage() {
   const navigate = useNavigate()
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'all' | 'dm' | 'group'>('all')
+  const [tab, setTab] = useState<'all' | 'dm' | 'direct' | 'group'>('all')
   
 
   const loadThreads = useCallback(async () => {
@@ -95,7 +95,7 @@ export default function ChatsHubPage() {
         const key = `dm_${msg.session_id}_${peerId}`
         if (!threadMap.has(key)) {
           threadMap.set(key, {
-            id: key, type: 'dm_session', sessionId: msg.session_id,
+            id: key, type: sess.title === 'DM Direct' ? 'direct' as any : 'dm_session', sessionId: msg.session_id,
             sessionTitle: sess.title, peerId, peerName: msg.sender_id === user.id ? '' : msg.sender_name,
             lastMessage: msg.text, lastMessageAt: msg.created_at, isHost: sess.isHost,
           })
@@ -128,10 +128,11 @@ export default function ChatsHubPage() {
   useEffect(() => { loadThreads() }, [loadThreads])
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadThreads)
 
-  const filtered = tab === 'all' ? threads : tab === 'dm' ? threads.filter(t => t.type === 'dm_session') : threads.filter(t => t.type === 'group')
+  const filtered = tab === 'all' ? threads : tab === 'direct' ? threads.filter(t => (t as any).type === 'direct') : tab === 'dm' ? threads.filter(t => t.type === 'dm_session') : threads.filter(t => t.type === 'group')
 
   function goToThread(t: ChatThread) {
     if (t.type === 'group') navigate(`/session/${t.sessionId}/chat`)
+    else if ((t as any).type === 'direct') navigate(`/dm/${t.peerId}`)
     else navigate(`/session/${t.sessionId}/dm/${t.peerId}`)
   }
 
@@ -141,7 +142,7 @@ export default function ChatsHubPage() {
       <div style={{ padding: '40px 20px 12px', borderBottom: '1px solid ' + S.border }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 12px' }}>Messages</h1>
         <div style={{ display: 'flex', gap: 8 }}>
-          {([['all', 'Tous'], ['dm', 'DMs'], ['group', 'Groupes']] as const).map(([k, l]) => (
+          {([['all', 'Tous'], ['direct', 'Directs'], ['dm', 'Sessions'], ['group', 'Groupes']] as const).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)} style={{
               flex: 1, padding: '7px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
               border: '1px solid ' + (tab === k ? S.p300 + '55' : S.border),
@@ -191,7 +192,7 @@ export default function ChatsHubPage() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                 <span style={{ fontSize: 10, color: t.isHost ? S.p300 : S.green, fontWeight: 600, flexShrink: 0 }}>
-                  {t.type === 'group' ? 'Groupe' : t.isHost ? 'Host' : 'Session'}
+                  {(t as any).type === 'direct' ? 'Direct' : t.type === 'group' ? 'Groupe' : t.isHost ? 'Host' : 'Session'}
                 </span>
                 <span style={{ fontSize: 11, color: S.tx3 }}>·</span>
                 <span style={{ fontSize: 11, color: S.tx4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.sessionTitle}</span>

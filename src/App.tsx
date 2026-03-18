@@ -29,6 +29,7 @@ import ContactDetailPage from './pages/ContactDetailPage'
 import ReviewPage from './pages/ReviewPage'
 import ExplorePage from './pages/ExplorePage'
 import ChatsHubPage from './pages/ChatsHubPage'
+import DirectDMPage from './pages/DirectDMPage'
 import AddressesPage from './pages/AddressesPage'
 import BottomNav from './components/BottomNav'
 
@@ -53,6 +54,7 @@ const routes = [
   { path: '/contacts', element: <ContactsPage /> },
   { path: '/explore', element: <ExplorePage /> },
   { path: '/chats', element: <ChatsHubPage /> },
+  { path: '/dm/:peerId', element: <DirectDMPage /> },
   { path: '/addresses', element: <AddressesPage /> },
   { path: '/contacts/:contactUserId', element: <ContactDetailPage /> },
   { path: '/groups', element: <GroupsPage /> },
