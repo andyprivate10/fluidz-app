@@ -268,6 +268,7 @@ export default function SessionPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#F0EDFF', flex: 1 }}>{session.title}</h1>
           <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 8, whiteSpace: 'nowrap' }}>{statusLabel}</span>
+          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: '#B8B2CC', background: '#2A2740', padding: '3px 10px', borderRadius: 50, marginLeft: 4, whiteSpace: 'nowrap' }}>👥 {members.length}</span>}
         </div>
         {session.tags && session.tags.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
