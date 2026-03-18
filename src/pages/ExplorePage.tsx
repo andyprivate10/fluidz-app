@@ -49,6 +49,7 @@ export default function ExplorePage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [geoError, setGeoError] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [searchText, setSearchText] = useState('')
   const [exploreTab, setExploreTab] = useState<'profils'|'sessions'>('profils')
   const [nearbySessions, setNearbySessions] = useState<any[]>([])
 
@@ -151,7 +152,11 @@ export default function ExplorePage() {
     showToast(newVal ? 'Tu es visible dans la galerie' : 'Tu es masqué', newVal ? 'success' : 'info')
   }
 
-  const filtered = roleFilter === 'Tous' ? profiles : profiles.filter(p => p.role === roleFilter)
+  const filtered = profiles.filter(p => {
+    if (roleFilter !== 'Tous' && p.role !== roleFilter) return false
+    if (searchText && !p.display_name.toLowerCase().includes(searchText.toLowerCase())) return false
+    return true
+  })
   const { pullHandlers, pullIndicator } = usePullToRefresh(async () => { if (myLat && myLng) await loadNearby(myLat, myLng) })
 
   return (
@@ -200,6 +205,20 @@ export default function ExplorePage() {
           ))}
         </div>
       </div>
+
+      {/* Search */}
+      {exploreTab === 'profils' && (
+        <div style={{ padding: '8px 16px 0' }}>
+          <input
+            type="text" value={searchText} onChange={e => setSearchText(e.target.value)}
+            placeholder="Rechercher un profil..." style={{
+              width: '100%', padding: '10px 14px', borderRadius: 12, background: '#1F1D2B',
+              border: '1px solid #2A2740', color: '#F0EDFF', fontSize: 13, outline: 'none',
+              fontFamily: 'inherit', boxSizing: 'border-box',
+            }}
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div style={{ padding: 12 }}>
