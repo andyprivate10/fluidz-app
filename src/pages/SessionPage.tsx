@@ -31,6 +31,7 @@ export default function SessionPage() {
   const [checkInDone, setCheckInDone] = useState(false)
   const [copied, setCopied] = useState(false)
   const [inviteLinkCopied, setInviteLinkCopied] = useState(false)
+  const [addressCopied, setAddressCopied] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
   const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -299,7 +300,19 @@ export default function SessionPage() {
           </div>
         )}
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
-          <div style={{ fontSize: 13, color: '#F0EDFF', marginTop: 6, fontWeight: 600 }}>{session.exact_address}</div>
+          <div style={{ marginTop: 6 }}>
+            <div style={{ fontSize: 13, color: '#F0EDFF', fontWeight: 600 }}>{session.exact_address}</div>
+            <button onClick={() => {
+              const dirs = (session.lineup_json?.directions || []).map((d, i) => {
+                const txt = typeof d === 'string' ? d : d.text
+                return (i+1) + '. ' + txt
+              }).join('\n')
+              const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
+              navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
+            }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? '#4ADE8044' : '#2A2740'), background: addressCopied ? '#4ADE8014' : 'transparent', color: addressCopied ? '#4ADE80' : '#7E7694' }}>
+              {addressCopied ? '✓ Copié' : '📋 Copier adresse + directions'}
+            </button>
+          </div>
         ) : session.approx_area ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
             <span style={{ fontSize: 13, color: '#7E7694' }}>Autour de {session.approx_area}</span>
