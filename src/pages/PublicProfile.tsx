@@ -211,7 +211,7 @@ export default function PublicProfile() {
       setAllowed(!!canSee)
 
       if (canSee) {
-        const { data: prof } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', userId).maybeSingle()
+        const { data: prof } = await supabase.from('user_profiles').select('display_name, profile_json, location_updated_at').eq('id', userId).maybeSingle()
         if (!cancelled) setProfile(prof)
       }
       setLoading(false)
@@ -312,6 +312,20 @@ export default function PublicProfile() {
             {p.role}
           </span>
         )}
+        {/* Last seen */}
+        {profile.location_updated_at && (() => {
+          const ms = Date.now() - new Date(profile.location_updated_at).getTime()
+          const mins = Math.floor(ms / 60000)
+          const isOnline = mins < 30
+          const label = isOnline ? 'En ligne' : mins < 60 ? `Vu il y a ${mins}min` : mins < 1440 ? `Vu il y a ${Math.floor(mins/60)}h` : `Vu il y a ${Math.floor(mins/1440)}j`
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: isOnline ? '#4ADE80' : '#7E7694', display: 'inline-block' }} />
+              <span style={{ fontSize: 12, color: isOnline ? '#4ADE80' : '#7E7694', fontWeight: 600 }}>{label}</span>
+            </div>
+          )
+        })()}
+
         {/* Story button */}
         <button onClick={() => setShowStory(true)} style={{ marginTop: 10, padding: '8px 16px', borderRadius: 12, background: 'linear-gradient(135deg,#F9A8A8,#F47272)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 12px rgba(244,114,114,0.3)' }}>
           ▶ Voir la Story
