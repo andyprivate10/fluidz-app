@@ -369,6 +369,15 @@ export default function HostDashboard() {
                 {messageCopied ? 'Copié ✓' : 'Copier le message'}
               </button>
             </div>
+            {/* Native share */}
+            {typeof navigator !== 'undefined' && navigator.share && sess && (
+              <button onClick={() => {
+                const url = window.location.origin + '/join/' + sess.invite_code
+                navigator.share({ title: sess.title || 'Session Fluidz', text: '🔥 ' + (sess.title || '') + ' – Postule ici !', url }).catch(() => {})
+              }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid #4ADE8044',background:'transparent',color:'#4ADE80',cursor:'pointer'}}>
+                📤 Partager via...
+              </button>
+            )}
             {/* Direct invite link */}
             <button
               onClick={() => {
