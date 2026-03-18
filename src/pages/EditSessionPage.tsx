@@ -27,6 +27,7 @@ export default function EditSessionPage() {
   const [exactAddress, setExactAddress] = useState('')
   const [directions, setDirections] = useState<{text:string;photo_url?:string}[]>([{text:''}])
   const [tags, setTags] = useState<string[]>([])
+  const [isPublic, setIsPublic] = useState(false)
   const [lineupBase, setLineupBase] = useState<Record<string,unknown>>({})
 
   const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
@@ -46,6 +47,7 @@ export default function EditSessionPage() {
       setExactAddress(sess.exact_address || '')
       setTags(sess.tags || [])
       setLineupBase(sess.lineup_json || {})
+      setIsPublic(!!sess.is_public)
       const dirs = (sess.lineup_json?.directions || []).map((d: any) => typeof d === 'string' ? {text:d} : d)
       setDirections(dirs.length > 0 ? dirs : [{text:''}])
       setLoading(false)
@@ -67,6 +69,7 @@ export default function EditSessionPage() {
       approx_area: approxArea.trim(),
       exact_address: exactAddress.trim() || null,
       tags,
+      is_public: isPublic,
       lineup_json: { ...lineupBase, directions: directionsFiltered },
     }).eq('id', id)
 
@@ -159,6 +162,20 @@ export default function EditSessionPage() {
           ))}
           <button type="button" onClick={() => setDirections([...directions,{text:''}])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.border, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
             + Ajouter une étape
+          </button>
+        </div>
+
+        {/* Public toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.border, borderRadius: 12 }}>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Publier dans l'app</p>
+            <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore</p>
+          </div>
+          <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
+            width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
+            background: isPublic ? '#4ADE80' : '#2A2740', transition: 'background 0.2s',
+          }}>
+            <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: isPublic ? 21 : 3, transition: 'left 0.2s' }} />
           </button>
         </div>
 
