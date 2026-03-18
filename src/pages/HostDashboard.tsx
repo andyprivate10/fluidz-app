@@ -379,6 +379,37 @@ export default function HostDashboard() {
             </button>
           </>
         )}
+        {/* Roles summary */}
+        {sess?.lineup_json?.roles_wanted && Object.keys(sess.lineup_json.roles_wanted).length > 0 && (() => {
+          const wanted = (sess.lineup_json as any).roles_wanted as Record<string, number>
+          const currentRoles: Record<string, number> = {}
+          apps.filter(a => a.status === 'accepted' || a.status === 'checked_in').forEach(a => {
+            const r = a.eps_json?.role || a.user_profiles?.profile_json?.role
+            if (r) currentRoles[r] = (currentRoles[r] || 0) + 1
+          })
+          return (
+            <div style={{marginTop:12,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.border}}>
+              <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>RÔLES</div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                {Object.entries(wanted).map(([role, count]) => {
+                  const have = currentRoles[role] || 0
+                  const filled = have >= Number(count)
+                  return (
+                    <span key={role} style={{
+                      fontSize:12,fontWeight:600,padding:'4px 10px',borderRadius:99,
+                      color: filled ? S.green : S.p300,
+                      background: filled ? S.green+'18' : S.p300+'18',
+                      border: '1px solid '+(filled ? S.green+'44' : S.p300+'44'),
+                    }}>
+                      {have}/{count} {role}{filled ? ' ✓' : ''}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Arrival stats */}
         {totalAccepted > 0 && (
           <div style={{marginTop:16,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.border,display:'flex',justifyContent:'space-around',textAlign:'center'}}>
