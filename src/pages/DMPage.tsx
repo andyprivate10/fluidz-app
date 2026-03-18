@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
+import { Camera } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
@@ -10,6 +11,8 @@ type Message = {
   sender_id: string
   created_at: string
   sender_name: string
+  has_media?: boolean
+  media_urls?: string[]
 }
 
 const S = {
@@ -56,6 +59,7 @@ export default function DMPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [displayName, setDisplayName] = useState<string>('')
+  const [uploading, setUploading] = useState(false)
 
   const isHost = currentUser?.id === session?.host_id
   const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
@@ -169,7 +173,7 @@ export default function DMPage() {
           const isLegacy = !msg.dm_peer_id && (msg.sender_id === currentUser.id || msg.sender_id === effectivePeer)
           if (!isMyMsg && !isPeerMsg && !isLegacy) return
         }
-        setMessages((prev) => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name }])
+        setMessages((prev) => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
       })
       .subscribe()
 
@@ -191,6 +195,30 @@ export default function DMPage() {
       .eq('applicant_id', currentUser.id)
     setShowCheckInConfirmed(true)
     setTimeout(() => setShowCheckInConfirmed(false), 3000)
+  }
+
+  async function handleSendPhoto(file: File) {
+    if (!id || !currentUser) return
+    setUploading(true)
+    try {
+      const { compressImage } = await import('../lib/media')
+      const compressed = await compressImage(file)
+      const path = currentUser.id + '/chat_' + Date.now() + '.jpg'
+      const { error } = await supabase.storage.from('avatars').upload(path, compressed)
+      if (error) { setUploading(false); return }
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+      await supabase.from('messages').insert({
+        session_id: id,
+        sender_id: currentUser.id,
+        text: '📷 Photo',
+        sender_name: displayName || currentUser.email || '',
+        room_type: 'dm',
+        dm_peer_id: peerId || undefined,
+        has_media: true,
+        media_urls: [publicUrl],
+      })
+    } catch { /* ignore */ }
+    setUploading(false)
   }
 
   async function handleSend() {
@@ -343,12 +371,16 @@ export default function DMPage() {
                   </span>
                 )}
                 <div style={{
-                  padding: '10px 14px', fontSize: 15, maxWidth: '80%',
+                  padding: message.has_media ? 4 : '10px 14px', fontSize: 15, maxWidth: '80%',
                   background: isMine ? S.p400 : S.bg2,
                   color: isMine ? 'white' : S.tx,
                   borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                  overflow: 'hidden',
                 }}>
-                  {message.text}
+                  {message.has_media && message.media_urls?.map((url: string, mi: number) => (
+                    <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: message.has_media && !message.text?.replace('📷 Photo','').trim() ? 12 : 8, display: 'block', marginBottom: message.text?.replace('📷 Photo','').trim() ? 6 : 0 }} />
+                  ))}
+                  {message.text && message.text !== '📷 Photo' && <span>{message.text}</span>}
                 </div>
                 <span style={{ color: S.tx3, fontSize: 10, marginTop: 2 }}>
                   {formatRelative(message.created_at)}
@@ -365,12 +397,16 @@ export default function DMPage() {
         background: S.bg1, padding: 16, borderTop: '1px solid '+S.border,
         display: 'flex', gap: 8, flexShrink: 0,
       }}>
+        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.border, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
+          <Camera size={18} style={{ color: S.tx3 }} />
+          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={uploading} />
+        </label>
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          placeholder="Ton message..."
+          placeholder={uploading ? 'Envoi photo...' : 'Ton message...'}
           style={{
             flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.border,
             borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
