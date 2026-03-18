@@ -512,9 +512,32 @@ export default function ApplyPage() {
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>Message au host (optionnel)</p>
             <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.border,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           </div>
-          <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.border,marginBottom:12}}>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,margin:'0 0 6px'}}>Récapitulatif — sections partagées</p>
-            <p style={{fontSize:13,color:S.tx2,margin:0}}>{enabled.length} section{enabled.length > 1 ? 's' : ''} : {enabled.map(sid => ALL_SECTIONS.find(s => s.id === sid)?.label).filter(Boolean).join(', ') || '—'}</p>
+          {/* Visual preview */}
+          <div style={{padding:'14px',background:S.bg1,borderRadius:14,border:'1px solid '+S.border,marginBottom:12}}>
+            <p style={{fontSize:11,fontWeight:700,color:S.p300,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>Ce que le host verra</p>
+            <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:10}}>
+              {profile?.profile_json?.avatar_url ? (
+                <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.border}} />
+              ) : (
+                <div style={{width:40,height:40,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,color:'#fff'}}>{(profile?.display_name || '?')[0].toUpperCase()}</div>
+              )}
+              <div>
+                <p style={{margin:0,fontSize:14,fontWeight:700,color:S.tx}}>{guestMode ? guestDisplayName || 'Invité' : profile?.display_name || 'Anonyme'}</p>
+                <div style={{display:'flex',gap:6,marginTop:2}}>
+                  {selectedRole && <span style={{fontSize:11,color:S.p300,fontWeight:600}}>{selectedRole}</span>}
+                  {profile?.profile_json?.age && enabled.includes('basics') && <span style={{fontSize:11,color:S.tx3}}>{profile.profile_json.age} ans</span>}
+                </div>
+              </div>
+            </div>
+            {selectedPhotosProfil.length > 0 && enabled.includes('photos_profil') && (
+              <div style={{display:'flex',gap:6,overflowX:'auto',marginBottom:8}}>
+                {selectedPhotosProfil.slice(0,3).map((url: string, i: number) => (
+                  <img key={i} src={url} alt="" style={{width:56,height:72,borderRadius:10,objectFit:'cover',border:'1px solid '+S.border,flexShrink:0}} />
+                ))}
+                {selectedPhotosProfil.length > 3 && <span style={{fontSize:11,color:S.tx4,alignSelf:'center'}}>+{selectedPhotosProfil.length-3}</span>}
+              </div>
+            )}
+            <p style={{fontSize:12,color:S.tx3,margin:0}}>{enabled.length} section{enabled.length > 1 ? 's' : ''} : {enabled.map(sid => ALL_SECTIONS.find(s => s.id === sid)?.label).filter(Boolean).join(', ') || '—'}</p>
           </div>
           <div style={{display:'flex',gap:10,marginTop:8}}>
             <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.border,background:S.bg2,cursor:'pointer'}}>← Retour</button>
