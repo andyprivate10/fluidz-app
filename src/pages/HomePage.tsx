@@ -171,11 +171,14 @@ export default function HomePage() {
         {/* Login CTA for non-logged-in */}
         {!userId && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-            <button onClick={() => navigate('/session/create')} style={{ width: '100%', padding: 16, background: S.grad, border: 'none', borderRadius: 14, color: '#fff', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.p400 + '44' }}>
+            <button onClick={() => navigate('/login?next=/session/create')} style={{ width: '100%', padding: 16, background: S.grad, border: 'none', borderRadius: 14, color: '#fff', fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.p400 + '44' }}>
               Créer une session
             </button>
-            <button onClick={() => navigate('/me')} style={{ width: '100%', padding: 14, borderRadius: 14, color: S.tx2, border: '1px solid ' + S.border, background: 'transparent', cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
+            <button onClick={() => navigate('/login')} style={{ width: '100%', padding: 14, borderRadius: 14, color: S.tx2, border: '1px solid ' + S.border, background: 'transparent', cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>
               Se connecter
+            </button>
+            <button onClick={() => navigate('/ghost/setup')} style={{ width: '100%', padding: 12, borderRadius: 14, color: S.tx4, border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 600, fontSize: 13 }}>
+              Mode Ghost (24h, sans compte) →
             </button>
           </div>
         )}
