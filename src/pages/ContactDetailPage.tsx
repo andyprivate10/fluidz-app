@@ -55,6 +55,8 @@ export default function ContactDetailPage() {
   const [interactions, setInteractions] = useState<Interaction[]>([])
   const [loading, setLoading] = useState(true)
   const [editingNotes, setEditingNotes] = useState(false)
+  const [activeSessions, setActiveSessions] = useState<{ id: string; title: string }[]>([])
+  const [inviting, setInviting] = useState(false)
   const [notesText, setNotesText] = useState('')
 
   useEffect(() => {
@@ -76,6 +78,9 @@ export default function ContactDetailPage() {
     setContact(ct)
     setNotesText(ct?.notes || '')
     setInteractions(interactions || [])
+    // Load my active sessions for invite
+    const { data: mySessions } = await supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open')
+    setActiveSessions(mySessions || [])
     setLoading(false)
   }
 
@@ -97,6 +102,23 @@ export default function ContactDetailPage() {
     setContact({ ...contact, notes: notesText.trim() || null })
     setEditingNotes(false)
     showToast('Notes sauvegardées', 'success')
+  }
+
+  async function inviteToSession(sessionId: string) {
+    setInviting(true)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user || !contactUserId) { setInviting(false); return }
+    const sess = activeSessions.find(s => s.id === sessionId)
+    await supabase.from('notifications').insert({
+      user_id: contactUserId,
+      session_id: sessionId,
+      type: 'session_invite',
+      title: '📩 Tu es invité !',
+      body: (profile?.display_name || 'Quelqu\'un') + ' t\'invite à "' + (sess?.title || 'une session') + '"',
+      href: '/session/' + sessionId,
+    })
+    showToast('Invitation envoyée !', 'success')
+    setInviting(false)
   }
 
   async function removeContact() {
@@ -248,6 +270,24 @@ export default function ContactDetailPage() {
             </div>
           )}
         </div>
+
+        {/* Invite to session */}
+        {activeSessions.length > 0 && (
+          <div style={{ background: S.bg1, border: '1px solid ' + S.border, borderRadius: 16, padding: 16 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inviter à une session</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
+              {activeSessions.map(s => (
+                <button key={s.id} onClick={() => inviteToSession(s.id)} disabled={inviting} style={{
+                  width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600,
+                  border: '1px solid ' + S.p300 + '44', background: S.p300 + '14', color: S.p300,
+                  cursor: inviting ? 'not-allowed' : 'pointer', textAlign: 'left',
+                }}>
+                  📩 Inviter à "{s.title}"
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Remove */}
         {contact && (
