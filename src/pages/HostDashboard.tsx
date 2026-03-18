@@ -144,6 +144,8 @@ export default function HostDashboard() {
     }
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
     setActionLoading(null)
+    const name = app?.user_profiles?.display_name || 'Candidat'
+    showToast(status === 'accepted' ? name + ' accepté ✓' : name + ' refusé', status === 'accepted' ? 'success' : 'info')
   }
 
   async function confirmCheckIn(appId: string) {
