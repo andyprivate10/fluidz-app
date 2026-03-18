@@ -415,7 +415,17 @@ export default function GroupChatPage() {
                 borderBottomRightRadius: isMe ? 4 : 16,
                 borderBottomLeftRadius: isMe ? 16 : 4,
                 overflow:'hidden',
-              }}>
+              }}
+              onContextMenu={(e) => {
+                if (!isMe) return
+                e.preventDefault()
+                if (window.confirm('Supprimer ce message ?')) {
+                  supabase.from('messages').delete().eq('id', msg.id).then(() => {
+                    setMessages(prev => prev.filter(m => m.id !== msg.id))
+                  })
+                }
+              }}
+              >
                 {msg.has_media && msg.media_urls?.map((url: string, mi: number) => {
                   const isAudio = url.endsWith('.webm') || url.includes('audio')
                   const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')

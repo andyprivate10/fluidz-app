@@ -477,7 +477,17 @@ export default function DMPage() {
                   color: isMine ? 'white' : S.tx,
                   borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                   overflow: 'hidden',
-                }}>
+                }}
+                onContextMenu={(e) => {
+                  if (message.sender_id !== currentUser?.id) return
+                  e.preventDefault()
+                  if (window.confirm('Supprimer ce message ?')) {
+                    supabase.from('messages').delete().eq('id', message.id).then(() => {
+                      setMessages(prev => prev.filter(m => m.id !== message.id))
+                    })
+                  }
+                }}
+                >
                   {message.has_media && message.media_urls?.map((url: string, mi: number) => {
                     const isAudio = url.endsWith('.webm') || url.includes('audio')
                     const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')

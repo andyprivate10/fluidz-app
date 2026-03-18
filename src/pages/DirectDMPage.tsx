@@ -231,7 +231,17 @@ export default function DirectDMPage() {
               borderBottomRightRadius: isMe(msg.sender_id) ? 4 : 16,
               borderBottomLeftRadius: isMe(msg.sender_id) ? 16 : 4,
               overflow: 'hidden',
-            }}>
+            }}
+            onContextMenu={(e) => {
+              if (!isMe(msg.sender_id)) return
+              e.preventDefault()
+              if (window.confirm('Supprimer ce message ?')) {
+                supabase.from('messages').delete().eq('id', msg.id).then(() => {
+                  setMessages(prev => prev.filter(m => m.id !== msg.id))
+                })
+              }
+            }}
+            >
               {msg.has_media && msg.media_urls?.map((url: string, mi: number) => {
                 const isAudio = url.endsWith('.webm') || url.includes('audio')
                 const isVideo = /\.(mp4|mov)$/i.test(url) || url.includes('video')
