@@ -78,6 +78,7 @@ export default function MePage() {
   const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
   const [locationVisible, setLocationVisible] = useState(false)
   const [profileViews, setProfileViews] = useState(0)
+  const [unreadCount, setUnreadCount] = useState(0)
 
   const [displayName, setDisplayName] = useState('')
   const [age, setAge] = useState('')
@@ -163,6 +164,7 @@ export default function MePage() {
         // Count profile views (last 7 days)
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', uid).eq('type', 'profile_view').gte('created_at', weekAgo).then(({ count }) => setProfileViews(count ?? 0))
+        supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', uid).is('read_at', null).then(({ count }) => setUnreadCount(count ?? 0))
       const p = data.profile_json || {}
       const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')
@@ -412,7 +414,7 @@ export default function MePage() {
           </div>
 
           <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#FBBF24', border: '1px solid #FBBF2444', background: '#FBBF2414', cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            🔔 Notifications
+            🔔 Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
           </button>
           <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
             <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: '#F9A8A8', border: '1px solid #F9A8A844', background: '#F9A8A814', cursor: 'pointer' }}>
