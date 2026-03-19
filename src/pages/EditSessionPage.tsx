@@ -116,8 +116,8 @@ export default function EditSessionPage() {
             {SESSION_TAGS.map(tag => (
               <button key={tag} onClick={() => toggleTag(tag)} style={{
                 padding:'6px 14px', borderRadius:50, fontSize:12, fontWeight:600, cursor:'pointer',
-                border:'1px solid '+(tags.includes(tag) ? S.p+'88' : S.rule),
-                background: tags.includes(tag) ? S.p+'18' : S.bg2,
+                border:'1px solid '+(tags.includes(tag) ? S.pbd : S.rule),
+                background: tags.includes(tag) ? S.p2 : S.bg2,
                 color: tags.includes(tag) ? S.p : S.tx3,
               }}>{tag}</button>
             ))}
@@ -184,7 +184,7 @@ export default function EditSessionPage() {
         <button onClick={handleSave} disabled={saving} style={{
           width:'100%', padding:16, background:S.grad, border:'none', borderRadius:14,
           color:'#fff', fontSize:16, fontWeight:700, cursor: saving ? 'not-allowed' : 'pointer',
-          boxShadow:'0 4px 20px '+S.p+'44', opacity: saving ? 0.7 : 1, marginTop:8,
+          boxShadow:'0 4px 20px '+S.pbd, opacity: saving ? 0.7 : 1, marginTop:8,
         }}>
           {saving ? 'Enregistrement...' : 'Enregistrer les modifications'}
         </button>

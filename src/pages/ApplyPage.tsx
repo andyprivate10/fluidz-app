@@ -305,7 +305,7 @@ export default function ApplyPage() {
           {(selectedRole || (profile?.profile_json as any)?.role || (profile?.profile_json as any)?.bio) && !guestMode && (
             <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
               {(selectedRole || (profile?.profile_json as any)?.role) && (
-                <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p+'22',border:'1px solid '+S.p+'44',marginRight:6}}>
+                <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p2,border:'1px solid '+S.pbd,marginRight:6}}>
                   {selectedRole || (profile?.profile_json as any)?.role}
                 </span>
               )}
@@ -315,7 +315,7 @@ export default function ApplyPage() {
           {guestMode && (selectedRole || guestDisplayName) && (
             <div style={{fontSize:13,color:S.tx2}}>
               {guestDisplayName && <span style={{fontWeight:600,color:S.tx}}>{guestDisplayName}</span>}
-              {selectedRole && <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p+'22',marginLeft:6}}>{selectedRole}</span>}
+              {selectedRole && <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p2,marginLeft:6}}>{selectedRole}</span>}
             </div>
           )}
         </div>

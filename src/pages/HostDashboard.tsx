@@ -543,7 +543,7 @@ export default function HostDashboard() {
                       <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{displayName}</Link>
                     </p>
                     {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.rule}}>Ghost</span>}
-                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.p+'33'}}>{displayRole}</span>}
+                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.pbd}}>{displayRole}</span>}
                     {!isGhost && <VibeScoreBadge userId={app.applicant_id} />}
                   </div>
                   <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Voir profil</button>
@@ -569,7 +569,7 @@ export default function HostDashboard() {
                 )}
 
                 {app.eps_json?.occasion_note && (
-                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p+'33',marginBottom:8}}>
+                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.pbd,marginBottom:8}}>
                     <p style={{fontSize:11,color:S.p,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0}}>{app.eps_json.occasion_note}</p>
                   </div>

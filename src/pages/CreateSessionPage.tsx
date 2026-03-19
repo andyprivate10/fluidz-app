@@ -162,14 +162,14 @@ export default function CreateSessionPage() {
             {(['grindr','whatsapp','telegram'] as const).map(app => (
               <button key={app} onClick={() => copyShareMessage(app)} style={{
                 padding:'14px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.rule,
-                background: copyFeedback === app ? S.p+'22' : S.bg1, color: copyFeedback === app ? S.p : S.tx2,
+                background: copyFeedback === app ? S.p2 : S.bg1, color: copyFeedback === app ? S.p : S.tx2,
                 cursor:'pointer',textAlign:'left',
               }}>
                 {copyFeedback === app ? 'Copié !' : (app === 'grindr' ? 'Copier pour Grindr' : app === 'whatsapp' ? 'Copier pour WhatsApp' : 'Copier pour Telegram')}
               </button>
             ))}
           </div>
-          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.p+'44'}}>
+          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
             Aller à la session
           </button>
         </div>
@@ -255,13 +255,13 @@ export default function CreateSessionPage() {
               {['Top', 'Bottom', 'Versa', 'Side'].map(role => {
                 const count = rolesWanted[role] || 0
                 return (
-                  <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p+'18' : S.bg2,border:'1px solid '+(count > 0 ? S.p+'44' : S.rule)}}>
+                  <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p2 : S.bg2,border:'1px solid '+(count > 0 ? S.pbd : S.rule)}}>
       <OrbLayer />
                     <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p : S.tx3}}>{role}</span>
                     <div style={{display:'flex',alignItems:'center',gap:4}}>
                       <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[role]||0)>0) n[role]=(n[role]||0)-1; if(n[role]===0) delete n[role]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.rule,background:S.bg,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>
                       <span style={{fontSize:14,fontWeight:700,color:S.tx,minWidth:16,textAlign:'center'}}>{count}</span>
-                      <button onClick={()=>setRolesWanted(prev => ({...prev,[role]:(prev[role]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.p+'44',background:S.p+'18',color:S.p,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
+                      <button onClick={()=>setRolesWanted(prev => ({...prev,[role]:(prev[role]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.pbd,background:S.p2,color:S.p,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
                     </div>
                   </div>
                 )
@@ -273,7 +273,7 @@ export default function CreateSessionPage() {
               </p>
             )}
           </div>
-          <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.p+'44',marginTop:4}}>
+          <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.pbd,marginTop:4}}>
             Continuer →
           </button>
         </div>
@@ -355,7 +355,7 @@ export default function CreateSessionPage() {
             <p style={{fontSize:12,color:S.tx3,margin:0}}>L'adresse exacte n'est jamais visible avant acceptation</p>
           </div>
           {error && <p style={{color:S.p,fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:'#F4727215',borderRadius:10}}>{error}</p>}
-          <button onClick={create} disabled={loading||!title||!approxArea} className='btn-shimmer' style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.p+'44',marginTop:4}}>
+          <button onClick={create} disabled={loading||!title||!approxArea} className='btn-shimmer' style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.pbd,marginTop:4}}>
             {loading ? 'Création...' : 'Créer la session'}
           </button>
         </div>

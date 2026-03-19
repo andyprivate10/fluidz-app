@@ -332,7 +332,7 @@ export default function MePage() {
         
       }}>
         {hasGuestToken && (
-          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p+'18', border:'1px solid '+S.p+'44', maxWidth:360, width:'100%' }}>
+          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p2, border:'1px solid '+S.pbd, maxWidth:360, width:'100%' }}>
             <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>Vous avez une candidature en attente — créer un compte pour la conserver.</p>
             <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>Connecte-toi avec ton email pour récupérer ta candidature.</p>
           </div>
@@ -523,7 +523,7 @@ export default function MePage() {
                   <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
                 </div>
                 <div style={{ background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
-                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,'+S.p+',#c0503a)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
+                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,'+S.p+',#C0706A)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (

@@ -211,7 +211,7 @@ export default function JoinPage() {
             {hostName && session.host_id && (
               <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,margin:'0 0 12px',background:'none',border:'none',cursor:'pointer',padding:0}}>
                 {hostAvatar ? (
-                  <img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule}} />
+                  <div style={{position:'relative'}}><img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'2px solid '+S.bg,outline:'1.5px solid '+S.pbd}} /><div style={{position:'absolute',bottom:-1,right:-1,width:8,height:8,borderRadius:'50%',background:S.sage,border:'2px solid '+S.bg}} /></div>
                 ) : (
                   <div style={{width:28,height:28,borderRadius:'50%',background:S.p2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
                 )}
@@ -226,7 +226,7 @@ export default function JoinPage() {
             {session.tags && session.tags.length > 0 && (
               <div style={{display:'flex',flexWrap:'wrap',gap:6,justifyContent:'center',marginBottom:16}}>
                 {session.tags.map((tag: string) => (
-                  <span key={tag} style={{fontSize:12,fontWeight:600,color:S.p,padding:'4px 12px',borderRadius:99,background:S.p+'14',border:'1px solid '+S.p+'33'}}>{tag}</span>
+                  <span key={tag} style={{fontSize:12,fontWeight:600,color:S.p,padding:'4px 12px',borderRadius:99,background:S.p2,border:'1px solid '+S.pbd}}>{tag}</span>
                 ))}
               </div>
             )}
