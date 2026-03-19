@@ -298,7 +298,7 @@ export default function SessionPage() {
         <div style={{ position: 'absolute', width: 200, height: 200, top: -60, right: -40, borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(224,136,122,0.12)', animation: 'orbDrift1 8s ease-in-out infinite' }} />
         <div style={{ position: 'absolute', width: 160, height: 160, bottom: -40, left: -30, borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(144,128,186,0.08)', animation: 'orbDrift2 11s ease-in-out infinite' }} />
         {/* Fade bottom */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, background: `linear-gradient(to top, ${S.bg}, transparent)` }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 180, background: `linear-gradient(to top, ${S.bg}, transparent)` }} />
 
         {/* Hero content */}
         <div style={{ position: 'relative', zIndex: 1, padding: '16px 24px 20px' }}>

@@ -144,7 +144,7 @@ export default function AddressesPage() {
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>Mes adresses</h1>
             <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length} adresse{addresses.length !== 1 ? 's' : ''} sauvegardée{addresses.length !== 1 ? 's' : ''}</p>
           </div>
-          <button onClick={openCreate} style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
+          <button onClick={openCreate} className='btn-shimmer' style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
             <Plus size={18} style={{ color:'#fff' }} />
           </button>
         </div>
@@ -253,7 +253,7 @@ export default function AddressesPage() {
                 </button>
               </div>
 
-              <button onClick={save} disabled={saving || !label.trim() || !exactAddress.trim()} style={{
+              <button onClick={save} disabled={saving || !label.trim() || !exactAddress.trim()} className='btn-shimmer' style={{
                 width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
                 cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || !exactAddress.trim() ? 0.6 : 1,
               }}>
