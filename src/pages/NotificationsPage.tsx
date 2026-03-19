@@ -12,7 +12,7 @@ const R = radius
 type Notif = { id: string; type: string; title: string; body: string; href: string; read_at: string | null; created_at: string }
 
 const TYPE_ICONS: Record<string, string> = {
-  new_application: '→', application_accepted: '✓', application_rejected: '✗',
+  new_application: '→', application_accepted: '●', application_rejected: '—',
   session_invite: '→', group_invite: '⊕', direct_dm: '↗',
   direct_join: '⚡', contact_request: '♡', check_in: '◎',
   check_in_confirmed: '◉', review_request: '★', nudge: '⏱',

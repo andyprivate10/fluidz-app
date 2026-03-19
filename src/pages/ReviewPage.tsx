@@ -116,7 +116,7 @@ export default function ReviewPage() {
       {alreadyReviewed && !submitted ? (
         <div style={{ padding: '0 20px' }}>
           <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
-            <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>Tu as déjà laissé un avis ✓</p>
+            <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>Tu as déjà laissé un avis</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '8px 0 0' }}>Merci pour ton retour !</p>
           </div>
         </div>

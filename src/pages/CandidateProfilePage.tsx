@@ -70,7 +70,7 @@ export default function CandidateProfilePage() {
 
     // Notification
     const title = decision === 'accepted'
-      ? `Accepté pour "${sess.title}" ✓`
+      ? `Accepté pour "${sess.title}" `
       : `Non retenu pour "${sess.title}"`
     await supabase.from('notifications').insert({
       user_id: app.applicant_id,
@@ -246,7 +246,7 @@ export default function CandidateProfilePage() {
             background: (app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange) + '18',
             border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange) + '44',
           }}>
-            {app.status === 'accepted' ? '✓ Accepté' : app.status === 'checked_in' ? '✓ Check-in' : app.status === 'rejected' ? '✗ Refusé' : 'En attente'}
+            {app.status === 'accepted' ? 'Accepté' : app.status === 'checked_in' ? 'Check-in' : app.status === 'rejected' ? 'Refusé' : 'En attente'}
           </span>
           <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>▶ Story</button>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
@@ -400,14 +400,14 @@ export default function CandidateProfilePage() {
             flex: 1, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
             color: S.red, border: '1px solid ' + S.red + '44', background: S.red + '10', cursor: 'pointer',
           }}>
-            ✕ Refuser
+            Refuser
           </button>
           <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
             flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
             color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer',
             boxShadow: '0 4px 16px ' + S.pbd,
           }}>
-            {actioning ? '...' : '✓ Accepter'}
+            {actioning ? '...' : 'Accepter'}
           </button>
         </div>
       )}

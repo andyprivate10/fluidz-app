@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { showToast } from '../components/Toast'
 import { supabase } from '../lib/supabase'
-import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye, ArrowLeft, Grid3X3 } from 'lucide-react'
+import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye, ArrowLeft, Grid3X3, Check } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
@@ -454,7 +454,7 @@ export default function ApplyPage() {
                     </div>
                   </div>
                   <div style={{width:20,height:20,borderRadius:99,background:on?S.grad:'transparent',border:on?'none':'2px solid '+S.rule,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-                    {on && <span style={{color:'#fff',fontSize:11,fontWeight:800}}>✓</span>}
+                    {on && <Check size={11} strokeWidth={3} style={{color:'#fff'}} />}
                   </div>
                 </div>
               )
@@ -503,7 +503,7 @@ export default function ApplyPage() {
                       return (
                         <button key={url} type="button" onClick={() => setSelP((prev: string[]) => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                           <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
+                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
                         </button>
                       )
                     })}
@@ -512,7 +512,7 @@ export default function ApplyPage() {
                       return (
                         <button key={url} type="button" onClick={() => setSelV((prev: string[]) => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:66,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                           <video src={url} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
+                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
                         </button>
                       )
                     })}
@@ -539,7 +539,7 @@ export default function ApplyPage() {
                           return next
                         })} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+S.p : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                           <img src={url} alt={partLabel} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
+                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
                           <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.6)',fontSize:8,color:'#fff',textAlign:'center',padding:'1px 0'}}>{partLabel}</div>
                         </button>
                       )

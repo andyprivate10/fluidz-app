@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Clock, ThumbsUp, ThumbsDown, Users, Star, Share2, MessageCircle } from 'lucide-react'
+import { Clock, ThumbsUp, ThumbsDown, Users, Star, Share2, MessageCircle, Check, Copy } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
@@ -405,7 +405,7 @@ export default function SessionPage() {
                   const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
                   navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
                 }} style={{ marginTop: 4, padding: '3px 10px', borderRadius: 8, fontSize: 10, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx3 }}>
-                  {addressCopied ? '✓ Copié' : 'Copier adresse'}
+                  {addressCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:3}} />Copié</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />Copier adresse</>}
                 </button>
               </div>
             ) : session.approx_area ? (
@@ -461,7 +461,7 @@ export default function SessionPage() {
                       background: filled ? S.sagebg : S.p2,
                       border: '1px solid ' + (filled ? S.sagebd : S.pbd),
                     }}>
-                      {filled ? '✓' : `${Number(count) - have}×`} {role}
+                      {filled ? <Check size={11} strokeWidth={2.5} style={{display:'inline'}} /> : `${Number(count) - have}×`} {role}
                     </span>
                   )
                 })}
@@ -536,7 +536,7 @@ export default function SessionPage() {
                 {members.slice(0, 5).map(m => {
                   const name = memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'
                   return (
-                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: S.tx2, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <span style={{ color: S.sage, fontSize: 10 }}>✓</span>}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
+                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: S.tx2, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <Check size={10} strokeWidth={2.5} style={{ color: S.sage, display: 'inline', marginLeft: 2 }} />}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
                   )
                 })}
                 {members.length > 5 && <span style={{ fontSize: 12, color: S.tx2 }}>+{members.length - 5}</span>}
@@ -817,7 +817,7 @@ export default function SessionPage() {
             )}
             {myApp.status === 'accepted' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}>Accepté ✓</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />Accepté</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
@@ -834,7 +834,7 @@ export default function SessionPage() {
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}>Check-in confirmé ✓</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />Check-in confirmé</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
@@ -899,7 +899,7 @@ export default function SessionPage() {
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, '+S.bg+' 60%, transparent)', zIndex: 50 }}>
           {showPostulerSuccess ? (
             <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
-              Candidature envoyee ✓
+              Candidature envoyée
             </button>
           ) : session.max_capacity && (members.length + 1) >= session.max_capacity ? (
             <button disabled style={{ width: '100%', padding: 16, background: 'rgba(248,113,113,0.12)', border: '1px solid ' + 'rgba(248,113,113,0.25)', borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>

@@ -102,7 +102,7 @@ export default function OnboardingPage() {
 
   const progress = step === 1 ? 33 : step === 2 ? 66 : 100
   const completeness = [displayName.trim(), age, role, avatarUrl].filter(Boolean).length
-  const completenessLabel = completeness <= 1 ? 'Débutant' : completeness <= 2 ? 'En route' : completeness <= 3 ? 'Presque complet' : 'Complet ✓'
+  const completenessLabel = completeness <= 1 ? 'Débutant' : completeness <= 2 ? 'En route' : completeness <= 3 ? 'Presque complet' : 'Complet'
   const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? S.p : completeness <= 3 ? S.blue : S.sage
 
   return (
@@ -236,7 +236,7 @@ export default function OnboardingPage() {
                 opacity: saving || !displayName.trim() ? 0.6 : 1,
                 boxShadow: '0 4px 20px ' + S.pbd,
               }}>
-                {saving ? 'Sauvegarde...' : avatarUrl ? 'Terminer ✓' : 'Terminer sans photo'}
+                {saving ? 'Sauvegarde...' : avatarUrl ? 'Terminer' : 'Terminer sans photo'}
               </button>
             </div>
           </div>

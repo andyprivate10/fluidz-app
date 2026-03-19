@@ -7,7 +7,7 @@ import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Bell, BookOpen, Users, MapPin, Eye, Share2, Heart } from 'lucide-react'
+import { Bell, BookOpen, Users, MapPin, Eye, Share2, Heart, Check } from 'lucide-react'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 
 const PREP_OPTIONS = ['Actif','Inactif','Non']
@@ -539,7 +539,7 @@ export default function MePage() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (
                     <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? S.sagebg : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? S.sagebd : S.rule) }}>
-                      {c.done ? '✓' : '○'} {c.label}
+                      {c.done ? <Check size={11} strokeWidth={2.5} style={{display:'inline',color:S.sage}} /> : <span style={{opacity:0.3}}>○</span>} {c.label}
                     </span>
                   ))}
                 </div>

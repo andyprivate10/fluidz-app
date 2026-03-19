@@ -256,7 +256,7 @@ export default function AdminPage() {
             color: item.active ? S.sage : S.tx4,
             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, fontSize: 12, fontWeight: 700,
           }}>
-            {item.active ? '✓' : '○'}
+            {item.active ? '●' : '○'}
           </button>
 
           {/* Delete */}

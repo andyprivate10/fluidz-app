@@ -152,7 +152,7 @@ export default function GhostRecoverPage() {
         ) : (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ background: S.bg1, border: '1px solid ' + S.sage + '44', borderRadius: 20, padding: 24, textAlign: 'center' }}>
-              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 12 }}>Profil retrouvé ✓</div>
+              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 12 }}>Profil retrouvé</div>
               <div style={{ fontSize: 20, fontWeight: 800, color: S.tx, marginBottom: 4 }}>{ghost.display_name}</div>
               <div style={{ fontSize: 12, color: S.tx3 }}>
                 ⏳ {timeLeft > 0 ? `${timeLeft}h restantes` : 'Expire bientôt'}

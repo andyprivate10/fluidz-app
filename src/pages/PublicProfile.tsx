@@ -59,7 +59,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
 
   if (sent) return (
     <button onClick={() => nav('/dm/' + targetUserId)} style={{ marginTop: 8, width: '100%', padding: '12px 16px', borderRadius: 12, background: S.sagebg, border: '1px solid '+S.sagebd, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-      <span style={{ fontSize: 13, fontWeight: 600, color: S.sage }}>✓ Demande envoyée</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: S.sage }}>Demande envoyée</span>
       <span style={{ fontSize: 13, fontWeight: 600, color: S.blue }}>→ Ouvrir le DM</span>
     </button>
   )
@@ -394,7 +394,7 @@ export default function PublicProfile() {
             <div style={label}>Santé</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
               {(p.health?.prep_status || p.prep) === 'Actif' && (
-                <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '4px 12px', borderRadius: 99, background: S.sage + '22', border: '1px solid ' + S.sage + '44' }}>PrEP Actif ✓</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '4px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd }}>PrEP Actif</span>
               )}
               {p.health?.dernier_test && (
                 <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '4px 12px', borderRadius: 99, background: S.blue + '22', border: '1px solid ' + S.blue + '44' }}>

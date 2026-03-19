@@ -256,7 +256,7 @@ export default function GroupsPage() {
                             <div style={{ width:28, height:28, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff' }}>{c.display_name[0]?.toUpperCase()}</div>
                           )}
                           <span style={{ fontSize:13, fontWeight:600, color: on ? S.tx : S.tx3 }}>{c.display_name}</span>
-                          {on && <span style={{ marginLeft:'auto', fontSize:14, color:newColor }}>✓</span>}
+                          {on && <span style={{ marginLeft:'auto', fontSize:14, color:newColor }}>●</span>}
                         </button>
                       )
                     })}

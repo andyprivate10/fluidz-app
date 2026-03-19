@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ThumbsUp, ThumbsDown, Clock } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Clock, Check, Copy } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
@@ -132,7 +132,7 @@ export default function HostDashboard() {
     if (app && sess) {
       // Notification
       const title = status === 'accepted'
-        ? `Accepté pour "${sess.title}" ✓`
+        ? `Accepté pour "${sess.title}" `
         : `Non retenu pour "${sess.title}"`
       const body = status === 'accepted'
         ? "Tu peux maintenant accéder au DM et à l'adresse."
@@ -177,7 +177,7 @@ export default function HostDashboard() {
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
     setActionLoading(null)
     const name = app?.user_profiles?.display_name || 'Candidat'
-    showToast(status === 'accepted' ? name + ' accepté ✓' : name + ' refusé', status === 'accepted' ? 'success' : 'info')
+    showToast(status === 'accepted' ? name + ' accepté' : name + ' refusé', status === 'accepted' ? 'success' : 'info')
   }
 
   async function confirmCheckIn(appId: string) {
@@ -190,8 +190,8 @@ export default function HostDashboard() {
         user_id: app.applicant_id,
         session_id: id,
         type: 'check_in_confirmed',
-        message: `Check-in confirmé pour "${sess.title}" ✓`,
-        title: `Check-in confirmé pour "${sess.title}" ✓`,
+        message: `Check-in confirmé pour "${sess.title}" `,
+        title: `Check-in confirmé pour "${sess.title}" `,
         body: sess.exact_address ? '📍 ' + sess.exact_address + " — Tu peux maintenant partager le lien." : "Tu peux maintenant partager le lien d'invitation.",
         href: `/session/${id}`,
       })
@@ -315,7 +315,7 @@ export default function HostDashboard() {
   const totalAccepted = counts.accepted
 
   if (loading) return (
-    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
+    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80,maxWidth:480,margin:'0 auto'}}>
       <div style={{ width: 32, height: 32, border: "3px solid "+S.pbd, borderTopColor: S.p, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
     </div>
   )
@@ -325,7 +325,7 @@ export default function HostDashboard() {
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative' as const}}>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative' as const,maxWidth:480,margin:'0 auto'}}>
       <OrbLayer />
       <EventContextNav role="host" sessionTitle={sess?.title} />
       <div style={{padding:'12px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
@@ -417,7 +417,7 @@ export default function HostDashboard() {
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
               >
-                {messageCopied ? 'Copié ✓' : 'Copier le message'}
+                {messageCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />Copié</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />Copier le message</>}
               </button>
             </div>
             {/* Native share */}
@@ -469,7 +469,7 @@ export default function HostDashboard() {
                       background: filled ? S.sagebg : S.p2,
                       border: '1px solid '+(filled ? S.sagebd : S.pbd),
                     }}>
-                      {have}/{count} {role}{filled ? ' ✓' : ''}
+                      {have}/{count} {role}{filled ? <Check size={11} strokeWidth={2.5} style={{display:'inline',marginLeft:3}} /> : null}
                     </span>
                   )
                 })}
@@ -635,12 +635,12 @@ export default function HostDashboard() {
                       <>
                         <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:'rgba(251,191,36,0.12)',border:'1px solid '+'rgba(251,191,36,0.25)'}}>Arrivée à confirmer</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sagebg,cursor:'pointer'}}>
-                          {actionLoading===app.id ? '...' : 'Confirmer ✓'}
+                          {actionLoading===app.id ? '...' : <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />Confirmer</>}
                         </button>
                       </>
                     )}
                     {app.status === 'checked_in' && (
-                      <span style={{fontSize:12,color:S.sage,fontWeight:600}}>Arrivé ✓</span>
+                      <span style={{fontSize:12,color:S.sage,fontWeight:600,display:'inline-flex',alignItems:'center',gap:3}}><Check size={12} strokeWidth={2.5} />Arrivé</span>
                     )}
                     {app.status === 'accepted' && !app.checked_in && (
                       <span style={{fontSize:12,color:S.sage,fontWeight:600}}>Accepté — en route</span>
