@@ -267,9 +267,9 @@ export default function JoinPage() {
             </div>
           </div>
 
-          {/* CTAs */}
+          {/* CTAs — Fixed bottom bar */}
           {myAppStatus ? (
-            <div style={{textAlign:'center'}}>
+            <div style={{marginTop:16}}>
               <div style={{
                 padding:'14px 20px', borderRadius:14, marginBottom:10,
                 background: statusLabels[myAppStatus]?.color + '14',
@@ -286,50 +286,75 @@ export default function JoinPage() {
                 Voir la session
               </button>
             </div>
-          ) : !user ? (
-            <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <button onClick={() => navigate('/login?next=/join/' + code)} style={{
-                width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',
-                boxShadow:'0 4px 24px rgba(224,136,122,0.28)',
-              }}>
-                Postuler →
-              </button>
-              <button onClick={() => {
-                navigate('/ghost/setup?session_id=' + session.id + (code ? '&invite_code=' + code : ''))
-              }} style={{
-                width:'100%',padding:'14px',borderRadius:14,fontWeight:600,fontSize:14,
-                color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
-                display:'flex',alignItems:'center',justifyContent:'center',gap:8,
-              }}>
-                <Ghost size={16} /> Sans compte (24h)
-              </button>
-            </div>
-          ) : profileComplete ? (
-            <div style={{display:'flex',flexDirection:'column',gap:10}}>
-              <button onClick={quickApply} disabled={quickApplying} style={{
-                width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:quickApplying?'not-allowed':'pointer',
-                boxShadow:'0 4px 24px rgba(224,136,122,0.28)',opacity:quickApplying?0.7:1,
-              }}>
-                {quickApplying ? 'Envoi...' : 'Postuler →'}
-              </button>
-              <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
-                width:'100%',padding:'12px',borderRadius:14,fontWeight:600,fontSize:13,
-                color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
-              }}>
-                Personnaliser ma candidature
-              </button>
-            </div>
           ) : (
-            <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
-              width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-              color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',
-              boxShadow:'0 4px 24px rgba(224,136,122,0.28)',
+            <div style={{
+              position:'fixed', bottom:0, left:0, right:0, zIndex:50,
+              background:'rgba(5,4,10,0.92)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
+              borderTop:'0.5px solid '+S.rule,
+              padding:'16px 20px', paddingBottom:'calc(16px + env(safe-area-inset-bottom, 0px))',
+              maxWidth:420, margin:'0 auto',
             }}>
-              Postuler →
-            </button>
+              {!user ? (
+                <>
+                  <button onClick={() => navigate('/login?next=/join/' + code)} className="btn-shimmer" style={{
+                    width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
+                    color:'#fff',background:S.grad,border:'none',cursor:'pointer',
+                    boxShadow:'0 4px 24px '+S.pbd, position:'relative', overflow:'hidden',
+                  }}>
+                    Postuler
+                  </button>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 6px',fontFamily:"'Plus Jakarta Sans', sans-serif"}}>Tu choisis ce que tu partages</p>
+                  <div style={{display:'flex',alignItems:'center',gap:12,margin:'4px 0 0'}}>
+                    <div style={{flex:1,height:1,background:S.rule}} />
+                    <span style={{fontSize:10,color:S.tx3}}>Préfères-tu rester anonyme ?</span>
+                    <div style={{flex:1,height:1,background:S.rule}} />
+                  </div>
+                  <button onClick={() => {
+                    navigate('/ghost/setup?session_id=' + session.id + (code ? '&invite_code=' + code : ''))
+                  }} style={{
+                    width:'100%',marginTop:8,padding:'12px',borderRadius:14,fontWeight:600,fontSize:13,
+                    color:S.lav,border:'1px solid '+S.lavbd,background:S.lavbg,cursor:'pointer',
+                    display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                  }}>
+                    <Ghost size={14} /> Mode Ghost (24h)
+                  </button>
+                  <p style={{fontSize:9,color:S.tx4,textAlign:'center',margin:'8px 0 0'}}>Ton numéro ne sera jamais demandé.</p>
+                </>
+              ) : profileComplete ? (
+                <>
+                  <button onClick={quickApply} disabled={quickApplying} className="btn-shimmer" style={{
+                    width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
+                    color:'#fff',background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
+                    boxShadow:'0 4px 24px '+S.pbd,opacity:quickApplying?0.7:1,
+                    position:'relative', overflow:'hidden',
+                  }}>
+                    {quickApplying ? 'Envoi...' : 'Postuler'}
+                  </button>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 0'}}>Tu choisis ce que tu partages</p>
+                  <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
+                    width:'100%',marginTop:6,padding:'10px',borderRadius:12,fontWeight:600,fontSize:12,
+                    color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
+                  }}>
+                    Personnaliser ma candidature
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => navigate('/session/' + session.id + '/apply')} className="btn-shimmer" style={{
+                    width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
+                    color:'#fff',background:S.grad,border:'none',cursor:'pointer',
+                    boxShadow:'0 4px 24px '+S.pbd,
+                    position:'relative', overflow:'hidden',
+                  }}>
+                    Postuler
+                  </button>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 0'}}>Tu choisis ce que tu partages</p>
+                </>
+              )}
+            </div>
           )}
+          {/* Spacer for fixed CTA */}
+          {!myAppStatus && <div style={{height:180}} />}
         </div>
       )}
     </div>
