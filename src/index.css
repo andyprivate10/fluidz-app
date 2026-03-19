@@ -171,3 +171,9 @@ button:active:not(:disabled) { transform: scale(0.97); transition: transform 0.0
 }
 .input-v1::placeholder { color: var(--tx4); }
 .input-v1:focus { border-color: rgba(224,136,122,0.28); }
+
+/* ─── Skeleton pulse ─── */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
