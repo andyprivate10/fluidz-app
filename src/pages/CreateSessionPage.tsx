@@ -353,7 +353,7 @@ export default function CreateSessionPage() {
                   <span style={{fontSize:12,fontWeight:700,color:S.p}}>#{i+1}</span>
                   <input value={step.text} onChange={e=>{ const next=[...directions]; next[i]={...next[i],text:e.target.value}; setDirections(next) }} placeholder={'Ex: Rentre par le parking...'} style={{...inp,flex:1,fontSize:13}} />
                   {directions.length > 1 && (
-                    <button type="button" onClick={()=>setDirections(directions.filter((_,j)=>j!==i))} style={{padding:'6px 10px',borderRadius:8,fontSize:11,border:'1px solid '+S.red+'44',background:'transparent',color:S.red,cursor:'pointer'}}>×</button>
+                    <button type="button" onClick={()=>setDirections(directions.filter((_,j)=>j!==i))} style={{padding:'6px 10px',borderRadius:8,fontSize:11,border:'1px solid '+'rgba(248,113,113,0.25)',background:'transparent',color:S.red,cursor:'pointer'}}>×</button>
                   )}
                 </div>
                 {step.photo_url ? (

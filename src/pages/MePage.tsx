@@ -343,7 +343,7 @@ export default function MePage() {
         
       }}>
         {hasGuestToken && (
-          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p+'18', border:'1px solid '+S.p+'44', maxWidth:360, width:'100%' }}>
+          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p+'18', border:'1px solid '+S.pbd, maxWidth:360, width:'100%' }}>
             <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>Vous avez une candidature en attente — créer un compte pour la conserver.</p>
             <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>Connecte-toi avec ton email pour récupérer ta candidature.</p>
           </div>
@@ -651,7 +651,7 @@ export default function MePage() {
                       display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
                       width:'100%', aspectRatio:'1', borderRadius:14,
                       border: url ? `2px solid ${S.p}88` : `1px dashed ${S.pbd}`,
-                      background: url ? 'none' : S.p + '08',
+                      background: url ? 'none' : S.p3,
                       cursor: mediaUploading ? 'wait' : 'pointer',
                       overflow:'hidden', position:'relative',
                     }}>
@@ -698,11 +698,11 @@ export default function MePage() {
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosIntime.map((url) => (
                 <div key={url} style={{ position:'relative', width:80, height:80 }}>
-                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
+                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
                   <button onClick={() => removePhotoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
                 </div>
               ))}
-              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p3, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="image/*" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
                   for (const f of captured) await uploadMedia(f, 'intime', 'photo')
@@ -714,12 +714,12 @@ export default function MePage() {
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {videosIntime.map((url) => (
                 <div key={url} style={{ position:'relative', width:100, height:80 }}>
-                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
+                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
                   <button onClick={() => removeVideoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
                   <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>video</div>
                 </div>
               ))}
-              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p3, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="video/*" onChange={async (e) => {
                   const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
                   await uploadMedia(f, 'intime', 'video')
@@ -742,7 +742,7 @@ export default function MePage() {
 
           <Section title="Sante" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgo(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sage+'22', color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
+              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Test il y a {monthsAgo(dernierTest)} mois</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
