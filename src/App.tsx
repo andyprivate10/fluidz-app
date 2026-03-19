@@ -31,6 +31,7 @@ import ExplorePage from './pages/ExplorePage'
 import ChatsHubPage from './pages/ChatsHubPage'
 import DirectDMPage from './pages/DirectDMPage'
 import AddressesPage from './pages/AddressesPage'
+import AdminPage from './pages/AdminPage'
 import BottomNav from './components/BottomNav'
 
 const routes = [
@@ -61,6 +62,7 @@ const routes = [
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },
+  { path: '/admin', element: <AdminPage /> },
   { path: '/dev-loop', element: <DevLoopPage /> },
   { path: '/dev/test', element: <DevTestMenu /> },
   { path: '*', element: <NotFoundPage /> },

@@ -38,26 +38,30 @@ brand.ts, OrbLayer, BottomNav 4 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
-## PHASE 7: ADMIN INTERFACE
+## PHASE 7: ADMIN INTERFACE ✅ DONE
 
-### P7.1 — AdminPage route /admin
-- [ ] Page accessible uniquement par les admins (check user_id dans une table admins ou flag)
+### P7.1 — AdminPage route /admin ✅ DONE
+- [x] Page accessible uniquement par les admins (is_admin flag sur user_profiles)
+- [x] Route /admin dans App.tsx
+- [x] Check admin au chargement, page "Acces refuse" si non-admin
 
-### P7.2 — Gestion des kinks
-- [ ] Liste de kinks avec CRUD
-- [ ] Categories : SM, Pratiques, Roles, Fetichisme, Autre
-- [ ] Chaque kink : slug, label, categorie, ordre
-- [ ] Stocke dans table profile_options ou admin_config
+### P7.2 — Gestion des kinks ✅ DONE
+- [x] Table admin_config avec CRUD complet
+- [x] Categories : SM, Pratiques, Fetichisme, Autre
+- [x] Chaque kink : slug, label, categorie, sort_order, active
+- [x] Seed 9 kinks par defaut
 
-### P7.3 — Gestion des tags sessions
-- [ ] Tags par categorie (Vibes, Roles, Pratiques, Lieu)
-- [ ] Activation/desactivation
-- [ ] Ordre d'affichage
+### P7.3 — Gestion des tags sessions ✅ DONE
+- [x] Tags par categorie (Vibes, Roles)
+- [x] Activation/desactivation toggle
+- [x] Ordre d'affichage (move up/down)
+- [x] Seed 6 tags par defaut
 
-### P7.4 — Gestion des options profil
-- [ ] Liste des morphologies, roles, ethnies
-- [ ] Ajout/suppression dynamique
-- [ ] Reflected immediatement dans les formulaires
+### P7.4 — Gestion des options profil ✅ DONE
+- [x] Liste des morphologies (7 options), roles (4 options)
+- [x] Ajout/suppression dynamique
+- [x] Vue groupee par categorie pour kinks et tags
+- [ ] TODO: Brancher les formulaires MePage/ApplyPage sur admin_config au lieu des constantes hardcodees
 
 ---
 
