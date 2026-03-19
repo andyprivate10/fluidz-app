@@ -29,7 +29,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function CreateSessionPage() {
-  const { sessionTags } = useAdminConfig()
+  const { sessionTags, roles } = useAdminConfig()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
@@ -291,16 +291,16 @@ export default function CreateSessionPage() {
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Rôles recherchés (optionnel)</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-              {['Top', 'Bottom', 'Versa', 'Side'].map(role => {
-                const count = rolesWanted[role] || 0
+              {roles.map(r => {
+                const count = rolesWanted[r.label] || 0
                 return (
-                  <div key={role} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p2 : S.bg2,border:'1px solid '+(count > 0 ? S.pbd : S.rule)}}>
+                  <div key={r.label} style={{display:'flex',alignItems:'center',gap:6,padding:'6px 12px',borderRadius:12,background:count > 0 ? S.p2 : S.bg2,border:'1px solid '+(count > 0 ? S.pbd : S.rule)}}>
       <OrbLayer />
-                    <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p : S.tx3}}>{role}</span>
+                    <span style={{fontSize:13,fontWeight:600,color:count > 0 ? S.p : S.tx3}}>{r.label}</span>
                     <div style={{display:'flex',alignItems:'center',gap:4}}>
-                      <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[role]||0)>0) n[role]=(n[role]||0)-1; if(n[role]===0) delete n[role]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.rule,background:S.bg,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>
+                      <button onClick={()=>setRolesWanted(prev => {const n={...prev}; if((n[r.label]||0)>0) n[r.label]=(n[r.label]||0)-1; if(n[r.label]===0) delete n[r.label]; return n})} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.rule,background:S.bg,color:S.tx3,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>−</button>
                       <span style={{fontSize:14,fontWeight:700,color:S.tx,minWidth:16,textAlign:'center'}}>{count}</span>
-                      <button onClick={()=>setRolesWanted(prev => ({...prev,[role]:(prev[role]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.pbd,background:S.p2,color:S.p,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
+                      <button onClick={()=>setRolesWanted(prev => ({...prev,[r.label]:(prev[r.label]||0)+1}))} style={{width:22,height:22,borderRadius:6,border:'1px solid '+S.pbd,background:S.p2,color:S.p,cursor:'pointer',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',padding:0}}>+</button>
                     </div>
                   </div>
                 )

@@ -66,6 +66,7 @@ export default function ApplyPage() {
   const [dataLoading, setDataLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [rateLimitedUntil, setRateLimitedUntil] = useState<Date | null>(null)
+  const [capacityFull, setCapacityFull] = useState(false)
   const [guestMode, setGuestMode] = useState(false)
   const [guestDisplayName, setGuestDisplayName] = useState('')
   const [ghostSessionId, setGhostSessionId] = useState<string | null>(null)
@@ -88,8 +89,8 @@ export default function ApplyPage() {
         setDataLoading(true)
         Promise.all([
           supabase.from('ghost_sessions').select('display_name, profile_json').eq('id', ghostIdParam).maybeSingle(),
-          supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
-        ]).then(([{ data: ghost }, { data: sess }]) => {
+          supabase.from('sessions').select('title,approx_area,max_capacity').eq('id', id).maybeSingle(),
+        ]).then(async ([{ data: ghost }, { data: sess }]) => {
           if (ghost) {
             setGuestDisplayName(ghost.display_name || '')
             const pj = ghost.profile_json || {}
@@ -110,6 +111,10 @@ export default function ApplyPage() {
             setEnabled(['basics', 'role', 'occasion'])
           }
           setSession(sess ?? null)
+          if (sess?.max_capacity) {
+            const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
+            if ((count ?? 0) >= sess.max_capacity) setCapacityFull(true)
+          }
           setDataLoading(false)
         })
       } else {
@@ -120,8 +125,12 @@ export default function ApplyPage() {
             setGuestMode(true)
             setEnabled(['basics', 'role', 'occasion'])
             setDataLoading(true)
-            supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle().then(({ data: sess }) => {
+            supabase.from('sessions').select('title,approx_area,max_capacity').eq('id', id).maybeSingle().then(async ({ data: sess }) => {
               setSession(sess ?? null)
+              if (sess?.max_capacity) {
+                const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
+                if ((count ?? 0) >= sess.max_capacity) setCapacityFull(true)
+              }
               setDataLoading(false)
             })
           } else setDataLoading(false)
@@ -137,7 +146,7 @@ export default function ApplyPage() {
     try {
       const [{ data: prof }, { data: sess }, { data: lastApp }, { data: existingApp }] = await Promise.all([
         supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
-        supabase.from('sessions').select('title,approx_area').eq('id', id).maybeSingle(),
+        supabase.from('sessions').select('title,approx_area,max_capacity').eq('id', id).maybeSingle(),
         supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
         supabase.from('applications').select('status').eq('applicant_id', uid).eq('session_id', id).maybeSingle(),
       ])
@@ -177,6 +186,10 @@ export default function ApplyPage() {
         setSelectedVideosAdulte(vadulte)
       }
       if (sess) setSession(sess)
+      if (sess?.max_capacity) {
+        const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
+        if ((count ?? 0) >= sess.max_capacity) setCapacityFull(true)
+      }
       const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
       if (lastRow?.created_at) {
         const created = new Date(lastRow.created_at)
@@ -309,6 +322,13 @@ export default function ApplyPage() {
         <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>Ma candidature</h1>
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.approx_area}</p>}
       </div>
+
+      {capacityFull && (
+        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.red+'18',border:'1px solid '+S.red+'44'}}>
+          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Session complète</p>
+          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Le nombre max de participants a été atteint.</p>
+        </div>
+      )}
 
       {(profile || guestMode) && (
         <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.rule}}>
@@ -564,8 +584,8 @@ export default function ApplyPage() {
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
-            Continuer →
+          <button onClick={() => setStep('note')} disabled={capacityFull || isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:capacityFull||isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:capacityFull||isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
+            {capacityFull ? 'Session complète' : 'Continuer →'}
           </button>
         </div>
       )}

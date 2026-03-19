@@ -9,7 +9,7 @@ import { Plus, Clock, CheckCircle2, XCircle, Radio } from 'lucide-react'
 const C = colors
 const R = radius
 
-type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[] }
+type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string }
 type AppSession = { session_id: string; status: string; title: string; approx_area: string }
 
 const statusMap: Record<string, { text: string; color: string; Icon: typeof Clock }> = {
@@ -29,6 +29,29 @@ function timeAgo(dateStr: string): string {
   const days = Math.floor(hours / 24)
   if (days < 7) return days + 'j'
   return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+}
+
+function sessionTiming(sess: Session): string {
+  const now = Date.now()
+  if (sess.starts_at) {
+    const startMs = new Date(sess.starts_at).getTime()
+    if (startMs > now) {
+      const mins = Math.floor((startMs - now) / 60000)
+      if (mins < 60) return 'dans ' + mins + 'min'
+      const h = Math.floor(mins / 60)
+      return 'dans ' + h + 'h'
+    }
+  }
+  if (sess.ends_at) {
+    const endMs = new Date(sess.ends_at).getTime()
+    const remMs = endMs - now
+    if (remMs <= 0) return 'Terminé'
+    const remMins = Math.floor(remMs / 60000)
+    if (remMins < 60) return remMins + 'min restant'
+    const h = Math.floor(remMins / 60)
+    return h + 'h restant'
+  }
+  return timeAgo(sess.created_at)
 }
 
 export default function SessionsPage() {
@@ -122,7 +145,7 @@ export default function SessionsPage() {
                       ))}
                     </div>
                   )}
-                  <p style={{ ...typeStyle('meta'), color: C.tx3, margin: '8px 0 0' }}>{timeAgo(sess.created_at)}</p>
+                  <p style={{ ...typeStyle('meta'), color: C.tx3, margin: '8px 0 0' }}>{sessionTiming(sess)}</p>
                 </div>
               )
             })}
