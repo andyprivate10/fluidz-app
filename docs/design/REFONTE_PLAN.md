@@ -95,9 +95,16 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
-## PHASE 10: DIDACTICIEL / ONBOARDING (app finalisee)
-### P10.1 — Onboarding wizard swipable
-### P10.2 — Progressive profile completion
+## PHASE 10: DIDACTICIEL / ONBOARDING ✅ DONE
+### P10.1 — Onboarding wizard swipable ✅ DONE
+- [x] 3 etapes : basics → role/morpho → photo
+- [x] Swipe gauche/droite entre etapes (touch gesture 60px threshold)
+- [x] Roles et morphologies depuis admin_config (useAdminConfig hook)
+- [x] Progress bar + completeness label
+
+### P10.2 — Progressive profile completion ✅ DONE
+- [x] Completeness indicator (Debutant → En route → Presque complet → Complet)
+- [x] Skip optionnel sur etape 2
 
 ---
 

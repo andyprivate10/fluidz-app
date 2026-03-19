@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
@@ -6,11 +6,9 @@ import { compressImage } from '../lib/media'
 import {User as UserIcon, Camera, Sparkles, ChevronRight, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 
 const S = colors
-
-const ROLES = ['Top', 'Bottom', 'Versa', 'Side']
-const MORPHOS = ['Mince', 'Sportif', 'Athlétique', 'Moyen', 'Costaud', 'Musclé']
 
 const inp: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
@@ -19,6 +17,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function OnboardingPage() {
+  const { roles: roleOptions, morphologies: morphoOptions } = useAdminConfig()
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
   const [step, setStep] = useState(1) // 1: basics, 2: role, 3: photo
@@ -91,13 +90,23 @@ export default function OnboardingPage() {
     navigate('/')
   }
 
+  // Swipe gesture
+  const touchStartX = useRef(0)
+  function onTouchStart(e: React.TouchEvent) { touchStartX.current = e.touches[0].clientX }
+  function onTouchEnd(e: React.TouchEvent) {
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(dx) < 60) return
+    if (dx < 0 && step < 3) setStep((step + 1) as 1 | 2 | 3) // swipe left → next
+    if (dx > 0 && step > 1) setStep((step - 1) as 1 | 2 | 3) // swipe right → prev
+  }
+
   const progress = step === 1 ? 33 : step === 2 ? 66 : 100
   const completeness = [displayName.trim(), age, role, avatarUrl].filter(Boolean).length
   const completenessLabel = completeness <= 1 ? 'Débutant' : completeness <= 2 ? 'En route' : completeness <= 3 ? 'Presque complet' : 'Complet ✓'
   const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? S.p : completeness <= 3 ? S.blue : S.sage
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
+    <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', padding: '0 0 40px' }}>
       <OrbLayer />
 
       {/* Progress bar */}
@@ -155,13 +164,13 @@ export default function OnboardingPage() {
           <div>
             <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>RÔLE</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {ROLES.map(r => (
-                <button key={r} onClick={() => setRole(role === r ? '' : r)} style={{
+              {roleOptions.map(r => (
+                <button key={r.label} onClick={() => setRole(role === r.label ? '' : r.label)} style={{
                   padding: '10px 20px', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer',
-                  border: role === r ? 'none' : '1px solid ' + S.rule,
-                  background: role === r ? S.grad : S.bg2,
-                  color: role === r ? '#fff' : S.tx3,
-                }}>{r}</button>
+                  border: role === r.label ? 'none' : '1px solid ' + S.rule,
+                  background: role === r.label ? S.grad : S.bg2,
+                  color: role === r.label ? '#fff' : S.tx3,
+                }}>{r.label}</button>
               ))}
             </div>
           </div>
@@ -169,13 +178,13 @@ export default function OnboardingPage() {
           <div>
             <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>MORPHOLOGIE</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {MORPHOS.map(m => (
-                <button key={m} onClick={() => setMorpho(morpho === m ? '' : m)} style={{
+              {morphoOptions.map(m => (
+                <button key={m.label} onClick={() => setMorpho(morpho === m.label ? '' : m.label)} style={{
                   padding: '8px 16px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  border: morpho === m ? 'none' : '1px solid ' + S.rule,
-                  background: morpho === m ? S.p2 : S.bg2,
-                  color: morpho === m ? S.p : S.tx3,
-                }}>{m}</button>
+                  border: morpho === m.label ? 'none' : '1px solid ' + S.rule,
+                  background: morpho === m.label ? S.p2 : S.bg2,
+                  color: morpho === m.label ? S.p : S.tx3,
+                }}>{m.label}</button>
               ))}
             </div>
           </div>
