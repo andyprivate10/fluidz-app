@@ -289,53 +289,115 @@ export default function SessionPage() {
         </div>
       )}
       <EventContextNav role={eventRole} sessionTitle={session.title} />
-      <div style={{ padding: '12px 24px 16px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <h1 style={{ margin: 0, fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, flex: 1 }}>{session.title}</h1>
+
+      {/* ─── HERO ─── */}
+      <div style={{ position: 'relative', minHeight: 220, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>
+        {/* Hero gradient background */}
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, ${S.bg} 0%, ${S.bg1} 60%, ${S.bg} 100%)` }} />
+        {/* Orbs - more vivid in hero */}
+        <div style={{ position: 'absolute', width: 200, height: 200, top: -60, right: -40, borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(224,136,122,0.12)', animation: 'orbDrift1 8s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', width: 160, height: 160, bottom: -40, left: -30, borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(144,128,186,0.08)', animation: 'orbDrift2 11s ease-in-out infinite' }} />
+        {/* Fade bottom */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, background: `linear-gradient(to top, ${S.bg}, transparent)` }} />
+
+        {/* Hero content */}
+        <div style={{ position: 'relative', zIndex: 1, padding: '16px 24px 20px' }}>
+          {/* Title + badges row */}
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, lineHeight: 1.1 }}>{session.title}</h1>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10, alignItems: 'center' }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor + '14', border: '1px solid ' + statusColor + '33', padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{statusLabel}</span>
+            {members.length > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd, padding: '3px 10px', borderRadius: 50 }}><Users size={10} strokeWidth={1.5} style={{ marginRight: 3, display: 'inline' }} />{members.length + 1}</span>}
+            {elapsed && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, background: S.rule, padding: '3px 10px', borderRadius: 50 }}><Clock size={9} strokeWidth={1.5} style={{ marginRight: 2 }} />{elapsed}</span>}
+          </div>
+
+          {/* Tags */}
+          {session.tags && session.tags.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 10 }}>
+              {session.tags.map(tag => (
+                <span key={tag} style={{ fontSize: 11, fontWeight: 600, color: S.p, padding: '3px 10px', borderRadius: 99, background: S.p2, border: '1px solid ' + S.pbd }}>{tag}</span>
+              ))}
+            </div>
+          )}
+
+          {/* Member avatars — story-style */}
+          {members.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: 14, paddingLeft: 4 }}>
+              {members.slice(0, 6).map((m, i) => {
+                const avatar = memberAvatars[m.applicant_id]
+                const name = memberNames[m.applicant_id] || '?'
+                const isCheckedIn = m.status === 'checked_in'
+                return (
+                  <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/profile/' + m.applicant_id)}>
+                    <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, #E0887A, #9080BA)' : S.rule2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {avatar ? (
+                        <img src={avatar} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg }} />
+                      ) : (
+                        <div style={{ width: 34, height: 34, borderRadius: '50%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: S.tx2, border: '2px solid ' + S.bg }}>{name[0].toUpperCase()}</div>
+                      )}
+                    </div>
+                    {/* Online dot */}
+                    {isCheckedIn && <div style={{ position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid ' + S.bg }} />}
+                  </div>
+                )
+              })}
+              {members.length > 6 && (
+                <div style={{ marginLeft: -8, width: 38, height: 38, borderRadius: '50%', background: S.bg2, border: '2px solid ' + S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: S.tx3 }}>+{members.length - 6}</div>
+              )}
+            </div>
+          )}
+
+          {/* Host row */}
+          {!isHost && hostProfile && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, cursor: 'pointer' }} onClick={() => navigate('/profile/' + session.host_id)}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', padding: 1.5, background: 'linear-gradient(135deg, #E0887A, #9080BA)' }}>
+                {hostProfile.avatar ? (
+                  <img src={hostProfile.avatar} alt="" style={{ width: 25, height: 25, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid ' + S.bg }} />
+                ) : (
+                  <div style={{ width: 25, height: 25, borderRadius: '50%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: S.p, fontWeight: 700, border: '1.5px solid ' + S.bg }}>{hostProfile.name[0]}</div>
+                )}
+              </div>
+              <div>
+                <span style={{ fontSize: 12, color: S.tx, fontWeight: 600 }}>{hostProfile.name}</span>
+                <span style={{ fontSize: 10, color: S.tx3, marginLeft: 6 }}>Host</span>
+              </div>
+              {isHost && <span style={{ fontSize: 10, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, padding: '2px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Host</span>}
+            </div>
+          )}
+          {isHost && <div style={{ marginTop: 8 }}><span style={{ fontSize: 10, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, padding: '2px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Host</span></div>}
+
+          {/* Location */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10 }}>
+            {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={S.sage} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{session.exact_address}</span>
+                </div>
+                <button onClick={() => {
+                  const dirs = (session.lineup_json?.directions || []).map((d, i) => {
+                    const txt = typeof d === 'string' ? d : d.text
+                    return (i+1) + '. ' + txt
+                  }).join('\n')
+                  const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
+                  navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
+                }} style={{ marginTop: 4, padding: '3px 10px', borderRadius: 8, fontSize: 10, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx3 }}>
+                  {addressCopied ? '✓ Copié' : 'Copier adresse'}
+                </button>
+              </div>
+            ) : session.approx_area ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span style={{ fontSize: 12, color: S.tx2 }}>{session.approx_area}</span>
+                {!isHost && (
+                  <span style={{ fontSize: 10, color: S.tx3, display: 'flex', alignItems: 'center', gap: 3, marginLeft: 4 }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Après acceptation
+                  </span>
+                )}
+              </div>
+            ) : null}
+          </div>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8, alignItems: 'center' }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, background: statusColor + '14', border: '1px solid ' + statusColor + '33', padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}>{statusLabel}</span>
-          {members.length > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd, padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}><Users size={11} strokeWidth={1.5} style={{marginRight:3, display:'inline'}} /> {members.length + 1}</span>}
-          {elapsed && session.status === 'open' && <span style={{ fontSize: 11, fontWeight: 600, color: S.tx3, background: S.rule, padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
-        </div>
-        {session.tags && session.tags.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-            {session.tags.map(tag => (
-              <span key={tag} style={{ fontSize: 12, fontWeight: 600, color: S.p, padding: '4px 10px', borderRadius: 99, background: S.p2, border: '1px solid '+S.pbd }}>{tag}</span>
-            ))}
-          </div>
-        )}
-        {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
-          <div style={{ marginTop: 6 }}>
-            <div style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{session.exact_address}</div>
-            <button onClick={() => {
-              const dirs = (session.lineup_json?.directions || []).map((d, i) => {
-                const txt = typeof d === 'string' ? d : d.text
-                return (i+1) + '. ' + txt
-              }).join('\n')
-              const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
-              navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
-            }} style={{ marginTop: 6, padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx2 }}>
-              {addressCopied ? '✓ Copié' : 'Copier adresse + directions'}
-            </button>
-          </div>
-        ) : session.approx_area ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-            <span style={{ fontSize: 13, color: S.tx2 }}>Autour de {session.approx_area}</span>
-            {!isHost && <span style={{ fontSize: 11, color: S.tx3 }}>Adresse révélée après acceptation</span>}
-          </div>
-        ) : null}
-        {isHost && <div style={{ fontSize: 12, color: S.p, marginTop: 4, fontWeight: 600 }}>Tu es le host</div>}
-        {!isHost && hostProfile && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }} onClick={() => navigate('/profile/' + session.host_id)}>
-            {hostProfile.avatar ? (
-              <img src={hostProfile.avatar} alt="" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule }} />
-            ) : (
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: S.p2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: S.p, fontWeight: 700 }}>{hostProfile.name[0]}</div>
-            )}
-            <span style={{ fontSize: 12, color: S.tx2, fontWeight: 600, cursor: 'pointer' }}>Host : {hostProfile.name}</span>
-          </div>
-        )}
       </div>
 
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
