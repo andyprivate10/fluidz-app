@@ -50,19 +50,38 @@ export default function HostDashboard() {
     return () => { supabase.removeChannel(channel) }
   }, [id])
 
+  const [remaining, setRemaining] = useState('')
+
   // Session timer
   useEffect(() => {
-    if (!sess?.created_at || sess.status === 'ended') return
+    if (sess?.status === 'ended') return
+    const startRef = sess?.starts_at || sess?.created_at
+    if (!startRef) return
     const update = () => {
-      const ms = Date.now() - new Date(sess.created_at).getTime()
-      const m = Math.floor(ms / 60000)
-      if (m < 60) setElapsed(m + 'min')
-      else setElapsed(Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0'))
+      const now = Date.now()
+      const startMs = new Date(startRef).getTime()
+      const elMs = now - startMs
+      if (elMs >= 0) {
+        const m = Math.floor(elMs / 60000)
+        if (m < 60) setElapsed(m + 'min')
+        else setElapsed(Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0'))
+      } else {
+        const untilStart = Math.floor(-elMs / 60000)
+        if (untilStart < 60) setElapsed('dans ' + untilStart + 'min')
+        else setElapsed('dans ' + Math.floor(untilStart / 60) + 'h')
+      }
+      if (sess?.ends_at) {
+        const remMs = new Date(sess.ends_at).getTime() - now
+        if (remMs <= 0) { setRemaining('terminé'); return }
+        const remMins = Math.floor(remMs / 60000)
+        if (remMins < 60) setRemaining(remMins + 'min')
+        else { const h = Math.floor(remMins / 60); const rm = remMins % 60; setRemaining(h + 'h' + (rm > 0 ? String(rm).padStart(2, '0') : '')) }
+      }
     }
     update()
     const iv = setInterval(update, 60000)
     return () => clearInterval(iv)
-  }, [sess?.created_at, sess?.status])
+  }, [sess?.starts_at, sess?.created_at, sess?.ends_at, sess?.status])
 
   async function load(currentUser?: { id: string }) {
     setLoading(true)
@@ -321,6 +340,7 @@ export default function HostDashboard() {
           </div>
           <div style={{display:'flex',flexDirection:'column' as const,alignItems:'flex-end',gap:6}}>
             {elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
+            {remaining && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:remaining==='terminé'?S.red:S.p,background:remaining==='terminé'?S.red+'22':S.p2,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>{remaining==='terminé'?'Terminé':remaining+' restant'}</span>}
             {totalAccepted > 0 && <span style={{fontSize:11,fontWeight:700,color:S.sage,background:S.sagebg,padding:'3px 10px',borderRadius:50}}>{arrivedCount}/{totalAccepted}</span>}
             {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?S.red+'14':S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?S.red+'33':S.rule)}}>{total}/{sess.max_capacity}{full?' Complet':''}</span> })()}
           </div>

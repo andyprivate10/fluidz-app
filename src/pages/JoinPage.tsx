@@ -297,6 +297,24 @@ export default function JoinPage() {
               <button disabled style={{ width:'100%', padding:'16px', borderRadius:16, fontWeight:700, fontSize:16, color:S.red, background:S.red+'22', border:'1px solid '+S.red+'44' }}>
                 Session complète
               </button>
+              {!user && (
+                <>
+                  <div style={{display:'flex',alignItems:'center',gap:12,margin:'12px 0 0'}}>
+                    <div style={{flex:1,height:1,background:S.rule}} />
+                    <span style={{fontSize:10,color:S.tx3}}>Préfères-tu rester anonyme ?</span>
+                    <div style={{flex:1,height:1,background:S.rule}} />
+                  </div>
+                  <button onClick={() => {
+                    navigate('/ghost/setup?session_id=' + session.id + (code ? '&invite_code=' + code : ''))
+                  }} style={{
+                    width:'100%',marginTop:8,padding:'12px',borderRadius:14,fontWeight:600,fontSize:13,
+                    color:S.lav,border:'1px solid '+S.lavbd,background:S.lavbg,cursor:'pointer',
+                    display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                  }}>
+                    <Ghost size={14} /> Mode Ghost (24h)
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <div style={{
