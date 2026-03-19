@@ -74,7 +74,7 @@ export default function MePage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
-  const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
+  const [activeTab, setActiveTab] = useState<'auth'|'public'|'adult'|'health'>('auth')
   const [locationVisible, setLocationVisible] = useState(false)
   const [profileViews, setProfileViews] = useState(0)
   const [contactRequests, setContactRequests] = useState(0)
@@ -392,17 +392,17 @@ export default function MePage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', padding:'12px 20px 0', gap:8 }}>
-        {(['auth','profil'] as const).map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} style={{
-            flex:1, padding:'10px', borderRadius:12, fontSize:13,
+      <div style={{ display:'flex', padding:'12px 20px 0', gap:6 }}>
+        {([['auth','Compte'],['public','Public'],['adult','Adulte'],['health','Santé']] as const).map(([id,label]) => (
+          <button key={id} onClick={() => setActiveTab(id as any)} style={{
+            flex:1, padding:'9px 4px', borderRadius:12, fontSize:12,
             fontWeight:600, cursor:'pointer',
-            border: `1px solid ${activeTab===tab ? S.pbd : S.rule}`,
-            background: activeTab===tab ? S.p2 : S.bg2,
-            color: activeTab===tab ? S.p : S.tx3,
+            border: `1px solid ${activeTab===id ? S.pbd : S.rule}`,
+            background: activeTab===id ? S.p2 : S.bg2,
+            color: activeTab===id ? S.p : S.tx3,
             transition:'all 0.2s',
           }}>
-            {tab === 'auth' ? 'Compte' : 'Profil'}
+            {label}
           </button>
         ))}
       </div>
@@ -459,18 +459,18 @@ export default function MePage() {
       )}
 
       {/* ── Profil ── */}
-      {activeTab === 'profil' && (
+      {(activeTab === 'public' || activeTab === 'adult' || activeTab === 'health') && (
         <div style={{ padding:'16px 20px' }}>
 
-          {/* Vibe Score */}
-          {user && (
+          {/* Vibe Score — public tab only */}
+          {activeTab === 'public' && user && (
             <div style={{ marginBottom: 16 }}>
               <VibeScoreCard userId={user.id} />
             </div>
           )}
 
           {/* Preview button */}
-          {user && (
+          {activeTab === 'public' && user && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.pbd, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                 <Eye size={13} strokeWidth={1.5} style={{marginRight:3}} /> Voir mon profil
@@ -489,14 +489,14 @@ export default function MePage() {
           )}
 
           {/* Profile views */}
-          {profileViews > 0 && (
+          {activeTab === 'public' && profileViews > 0 && (
             <div style={{ marginBottom: 12, padding: '10px 14px', background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: S.tx2 }}><Eye size={12} strokeWidth={1.5} style={{marginRight:3}} /> Vu par <strong style={{ color: S.tx }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
           )}
 
           {/* Contact requests */}
-          {contactRequests > 0 && (
+          {activeTab === 'public' && contactRequests > 0 && (
             <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: S.p2, border: '1px solid ' + S.pbd, borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: S.p, fontWeight: 600, display:'flex', alignItems:'center', gap:4 }}><Heart size={13} strokeWidth={1.5} /> {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
               <span style={{ fontSize: 11, color: S.tx2 }}>Voir →</span>
@@ -504,7 +504,7 @@ export default function MePage() {
           )}
 
           {/* Profile completeness */}
-          {(() => {
+          {activeTab === 'public' && (() => {
             const checks = [
               { label: 'Pseudo', done: !!displayName && displayName !== 'Anonymous' },
               { label: 'Photo', done: !!avatarUrl },
@@ -536,7 +536,7 @@ export default function MePage() {
             )
           })()}
 
-          <Section title="Photos profil">
+          {activeTab === 'public' && <Section title="Photos profil">
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>Visage, corps. Visible par défaut.</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosProfil.map((url) => (
@@ -561,9 +561,9 @@ export default function MePage() {
               </label>
             </div>
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosProfil.length} photo{photosProfil.length !== 1 ? 's' : ''}</p>
-          </Section>
+          </Section>}
 
-          <Section title="Photos & vidéos adultes">
+          {activeTab === 'adult' && <Section title="Photos & vidéos adultes">
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>NSFW. Partagé uniquement si le candidat active le bloc "Adulte".</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosIntime.map((url) => (
@@ -600,9 +600,9 @@ export default function MePage() {
             </div>
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosIntime.length} photo{photosIntime.length !== 1 ? 's' : ''} · {videosIntime.length} vidéo{videosIntime.length !== 1 ? 's' : ''}</p>
             {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>Upload en cours...</p>}
-          </Section>
+          </Section>}
 
-          <Section title="Profil">
+          {activeTab === 'public' && <Section title="Profil">
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
@@ -646,17 +646,17 @@ export default function MePage() {
                 </div>
               </div>
             </div>
-          </Section>
+          </Section>}
 
-          <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''} sélectionnée${kinks.length > 1 ? 's' : ''}` : undefined}>
+          {activeTab === 'adult' && <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''} sélectionnée${kinks.length > 1 ? 's' : ''}` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {KINKS_LIST.map(k => (
                 <Chip key={k} label={k} active={kinks.includes(k)} onClick={() => toggleKink(k)} />
               ))}
             </div>
-          </Section>
+          </Section>}
 
-          <Section title="Santé" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Testé il y a ${monthsAgo(dernierTest)} mois` : undefined}>
+          {activeTab === 'health' && <Section title="Santé" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Testé il y a ${monthsAgo(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sage+'22', color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Testé il y a {monthsAgo(dernierTest)} mois</span>}
@@ -674,9 +674,9 @@ export default function MePage() {
               <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Statut séro (optionnel)</label>
               <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder="Optionnel" style={inputStyle} />
             </div>
-          </Section>
+          </Section>}
 
-          <Section title="Limites">
+          {activeTab === 'adult' && <Section title="Limites">
             <textarea
               value={limits} onChange={e => setLimits(e.target.value)}
               placeholder="Hard limits, no-go..." rows={3}
@@ -685,7 +685,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.red, marginTop:6, opacity:0.7 }}>
               Visible par le host et les membres votants
             </p>
-          </Section>
+          </Section>}
 
           {/* Auto-save status */}
           <div style={{
