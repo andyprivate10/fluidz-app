@@ -599,7 +599,7 @@ export default function HostDashboard() {
                     })()}
                     <div style={{display:'flex',gap:8}}>
                       <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
-                        ✕ Refuser
+                        Refuser
                       </button>
                       <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} className="btn-shimmer" style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
                         {actionLoading===app.id ? '...' : 'Accepter'}
