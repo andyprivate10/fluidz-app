@@ -1,7 +1,7 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { colors } from '../brand'
 
-const C = colors
+const S = colors
 
 type Role = 'candidate' | 'member' | 'host'
 
@@ -51,12 +51,12 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
         cursor: 'pointer',
       }} onClick={() => navigate(backPath)}>
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"
-          stroke={C.p} strokeWidth="2" strokeLinecap="round">
+          stroke={S.p} strokeWidth="2" strokeLinecap="round">
           <polyline points="9 2 4 7 9 12"/>
         </svg>
-        <span style={{ fontSize: 12, fontWeight: 600, color: C.p }}>{backLabel}</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color: S.p }}>{backLabel}</span>
         {sessionTitle && (
-          <span style={{ fontSize: 12, fontWeight: 500, color: C.tx3, marginLeft: 4 }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: S.tx3, marginLeft: 4 }}>
             · {sessionTitle}
           </span>
         )}
@@ -65,7 +65,7 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
       {/* Hub tabs */}
       <div style={{
         display: 'flex', gap: 0, padding: '0 16px 10px',
-        borderBottom: `0.5px solid ${C.rule}`,
+        borderBottom: `0.5px solid ${S.rule}`,
         background: 'rgba(13,12,22,0.92)',
         backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
       }}>
@@ -79,7 +79,7 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
                 flex: 1, padding: '8px 4px', background: 'none', border: 'none',
                 cursor: 'pointer', position: 'relative',
                 fontSize: 12, fontWeight: isActive ? 700 : 500,
-                color: isActive ? C.p : C.tx3,
+                color: isActive ? S.p : S.tx3,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
                 transition: 'color 0.2s',
               }}
@@ -88,7 +88,7 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
               {isActive && (
                 <div style={{
                   position: 'absolute', bottom: -1, left: '20%', right: '20%',
-                  height: 2, background: C.p, borderRadius: 2,
+                  height: 2, background: S.p, borderRadius: 2,
                 }} />
               )}
             </button>

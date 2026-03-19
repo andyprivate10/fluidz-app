@@ -9,6 +9,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Bell, BookOpen, Users, MapPin, Eye, Share2, Heart, Check } from 'lucide-react'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { monthsAgoCount } from '../lib/timing'
 
 const PREP_OPTIONS = ['Actif','Inactif','Non']
 
@@ -22,14 +23,6 @@ const BODY_PARTS = [
 ] as const
 
 const S = colors
-
-function monthsAgo(isoDate: string): number | null {
-  if (!isoDate) return null
-  const d = new Date(isoDate)
-  if (isNaN(d.getTime())) return null
-  const now = new Date()
-  return Math.max(0, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()))
-}
 
 const inputStyle: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
@@ -740,10 +733,10 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Sante" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgo(dernierTest)} mois` : undefined}>
+          <Section title="Sante" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgoCount(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
-              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Test il y a {monthsAgo(dernierTest)} mois</span>}
+              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sage+'22', color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
+              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               {PREP_OPTIONS.map(p => (

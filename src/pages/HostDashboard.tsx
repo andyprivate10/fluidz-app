@@ -7,6 +7,9 @@ import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
+import { formatElapsed, formatRemaining } from '../lib/timing'
+import { useCopyFeedback } from '../hooks/useCopyFeedback'
+import { SYSTEM_SENDER } from '../lib/constants'
 
 const S = colors
 
@@ -20,10 +23,10 @@ export default function HostDashboard() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [actionLoading, setActionLoading] = useState<string|null>(null)
-  const [linkCopied, setLinkCopied] = useState(false)
+  const { copied: linkCopied, copy: copyLink } = useCopyFeedback()
   const [elapsed, setElapsed] = useState('')
-  const [messageCopied, setMessageCopied] = useState(false)
-  const [grinderCopied, setGrinderCopied] = useState(false)
+  const { copied: messageCopied, copy: copyMessageText } = useCopyFeedback()
+  const { copied: grinderCopied, copy: copyGrindr } = useCopyFeedback()
   const [broadcastText, setBroadcastText] = useState('')
   const [broadcastSending, setBroadcastSending] = useState(false)
   const [hostDisplayName, setHostDisplayName] = useState<string>('')
@@ -58,25 +61,8 @@ export default function HostDashboard() {
     const startRef = sess?.starts_at || sess?.created_at
     if (!startRef) return
     const update = () => {
-      const now = Date.now()
-      const startMs = new Date(startRef).getTime()
-      const elMs = now - startMs
-      if (elMs >= 0) {
-        const m = Math.floor(elMs / 60000)
-        if (m < 60) setElapsed(m + 'min')
-        else setElapsed(Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0'))
-      } else {
-        const untilStart = Math.floor(-elMs / 60000)
-        if (untilStart < 60) setElapsed('dans ' + untilStart + 'min')
-        else setElapsed('dans ' + Math.floor(untilStart / 60) + 'h')
-      }
-      if (sess?.ends_at) {
-        const remMs = new Date(sess.ends_at).getTime() - now
-        if (remMs <= 0) { setRemaining('terminé'); return }
-        const remMins = Math.floor(remMs / 60000)
-        if (remMins < 60) setRemaining(remMins + 'min')
-        else { const h = Math.floor(remMins / 60); const rm = remMins % 60; setRemaining(h + 'h' + (rm > 0 ? String(rm).padStart(2, '0') : '')) }
-      }
+      setElapsed(formatElapsed(startRef))
+      if (sess?.ends_at) setRemaining(formatRemaining(sess.ends_at))
     }
     update()
     const iv = setInterval(update, 60000)
@@ -155,14 +141,14 @@ export default function HostDashboard() {
         const { count } = await supabase.from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('session_id', id)
-          .eq('sender_name', 'Fluidz')
+          .eq('sender_name', SYSTEM_SENDER)
           .eq('dm_peer_id', app.applicant_id)
         if (!count || count === 0) {
           await supabase.from('messages').insert({
             session_id: id,
             sender_id: user.id,
             text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
-            sender_name: 'Fluidz',
+            sender_name: SYSTEM_SENDER,
             room_type: 'dm',
             dm_peer_id: app.applicant_id,
           })
@@ -373,10 +359,7 @@ export default function HostDashboard() {
             <button
               onClick={() => {
                 const url = window.location.origin + '/join/' + sess.invite_code
-                navigator.clipboard.writeText(url).then(() => {
-                  setLinkCopied(true)
-                  setTimeout(() => setLinkCopied(false), 2000)
-                })
+                copyLink(url)
               }}
               style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:linkCopied ? S.sagebg : 'transparent',color:linkCopied ? S.sage : S.p,cursor:'pointer',width:'100%'}}
             >
@@ -393,10 +376,7 @@ export default function HostDashboard() {
                     : ''
                   const membersText = counts.accepted > 0 ? ` – ${counts.accepted} déjà là` : ''
                   const text = '🔥 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – Postule : ' + url
-                  navigator.clipboard.writeText(text).then(() => {
-                    setGrinderCopied(true)
-                    setTimeout(() => setGrinderCopied(false), 2000)
-                  })
+                  copyGrindr(text)
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sagebg : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
               >
@@ -410,10 +390,7 @@ export default function HostDashboard() {
                     ? 'Recherche : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
                     : ''
                   const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '📍 ' + sess.approx_area : '', counts.accepted > 0 ? `👥 ${counts.accepted} membres` : '', '', 'Postule ici : ' + url].filter(Boolean)
-                  navigator.clipboard.writeText(lines.join('\n')).then(() => {
-                    setMessageCopied(true)
-                    setTimeout(() => setMessageCopied(false), 2000)
-                  })
+                  copyMessageText(lines.join('\n'))
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
               >
@@ -436,10 +413,7 @@ export default function HostDashboard() {
             <button
               onClick={() => {
                 const url = window.location.origin + '/join/' + sess.invite_code + '?direct=1'
-                navigator.clipboard.writeText(url).then(() => {
-                  setLinkCopied(true)
-                  setTimeout(() => setLinkCopied(false), 2000)
-                })
+                copyLink(url)
               }}
               style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:S.sagebg,color:S.sage,cursor:'pointer'}}
             >

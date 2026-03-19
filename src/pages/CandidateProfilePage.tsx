@@ -7,17 +7,12 @@ import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
+import EventContextNav from '../components/EventContextNav'
+import { monthsAgoLabel } from '../lib/timing'
+import { SYSTEM_SENDER } from '../lib/constants'
 
 const S = colors
-
-function monthsAgo(iso: string): string {
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return ''
-  const now = new Date()
-  const months = Math.max(0, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()))
-  if (months === 0) return 'ce mois-ci'
-  return `il y a ${months} mois`
-}
 
 export default function CandidateProfilePage() {
   const { id: sessionId, applicantId } = useParams()
@@ -89,13 +84,13 @@ export default function CandidateProfilePage() {
         const { count } = await supabase.from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('session_id', sessionId)
-          .eq('sender_name', ' Fluidz')
+          .eq('sender_name', SYSTEM_SENDER)
         if (!count || count === 0) {
           await supabase.from('messages').insert({
             session_id: sessionId,
             sender_id: user.id,
             text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
-            sender_name: ' Fluidz',
+            sender_name: SYSTEM_SENDER,
           })
         }
       }
@@ -157,7 +152,9 @@ export default function CandidateProfilePage() {
   const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 12 }
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto' }}>
+    <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', position: 'relative' }}>
+      <OrbLayer />
+      <EventContextNav role="host" sessionTitle={sess?.title} />
 
       {/* Photo gallery */}
       {candidatePhotos.length > 0 && (
@@ -350,7 +347,7 @@ export default function CandidateProfilePage() {
                     <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
                   )}
                   {health.dernier_test && (
-                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>Test {monthsAgo(health.dernier_test)}</span>
+                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>Test {monthsAgoLabel(health.dernier_test)}</span>
                   )}
                 </div>
               </div>

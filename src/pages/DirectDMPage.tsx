@@ -5,14 +5,8 @@ import { ArrowLeft, Send, Camera } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-
-function formatTime(d: string): string {
-  const dt = new Date(d)
-  const now = new Date()
-  const sameDay = dt.toDateString() === now.toDateString()
-  if (sameDay) return dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-  return dt.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-}
+import { formatMessageTime } from '../lib/timing'
+import { DM_DIRECT_TITLE } from '../lib/constants'
 
 const S = colors
 
@@ -77,7 +71,7 @@ export default function DirectDMPage() {
     setSessionId(sid)
 
     await supabase.from('sessions').upsert({
-      id: sid, host_id: user.id, title: 'DM Direct', status: 'open',
+      id: sid, host_id: user.id, title: DM_DIRECT_TITLE, status: 'open',
       description: 'Direct message', approx_area: '',
     }, { onConflict: 'id' })
 
@@ -263,7 +257,7 @@ export default function DirectDMPage() {
                 <span style={{ color: S.tx }}>{msg.text}</span>
               )}
               <div style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start', alignItems: 'center', gap: 4, marginTop: 2, padding: msg.has_media ? '0 8px 4px' : 0 }}>
-                <span style={{ fontSize: 10, color: S.tx4 }}>{formatTime(msg.created_at)}</span>
+                <span style={{ fontSize: 10, color: S.tx4 }}>{formatMessageTime(msg.created_at)}</span>
               </div>
             </div>
           </div>

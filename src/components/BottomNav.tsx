@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { colors } from '../brand'
 
-const C = colors
+const S = colors
 
 const tabs = [
   {
@@ -141,14 +141,14 @@ export default function BottomNav() {
               {isActive && (
                 <div style={{
                   position: 'absolute', top: 0, left: '30%', right: '30%',
-                  height: 2, background: C.p, borderRadius: 2,
+                  height: 2, background: S.p, borderRadius: 2,
                 }} />
               )}
 
               <div style={{ position: 'relative' }}>
                 <div style={{
                   width: 20, height: 20,
-                  color: isActive ? C.p : C.tx3,
+                  color: isActive ? S.p : S.tx3,
                   transition: 'color 0.2s',
                 }}>
                   {tab.icon}
@@ -158,8 +158,8 @@ export default function BottomNav() {
                   <div style={{
                     position: 'absolute', top: -2, right: -4,
                     width: 7, height: 7, borderRadius: '50%',
-                    background: C.p,
-                    border: `2px solid ${C.bg}`,
+                    background: S.p,
+                    border: `2px solid ${S.bg}`,
                   }} />
                 )}
               </div>
@@ -168,7 +168,7 @@ export default function BottomNav() {
                 fontSize: 10,
                 fontWeight: isActive ? 700 : 600,
                 letterSpacing: '-0.01em',
-                color: isActive ? C.p : C.tx3,
+                color: isActive ? S.p : S.tx3,
                 transition: 'color 0.2s',
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}>

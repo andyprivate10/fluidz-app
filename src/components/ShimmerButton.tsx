@@ -1,6 +1,6 @@
 import { colors } from '../brand'
 
-const C = colors
+const S = colors
 
 interface Props {
   children: React.ReactNode
@@ -24,9 +24,9 @@ export default function ShimmerButton({ children, onClick, disabled, style, type
         borderRadius: 14,
         fontWeight: 700,
         fontSize: 15,
-        color: secondary ? C.p : '#fff',
-        background: secondary ? C.p2 : C.p,
-        border: secondary ? `1px solid ${C.pbd}` : 'none',
+        color: secondary ? S.p : '#fff',
+        background: secondary ? S.p2 : S.p,
+        border: secondary ? `1px solid ${S.pbd}` : 'none',
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
         fontFamily: "'Plus Jakarta Sans', sans-serif",

@@ -6,6 +6,7 @@ import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { timeAgo } from '../lib/timing'
 
 const S = colors
 
@@ -28,20 +29,6 @@ const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }
   added_contact: { icon: '+', label: 'Ajouté au carnet', color: S.sage },
   relation_change: { icon: '⟳', label: 'Relation modifiée', color: S.orange },
   voted: { icon: '▣', label: 'Vote', color: S.tx3 },
-}
-
-function timeAgo(dateStr: string): string {
-  const d = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - d.getTime()
-  const mins = Math.floor(diffMs / 60000)
-  if (mins < 60) return `il y a ${mins}min`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `il y a ${hours}h`
-  const days = Math.floor(hours / 24)
-  if (days < 30) return `il y a ${days}j`
-  const months = Math.floor(days / 30)
-  return `il y a ${months} mois`
 }
 
 export default function ContactDetailPage() {

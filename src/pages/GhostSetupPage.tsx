@@ -5,6 +5,7 @@ import {Ghost, Copy, Check, ArrowRight, ArrowLeft} from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useCopyFeedback } from '../hooks/useCopyFeedback'
 
 const S = colors
 
@@ -27,7 +28,7 @@ export default function GhostSetupPage() {
   const [loading, setLoading] = useState(false)
   const [ghostCode, setGhostCode] = useState('')
   const [ghostId, setGhostId] = useState('')
-  const [codeCopied, setCodeCopied] = useState(false)
+  const { copied: codeCopied, copy: copyCode } = useCopyFeedback()
 
   async function handleCreate() {
     if (!displayName.trim()) { showToast('Choisis un pseudo', 'error'); return }
@@ -77,16 +78,22 @@ export default function GhostSetupPage() {
     setLoading(false)
   }
 
-  function copyCode() {
-    navigator.clipboard.writeText(ghostCode).then(() => {
-      setCodeCopied(true)
-      setTimeout(() => setCodeCopied(false), 2000)
-    })
+  function handleCopyCode() {
+    copyCode(ghostCode)
   }
 
-  function goToApply() {
+  async function goToApply() {
     const gId = ghostId || localStorage.getItem('ghost_id') || ''
     if (sessionId) {
+      // Check capacity before navigating
+      const [{ data: sess }, { count }] = await Promise.all([
+        supabase.from('sessions').select('max_capacity').eq('id', sessionId).maybeSingle(),
+        supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', sessionId).in('status', ['accepted', 'checked_in']),
+      ])
+      if (sess?.max_capacity && (count ?? 0) + 1 >= sess.max_capacity) {
+        showToast('Session complète', 'error')
+        return
+      }
       navigate(`/session/${sessionId}/apply?ghost_id=${gId}`)
     } else if (inviteCode) {
       navigate(`/join/${inviteCode}?ghost_id=${gId}`)
@@ -183,7 +190,7 @@ export default function GhostSetupPage() {
                 <div style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Ton code de récupération</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
                   <span style={{ fontSize: 36, fontWeight: 800, color: S.p, letterSpacing: '0.15em', fontFamily: 'monospace' }}>{ghostCode}</span>
-                  <button onClick={copyCode} style={{ background: codeCopied ? S.sage + '22' : S.bg2, border: '1px solid ' + (codeCopied ? S.sage : S.rule), borderRadius: 10, padding: 8, cursor: 'pointer', color: codeCopied ? S.sage : S.tx3 }}>
+                  <button onClick={handleCopyCode} style={{ background: codeCopied ? S.sage + '22' : S.bg2, border: '1px solid ' + (codeCopied ? S.sage : S.rule), borderRadius: 10, padding: 8, cursor: 'pointer', color: codeCopied ? S.sage : S.tx3 }}>
                     {codeCopied ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                 </div>

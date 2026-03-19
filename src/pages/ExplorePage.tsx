@@ -8,6 +8,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { sessionTiming } from '../lib/timing'
 
 const S = colors
 
@@ -377,7 +378,7 @@ export default function ExplorePage() {
                   {s.approx_area && <span style={{ fontSize: 12, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} /> {s.approx_area}</span>}
                   {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}{s.max_capacity ? '/' + s.max_capacity : ''}</span>}
                   {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.red + '14', padding: '2px 8px', borderRadius: 99 }}>Complet</span>}
-                  {(() => { const now = Date.now(); if (s.starts_at && new Date(s.starts_at).getTime() > now) { const m = Math.floor((new Date(s.starts_at).getTime() - now) / 60000); return <span style={{ fontSize: 10, color: S.tx3 }}>{m < 60 ? 'dans ' + m + 'min' : 'dans ' + Math.floor(m / 60) + 'h'}</span> } if (s.ends_at) { const rem = Math.floor((new Date(s.ends_at).getTime() - now) / 60000); if (rem <= 0) return <span style={{ fontSize: 10, color: S.red }}>Terminé</span>; return <span style={{ fontSize: 10, color: S.tx3 }}>{rem < 60 ? rem + 'min restant' : Math.floor(rem / 60) + 'h restant'}</span> } if (s.created_at) { const m = Math.floor((now - new Date(s.created_at).getTime()) / 60000); return <span style={{ fontSize: 10, color: S.tx3 }}>{m < 60 ? m + 'min' : Math.floor(m / 60) + 'h'}</span> } return null })()}
+                  {(() => { const t = sessionTiming(s); if (!t) return null; const isEnded = t === 'Terminé'; return <span style={{ fontSize: 10, color: isEnded ? S.red : S.tx3 }}>{t}</span> })()}
                 </div>
                 {s.tags && s.tags.length > 0 && (
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>

@@ -8,6 +8,8 @@ import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
+import { formatElapsed, formatRemaining } from '../lib/timing'
+import { useCopyFeedback } from '../hooks/useCopyFeedback'
 const S = colors
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
@@ -33,9 +35,9 @@ export default function SessionPage() {
   const [hostProfile, setHostProfile] = useState<{ name: string; avatar?: string } | null>(null)
   const [checkInLoading, setCheckInLoading] = useState(false)
   const [checkInDone, setCheckInDone] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [inviteLinkCopied, setInviteLinkCopied] = useState(false)
-  const [addressCopied, setAddressCopied] = useState(false)
+  const { copied, copy: copyMessage } = useCopyFeedback()
+  const { copied: inviteLinkCopied, copy: copyInviteLink } = useCopyFeedback()
+  const { copied: addressCopied, copy: copyAddress } = useCopyFeedback()
   const [pendingCount, setPendingCount] = useState(0)
   const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -55,29 +57,8 @@ export default function SessionPage() {
     const startRef = session?.starts_at || session?.created_at
     if (!startRef) return
     const update = () => {
-      const now = Date.now()
-      const startMs = new Date(startRef).getTime()
-      // Elapsed since start
-      const elMs = now - startMs
-      if (elMs >= 0) {
-        const mins = Math.floor(elMs / 60000)
-        if (mins < 60) setElapsed(mins + 'min')
-        else { const h = Math.floor(mins / 60); const m = mins % 60; setElapsed(h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '')) }
-      } else {
-        // Not started yet
-        const untilStart = Math.floor(-elMs / 60000)
-        if (untilStart < 60) setElapsed('dans ' + untilStart + 'min')
-        else { const h = Math.floor(untilStart / 60); setElapsed('dans ' + h + 'h') }
-      }
-      // Remaining until ends_at
-      if (session?.ends_at) {
-        const endMs = new Date(session.ends_at).getTime()
-        const remMs = endMs - now
-        if (remMs <= 0) { setRemaining('terminé'); return }
-        const remMins = Math.floor(remMs / 60000)
-        if (remMins < 60) setRemaining(remMins + 'min')
-        else { const h = Math.floor(remMins / 60); const m = remMins % 60; setRemaining(h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '')) }
-      }
+      setElapsed(formatElapsed(startRef))
+      if (session?.ends_at) setRemaining(formatRemaining(session.ends_at))
     }
     update()
     const iv = setInterval(update, 60000)
@@ -403,7 +384,7 @@ export default function SessionPage() {
                     return (i+1) + '. ' + txt
                   }).join('\n')
                   const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
-                  navigator.clipboard.writeText(full).then(() => { setAddressCopied(true); setTimeout(() => setAddressCopied(false), 2000) })
+                  copyAddress(full)
                 }} style={{ marginTop: 4, padding: '3px 10px', borderRadius: 8, fontSize: 10, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx3 }}>
                   {addressCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:3}} />Copié</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />Copier adresse</>}
                 </button>
@@ -717,10 +698,7 @@ export default function SessionPage() {
               <button
                 onClick={() => {
                   const url = window.location.origin + '/join/' + session.invite_code
-                  navigator.clipboard.writeText(url).then(() => {
-                    setInviteLinkCopied(true)
-                    setTimeout(() => setInviteLinkCopied(false), 2000)
-                  })
+                  copyInviteLink(url)
                 }}
                 style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid '+S.sage, background: inviteLinkCopied ? S.sagebg : 'transparent', color: S.sage, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
               >
@@ -732,10 +710,7 @@ export default function SessionPage() {
                   const rolesW = session.lineup_json?.roles_wanted as Record<string,number> | undefined
                   const rolesText = rolesW && Object.keys(rolesW).length > 0 ? ' – Recherche ' + Object.entries(rolesW).map(([r,c]) => c+' '+r).join(', ') : ''
                   const text = '🔥 ' + session.title + (session.approx_area ? ' – ' + session.approx_area : '') + rolesText + ' – ' + (members.length+1) + ' déjà là – Rejoins-nous : ' + url
-                  navigator.clipboard.writeText(text).then(() => {
-                    setCopied(true)
-                    setTimeout(() => setCopied(false), 2000)
-                  })
+                  copyMessage(text)
                 }}
                 style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.rule, background: copied ? S.sagebg : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
               >
@@ -797,10 +772,7 @@ export default function SessionPage() {
             {session.invite_code && (
               <button onClick={() => {
                 const url = window.location.origin + '/join/' + session.invite_code
-                navigator.clipboard.writeText(url).then(() => {
-                  setCopied(true)
-                  setTimeout(() => setCopied(false), 2000)
-                })
+                copyMessage(url)
               }} style={{ width: '100%', padding: 14, background: copied ? S.sagebg : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                 {copied ? 'Lien copie !' : 'Partager le lien'}
               </button>

@@ -8,6 +8,8 @@ import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
+import { formatMessageTime } from '../lib/timing'
+import { SYSTEM_SENDER } from '../lib/constants'
 
 type Message = {
   id: string
@@ -28,17 +30,6 @@ type Member = {
 }
 
 const S = colors
-
-function formatTime(dateStr: string): string {
-  const d = new Date(dateStr)
-  const now = new Date()
-  const diffMin = Math.floor((now.getTime() - d.getTime()) / 60000)
-  if (diffMin < 1) return "à l'instant"
-  if (diffMin < 60) return `${diffMin} min`
-  const sameDay = d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
-  if (sameDay) return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-  return d.toLocaleDateString('fr-FR', { weekday: 'short', hour: '2-digit', minute: '2-digit' })
-}
 
 export default function GroupChatPage() {
   const { id } = useParams<{ id: string }>()
@@ -382,7 +373,7 @@ export default function GroupChatPage() {
       <div style={{ flex:1, overflowY:'auto', padding:'12px 16px', display:'flex', flexDirection:'column', gap:2 }}>
         {messages.map((msg, i) => {
           const isMe = msg.sender_id === currentUser?.id
-          const isSystem = msg.sender_name === 'Fluidz' || msg.sender_name?.startsWith('')
+          const isSystem = msg.sender_name === SYSTEM_SENDER || msg.sender_name?.startsWith('')
           const showName = !isMe && (i === 0 || messages[i-1]?.sender_id !== msg.sender_id)
 
           if (isSystem) {
@@ -424,7 +415,7 @@ export default function GroupChatPage() {
                   return <img key={mi} src={url} alt="" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block' }} />
                 })}
                 {msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && msg.text !== '🎬 Vidéo' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
-                <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatTime(msg.created_at)}</p>
+                <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatMessageTime(msg.created_at)}</p>
               </div>
             </div>
           )

@@ -8,14 +8,9 @@ import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import {MessageCircle, Sparkles, ArrowLeft} from 'lucide-react'
+import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
-
-function monthsAgo(isoDate: string): number {
-  const d = new Date(isoDate)
-  const now = new Date()
-  return Math.max(0, Math.floor((now.getTime() - d.getTime()) / (30.44 * 24 * 60 * 60 * 1000)))
-}
 
 const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding: 16, border: '1px solid ' + S.rule, marginBottom: 12 }
 const label: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }
@@ -398,7 +393,7 @@ export default function PublicProfile() {
               )}
               {p.health?.dernier_test && (
                 <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '4px 12px', borderRadius: 99, background: S.blue + '22', border: '1px solid ' + S.blue + '44' }}>
-                  Testé il y a {monthsAgo(p.health.dernier_test)} mois
+                  Testé il y a {monthsAgoCount(p.health.dernier_test)} mois
                 </span>
               )}
             </div>
