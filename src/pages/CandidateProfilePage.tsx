@@ -7,8 +7,6 @@ import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
-import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 
 const S = colors
 
@@ -257,103 +255,136 @@ export default function CandidateProfilePage() {
       </div>
 
       <div style={{ padding: '0 20px' }}>
-        {/* Physique — host priority #4 */}
-        {(height || weight || morphology) && (
-          <div style={card}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>Physique</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {height && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{height}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>cm</p></div>}
-              {weight && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{weight}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>kg</p></div>}
-              {morphology && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10, gridColumn: height && weight ? 'span 2' : undefined }}><p style={{ fontSize: 14, fontWeight: 600, color: S.tx, margin: 0 }}>{morphology}</p></div>}
-            </div>
-          </div>
-        )}
 
-        {/* Pratiques — host priority #5 */}
-        {kinks.length > 0 && (() => {
-          const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
-            'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
-            'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
-            'SM léger': { bg: S.p2, color: S.p, border: S.pbd },
-            'SM hard': { bg: S.red+'22', color: S.red, border: S.red+'44' },
-            'Fist': { bg: S.red+'22', color: S.red, border: S.red+'44' },
-            'Group': { bg: S.blue+'22', color: S.blue, border: S.blue+'44' },
-            'Voyeur': { bg: S.violet+'14', color: S.violet, border: S.violet+'33' },
-            'Exhib': { bg: S.violet+'14', color: S.violet, border: S.violet+'33' },
-            'Fétichisme': { bg: S.emerald+'14', color: S.emerald, border: S.emerald+'33' },
-            'Jeux de rôle': { bg: S.amber+'14', color: S.amber, border: S.amber+'33' },
-            'Bears welcome': { bg: S.p2, color: S.p, border: S.pbd },
-          }
-          const def = { bg: S.bg2, color: S.tx2, border: S.rule }
-          return (
+        {/* ── BLOC 1: PROFIL ── */}
+        <div style={{ marginBottom: 6 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>Profil</p>
+
+          {/* Bio */}
+          {bio && (
             <div style={card}>
-      <OrbLayer />
-      <EventContextNav role='host' />
-              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {kinks.map((k: string) => {
-                  const c = kinkColors[k] || def
-                  return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>✓ {k}</span>
-                })}
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Bio</p>
+              <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
+            </div>
+          )}
+
+          {/* Physique */}
+          {(height || weight || morphology) && (
+            <div style={card}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>Physique</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                {height && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{height}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>cm</p></div>}
+                {weight && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{weight}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>kg</p></div>}
+                {morphology && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10, gridColumn: height && weight ? 'span 2' : undefined }}><p style={{ fontSize: 14, fontWeight: 600, color: S.tx, margin: 0 }}>{morphology}</p></div>}
               </div>
             </div>
-          )
-        })()}
+          )}
+        </div>
 
-        {/* Limites — host priority #6 */}
-        {limits && (
-          <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Limites</p>
-            <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
+        {/* ── BLOC 2: ADULTE ── */}
+        {(kinks.length > 0 || limits || hasAdulteMedia || (health.prep_status || health.dernier_test)) && (
+          <div style={{ marginBottom: 6 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>Adulte</p>
+
+            {/* Body part photos grid */}
+            {pj.body_part_photos && Object.keys(pj.body_part_photos).length > 0 && (
+              <div style={card}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Photos par zone</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                  {Object.entries(pj.body_part_photos as Record<string, string>).map(([part, url]) => (
+                    <div key={part} style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', aspectRatio: '1' }}>
+                      <img src={url} alt={part} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <span style={{ position: 'absolute', bottom: 4, left: 0, right: 0, textAlign: 'center', fontSize: 9, fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{part}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Pratiques */}
+            {kinks.length > 0 && (() => {
+              const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
+                'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
+                'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
+                'SM leger': { bg: S.p2, color: S.p, border: S.pbd },
+                'SM hard': { bg: S.red+'22', color: S.red, border: S.red+'44' },
+                'Fist': { bg: S.red+'22', color: S.red, border: S.red+'44' },
+                'Group': { bg: S.blue+'22', color: S.blue, border: S.blue+'44' },
+                'Voyeur': { bg: S.violet+'14', color: S.violet, border: S.violet+'33' },
+                'Exhib': { bg: S.violet+'14', color: S.violet, border: S.violet+'33' },
+                'Fetichisme': { bg: S.emerald+'14', color: S.emerald, border: S.emerald+'33' },
+                'Jeux de role': { bg: S.amber+'14', color: S.amber, border: S.amber+'33' },
+                'Bears welcome': { bg: S.p2, color: S.p, border: S.pbd },
+              }
+              const def = { bg: S.bg2, color: S.tx2, border: S.rule }
+              return (
+                <div style={card}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {kinks.map((k: string) => {
+                      const c = kinkColors[k] || def
+                      return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span>
+                    })}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Limites */}
+            {limits && (
+              <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Limites</p>
+                <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
+              </div>
+            )}
+
+            {/* Sante */}
+            {(health.prep_status || health.dernier_test) && (
+              <div style={card}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Sante</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {health.prep_status === 'Actif' && (
+                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.sage, background: S.sage + '18', border: '1px solid ' + S.sage + '44' }}>PrEP actif</span>
+                  )}
+                  {health.prep_status && health.prep_status !== 'Actif' && (
+                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
+                  )}
+                  {health.dernier_test && (
+                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>Test {monthsAgo(health.dernier_test)}</span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Santé — host priority #7 */}
-        {(health.prep_status || health.dernier_test) && (
-          <div style={card}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Santé</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {health.prep_status === 'Actif' && (
-                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.sage, background: S.sage + '18', border: '1px solid ' + S.sage + '44' }}>PrEP actif</span>
-              )}
-              {health.prep_status && health.prep_status !== 'Actif' && (
-                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
-              )}
-              {health.dernier_test && (
-                <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>Testé {monthsAgo(health.dernier_test)}</span>
-              )}
-            </div>
-          </div>
-        )}
+        {/* ── BLOC 3: SESSION ── */}
+        {(messageText || eps.occasion_note) && (
+          <div style={{ marginBottom: 6 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>Session</p>
 
-        {/* Bio — secondary info */}
-        {bio && (
-          <div style={card}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Bio</p>
-            <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
-          </div>
-        )}
+            {/* Message au host */}
+            {messageText && (
+              <div style={{ ...card, borderColor: S.pbd }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
+                <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
+              </div>
+            )}
 
-        {/* Message au host */}
-        {messageText && (
-          <div style={{ ...card, borderColor: S.pbd }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
-            <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
-          </div>
-        )}
-
-        {/* Occasion note */}
-        {eps.occasion_note && eps.occasion_note !== messageText && (
-          <div style={{ ...card, borderColor: S.p + '33' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
-            <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
+            {/* Occasion note */}
+            {eps.occasion_note && eps.occasion_note !== messageText && (
+              <div style={{ ...card, borderColor: S.p + '33' }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
+                <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
+              </div>
+            )}
           </div>
         )}
 
         {/* Shared sections info */}
         {shared.length > 0 && (
           <p style={{ fontSize: 11, color: S.tx4, margin: '8px 0 0', textAlign: 'center' }}>
-            {shared.length} section{shared.length > 1 ? 's' : ''} partagée{shared.length > 1 ? 's' : ''} · Candidature reçue le {new Date(app.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+            {shared.length} section{shared.length > 1 ? 's' : ''} partagee{shared.length > 1 ? 's' : ''} -- Candidature recue le {new Date(app.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
           </p>
         )}
       </div>

@@ -489,7 +489,6 @@ export default function ApplyPage() {
                 {/* BLOC PROFIL */}
                 {renderBlocToggle('Profil', BLOC_PROFIL, S.sage)}
                 <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
-      <OrbLayer />
                   {BLOC_PROFIL.map(sec => (
                     <div key={sec.id}>
                       {renderSection(sec)}

@@ -14,6 +14,15 @@ const ROLES = ['Top','Bottom','Versa','Side']
 const PREP_OPTIONS = ['Actif','Inactif','Non']
 const KINKS_LIST = ['Fist', 'SM léger', 'SM hard', 'Bareback', 'Group', 'Exhib', 'Voyeur', 'Fétichisme', 'Jeux de rôle']
 
+const BODY_PARTS = [
+  { id: 'torse', label: 'Torse' },
+  { id: 'bite', label: 'Bite' },
+  { id: 'cul', label: 'Cul' },
+  { id: 'pieds', label: 'Pieds' },
+  { id: 'full', label: 'Full body' },
+  { id: 'autre', label: 'Autre' },
+] as const
+
 const S = colors
 
 function monthsAgo(isoDate: string): number | null {
@@ -74,7 +83,8 @@ export default function MePage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
-  const [activeTab, setActiveTab] = useState<'auth'|'profil'>('auth')
+  const [activeTab, setActiveTab] = useState<'compte'|'profil'|'adulte'>('compte')
+  const [bodyPartPhotos, setBodyPartPhotos] = useState<Record<string, string>>({})
   const [locationVisible, setLocationVisible] = useState(false)
   const [profileViews, setProfileViews] = useState(0)
   const [contactRequests, setContactRequests] = useState(0)
@@ -211,6 +221,7 @@ export default function MePage() {
       setDernierTest(h.dernier_test || '')
       setSeroStatus(h.sero_status || '')
       setLimits(p.limits || '')
+      setBodyPartPhotos(p.body_part_photos || {})
     }
     // Allow auto-save after initial load settles
     setTimeout(() => { profileLoaded.current = true }, 500)
@@ -230,7 +241,7 @@ export default function MePage() {
   async function signOut() {
     await supabase.auth.signOut()
     setUser(null)
-    setActiveTab('auth')
+    setActiveTab('compte')
   }
 
   const doSave = useCallback(async () => {
@@ -244,6 +255,7 @@ export default function MePage() {
       videos_intime: videosIntime,
       photos: [...photosProfil, ...photosIntime],
       videos: videosIntime,
+      body_part_photos: bodyPartPhotos,
       health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined },
     }
     await supabase.from('user_profiles').upsert({
@@ -253,7 +265,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, role, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime])
+  }, [user, displayName, age, bio, location, role, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -392,23 +404,23 @@ export default function MePage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', padding:'12px 20px 0', gap:8 }}>
-        {(['auth','profil'] as const).map(tab => (
+      <div style={{ display:'flex', padding:'12px 20px 0', gap:6 }}>
+        {([['compte','Compte'],['profil','Profil'],['adulte','Adulte']] as const).map(([tab, label]) => (
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             flex:1, padding:'10px', borderRadius:12, fontSize:13,
             fontWeight:600, cursor:'pointer',
-            border: `1px solid ${activeTab===tab ? S.pbd : S.rule}`,
-            background: activeTab===tab ? S.p2 : S.bg2,
+            border: `1px solid ${activeTab===tab ? (tab === 'adulte' ? S.pbd : S.pbd) : S.rule}`,
+            background: activeTab===tab ? (tab === 'adulte' ? S.p2 : S.p2) : S.bg2,
             color: activeTab===tab ? S.p : S.tx3,
             transition:'all 0.2s',
           }}>
-            {tab === 'auth' ? 'Compte' : 'Profil'}
+            {label}
           </button>
         ))}
       </div>
 
       {/* ── Compte ── */}
-      {activeTab === 'auth' && (
+      {activeTab === 'compte' && (
         <div style={{ padding:'16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
           <div style={{ background:S.bg1, borderRadius:16, padding:'14px 16px', border:`1px solid ${S.rule}` }}>
             <p style={{ fontSize:11, color:S.tx3, marginBottom:4, fontWeight:600,
@@ -563,46 +575,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosProfil.length} photo{photosProfil.length !== 1 ? 's' : ''}</p>
           </Section>
 
-          <Section title="Photos & vidéos adultes">
-            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>NSFW. Partagé uniquement si le candidat active le bloc "Adulte".</p>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
-              {photosIntime.map((url) => (
-                <div key={url} style={{ position:'relative', width:80, height:80 }}>
-                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
-                  <button onClick={() => removePhotoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
-                </div>
-              ))}
-              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="image/*" multiple onChange={async (e) => {
-                  const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
-                  for (const f of captured) await uploadMedia(f, 'intime', 'photo')
-                }} disabled={mediaUploading} style={{ display:'none' }} />
-                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Photo</span>
-              </label>
-            </div>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
-              {videosIntime.map((url) => (
-                <div key={url} style={{ position:'relative', width:100, height:80 }}>
-                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
-                  <button onClick={() => removeVideoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
-                  <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>vidéo</div>
-                </div>
-              ))}
-              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="video/*" onChange={async (e) => {
-                  const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
-                  await uploadMedia(f, 'intime', 'video')
-                }} disabled={mediaUploading} style={{ display:'none' }} />
-                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Vidéo</span>
-              </label>
-            </div>
-            <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosIntime.length} photo{photosIntime.length !== 1 ? 's' : ''} · {videosIntime.length} vidéo{videosIntime.length !== 1 ? 's' : ''}</p>
-            {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>Upload en cours...</p>}
-          </Section>
-
-          <Section title="Profil">
+          <Section title="Infos">
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
@@ -613,8 +586,8 @@ export default function MePage() {
                 <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Bio courte..." rows={3} style={{ ...inputStyle, resize:'none', lineHeight:1.5 }} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Âge</label>
-                <input value={age} onChange={e => setAge(e.target.value)} placeholder="Âge" type="number" style={inputStyle} />
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Age</label>
+                <input value={age} onChange={e => setAge(e.target.value)} placeholder="Age" type="number" style={inputStyle} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Localisation</label>
@@ -631,14 +604,14 @@ export default function MePage() {
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Morphologie</label>
                 <select value={morphology} onChange={e => setMorphology(e.target.value)} style={inputStyle}>
-                  <option value="">— Choisir —</option>
+                  <option value="">-- Choisir --</option>
                   {MORPHOLOGIES.map(m => (
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Rôle</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Role</label>
                 <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                   {ROLES.map(r => (
                     <Chip key={r} label={r} active={role===r} onClick={() => setRole(role===r?'':r)} />
@@ -648,7 +621,119 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''} sélectionnée${kinks.length > 1 ? 's' : ''}` : undefined}>
+          {/* Auto-save status */}
+          <div style={{
+            textAlign:'center', padding:'12px 0', fontSize:12, fontWeight:600,
+            color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
+            transition:'color 0.3s',
+          }}>
+            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Les modifications sont sauvegardees automatiquement'}
+          </div>
+
+          {devMode && (
+            <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
+          )}
+        </div>
+      )}
+
+      {/* ── Adulte ── */}
+      {activeTab === 'adulte' && (
+        <div style={{ padding:'16px 20px' }}>
+
+          {/* Body Part Photos Grid */}
+          <Section title="Photos par zone">
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>Assigne une photo a chaque zone. Visible uniquement dans le bloc Adulte.</p>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+              {BODY_PARTS.map(bp => {
+                const url = bodyPartPhotos[bp.id]
+                return (
+                  <div key={bp.id} style={{ position:'relative' }}>
+                    <label style={{
+                      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+                      width:'100%', aspectRatio:'1', borderRadius:14,
+                      border: url ? `2px solid ${S.p}88` : `1px dashed ${S.pbd}`,
+                      background: url ? 'none' : S.p + '08',
+                      cursor: mediaUploading ? 'wait' : 'pointer',
+                      overflow:'hidden', position:'relative',
+                    }}>
+                      {url ? (
+                        <img src={url} alt={bp.label} style={{ width:'100%', height:'100%', objectFit:'cover', position:'absolute', top:0, left:0 }} />
+                      ) : (
+                        <>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="1.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                          <span style={{ fontSize:10, color:S.p, marginTop:2, fontWeight:600 }}>{bp.label}</span>
+                        </>
+                      )}
+                      <input type="file" accept="image/*" onChange={async (e) => {
+                        const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
+                        if (!user) return
+                        const fileToUpload = await compressImage(f)
+                        const ext = f.name.split('.').pop() || 'jpg'
+                        const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+                        const path = `${user.id}/bp_${bp.id}_${ts}.${ext}`
+                        const { error } = await supabase.storage.from('avatars').upload(path, fileToUpload, { upsert: false })
+                        if (error) { showToast('Erreur upload', 'error'); return }
+                        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+                        setBodyPartPhotos(prev => ({ ...prev, [bp.id]: publicUrl }))
+                      }} disabled={mediaUploading} style={{ display:'none' }} />
+                    </label>
+                    {url && (
+                      <>
+                        <div style={{ position:'absolute', bottom:6, left:0, right:0, textAlign:'center' }}>
+                          <span style={{ fontSize:9, fontWeight:700, color:'#fff', background:'rgba(0,0,0,0.6)', padding:'2px 8px', borderRadius:6, textTransform:'uppercase', letterSpacing:'0.04em' }}>{bp.label}</span>
+                        </div>
+                        <button onClick={() => setBodyPartPhotos(prev => {
+                          const next = { ...prev }; delete next[bp.id]; return next
+                        })} style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:10, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
+                      </>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+            <p style={{ fontSize:11, color:S.tx3, margin:'10px 0 0' }}>{Object.keys(bodyPartPhotos).length}/{BODY_PARTS.length} zones remplies</p>
+          </Section>
+
+          <Section title="Photos & videos adultes">
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>NSFW. Partage uniquement si le candidat active le bloc "Adulte".</p>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
+              {photosIntime.map((url) => (
+                <div key={url} style={{ position:'relative', width:80, height:80 }}>
+                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
+                  <button onClick={() => removePhotoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
+                </div>
+              ))}
+              <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+                <input type="file" accept="image/*" multiple onChange={async (e) => {
+                  const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
+                  for (const f of captured) await uploadMedia(f, 'intime', 'photo')
+                }} disabled={mediaUploading} style={{ display:'none' }} />
+                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
+                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Photo</span>
+              </label>
+            </div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
+              {videosIntime.map((url) => (
+                <div key={url} style={{ position:'relative', width:100, height:80 }}>
+                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.p + '55' }} />
+                  <button onClick={() => removeVideoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
+                  <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>video</div>
+                </div>
+              ))}
+              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p + '08', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+                <input type="file" accept="video/*" onChange={async (e) => {
+                  const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
+                  await uploadMedia(f, 'intime', 'video')
+                }} disabled={mediaUploading} style={{ display:'none' }} />
+                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
+                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Video</span>
+              </label>
+            </div>
+            <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosIntime.length} photo{photosIntime.length !== 1 ? 's' : ''} · {videosIntime.length} video{videosIntime.length !== 1 ? 's' : ''}</p>
+            {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>Upload en cours...</p>}
+          </Section>
+
+          <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''}` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {KINKS_LIST.map(k => (
                 <Chip key={k} label={k} active={kinks.includes(k)} onClick={() => toggleKink(k)} />
@@ -656,10 +741,10 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Santé" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Testé il y a ${monthsAgo(dernierTest)} mois` : undefined}>
+          <Section title="Sante" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgo(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sage+'22', color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
-              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Testé il y a {monthsAgo(dernierTest)} mois</span>}
+              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Test il y a {monthsAgo(dernierTest)} mois</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               {PREP_OPTIONS.map(p => (
@@ -671,7 +756,7 @@ export default function MePage() {
               <input type="date" value={dernierTest} onChange={e => setDernierTest(e.target.value)} style={inputStyle} />
             </div>
             <div>
-              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Statut séro (optionnel)</label>
+              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Statut sero (optionnel)</label>
               <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder="Optionnel" style={inputStyle} />
             </div>
           </Section>
@@ -693,12 +778,8 @@ export default function MePage() {
             color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
             transition:'color 0.3s',
           }}>
-            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '✓ Sauvegardé' : 'Les modifications sont sauvegardées automatiquement'}
+            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Auto-save actif'}
           </div>
-
-          {devMode && (
-            <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
-          )}
         </div>
       )}
 

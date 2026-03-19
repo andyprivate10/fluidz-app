@@ -5,7 +5,6 @@ import { ThumbsUp, ThumbsDown, Clock } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
-import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 
 const S = colors
@@ -581,7 +580,6 @@ export default function HostDashboard() {
                       if (yes + no === 0) return null
                       return (
                         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'6px 10px',background:S.bg2,borderRadius:10,border:'1px solid '+S.rule}}>
-      <OrbLayer />
                           <span style={{fontSize:12,color:S.tx3}}>Votes :</span>
                           <span style={{fontSize:13,fontWeight:700,color:S.sage,display:'flex',alignItems:'center',gap:4}}><ThumbsUp size={14} /> {yes}</span>
                           <span style={{fontSize:13,fontWeight:700,color:S.red,display:'flex',alignItems:'center',gap:4}}><ThumbsDown size={14} /> {no}</span>
