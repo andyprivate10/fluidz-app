@@ -305,7 +305,7 @@ export default function ApplyPage() {
           {(selectedRole || (profile?.profile_json as any)?.role || (profile?.profile_json as any)?.bio) && !guestMode && (
             <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
               {(selectedRole || (profile?.profile_json as any)?.role) && (
-                <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p+'22',border:'1px solid '+S.p+'44',marginRight:6}}>
+                <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p2,border:'1px solid '+S.pbd,marginRight:6}}>
                   {selectedRole || (profile?.profile_json as any)?.role}
                 </span>
               )}
@@ -315,7 +315,7 @@ export default function ApplyPage() {
           {guestMode && (selectedRole || guestDisplayName) && (
             <div style={{fontSize:13,color:S.tx2}}>
               {guestDisplayName && <span style={{fontWeight:600,color:S.tx}}>{guestDisplayName}</span>}
-              {selectedRole && <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p+'22',marginLeft:6}}>{selectedRole}</span>}
+              {selectedRole && <span style={{color:S.p,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.p2,marginLeft:6}}>{selectedRole}</span>}
             </div>
           )}
         </div>
@@ -518,7 +518,7 @@ export default function ApplyPage() {
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
-          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
+          <button onClick={() => setStep('note')} disabled={isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
             Continuer →
           </button>
         </div>
@@ -528,10 +528,10 @@ export default function ApplyPage() {
         <div style={{padding:'16px 20px'}}>
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Pour cette session</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 8px'}}>Un mot pour le host ? Dispo, ambiance...</p>
-          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30...' rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30...' rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
           <div style={{marginBottom:12}}>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>Message au host (optionnel)</p>
-            <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:'inherit',resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
+            <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           </div>
           {/* Visual preview */}
           <div style={{padding:'14px',background:S.bg1,borderRadius:14,border:'1px solid '+S.rule,marginBottom:12}}>
@@ -562,7 +562,7 @@ export default function ApplyPage() {
           </div>
           <div style={{display:'flex',gap:10,marginTop:8}}>
             <button onClick={() => setStep('pack')} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.rule,background:S.bg2,cursor:'pointer'}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
-            <button onClick={submit} disabled={loading || isRateLimited || (guestMode && guestDisplayName.trim().length < 2)} style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+            <button onClick={submit} disabled={loading || isRateLimited || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:loading||isRateLimited?'not-allowed':'pointer',opacity:loading||isRateLimited?0.7:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
               {loading ? <><span style={{display:'inline-block',width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.8s linear infinite'}} /> Envoi...</> : isRateLimited ? 'Attends quelques minutes' : 'Envoyer ma candidature'}
             </button>
           </div>

@@ -94,7 +94,7 @@ export default function NotificationsPage() {
         {notifs.map(n => (
           <button key={n.id} onClick={() => handleClick(n)} style={{
             width: '100%', textAlign: 'left', padding: '14px 12px', borderRadius: R.block,
-            border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
+            border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
             borderBottom: `1px solid ${C.rule}`, position: 'relative',
             borderLeft: n.read_at ? 'none' : `3px solid ${C.p}`,
           }}>

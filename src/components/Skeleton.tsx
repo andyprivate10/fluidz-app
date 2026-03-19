@@ -65,12 +65,7 @@ export function SkeletonSessionPage() {
           <SkeletonProfile />
         </div>
       </div>
-      <style>{`
-        @keyframes skeletonPulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 0.8; }
-        }
-      `}</style>
+      
     </div>
   )
 }
@@ -93,7 +88,7 @@ export function SkeletonChatPage() {
           <SkeletonLine width={240} height={50} style={{ borderRadius: 16 }} />
         </div>
       </div>
-      <style>{`@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }`}</style>
+      
     </div>
   )
 }
@@ -108,7 +103,7 @@ export function SkeletonHomePage() {
       <SkeletonCard lines={1} />
       <div style={{ height: 12 }} />
       <SkeletonLine width="100%" height={50} style={{ borderRadius: 14 }} />
-      <style>{`@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }`}</style>
+      
     </div>
   )
 }
@@ -132,7 +127,7 @@ export function SkeletonContactsPage() {
         <SkeletonProfile />
         <SkeletonProfile />
       </div>
-      <style>{`@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }`}</style>
+      
     </div>
   )
 }

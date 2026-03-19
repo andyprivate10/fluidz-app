@@ -219,7 +219,7 @@ export default function ContactDetailPage() {
           </div>
           {editingNotes ? (
             <div>
-              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} placeholder="Notes perso (privées)..." maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} placeholder="Notes perso (privées)..." maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
               <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.sage + '22', color: S.sage, border: '1px solid ' + S.sage + '44', cursor: 'pointer' }}>Sauvegarder</button>
             </div>
           ) : (

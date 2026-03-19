@@ -540,7 +540,7 @@ export default function DMPage() {
           style={{
             flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
             borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
-            fontFamily: 'inherit',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
           }}
         />
         <button

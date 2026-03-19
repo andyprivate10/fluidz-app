@@ -132,7 +132,7 @@ export default function GroupsPage() {
     setSelectedMembers(prev => prev.includes(uid) ? prev.filter(x => x !== uid) : [...prev, uid])
   }
 
-  const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.rule, outline:'none', fontSize:14, fontFamily:'inherit', boxSizing:'border-box' }
+  const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.rule, outline:'none', fontSize:14, fontFamily:"'Plus Jakarta Sans', sans-serif", boxSizing:'border-box' }
 
   return (
     <div style={{ background:S.bg, minHeight:'100vh', maxWidth:480, margin:'0 auto', paddingBottom:96 }}>

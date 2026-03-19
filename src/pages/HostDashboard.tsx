@@ -5,6 +5,7 @@ import { ThumbsUp, ThumbsDown, Clock } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
+import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 
 const S = colors
@@ -306,24 +307,34 @@ export default function HostDashboard() {
   )
   return (
     <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative' as const}}>
+      <OrbLayer />
       <EventContextNav role="host" sessionTitle={sess?.title} />
       <div style={{padding:'12px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-          <div>
-            <div style={{display:'flex',alignItems:'center',gap:8,margin:'0 0 4px'}}><h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:0}}>{sess?.title}</h1>{elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}</div>
-            <p style={{fontSize:13,color:S.tx3,margin:0}}>{sess?.approx_area}</p>
+        <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:6}}>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+              <span style={{fontSize:8,fontWeight:700,textTransform:'uppercase' as const,letterSpacing:'0.06em',padding:'3px 8px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.pbd}}>Host</span>
+              {sess?.status === 'open' && <span style={{fontSize:10,fontWeight:600,color:S.sage,display:'flex',alignItems:'center',gap:4}}><span style={{width:6,height:6,borderRadius:'50%',background:S.sage,animation:'blink 2s ease-in-out infinite'}} />Live</span>}
+            </div>
+            <h1 style={{fontSize:18,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 3px',lineHeight:1.2}}>{sess?.title}</h1>
+            <p style={{fontSize:12,color:S.tx3,margin:0}}>{sess?.approx_area}</p>
           </div>
-          <button onClick={toggleStatus} style={{
-            padding:'6px 14px',borderRadius:99,fontSize:12,fontWeight:700,border:'none',cursor:'pointer',
-            background: sess?.status==='open' ? S.sagebg : S.bg3,
-            color: sess?.status==='open' ? S.sage : S.tx3,
-          }}>
-            {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
-          </button>
+          <div style={{display:'flex',flexDirection:'column' as const,alignItems:'flex-end',gap:6}}>
+            {elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
+            {totalAccepted > 0 && <span style={{fontSize:11,fontWeight:700,color:S.sage,background:S.sagebg,padding:'3px 10px',borderRadius:50}}>{arrivedCount}/{totalAccepted}</span>}
+          </div>
         </div>
         {sess?.status !== 'ended' && (
           <div style={{display:'flex',gap:8,marginTop:12}}>
-            <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
+            <button onClick={toggleStatus} style={{
+              padding:'8px 14px',borderRadius:10,fontSize:12,fontWeight:700,cursor:'pointer',
+              border:'1px solid '+(sess?.status==='open' ? S.sagebd : S.rule),
+              background: sess?.status==='open' ? S.sagebg : S.bg2,
+              color: sess?.status==='open' ? S.sage : S.tx3,
+            }}>
+              {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
+            </button>
+            <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'8px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
               Modifier
             </button>
             <button onClick={closeSession} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>
@@ -532,7 +543,7 @@ export default function HostDashboard() {
                       <Link to={'/profile/' + app.applicant_id} style={{color:S.tx,textDecoration:'none'}}>{displayName}</Link>
                     </p>
                     {isGhost && <span style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:99,background:S.tx4,color:S.tx2,border:'1px solid '+S.rule}}>Ghost</span>}
-                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.p+'33'}}>{displayRole}</span>}
+                    {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.pbd}}>{displayRole}</span>}
                     {!isGhost && <VibeScoreBadge userId={app.applicant_id} />}
                   </div>
                   <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Voir profil</button>
@@ -558,7 +569,7 @@ export default function HostDashboard() {
                 )}
 
                 {app.eps_json?.occasion_note && (
-                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.p+'33',marginBottom:8}}>
+                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.pbd,marginBottom:8}}>
                     <p style={{fontSize:11,color:S.p,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0}}>{app.eps_json.occasion_note}</p>
                   </div>
@@ -588,10 +599,10 @@ export default function HostDashboard() {
                     })()}
                     <div style={{display:'flex',gap:8}}>
                       <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.red+'44',background:S.red+'10',cursor:'pointer'}}>
-                        ✕ Refuser
+                        Refuser
                       </button>
-                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
-                        {actionLoading===app.id ? '...' : '✓ Accepter'}
+                      <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} className="btn-shimmer" style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
+                        {actionLoading===app.id ? '...' : 'Accepter'}
                       </button>
                     </div>
                   </div>

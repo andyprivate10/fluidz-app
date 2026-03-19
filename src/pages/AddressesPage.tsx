@@ -19,7 +19,7 @@ type SavedAddress = {
   created_at: string
 }
 
-const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:'inherit',boxSizing:'border-box' }
+const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' }
 
 export default function AddressesPage() {
   const navigate = useNavigate()
@@ -144,7 +144,7 @@ export default function AddressesPage() {
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>Mes adresses</h1>
             <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length} adresse{addresses.length !== 1 ? 's' : ''} sauvegardée{addresses.length !== 1 ? 's' : ''}</p>
           </div>
-          <button onClick={openCreate} style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
+          <button onClick={openCreate} className='btn-shimmer' style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
             <Plus size={18} style={{ color:'#fff' }} />
           </button>
         </div>
@@ -190,7 +190,7 @@ export default function AddressesPage() {
                     </div>
                   )}
                   <div style={{ display:'flex',gap:8,marginTop:12 }}>
-                    <button onClick={() => openEdit(addr)} style={{ flex:1,padding:'8px',borderRadius:10,fontSize:12,fontWeight:600,color:S.p,border:'1px solid '+S.p+'44',background:S.p+'14',cursor:'pointer' }}>Modifier</button>
+                    <button onClick={() => openEdit(addr)} style={{ flex:1,padding:'8px',borderRadius:10,fontSize:12,fontWeight:600,color:S.p,border:'1px solid '+S.pbd,background:S.p2,cursor:'pointer' }}>Modifier</button>
                     <button onClick={() => deleteAddress(addr.id)} style={{ padding:'8px 12px',borderRadius:10,fontSize:12,color:S.red,border:'1px solid '+S.red+'33',background:'transparent',cursor:'pointer' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export default function AddressesPage() {
                 </button>
               </div>
 
-              <button onClick={save} disabled={saving || !label.trim() || !exactAddress.trim()} style={{
+              <button onClick={save} disabled={saving || !label.trim() || !exactAddress.trim()} className='btn-shimmer' style={{
                 width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
                 cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || !exactAddress.trim() ? 0.6 : 1,
               }}>

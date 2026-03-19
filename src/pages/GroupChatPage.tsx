@@ -324,9 +324,9 @@ export default function GroupChatPage() {
         {isHost && (
           <button onClick={toggleGroupChat} style={{
             padding:'6px 10px', borderRadius:10, fontSize:11, fontWeight:600, cursor:'pointer',
-            background: session.group_chat_enabled ? S.sage+'18' : S.p+'18',
+            background: session.group_chat_enabled ? S.sage+'18' : S.p2,
             color: session.group_chat_enabled ? S.sage : S.p,
-            border:'1px solid ' + (session.group_chat_enabled ? S.sage+'44' : S.p+'44'),
+            border:'1px solid ' + (session.group_chat_enabled ? S.sage+'44' : S.pbd),
           }}>
             {session.group_chat_enabled ? 'ON' : 'OFF'}
           </button>
@@ -364,7 +364,7 @@ export default function GroupChatPage() {
 
       {/* Not enabled banner for host */}
       {isHost && !session.group_chat_enabled && (
-        <div style={{ padding:'10px 16px', background:S.p+'12', borderBottom:'1px solid '+S.p+'33' }}>
+        <div style={{ padding:'10px 16px', background:S.p+'12', borderBottom:'1px solid '+S.pbd }}>
           <p style={{ margin:0, fontSize:12, color:S.p }}>
             Le group chat est désactivé. Clique "ON" pour l'activer pour les membres.
           </p>
@@ -396,7 +396,7 @@ export default function GroupChatPage() {
           return (
             <div key={msg.id} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
               {showName && (
-                <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.p+'44' }}>{msg.sender_name}</button>
+                <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.pbd }}>{msg.sender_name}</button>
               )}
               <div style={{
                 maxWidth:'78%', padding: msg.has_media ? 4 : '8px 12px', borderRadius:18, lineHeight:1.45,

@@ -284,7 +284,7 @@ export default function DirectDMPage() {
         <input
           type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}
-          placeholder="Message..." style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: 'inherit' }}
+          placeholder="Message..." style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         />
         <button onClick={handleSend} disabled={!newMessage.trim() || sending} style={{ width: 40, height: 40, borderRadius: 12, background: newMessage.trim() ? S.grad : S.bg2, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Send size={16} style={{ color: newMessage.trim() ? '#fff' : S.tx4 }} />
