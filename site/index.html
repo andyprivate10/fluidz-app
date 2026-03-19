@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluidz — Let's exchange fluidz</title>
+<meta name="description" content="Manage adult relationships. Group sessions, trust-based matching, private profiles. The After Grindr app.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#05040A;--bg1:#0D0C16;--bg2:#141222;--bg3:#1D1B2E;
+  --tx:#EDE8F5;--tx2:rgba(237,232,245,0.50);--tx3:rgba(237,232,245,0.22);--tx4:rgba(237,232,245,0.08);
+  --p:#E0887A;--p2:rgba(224,136,122,0.12);--p3:rgba(224,136,122,0.06);--pbd:rgba(224,136,122,0.28);
+  --sage:#6BA888;--sagebg:rgba(107,168,136,0.10);--sagebd:rgba(107,168,136,0.22);
+  --lav:#9080BA;--lavbg:rgba(144,128,186,0.10);--lavbd:rgba(144,128,186,0.22);
+  --rule:rgba(255,255,255,0.05);--rule2:rgba(255,255,255,0.09);
+  --fh:'Bricolage Grotesque',sans-serif;--fb:'Plus Jakarta Sans',sans-serif;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(224,136,122,0.3);color:#fff}
+body::before{content:'';position:fixed;inset:0;opacity:0.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);background:rgba(5,4,10,0.72);border-bottom:1px solid var(--rule)}
+.logo{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--p);letter-spacing:-0.04em}
+.nav-r{display:flex;gap:16px;align-items:center}
+.nav-r a{font-size:12px;font-weight:600;color:var(--tx3);transition:color 0.2s}
+.nav-r a:hover{color:var(--p)}
+.btn-s{padding:7px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s;border:none;display:inline-flex;align-items:center;gap:5px}
+.btn-sp{background:var(--p);color:#fff}.btn-sp:hover{box-shadow:0 4px 20px rgba(224,136,122,0.3);transform:translateY(-1px)}
+.btn-sg{background:transparent;color:var(--tx2);border:1px solid var(--rule2) !important}.btn-sg:hover{border-color:var(--pbd) !important;color:var(--p)}
+.btn-app{background:var(--bg2);color:var(--tx);border:1px solid var(--rule2) !important;font-weight:700}.btn-app:hover{border-color:var(--sagebd) !important;color:var(--sage)}
+.lang-btn{background:transparent;border:1px solid var(--rule2) !important;color:var(--tx3);font-size:10px;padding:5px 9px;border-radius:8px;cursor:pointer;font-family:var(--fb)}.lang-btn:hover{color:var(--p);border-color:var(--pbd) !important}
+
+/* SECTIONS */
+.sec{padding:120px 24px;max-width:960px;margin:0 auto;position:relative}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px}
+.sec-title{font-family:var(--fh);font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-0.04em;line-height:1.05;margin-bottom:20px}
+.sec-sub{font-size:15px;color:var(--tx2);line-height:1.7;max-width:520px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;padding:120px 24px 80px;overflow:hidden;background:url('https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1920&q=80&auto=format') center/cover no-repeat}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,4,10,0.82) 0%,rgba(5,4,10,0.70) 40%,rgba(5,4,10,0.92) 100%);pointer-events:none}
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);z-index:1}
+.o1{width:500px;height:500px;background:rgba(224,136,122,0.10);top:-120px;right:-160px;animation:od 11s ease-in-out infinite}
+.o2{width:420px;height:420px;background:rgba(144,128,186,0.07);bottom:-80px;left:-140px;animation:od 14s ease-in-out infinite reverse}
+.o3{width:280px;height:280px;background:rgba(107,168,136,0.05);top:35%;left:55%;animation:od 17s ease-in-out infinite}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:99px;border:1px solid var(--pbd);background:var(--p2);font-size:12px;font-weight:600;color:var(--p);margin-bottom:36px;animation:fu .6s ease both;z-index:2;position:relative}
+.hero-badge svg{opacity:0.7;position:relative;z-index:2}
+.hero h1{font-family:var(--fh);font-size:clamp(44px,9vw,78px);font-weight:800;letter-spacing:-0.05em;line-height:0.90;margin-bottom:16px;animation:fu .6s .1s ease both;max-width:760px;z-index:2;position:relative}
+.hero h1 em{font-style:normal;color:var(--p);position:relative;text-shadow:0 0 60px rgba(224,136,122,0.3)}
+.hero h1 em::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--p);border-radius:2px;opacity:0.5}
+.tagline{font-family:var(--fh);font-size:clamp(16px,3vw,22px);font-weight:700;color:var(--tx2);letter-spacing:-0.03em;margin-bottom:28px;animation:fu .6s .15s ease both;z-index:2;position:relative}
+.tagline span{color:var(--p)}
+.hero-p{font-size:clamp(14px,2vw,17px);color:var(--tx2);max-width:500px;line-height:1.65;margin-bottom:40px;animation:fu .6s .2s ease both;z-index:2;position:relative}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fu .6s .3s ease both;z-index:2;position:relative}
+.btn-l{padding:15px 36px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--fb);border:none;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(224,136,122,0.3)}
+.btn-p::after{content:'';position:absolute;top:0;left:-180%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);animation:shm 3s ease-in-out infinite}
+.btn-g{background:transparent;color:var(--tx);border:1px solid var(--rule2)}.btn-g:hover{border-color:var(--pbd);background:var(--p3)}
+
+/* MANIFESTO */
+.manifesto{text-align:center;padding:100px 24px;position:relative;max-width:960px;margin:0 auto}
+.manifesto::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:60px;background:linear-gradient(180deg,transparent,var(--p),transparent)}
+.manifesto blockquote{font-family:var(--fh);font-size:clamp(20px,4vw,32px);font-weight:800;letter-spacing:-0.03em;line-height:1.25;max-width:640px;margin:0 auto 24px}
+.manifesto blockquote em{font-style:normal;color:var(--p)}
+.manifesto p{font-size:14px;color:var(--tx2);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* AFTER GRINDR */
+.after{padding:80px 24px;max-width:740px;margin:0 auto}
+.after-card{background:var(--bg1);border:1px solid var(--pbd);border-radius:24px;padding:40px 32px;position:relative;overflow:hidden}
+.after-card::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(224,136,122,0.08),transparent 70%);pointer-events:none}
+.after h2{font-family:var(--fh);font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-0.04em;margin-bottom:20px;line-height:1.1}
+.after h2 span{color:var(--p)}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.ai{display:flex;align-items:flex-start;gap:10px;padding:14px;border-radius:14px;background:rgba(255,255,255,0.02);border:1px solid var(--rule)}
+.ai .x{color:#F87171;font-weight:700;font-size:14px;flex-shrink:0;margin-top:1px}
+.ai .ck{color:var(--sage);font-weight:700;font-size:14px;flex-shrink:0;margin-top:1px}
+.ai p{font-size:12px;color:var(--tx2);line-height:1.5}
+.ai strong{color:var(--tx);font-weight:600}
+
+/* FEATURES */
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:40px}
+.fc{background:var(--bg1);border:1px solid var(--rule);border-radius:20px;padding:28px 24px;transition:border-color .3s,transform .3s}
+.fc:hover{border-color:var(--pbd);transform:translateY(-3px)}
+.fi{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.fc h3{font-family:var(--fh);font-size:16px;font-weight:800;margin-bottom:6px;letter-spacing:-0.02em}
+.fc p{font-size:13px;color:var(--tx2);line-height:1.6}
+
+/* HOW */
+.hw{display:flex;flex-direction:column;gap:0;position:relative;margin-top:40px}
+.hw::before{content:'';position:absolute;left:23px;top:28px;bottom:28px;width:2px;background:linear-gradient(180deg,var(--p),var(--lav),var(--sage),var(--p))}
+.st{display:flex;gap:20px;align-items:flex-start;padding:20px 0}
+.sn{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:800;font-size:16px;flex-shrink:0;z-index:1}
+.st h3{font-family:var(--fh);font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}
+.st p{font-size:13px;color:var(--tx2);line-height:1.6}
+
+/* APP PREVIEW */
+.preview{padding:80px 24px;text-align:center}
+.pg{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.ps{width:220px;height:400px;border-radius:28px;background:var(--bg2);border:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;overflow:hidden}
+.ps::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(224,136,122,0.04) 100%)}
+.ps .pi{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.ps .pl{font-size:12px;font-weight:600;color:var(--tx3)}
+.ps .pt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:4px 10px;border-radius:99px;color:var(--p);background:var(--p2);border:1px solid var(--pbd)}
+
+/* PRO BANNER */
+.pro-banner{padding:80px 24px;text-align:center;position:relative}
+.pro-banner-inner{max-width:700px;margin:0 auto;background:var(--bg1);border:1px solid var(--lavbd);border-radius:24px;padding:40px 32px;position:relative;overflow:hidden}
+.pro-banner-inner::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(144,128,186,0.08),transparent 70%);pointer-events:none}
+.pro-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:99px;background:var(--lavbg);border:1px solid var(--lavbd);font-size:11px;font-weight:700;color:var(--lav);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px}
+.btn-lav{padding:13px 28px;border-radius:14px;font-size:14px;font-weight:700;color:#fff;background:var(--lav);border:none;cursor:pointer;font-family:var(--fb);transition:all .2s;position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px}
+.btn-lav::after{content:'';position:absolute;top:0;left:-180%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);animation:shm 3s ease-in-out infinite}
+.btn-lav:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(144,128,186,0.3)}
+
+/* WAITLIST */
+.waitlist{padding:100px 24px;text-align:center}
+.wf{display:flex;gap:8px;max-width:440px;margin:24px auto 0;flex-wrap:wrap;justify-content:center}
+.wf input{flex:1;min-width:200px;padding:14px 18px;border-radius:14px;border:1px solid var(--rule2);background:var(--bg2);color:var(--tx);font-size:14px;font-family:var(--fb);outline:none;transition:border-color .2s}
+.wf input:focus{border-color:var(--pbd)}
+.wf input::placeholder{color:var(--tx3)}
+.wn{font-size:11px;color:var(--tx3);margin-top:12px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.5}
+
+/* FOOTER */
+footer{padding:48px 24px 32px;border-top:1px solid var(--rule);max-width:960px;margin:0 auto}
+.ft{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px;margin-bottom:32px}
+.ft-b .logo{margin-bottom:8px}
+.ft-b p{font-size:12px;color:var(--tx3);max-width:260px;line-height:1.6}
+.ft-ls{display:flex;gap:40px}
+.ft-c h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--tx3);margin-bottom:12px}
+.ft-c a{display:block;font-size:13px;color:var(--tx2);margin-bottom:8px;transition:color .2s}
+.ft-c a:hover{color:var(--p)}
+.ft-btm{text-align:center;padding-top:24px;border-top:1px solid var(--rule)}
+.ft-btm p{font-size:11px;color:var(--tx3)}
+
+@keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes od{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(22px,-16px) scale(1.08)}66%{transform:translate(-14px,20px) scale(0.94)}}
+@keyframes shm{0%{left:-180%}100%{left:200%}}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.v{opacity:1;transform:translateY(0)}
+
+@media(max-width:700px){
+  nav{padding:12px 16px}.nav-r{gap:8px}.nav-r a.hm{display:none}
+  .hero{padding:100px 20px 60px}.sec{padding:80px 20px}
+  .ag{grid-template-columns:1fr}.after-card{padding:28px 20px}
+  .pg{gap:10px}.ps{width:160px;height:300px}
+  .ft{flex-direction:column}.ft-ls{gap:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">fluidz</a>
+  <div class="nav-r">
+    <a href="#features" class="hm" data-fr="Features" data-en="Features">Features</a>
+    <a href="#how" class="hm" data-fr="Comment ça marche" data-en="How it works">How it works</a>
+    <a href="pro.html" class="hm" style="color:var(--lav)" data-fr="Fluidz Pro" data-en="Fluidz Pro">Fluidz Pro</a>
+    <a href="https://fluidz-app.netlify.app" class="btn-s btn-app" target="_blank">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></svg>
+      <span data-fr="Ouvrir l'app" data-en="Open App">Open App</span>
+    </a>
+    <button class="lang-btn" onclick="toggleLang()">FR</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="hero-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <span data-fr="Actuellement en accès sur invitation" data-en="Currently invite-only">Currently invite-only</span>
+  </div>
+  <h1><span data-fr="Des relations" data-en="Manage adult">Manage adult</span><br><em data-fr="sans limites" data-en="relationships">relationships</em></h1>
+  <div class="tagline">Let's exchange <span>fluidz</span></div>
+  <p class="hero-p" data-fr="Un seul lien pour recruter ton groupe. Profils privés, votes de confiance, check-in sécurisé. Aucun WhatsApp, aucune photo qui circule." data-en="One link to build your crew. Private profiles, trust-based voting, secure check-in. No WhatsApp chaos, no pictures floating around.">One link to build your crew. Private profiles, trust-based voting, secure check-in. No WhatsApp chaos, no pictures floating around.</p>
+  <div class="hero-cta">
+    <a href="#waitlist" class="btn-l btn-p" data-fr="Demander un accès" data-en="Request access">Request access</a>
+    <a href="#how" class="btn-l btn-g" data-fr="Voir comment ça marche" data-en="See how it works">See how it works</a>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto rv">
+  <blockquote data-fr="Parce que les relations modernes sont <em>fluides</em>. Et elles méritent une app qui les assume." data-en="Because modern relationships are <em>fluid</em>. And they deserve an app that embraces them.">Because modern relationships are <em>fluid</em>. And they deserve an app that embraces them.</blockquote>
+  <p data-fr="Liberté individuelle. Libération sexuelle. Des relations humaines qui évoluent. Fluidz assume tout — et transforme les rencontres en connexions réelles." data-en="Individual freedom. Sexual liberation. Human connections that evolve. Fluidz embraces all of it — and turns encounters into real connections.">Individual freedom. Sexual liberation. Human connections that evolve. Fluidz embraces all of it — and turns encounters into real connections.</p>
+</section>
+
+<!-- AFTER GRINDR -->
+<section class="after">
+  <div class="after-card rv">
+    <div class="sec-label" style="color:var(--p)" data-fr="Le problème" data-en="The problem">The problem</div>
+    <h2 data-fr="L'app <span>après Grindr</span>" data-en="The <span>After Grindr</span> app">The <span>After Grindr</span> app</h2>
+    <p style="font-size:14px;color:var(--tx2);line-height:1.7" data-fr="Grindr c'est le début. Mais après ? WhatsApp, photos qui circulent, gêne, pas de structure. Fluidz prend le relais." data-en="Grindr is where it starts. But then what? WhatsApp groups, private pictures circulating, awkwardness, no structure. Fluidz takes over.">Grindr is where it starts. But then what? WhatsApp groups, private pictures circulating, awkwardness, no structure. Fluidz takes over.</p>
+    <div class="ag">
+      <div class="ai"><span class="x">✕</span><div><strong>WhatsApp</strong><p data-fr="Photos qui circulent, groupes bordéliques" data-en="Pictures floating around, messy groups">Pictures floating around, messy groups</p></div></div>
+      <div class="ai"><span class="ck">→</span><div><strong>Fluidz</strong><p data-fr="Profils privés, partage sélectif, structuré" data-en="Private profiles, selective sharing, structured">Private profiles, selective sharing, structured</p></div></div>
+      <div class="ai"><span class="x">✕</span><div><strong data-fr="Gêne & chaos" data-en="Awkwardness">Awkwardness</strong><p data-fr="Qui vient ? C'est où ? C'est qui ?" data-en="Who's coming? Where is it? Who is this?">Who's coming? Where is it? Who is this?</p></div></div>
+      <div class="ai"><span class="ck">→</span><div><strong data-fr="Structure & confiance" data-en="Structure & trust">Structure & trust</strong><p data-fr="Candidatures, votes, check-in, VibeScore" data-en="Applications, votes, check-in, VibeScore">Applications, votes, check-in, VibeScore</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="sec">
+  <div class="sec-label rv" style="color:var(--sage)" data-fr="Ce que Fluidz fait" data-en="What Fluidz does">What Fluidz does</div>
+  <h2 class="sec-title rv" data-fr="Un lien. Un groupe. Ce soir." data-en="One link. One crew. Tonight.">One link. One crew. Tonight.</h2>
+  <p class="sec-sub rv" data-fr="Tout pour organiser, recruter, et gérer tes plans de groupe — et tes relations au fil du temps." data-en="Everything to organize, recruit, and manage your group sessions — and your relationships over time.">Everything to organize, recruit, and manage your group sessions — and your relationships over time.</p>
+  <div class="fg">
+    <div class="fc rv"><div class="fi" style="background:var(--p2);border:1px solid var(--pbd)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div><h3 data-fr="Un lien, tout inclus" data-en="One link for everything">One link for everything</h3><p data-fr="Partage un seul lien. Les candidats voient la session, postulent, partagent leur profil. Zéro friction." data-en="Share one link. Candidates see the session, apply, share their profile. Zero friction.">Share one link. Candidates see the session, apply, share their profile. Zero friction.</p></div>
+    <div class="fc rv"><div class="fi" style="background:var(--lavbg);border:1px solid var(--lavbd)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--lav)" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><h3 data-fr="Recrutement structuré" data-en="Structured recruitment">Structured recruitment</h3><p data-fr="Candidatures, votes consultatifs, le host décide. Pas de groupe WhatsApp chaotique." data-en="Applications, advisory votes, the host decides. No chaotic WhatsApp group.">Applications, advisory votes, the host decides. No chaotic WhatsApp group.</p></div>
+    <div class="fc rv"><div class="fi" style="background:var(--sagebg);border:1px solid var(--sagebd)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3 data-fr="VibeScore — confiance" data-en="VibeScore — trust">VibeScore — trust</h3><p data-fr="Chaque rencontre construit ta réputation. Reviews anonymes, score visible. La communauté se régule." data-en="Every encounter builds reputation. Anonymous reviews, visible score. The community self-regulates.">Every encounter builds reputation. Anonymous reviews, visible score. The community self-regulates.</p></div>
+    <div class="fc rv"><div class="fi" style="background:var(--p2);border:1px solid var(--pbd)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h3 data-fr="Profil modulaire" data-en="Modular profiles">Modular profiles</h3><p data-fr="Public, adulte, santé — tu choisis ce que tu montres, à qui, quand. Rien partagé par défaut." data-en="Public, adult, health — you choose what to show, to whom, when. Nothing shared by default.">Public, adult, health — you choose what to show, to whom, when. Nothing shared by default.</p></div>
+    <div class="fc rv"><div class="fi" style="background:var(--lavbg);border:1px solid var(--lavbd)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--lav)" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div><h3 data-fr="Naughty Book" data-en="Naughty Book">Naughty Book</h3><p data-fr="Gère tes contacts au fil du temps. Favoris, notes, historique. Tes relations évoluent, ton Book aussi." data-en="Manage contacts over time. Favorites, notes, history. Relationships evolve, your Book does too.">Manage contacts over time. Favorites, notes, history. Relationships evolve, your Book does too.</p></div>
+    <div class="fc rv"><div class="fi" style="background:var(--sagebg);border:1px solid var(--sagebd)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3 data-fr="Sessions planifiées" data-en="Planned sessions">Planned sessions</h3><p data-fr="Lance maintenant ou programme à l'avance. Durée, places, rôles recherchés." data-en="Launch now or schedule ahead. Duration, spots, roles wanted. Everything managed.">Launch now or schedule ahead. Duration, spots, roles wanted. Everything managed.</p></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="sec">
+  <div class="sec-label rv" style="color:var(--lav)" data-fr="Rejoindre un groupe" data-en="Join a group">Join a group</div>
+  <h2 class="sec-title rv" data-fr="Quelqu'un t'envoie un code. C'est parti." data-en="Someone sends you a code. Let's go.">Someone sends you a code. Let's go.</h2>
+  <p class="sec-sub rv" data-fr="Pas besoin de compte. Tu reçois un lien, tu postules. Le host décide." data-en="No account needed. You get a link, you apply. The host decides.">No account needed. You get a link, you apply. The host decides.</p>
+  <div class="hw">
+    <div class="st rv"><div class="sn" style="background:var(--p2);border:1.5px solid var(--pbd);color:var(--p)">1</div><div><h3 data-fr="Reçois un lien" data-en="Get a link">Get a link</h3><p data-fr="Quelqu'un te partage un lien Fluidz — sur Grindr, WhatsApp, Telegram, en vrai." data-en="Someone shares a Fluidz link — on Grindr, WhatsApp, Telegram, IRL.">Someone shares a Fluidz link — on Grindr, WhatsApp, Telegram, IRL.</p></div></div>
+    <div class="st rv"><div class="sn" style="background:var(--lavbg);border:1.5px solid var(--lavbd);color:var(--lav)">2</div><div><h3 data-fr="Choisis ce que tu montres" data-en="Choose what to share">Choose what to share</h3><p data-fr="Sélectionne tes sections profil : public, adulte, santé. Photo par photo." data-en="Select profile sections: public, adult, health. Photo by photo.">Select profile sections: public, adult, health. Photo by photo.</p></div></div>
+    <div class="st rv"><div class="sn" style="background:var(--sagebg);border:1.5px solid var(--sagebd);color:var(--sage)">3</div><div><h3 data-fr="Le groupe vote" data-en="The group votes">The group votes</h3><p data-fr="Les membres votent. Le host accepte. L'adresse exacte se dévoile." data-en="Members vote. Host accepts. The exact address is revealed.">Members vote. Host accepts. The exact address is revealed.</p></div></div>
+    <div class="st rv"><div class="sn" style="background:var(--p2);border:1.5px solid var(--pbd);color:var(--p)">4</div><div><h3 data-fr="Check-in & Go" data-en="Check-in & Go">Check-in & Go</h3><p data-fr="Confirme ton arrivée. Le host valide. Directions step-by-step." data-en="Confirm arrival. Host validates. Step-by-step directions.">Confirm arrival. Host validates. Step-by-step directions.</p></div></div>
+  </div>
+</section>
+
+<!-- APP PREVIEW -->
+<section class="preview">
+  <div class="sec-label rv" style="color:var(--p);text-align:center" data-fr="Aperçu" data-en="Preview">Preview</div>
+  <h2 class="sec-title rv" style="text-align:center;margin:0 auto 0" data-fr="Conçue pour l'intimité" data-en="Designed for intimacy">Designed for intimacy</h2>
+  <div class="pg">
+    <div class="ps rv"><div class="pi" style="background:var(--p2);border:1px solid var(--pbd)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="pl" data-fr="Profil modulaire" data-en="Modular profile">Modular profile</div><div class="pt" data-fr="Bientôt" data-en="Coming soon">Coming soon</div></div>
+    <div class="ps rv"><div class="pi" style="background:var(--lavbg);border:1px solid var(--lavbd)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lav)" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="pl" data-fr="Host Dashboard" data-en="Host Dashboard">Host Dashboard</div><div class="pt" data-fr="Bientôt" data-en="Coming soon">Coming soon</div></div>
+    <div class="ps rv"><div class="pi" style="background:var(--sagebg);border:1px solid var(--sagebd)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="pl" data-fr="Chat privé" data-en="Private chat">Private chat</div><div class="pt" data-fr="Bientôt" data-en="Coming soon">Coming soon</div></div>
+  </div>
+</section>
+
+<!-- PRO BANNER -->
+<section class="pro-banner">
+  <div class="pro-banner-inner rv">
+    <div class="pro-badge">Pro</div>
+    <h2 class="sec-title" style="text-align:center;margin:0 auto 12px" data-fr="Tu organises des soirées ?" data-en="Organizing events?">Organizing events?</h2>
+    <p style="font-size:14px;color:var(--tx2);line-height:1.6;max-width:440px;margin:0 auto 24px" data-fr="Fluidz Pro offre des outils professionnels : QR check-in, vestiaire digital, gestion staff, réservations par vagues." data-en="Fluidz Pro offers professional tools: QR check-in, digital cloakroom, staff management, wave booking.">Fluidz Pro offers professional tools: QR check-in, digital cloakroom, staff management, wave booking.</p>
+    <a href="pro.html" class="btn-lav" data-fr="Découvrir Fluidz Pro" data-en="Discover Fluidz Pro">
+      Discover Fluidz Pro
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- VISION -->
+<section class="manifesto rv" style="padding-top:60px">
+  <blockquote data-fr="Les rencontres sexuelles peuvent devenir des dates. Les dates des relations. Les relations, ce que <em>tu</em> en fais." data-en="Sexual encounters can become dates. Dates become relationships. Relationships become whatever <em>you</em> make them.">Sexual encounters can become dates. Dates become relationships. Relationships become whatever <em>you</em> make them.</blockquote>
+  <p data-fr="Fluidz gère l'intent matching : qui tu rencontres, comment tes relations évoluent, et la multiplication des connexions de qualité." data-en="Fluidz manages intent matching: who you meet, how relationships evolve, and multiplying quality connections.">Fluidz manages intent matching: who you meet, how relationships evolve, and multiplying quality connections.</p>
+</section>
+
+<!-- WAITLIST -->
+<section id="waitlist" class="waitlist">
+  <div class="sec-label rv" style="color:var(--p);text-align:center" data-fr="Accès anticipé" data-en="Early access">Early access</div>
+  <h2 class="sec-title rv" style="text-align:center;margin:0 auto 0" data-fr="Demande ton invitation" data-en="Request your invite">Request your invite</h2>
+  <p class="rv" style="color:var(--tx2);font-size:14px;max-width:400px;margin:12px auto 0;line-height:1.6" data-fr="Fluidz est en accès sur invitation. Inscris-toi ou demande un code à un ami." data-en="Fluidz is invite-only. Sign up or get a code from a friend already using it.">Fluidz is invite-only. Sign up or get a code from a friend already using it.</p>
+  <form class="wf rv" onsubmit="handleWL(event)"><input type="email" placeholder="you@email.com" required id="wl-e"><button type="submit" class="btn-l btn-p" data-fr="Rejoindre" data-en="Join">Join</button></form>
+  <p class="wn" data-fr="Pas de spam. Un email quand ton accès est prêt." data-en="No spam. One email when your access is ready.">No spam. One email when your access is ready.</p>
+  <p id="wl-m" style="font-size:13px;color:var(--sage);margin-top:14px;display:none;font-weight:600"></p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft">
+    <div class="ft-b"><div class="logo" style="font-size:18px">fluidz</div><p data-fr="Conçu pour la communauté queer. Paris, 2026." data-en="Made for the queer community. Paris, 2026.">Made for the queer community. Paris, 2026.</p></div>
+    <div class="ft-ls">
+      <div class="ft-c"><h4>Product</h4><a href="#features">Features</a><a href="#how">How it works</a><a href="pro.html">Fluidz Pro</a><a href="#waitlist">Waitlist</a></div>
+      <div class="ft-c"><h4>App</h4><a href="https://fluidz-app.netlify.app" target="_blank" data-fr="Ouvrir l'app" data-en="Open App">Open App</a></div>
+      <div class="ft-c"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </div>
+  </div>
+  <div class="ft-btm"><p>© 2026 Fluidz · Let's exchange fluidz</p></div>
+</footer>
+
+<script>
+let lang='en'
+function toggleLang(){lang=lang==='en'?'fr':'en';document.querySelector('.lang-btn').textContent=lang==='en'?'FR':'EN';document.querySelectorAll('[data-fr]').forEach(el=>{const v=el.getAttribute('data-'+lang);if(v.includes('<em>'))el.innerHTML=v;else el.textContent=v})}
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target)}})},{threshold:0.12})
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el))
+function handleWL(e){e.preventDefault();const m=document.getElementById('wl-m');m.style.display='block';m.textContent=lang==='fr'?"Merci ! On te tient au courant.":"Thanks! We'll keep you posted.";document.getElementById('wl-e').value=''}
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Fluidz Marketing Site — Netlify config
+# Deploy from /site/ directory
+
+[build]
+  publish = "site/"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
