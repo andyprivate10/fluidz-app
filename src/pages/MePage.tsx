@@ -8,11 +8,9 @@ import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Bell, BookOpen, Users, MapPin, Eye, Share2, Heart } from 'lucide-react'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 
-const MORPHOLOGIES = ['Mince','Sportif','Athlétique','Moyen','Costaud','Musclé','Gros']
-const ROLES = ['Top','Bottom','Versa','Side']
 const PREP_OPTIONS = ['Actif','Inactif','Non']
-const KINKS_LIST = ['Fist', 'SM léger', 'SM hard', 'Bareback', 'Group', 'Exhib', 'Voyeur', 'Fétichisme', 'Jeux de rôle']
 
 const BODY_PARTS = [
   { id: 'torse', label: 'Torse' },
@@ -74,6 +72,7 @@ function Section({ title, badge, children }: { title:string; badge?:string; chil
 }
 
 export default function MePage() {
+  const { kinks: kinkOptions, morphologies, roles } = useAdminConfig()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const devMode = searchParams.get('dev') === '1'
@@ -605,16 +604,16 @@ export default function MePage() {
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Morphologie</label>
                 <select value={morphology} onChange={e => setMorphology(e.target.value)} style={inputStyle}>
                   <option value="">-- Choisir --</option>
-                  {MORPHOLOGIES.map(m => (
-                    <option key={m} value={m}>{m}</option>
+                  {morphologies.map(m => (
+                    <option key={m.label} value={m.label}>{m.label}</option>
                   ))}
                 </select>
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Role</label>
                 <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                  {ROLES.map(r => (
-                    <Chip key={r} label={r} active={role===r} onClick={() => setRole(role===r?'':r)} />
+                  {roles.map(r => (
+                    <Chip key={r.label} label={r.label} active={role===r.label} onClick={() => setRole(role===r.label?'':r.label)} />
                   ))}
                 </div>
               </div>
@@ -735,8 +734,8 @@ export default function MePage() {
 
           <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''}` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {KINKS_LIST.map(k => (
-                <Chip key={k} label={k} active={kinks.includes(k)} onClick={() => toggleKink(k)} />
+              {kinkOptions.map(k => (
+                <Chip key={k.label} label={k.label} active={kinks.includes(k.label)} onClick={() => toggleKink(k.label)} />
               ))}
             </div>
           </Section>

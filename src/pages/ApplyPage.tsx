@@ -2,14 +2,22 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { showToast } from '../components/Toast'
 import { supabase } from '../lib/supabase'
-import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye, ArrowLeft } from 'lucide-react'
+import { User, Drama, Dumbbell, Flame, Heart, ShieldOff, Camera, Zap, Eye, ArrowLeft, Grid3X3 } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 
 const S = colors
 
-const ROLE_OPTIONS = ['Top', 'Bottom', 'Versa', 'Side']
+const BODY_PARTS = [
+  { id: 'torse', label: 'Torse' },
+  { id: 'bite', label: 'Bite' },
+  { id: 'cul', label: 'Cul' },
+  { id: 'pieds', label: 'Pieds' },
+  { id: 'full', label: 'Full body' },
+  { id: 'autre', label: 'Autre' },
+]
 
 type Section = { id: string; label: string; icon: typeof Camera; desc: string }
 
@@ -21,6 +29,7 @@ const BLOC_PROFIL: Section[] = [
 
 const BLOC_ADULTE: Section[] = [
   {id:'photos_adulte',label:'Photos & vidéos adultes',icon:Eye,desc:'contenu NSFW'},
+  {id:'body_part_photos',label:'Photos par zone',icon:Grid3X3,desc:'torse, bite, cul...'},
   {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
   {id:'pratiques',label:'Pratiques',icon:Flame,desc:'kinks & pratiques'},
   {id:'limites',label:'Limites',icon:ShieldOff,desc:'hard limits, no-go'},
@@ -35,6 +44,7 @@ const GUEST_TOKEN_KEY = 'guest_token'
 const GUEST_SESSION_KEY = 'guest_session_id'
 
 export default function ApplyPage() {
+  const { roles } = useAdminConfig()
   const { id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -47,6 +57,7 @@ export default function ApplyPage() {
   const [selectedPhotosProfil, setSelectedPhotosProfil] = useState<string[]>([])
   const [selectedPhotosAdulte, setSelectedPhotosAdulte] = useState<string[]>([])
   const [selectedVideosAdulte, setSelectedVideosAdulte] = useState<string[]>([])
+  const [selectedBodyParts, setSelectedBodyParts] = useState<Record<string, string>>({})
   const [selectedRole, setSelectedRole] = useState<string>('')
   const [note, setNote] = useState('')
   const [messageToHost, setMessageToHost] = useState('')
@@ -93,6 +104,7 @@ export default function ApplyPage() {
             if (pj.limits) hasSections.push('limites')
             if (pj.photos_profil?.length) hasSections.push('photos_profil')
             if (pj.photos_intime?.length || pj.videos_intime?.length) hasSections.push('photos_adulte')
+            if (pj.body_part_photos && Object.keys(pj.body_part_photos).length) { hasSections.push('body_part_photos'); setSelectedBodyParts(pj.body_part_photos) }
             setEnabled(hasSections)
           } else {
             setEnabled(['basics', 'role', 'occasion'])
@@ -156,6 +168,8 @@ export default function ApplyPage() {
         const padulte = Array.isArray(pj.photos_intime) ? pj.photos_intime : []
         const vadulte = Array.isArray(pj.videos_intime) ? pj.videos_intime : (Array.isArray(pj.videos) ? pj.videos : [])
         if (padulte.length > 0 || vadulte.length > 0) filled.push('photos_adulte')
+        // Body part photos
+        if (pj.body_part_photos && Object.keys(pj.body_part_photos).length > 0) { filled.push('body_part_photos'); setSelectedBodyParts(pj.body_part_photos) }
         setEnabled(filled)
         // Pre-select all media
         setSelectedPhotosProfil(pprofil)
@@ -220,6 +234,7 @@ export default function ApplyPage() {
           selected_photos_profil: enabled.includes('photos_profil') ? selectedPhotosProfil : [],
           selected_photos_adulte: enabled.includes('photos_adulte') ? selectedPhotosAdulte : [],
           selected_videos_adulte: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+          selected_body_part_photos: enabled.includes('body_part_photos') ? selectedBodyParts : {},
           selected_photos: [...(enabled.includes('photos_profil') ? selectedPhotosProfil : []), ...(enabled.includes('photos_adulte') ? selectedPhotosAdulte : [])],
           selected_videos: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
         },
@@ -242,6 +257,7 @@ export default function ApplyPage() {
         selected_photos_profil: enabled.includes('photos_profil') ? selectedPhotosProfil : [],
         selected_photos_adulte: enabled.includes('photos_adulte') ? selectedPhotosAdulte : [],
         selected_videos_adulte: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+        selected_body_part_photos: enabled.includes('body_part_photos') ? selectedBodyParts : {},
         // Backward compat
         selected_photos: [...(enabled.includes('photos_profil') ? selectedPhotosProfil : []), ...(enabled.includes('photos_adulte') ? selectedPhotosAdulte : [])],
         selected_videos: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
@@ -365,14 +381,14 @@ export default function ApplyPage() {
           <div style={{marginBottom:16}}>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Votre rôle</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-              {ROLE_OPTIONS.map(role => {
-                const on = selectedRole === role
+              {roles.map(r => {
+                const on = selectedRole === r.label
                 return (
-                  <button key={role} type="button" onClick={() => setSelectedRole(on ? '' : role)} style={{
+                  <button key={r.label} type="button" onClick={() => setSelectedRole(on ? '' : r.label)} style={{
                     padding:'6px 14px',borderRadius:99,fontSize:13,fontWeight:600,
                     border:on?'none':'1px solid '+S.rule,
                     background:on?S.grad:S.bg2,color:on?'#fff':S.tx3,cursor:'pointer',
-                  }}>{role}</button>
+                  }}>{r.label}</button>
                 )
               })}
             </div>
@@ -391,6 +407,7 @@ export default function ApplyPage() {
                 case 'limites': return pj.limits ? pj.limits.slice(0, 40) + (pj.limits.length > 40 ? '…' : '') : ''
                 case 'photos_profil': { const pp = Array.isArray(pj.photos_profil) ? pj.photos_profil : (Array.isArray(pj.photos) ? pj.photos : pj.avatar_url ? [pj.avatar_url] : []); return pp.length > 0 ? `${selectedPhotosProfil.length}/${pp.length}` : '' }
                 case 'photos_adulte': { const pa = Array.isArray(pj.photos_intime) ? pj.photos_intime : []; const va = Array.isArray(pj.videos_intime) ? pj.videos_intime : []; const t = selectedPhotosAdulte.length + selectedVideosAdulte.length; return (pa.length + va.length) > 0 ? `${t}/${pa.length + va.length}` : '' }
+                case 'body_part_photos': { const bp = pj.body_part_photos || {}; const total = Object.keys(bp).filter(k => bp[k]).length; const sel = Object.keys(selectedBodyParts).filter(k => selectedBodyParts[k]).length; return total > 0 ? `${sel}/${total} zones` : '' }
                 default: return ''
               }
             }
@@ -484,6 +501,34 @@ export default function ApplyPage() {
               )
             }
 
+            function renderBodyPartSubSelection() {
+              if (!enabled.includes('body_part_photos') || guestMode) return null
+              const bp: Record<string, string> = pj.body_part_photos || {}
+              const entries = Object.entries(bp).filter(([, url]) => url)
+              if (entries.length === 0) return null
+              return (
+                <div style={{marginTop:6,marginLeft:28,padding:10,background:S.bg1,borderRadius:12,border:'1px solid '+S.p+'33'}}>
+                  <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                    {entries.map(([partId, url]) => {
+                      const on = !!selectedBodyParts[partId]
+                      const partLabel = BODY_PARTS.find(b => b.id === partId)?.label || partId
+                      return (
+                        <button key={partId} type="button" onClick={() => setSelectedBodyParts(prev => {
+                          const next = { ...prev }
+                          if (on) delete next[partId]; else next[partId] = url
+                          return next
+                        })} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+S.p : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
+                          <img src={url} alt={partLabel} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                          {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:'#fff',fontWeight:800}}>✓</div>}
+                          <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.6)',fontSize:8,color:'#fff',textAlign:'center',padding:'1px 0'}}>{partLabel}</div>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            }
+
             return (
               <>
                 {/* BLOC PROFIL */}
@@ -504,6 +549,7 @@ export default function ApplyPage() {
                     <div key={sec.id}>
                       {renderSection(sec)}
                       {sec.id === 'photos_adulte' && renderPhotoSubSelection('adulte')}
+                      {sec.id === 'body_part_photos' && renderBodyPartSubSelection()}
                     </div>
                   ))}
                 </div>

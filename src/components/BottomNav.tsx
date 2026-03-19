@@ -18,13 +18,23 @@ const tabs = [
     ),
   },
   {
-    id: 'discover',
+    id: 'profiles',
     path: '/explore',
-    label: 'Discover',
+    label: 'Profiles',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <circle cx="11" cy="11" r="8"/>
         <path d="m21 21-4.35-4.35"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'chats',
+    path: '/chats',
+    label: 'Chats',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
     ),
   },
@@ -57,6 +67,7 @@ export default function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
+  const [unreadChatCount, setUnreadChatCount] = useState(0)
   const [hasNewApplication, setHasNewApplication] = useState(false)
 
   useEffect(() => {
@@ -65,6 +76,9 @@ export default function BottomNav() {
       supabase.from('notifications').select('*', { count: 'exact', head: true })
         .eq('user_id', user.id).is('read_at', null)
         .then(({ count }) => setUnreadNotifCount(count ?? 0))
+      supabase.from('notifications').select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
+        .then(({ count }) => setUnreadChatCount(count ?? 0))
       supabase.from('sessions').select('id').eq('host_id', user.id).eq('status', 'open')
         .then(({ data: sessions }) => {
           if (!sessions || sessions.length === 0) return
@@ -109,6 +123,7 @@ export default function BottomNav() {
         {tabs.map(tab => {
           const isActive = tab.id === active
           const showDot = (tab.id === 'plans' && hasNewApplication) ||
+                          (tab.id === 'chats' && unreadChatCount > 0) ||
                           (tab.id === 'me' && unreadNotifCount > 0)
 
           return (

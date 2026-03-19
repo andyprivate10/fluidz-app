@@ -5,7 +5,7 @@
 
 ## PHASE 1-4: DESIGN SYSTEM V1 ✅ DONE
 Voir historique dans les transcripts. Tout est applique :
-brand.ts, OrbLayer, BottomNav 4 tabs, EventContextNav, Bricolage/Jakarta fonts, blur headers, shimmer CTAs.
+brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, blur headers, shimmer CTAs.
 
 ---
 
@@ -25,10 +25,10 @@ brand.ts, OrbLayer, BottomNav 4 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 - [x] Upload direct par zone avec compression
 - [x] Affichage dans CandidateProfilePage bloc Adulte
 
-### P6.4 — Candidate Pack : refonte toggle par bloc
+### P6.4 — Candidate Pack : refonte toggle par bloc ✅ DONE
 - [x] ApplyPage body_part_photos inclus via profile_snapshot
-- [ ] Toggle ON/OFF par bloc avec sub-selection photo par photo
-- [ ] Preview visuelle des body part photos dans apercu
+- [x] Toggle ON/OFF par bloc avec sub-selection photo par photo
+- [x] Preview visuelle des body part photos dans apercu
 
 ### P6.5 — CandidateProfilePage : affichage 3 blocs ✅ DONE
 - [x] Bloc 1 PROFIL (bio, physique) — label sage
@@ -61,17 +61,17 @@ brand.ts, OrbLayer, BottomNav 4 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 - [x] Liste des morphologies (7 options), roles (4 options)
 - [x] Ajout/suppression dynamique
 - [x] Vue groupee par categorie pour kinks et tags
-- [ ] TODO: Brancher les formulaires MePage/ApplyPage sur admin_config au lieu des constantes hardcodees
+- [x] Brancher les formulaires MePage/ApplyPage sur admin_config au lieu des constantes hardcodees
 
 ---
 
 ## PHASE 8: BOTTOM NAV — SPLIT DISCOVER
-### P8.1 — BottomNav 5 tabs
-- [ ] Plans (grid) -> /
-- [ ] Profiles (users) -> /explore/profiles
-- [ ] Chats (message) -> /chats
-- [ ] Book (contacts) -> /contacts
-- [ ] Moi (user) -> /me
+### P8.1 — BottomNav 5 tabs ✅ DONE
+- [x] Plans (grid) -> /
+- [x] Profiles (search) -> /explore
+- [x] Chats (message) -> /chats
+- [x] Book (contacts) -> /contacts
+- [x] Moi (user) -> /me
 
 ### P8.2 — Header Profiles avec acces Book
 - [ ] Icone Book, Chats, Notifications dans header /explore/profiles
