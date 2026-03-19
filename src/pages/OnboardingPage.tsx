@@ -15,7 +15,7 @@ const MORPHOS = ['Mince', 'Sportif', 'Athlétique', 'Moyen', 'Costaud', 'Musclé
 const inp: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
   padding:'14px 16px', border:'1px solid '+S.rule, outline:'none',
-  fontSize:15, fontFamily:'inherit', boxSizing:'border-box',
+  fontSize:15, fontFamily:"'Plus Jakarta Sans', sans-serif", boxSizing:'border-box',
 }
 
 export default function OnboardingPage() {

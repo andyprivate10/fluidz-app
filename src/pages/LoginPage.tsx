@@ -53,7 +53,7 @@ export default function LoginPage() {
   const inp: React.CSSProperties = {
     width: '100%', background: C.bg2, color: C.tx, borderRadius: R.block,
     padding: '14px 16px', border: `1px solid ${C.rule}`, outline: 'none',
-    fontSize: 15, fontFamily: 'inherit', letterSpacing: '-0.02em',
+    fontSize: 15, fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '-0.02em',
   }
 
   return (

@@ -19,7 +19,7 @@ type SavedAddress = {
   created_at: string
 }
 
-const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:'inherit',boxSizing:'border-box' }
+const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' }
 
 export default function AddressesPage() {
   const navigate = useNavigate()

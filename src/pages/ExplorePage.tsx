@@ -249,7 +249,7 @@ export default function ExplorePage() {
             placeholder="Rechercher un profil..." style={{
               width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
               border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
-              fontFamily: 'inherit', boxSizing: 'border-box',
+              fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
             }}
           />
         </div>
@@ -326,7 +326,7 @@ export default function ExplorePage() {
               placeholder="Rechercher une session..." style={{
                 width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
                 border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
-                fontFamily: 'inherit', boxSizing: 'border-box',
+                fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
               }} />
           </div>
           {nearbySessions.filter(s => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).length === 0 && !loading && (

@@ -27,7 +27,7 @@ function monthsAgo(isoDate: string): number | null {
 const inputStyle: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
   padding:'12px 16px', border:`1px solid ${S.rule}`, outline:'none',
-  fontSize:14, fontFamily:'inherit', boxSizing:'border-box',
+  fontSize:14, fontFamily:"'Plus Jakarta Sans', sans-serif", boxSizing:'border-box',
 }
 
 function Chip({ label, active, onClick }: { label:string; active:boolean; onClick:()=>void }) {

@@ -26,7 +26,7 @@ const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: s
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
   padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',
-  fontSize:14,fontFamily:'inherit',boxSizing:'border-box' as const,
+  fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' as const,
 }
 
 export default function CreateSessionPage() {

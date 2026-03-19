@@ -179,7 +179,7 @@ export default function HomePage() {
               placeholder="Code ou lien d'invitation"
               style={{
                 flex: 1, padding: '10px 14px', background: C.bg2, border: `1px solid ${C.rule}`,
-                borderRadius: R.icon, color: C.tx, fontSize: 13, outline: 'none', fontFamily: 'inherit',
+                borderRadius: R.icon, color: C.tx, fontSize: 13, outline: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif",
                 letterSpacing: '-0.02em',
               }}
             />

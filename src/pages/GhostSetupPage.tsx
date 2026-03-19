@@ -98,7 +98,7 @@ export default function GhostSetupPage() {
   const inp: React.CSSProperties = {
     width: '100%', background: S.bg2, color: S.tx, borderRadius: 14,
     padding: '14px 16px', border: '1px solid ' + S.rule, outline: 'none',
-    fontSize: 16, fontFamily: 'inherit', boxSizing: 'border-box',
+    fontSize: 16, fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
     textAlign: 'center',
   }
 
