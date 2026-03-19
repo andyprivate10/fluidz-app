@@ -322,6 +322,7 @@ export default function HostDashboard() {
           <div style={{display:'flex',flexDirection:'column' as const,alignItems:'flex-end',gap:6}}>
             {elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
             {totalAccepted > 0 && <span style={{fontSize:11,fontWeight:700,color:S.sage,background:S.sagebg,padding:'3px 10px',borderRadius:50}}>{arrivedCount}/{totalAccepted}</span>}
+            {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?S.red+'14':S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?S.red+'33':S.rule)}}>{total}/{sess.max_capacity}{full?' Complet':''}</span> })()}
           </div>
         </div>
         {sess?.status !== 'ended' && (

@@ -901,6 +901,10 @@ export default function SessionPage() {
             <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
               Candidature envoyee ✓
             </button>
+          ) : session.max_capacity && (members.length + 1) >= session.max_capacity ? (
+            <button disabled style={{ width: '100%', padding: 16, background: S.red + '22', border: '1px solid ' + S.red + '44', borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>
+              Session complète
+            </button>
           ) : (
             <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
               Postuler a cette session

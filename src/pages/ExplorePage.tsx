@@ -102,7 +102,7 @@ export default function ExplorePage() {
         // Load public sessions nearby
         const delta = 0.15
         const { data: pubSess } = await supabase.from('sessions')
-          .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at')
+          .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at, max_capacity, starts_at, ends_at')
           .eq('is_public', true).eq('status', 'open')
           .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
           .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
@@ -375,8 +375,9 @@ export default function ExplorePage() {
                 {s.description && <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 6px', lineHeight: 1.4 }}>{s.description.slice(0, 80)}{s.description.length > 80 ? '...' : ''}</p>}
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
                   {s.approx_area && <span style={{ fontSize: 12, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} /> {s.approx_area}</span>}
-                  {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}</span>}
-                  {s.created_at && <span style={{ fontSize: 10, color: S.tx3 }}>{(() => { const m = Math.floor((Date.now() - new Date(s.created_at).getTime()) / 60000); return m < 60 ? m + 'min' : Math.floor(m / 60) + 'h' })()}</span>}
+                  {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}{s.max_capacity ? '/' + s.max_capacity : ''}</span>}
+                  {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.red + '14', padding: '2px 8px', borderRadius: 99 }}>Complet</span>}
+                  {(() => { const now = Date.now(); if (s.starts_at && new Date(s.starts_at).getTime() > now) { const m = Math.floor((new Date(s.starts_at).getTime() - now) / 60000); return <span style={{ fontSize: 10, color: S.tx3 }}>{m < 60 ? 'dans ' + m + 'min' : 'dans ' + Math.floor(m / 60) + 'h'}</span> } if (s.ends_at) { const rem = Math.floor((new Date(s.ends_at).getTime() - now) / 60000); if (rem <= 0) return <span style={{ fontSize: 10, color: S.red }}>Terminé</span>; return <span style={{ fontSize: 10, color: S.tx3 }}>{rem < 60 ? rem + 'min restant' : Math.floor(rem / 60) + 'h restant'}</span> } if (s.created_at) { const m = Math.floor((now - new Date(s.created_at).getTime()) / 60000); return <span style={{ fontSize: 10, color: S.tx3 }}>{m < 60 ? m + 'min' : Math.floor(m / 60) + 'h'}</span> } return null })()}
                 </div>
                 {s.tags && s.tags.length > 0 && (
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
@@ -385,9 +386,15 @@ export default function ExplorePage() {
                     ))}
                   </div>
                 )}
-                <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                  Postuler →
-                </button>
+                {s.max_capacity && s.member_count >= s.max_capacity ? (
+                  <button disabled style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.red + '22', border: '1px solid ' + S.red + '44', color: S.red, fontSize: 13, fontWeight: 700 }}>
+                    Complet
+                  </button>
+                ) : (
+                  <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                    Postuler →
+                  </button>
+                )}
               </div>
             ))}
           </div>

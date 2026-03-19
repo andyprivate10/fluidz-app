@@ -32,7 +32,7 @@ export default function JoinPage() {
   }, [code])
 
   async function lookupSession() {
-    const { data: sess } = await supabase.from('sessions').select('id,title,description,approx_area,status,host_id,tags').eq('invite_code', code).maybeSingle()
+    const { data: sess } = await supabase.from('sessions').select('id,title,description,approx_area,status,host_id,tags,max_capacity').eq('invite_code', code).maybeSingle()
     if (!sess) { setStatus('error'); return }
     setSession(sess)
 
@@ -236,7 +236,7 @@ export default function JoinPage() {
               <div style={{marginBottom:16}}>
                 <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:10}}>
                   <Users size={14} style={{color:S.tx3}} />
-                  <span style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em'}}>Lineup · {lineup.length}</span>
+                  <span style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em'}}>Lineup · {lineup.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>
                 </div>
                 <div className="stagger-children" style={{display:'flex',flexDirection:'column',gap:6}}>
                   {lineup.slice(0, 5).map((m) => (
@@ -284,6 +284,18 @@ export default function JoinPage() {
                 color:S.tx2,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
               }}>
                 Voir la session
+              </button>
+            </div>
+          ) : session.max_capacity && (lineup.length + 1) >= session.max_capacity ? (
+            <div style={{
+              position:'fixed', bottom:0, left:0, right:0, zIndex:50,
+              background:'rgba(5,4,10,0.92)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
+              borderTop:'0.5px solid '+S.rule,
+              padding:'16px 20px', paddingBottom:'calc(16px + env(safe-area-inset-bottom, 0px))',
+              maxWidth:420, margin:'0 auto',
+            }}>
+              <button disabled style={{ width:'100%', padding:'16px', borderRadius:16, fontWeight:700, fontSize:16, color:S.red, background:S.red+'22', border:'1px solid '+S.red+'44' }}>
+                Session complète
               </button>
             </div>
           ) : (
