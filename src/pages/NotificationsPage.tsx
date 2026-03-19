@@ -91,8 +91,27 @@ export default function NotificationsPage() {
           </div>
         )}
 
-        {notifs.map(n => (
-          <button key={n.id} onClick={() => handleClick(n)} style={{
+        {(() => {
+          function dateGroup(d: string): string {
+            const now = new Date()
+            const date = new Date(d)
+            const diff = Math.floor((now.getTime() - date.getTime()) / 86400000)
+            if (diff === 0 && now.getDate() === date.getDate()) return "Aujourd'hui"
+            if (diff <= 1 && now.getDate() - date.getDate() === 1) return 'Hier'
+            if (diff < 7) return 'Cette semaine'
+            return 'Plus ancien'
+          }
+          let lastGroup = ''
+          return notifs.map(n => {
+            const group = dateGroup(n.created_at)
+            const showHeader = group !== lastGroup
+            lastGroup = group
+            return (
+              <div key={n.id}>
+                {showHeader && (
+                  <p style={{ ...typeStyle('meta'), color: C.sage, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, margin: '18px 0 6px', padding: '0 4px' }}>{group}</p>
+                )}
+          <button onClick={() => handleClick(n)} style={{
             width: '100%', textAlign: 'left', padding: '14px 12px', borderRadius: R.block,
             border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
             borderBottom: `1px solid ${C.rule}`, position: 'relative',
@@ -115,7 +134,10 @@ export default function NotificationsPage() {
               </div>
             </div>
           </button>
-        ))}
+              </div>
+            )
+          })
+        })()}
       </div>
     </div>
   )

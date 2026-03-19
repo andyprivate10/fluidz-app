@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Users, Compass, Zap } from 'lucide-react'
+import { MessageCircle, Users, Compass, Zap, Camera, Video } from 'lucide-react'
 
 const C = colors
 const R = radius
@@ -12,7 +12,7 @@ const R = radius
 type ChatThread = {
   id: string; type: 'dm_session' | 'group' | 'direct'; sessionId: string; sessionTitle: string
   peerId?: string; peerName?: string; peerAvatar?: string
-  lastMessage: string; lastMessageAt: string; lastSenderId: string; isHost: boolean
+  lastMessage: string; lastMessageAt: string; lastSenderId: string; isHost: boolean; unread?: boolean
 }
 
 function timeAgo(d: string): string {
@@ -30,12 +30,10 @@ export default function ChatsHubPage() {
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'all' | 'direct' | 'dm' | 'group'>('all')
-  const [user, setUser] = useState<any>(null)
 
   const loadThreads = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
-    setUser(user)
 
     const [{ data: hosted }, { data: applied }, { data: dmPeerMsgs }] = await Promise.all([
       supabase.from('sessions').select('id, title, host_id').eq('host_id', user.id),
@@ -82,6 +80,13 @@ export default function ChatsHubPage() {
       for (const t of threadMap.values()) {
         if (t.peerId && profMap.has(t.peerId)) { const p = profMap.get(t.peerId)!; t.peerName = p.name; t.peerAvatar = p.avatar }
       }
+    }
+
+    // Mark unread from notifications
+    const { data: unreadNotifs } = await supabase.from('notifications').select('session_id').eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
+    const unreadSessionIds = new Set((unreadNotifs || []).map((n: any) => n.session_id))
+    for (const t of threadMap.values()) {
+      if (unreadSessionIds.has(t.sessionId)) t.unread = true
     }
 
     setThreads([...threadMap.values()].sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()))
@@ -150,7 +155,7 @@ export default function ChatsHubPage() {
         )}
 
         {filtered.map(t => {
-          const isUnread = t.lastSenderId !== user?.id && (Date.now() - new Date(t.lastMessageAt).getTime()) < 86400000
+          const isUnread = !!t.unread
           return (
             <button key={t.id} onClick={() => goToThread(t)} style={{
               display: 'flex', alignItems: 'center', gap: 12, padding: '14px 4px',
@@ -192,8 +197,8 @@ export default function ChatsHubPage() {
                     <span style={{ ...typeStyle('meta'), color: C.tx3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.sessionTitle}</span>
                   </>}
                 </div>
-                <p style={{ ...typeStyle('body'), color: C.tx3, margin: '3px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {t.lastMessage.slice(0, 60)}
+                <p style={{ ...typeStyle('body'), color: C.tx3, margin: '3px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  {t.lastMessage.startsWith('[Photo]') ? <><Camera size={11} style={{ flexShrink: 0 }} /> Photo</> : t.lastMessage.startsWith('[Video]') ? <><Video size={11} style={{ flexShrink: 0 }} /> Vidéo</> : t.lastMessage.slice(0, 60)}
                 </p>
               </div>
             </button>

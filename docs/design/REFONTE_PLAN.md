@@ -73,8 +73,8 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 - [x] Book (contacts) -> /contacts
 - [x] Moi (user) -> /me
 
-### P8.2 — Header Profiles avec acces Book
-- [ ] Icone Book, Chats, Notifications dans header /explore/profiles
+### P8.2 — Header Profiles avec acces Book ✅ DONE
+- [x] Icone Book, Chats, Notifications dans header /explore avec badges unread
 
 ---
 
@@ -91,10 +91,17 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
-## PHASE 5 RESTANT: POLISH UX
-### P5.A — ChatsHub ameliorations (badges unread, apercu media)
-### P5.B — Notifications (badge header, groupees, mark all read)
-### P5.C — DM per-candidat (verifier filtrage DM)
+## PHASE 5 RESTANT: POLISH UX ✅ DONE
+### P5.A — ChatsHub ameliorations ✅ DONE
+- [x] Badges unread par thread (notification-based)
+- [x] Apercu media ([Photo]/[Video] → icone)
+
+### P5.B — Notifications ✅ DONE
+- [x] Groupees par jour (Aujourd'hui, Hier, Cette semaine, Plus ancien)
+- [x] Mark all read (existait deja)
+
+### P5.C — DM per-candidat ✅ DONE
+- [x] Filtrage DM fonctionne via room_type + dm_peer_id (verifie)
 
 ---
 

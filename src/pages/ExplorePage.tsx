@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, Users } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, Users, MessageCircle, BookOpen, Bell } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
@@ -52,11 +52,20 @@ export default function ExplorePage() {
   const [myViewCount, setMyViewCount] = useState(0)
   const [exploreTab, setExploreTab] = useState<'profils'|'sessions'>('profils')
   const [nearbySessions, setNearbySessions] = useState<any[]>([])
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0)
+  const [unreadChatCount, setUnreadChatCount] = useState(0)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) { navigate('/login?next=/explore'); return }
       setUserId(user.id)
+      // Unread counts for header badges
+      supabase.from('notifications').select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id).is('read_at', null)
+        .then(({ count }) => setUnreadNotifCount(count ?? 0))
+      supabase.from('notifications').select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
+        .then(({ count }) => setUnreadChatCount(count ?? 0))
       // Load current visibility setting
       supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng').eq('id', user.id).maybeSingle().then(async (res) => {
         // Also load profile view count
@@ -204,11 +213,22 @@ export default function ExplorePage() {
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>Autour de moi</h1>
             <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? `${filtered.length} profils` : `${nearbySessions.length} sessions`} à proximité{myViewCount > 0 ? ` · Vu par ${myViewCount} cette semaine` : ''}</p>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <button onClick={() => navigate('/notifications')} style={{ position: 'relative', padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
+              <Bell size={14} />
+              {unreadNotifCount > 0 && <div style={{ position: 'absolute', top: 2, right: 2, width: 6, height: 6, borderRadius: '50%', background: S.p }} />}
+            </button>
+            <button onClick={() => navigate('/chats')} style={{ position: 'relative', padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
+              <MessageCircle size={14} />
+              {unreadChatCount > 0 && <div style={{ position: 'absolute', top: 2, right: 2, width: 6, height: 6, borderRadius: '50%', background: S.p }} />}
+            </button>
+            <button onClick={() => navigate('/contacts')} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
+              <BookOpen size={14} />
+            </button>
             <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.sage + '44' : S.rule), background: visible ? S.sage + '14' : 'transparent', color: visible ? S.sage : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
               {visible ? <Eye size={14} /> : <EyeOff size={14} />} {visible ? 'Visible' : 'Masqué'}
             </button>
-            <button onClick={() => setShowFilters(!showFilters)} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
+            <button onClick={() => setShowFilters(!showFilters)} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
               <Filter size={14} />
             </button>
           </div>
