@@ -5,6 +5,7 @@ import {Moon, Pill, Headphones, Sparkles, ArrowLeft, Clock, Zap} from 'lucide-re
 import type { LucideIcon } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 
 const S = colors
 
@@ -14,8 +15,6 @@ const TEMPLATES: { id: string; label: string; icon: LucideIcon; tags: string[]; 
   { id:'techno', label:'Techno', icon:Headphones, tags:['Techno'], desc:'Après club, énergie haute' },
   { id:'custom', label:'Custom', icon:Sparkles, tags:[], desc:'Crée ton propre vibe' },
 ]
-
-const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
 
 const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: string[]; description: string; roles: Record<string, number> }[] = [
   { label: 'Dark Room', icon: Moon, title: 'Dark Room ce soir 🌙', tags: ['Dark Room', 'Top', 'Bottom'], description: 'Soirée dark room privée. Respect et discrétion.', roles: { Top: 2, Bottom: 2 } },
@@ -30,6 +29,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function CreateSessionPage() {
+  const { sessionTags } = useAdminConfig()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
@@ -108,6 +108,7 @@ export default function CreateSessionPage() {
       status: 'open',
       tags: selectedTags,
       invite_code: Math.random().toString(36).slice(2, 10),
+      is_public: isPublic,
       starts_at: start.toISOString(),
       ends_at: end.toISOString(),
       max_capacity: maxCapacity || null,
@@ -274,14 +275,14 @@ export default function CreateSessionPage() {
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Tags de session</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-              {SESSION_TAGS.map(tag => {
-                const on = selectedTags.includes(tag)
+              {sessionTags.map(tag => {
+                const on = selectedTags.includes(tag.label)
                 return (
-                  <button key={tag} onClick={()=>toggleTag(tag)} style={{
+                  <button key={tag.label} onClick={()=>toggleTag(tag.label)} style={{
                     padding:'6px 14px',borderRadius:99,fontSize:13,fontWeight:600,
                     border:on?'none':'1px solid '+S.rule,
                     background:on?S.grad:S.bg2,color:on?'#fff':S.tx3,cursor:'pointer',
-                  }}>{tag}</button>
+                  }}>{tag.label}</button>
                 )
               })}
             </div>

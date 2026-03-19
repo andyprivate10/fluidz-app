@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Clock } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -6,6 +6,7 @@ import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 
 const S = colors
 
@@ -16,6 +17,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function EditSessionPage() {
+  const { sessionTags } = useAdminConfig()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
@@ -28,8 +30,9 @@ export default function EditSessionPage() {
   const [tags, setTags] = useState<string[]>([])
   const [isPublic, setIsPublic] = useState(false)
   const [lineupBase, setLineupBase] = useState<Record<string,unknown>>({})
-
-  const SESSION_TAGS = ['Top', 'Bottom', 'Versa', 'Dark Room', 'Chemical', 'Techno', 'Bears', 'Jeunes', 'Musclés']
+  const [startsAt, setStartsAt] = useState('')
+  const [endsAt, setEndsAt] = useState('')
+  const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
 
   useEffect(() => {
     if (!id) return
@@ -47,6 +50,9 @@ export default function EditSessionPage() {
       setTags(sess.tags || [])
       setLineupBase(sess.lineup_json || {})
       setIsPublic(!!sess.is_public)
+      if (sess.starts_at) setStartsAt(new Date(sess.starts_at).toISOString().slice(0, 16))
+      if (sess.ends_at) setEndsAt(new Date(sess.ends_at).toISOString().slice(0, 16))
+      if (sess.max_capacity) setMaxCapacity(sess.max_capacity)
       const dirs = (sess.lineup_json?.directions || []).map((d: any) => typeof d === 'string' ? {text:d} : d)
       setDirections(dirs.length > 0 ? dirs : [{text:''}])
       setLoading(false)
@@ -69,6 +75,9 @@ export default function EditSessionPage() {
       exact_address: exactAddress.trim() || null,
       tags,
       is_public: isPublic,
+      starts_at: startsAt ? new Date(startsAt).toISOString() : null,
+      ends_at: endsAt ? new Date(endsAt).toISOString() : null,
+      max_capacity: maxCapacity || null,
       lineup_json: { ...lineupBase, directions: directionsFiltered },
     }).eq('id', id)
 
@@ -113,13 +122,13 @@ export default function EditSessionPage() {
         <div>
           <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>Tags</label>
           <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-            {SESSION_TAGS.map(tag => (
-              <button key={tag} onClick={() => toggleTag(tag)} style={{
+            {sessionTags.map(tag => (
+              <button key={tag.label} onClick={() => toggleTag(tag.label)} style={{
                 padding:'6px 14px', borderRadius:50, fontSize:12, fontWeight:600, cursor:'pointer',
-                border:'1px solid '+(tags.includes(tag) ? S.pbd : S.rule),
-                background: tags.includes(tag) ? S.p2 : S.bg2,
-                color: tags.includes(tag) ? S.p : S.tx3,
-              }}>{tag}</button>
+                border:'1px solid '+(tags.includes(tag.label) ? S.pbd : S.rule),
+                background: tags.includes(tag.label) ? S.p2 : S.bg2,
+                color: tags.includes(tag.label) ? S.p : S.tx3,
+              }}>{tag.label}</button>
             ))}
           </div>
         </div>
@@ -164,6 +173,20 @@ export default function EditSessionPage() {
           <button type="button" onClick={() => setDirections([...directions,{text:''}])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.rule, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
             + Ajouter une étape
           </button>
+        </div>
+
+        {/* Timing */}
+        <div>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}><Clock size={12} style={{display:'inline',marginRight:4}} />Début</label>
+          <input type="datetime-local" value={startsAt} onChange={e => setStartsAt(e.target.value)} style={{...inp, colorScheme:'dark'}} />
+        </div>
+        <div>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Fin</label>
+          <input type="datetime-local" value={endsAt} onChange={e => setEndsAt(e.target.value)} style={{...inp, colorScheme:'dark'}} />
+        </div>
+        <div>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Capacité max (optionnel)</label>
+          <input type="number" value={maxCapacity} onChange={e => setMaxCapacity(e.target.value ? parseInt(e.target.value) : '')} placeholder="Ex: 8" min={2} max={50} style={inp} />
         </div>
 
         {/* Public toggle */}

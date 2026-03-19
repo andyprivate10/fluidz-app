@@ -7,6 +7,7 @@ import { MapPin, Filter, Eye, EyeOff, Users, MessageCircle, BookOpen, Bell } fro
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 
 const S = colors
 
@@ -22,7 +23,7 @@ type NearbyProfile = {
   lastSeen?: string
 }
 
-const ROLE_FILTERS = ['Tous', 'Top', 'Bottom', 'Versa', 'Side']
+// ROLE_FILTERS built dynamically from admin_config in component
 
 function roundCoord(val: number, precision = 0.005): number {
   return Math.round(val / precision) * precision
@@ -37,6 +38,8 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
 }
 
 export default function ExplorePage() {
+  const { roles: roleOptions } = useAdminConfig()
+  const roleFilters = ['Tous', ...roleOptions.map(r => r.label)]
   const navigate = useNavigate()
   const [profiles, setProfiles] = useState<NearbyProfile[]>([])
   const [loading, setLoading] = useState(true)
@@ -237,7 +240,7 @@ export default function ExplorePage() {
         {/* Filters */}
         {showFilters && (
           <div style={{ display: 'flex', gap: 6, marginTop: 10, overflowX: 'auto' }}>
-            {ROLE_FILTERS.map(r => (
+            {roleFilters.map(r => (
               <button key={r} onClick={() => setRoleFilter(r)} style={{
                 padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
                 border: '1px solid ' + (roleFilter === r ? S.p + '55' : S.rule),
