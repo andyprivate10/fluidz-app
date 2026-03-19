@@ -2,7 +2,7 @@
 ## Fichier de suivi — mis à jour à chaque commit
 
 ### STATUT GLOBAL: En cours (18 Mars 2026)
-Last commit: 74717df
+Last commit: cedaab1
 
 ---
 
@@ -27,8 +27,8 @@ Last commit: 74717df
 - [x] **P2.9** BottomNav — s'assurer qu'il se cache sur /session/:id/*
 
 ## PHASE 3: REFONTE PAGES PRIORITAIRES
-- [ ] **P3.1** SessionPage — hero 330px, story bars, membres avatars ring, CTA fixe shimmer
-- [ ] **P3.2** JoinPage — landing recrutement: hero orbs, host row, lieu avec cadenas, CTA fixe blur
+- [x] **P3.1** SessionPage — hero 330px, story bars, membres avatars ring, CTA fixe shimmer
+- [x] **P3.2** JoinPage — landing recrutement: hero orbs, host row, lieu avec cadenas, CTA fixe blur
 - [ ] **P3.3** HostDashboard — event banner compact, cards candidats avec tags/votes
 - [ ] **P3.4** HomePage — hero Bricolage, quick nav SVG, shimmer CTA, templates
 - [ ] **P3.5** LoginPage — card centré, shimmer CTA, ghost lav
