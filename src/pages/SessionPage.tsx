@@ -10,7 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 const S = colors
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
@@ -47,20 +47,42 @@ export default function SessionPage() {
   const [reviewSummary, setReviewSummary] = useState<{ avg: number; count: number; topVibes: string[] } | null>(null)
   const touchStartY = useRef(0)
   const [elapsed, setElapsed] = useState('')
+  const [remaining, setRemaining] = useState('')
 
   // Session timer
   useEffect(() => {
-    if (!session?.created_at || session.status === 'ended') return
+    if (session?.status === 'ended') return
+    const startRef = session?.starts_at || session?.created_at
+    if (!startRef) return
     const update = () => {
-      const ms = Date.now() - new Date(session.created_at!).getTime()
-      const mins = Math.floor(ms / 60000)
-      if (mins < 60) setElapsed(mins + 'min')
-      else { const h = Math.floor(mins / 60); const m = mins % 60; setElapsed(h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '')) }
+      const now = Date.now()
+      const startMs = new Date(startRef).getTime()
+      // Elapsed since start
+      const elMs = now - startMs
+      if (elMs >= 0) {
+        const mins = Math.floor(elMs / 60000)
+        if (mins < 60) setElapsed(mins + 'min')
+        else { const h = Math.floor(mins / 60); const m = mins % 60; setElapsed(h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '')) }
+      } else {
+        // Not started yet
+        const untilStart = Math.floor(-elMs / 60000)
+        if (untilStart < 60) setElapsed('dans ' + untilStart + 'min')
+        else { const h = Math.floor(untilStart / 60); setElapsed('dans ' + h + 'h') }
+      }
+      // Remaining until ends_at
+      if (session?.ends_at) {
+        const endMs = new Date(session.ends_at).getTime()
+        const remMs = endMs - now
+        if (remMs <= 0) { setRemaining('terminé'); return }
+        const remMins = Math.floor(remMs / 60000)
+        if (remMins < 60) setRemaining(remMins + 'min')
+        else { const h = Math.floor(remMins / 60); const m = remMins % 60; setRemaining(h + 'h' + (m > 0 ? m.toString().padStart(2, '0') : '')) }
+      }
     }
     update()
     const iv = setInterval(update, 60000)
     return () => clearInterval(iv)
-  }, [session?.created_at, session?.status])
+  }, [session?.starts_at, session?.created_at, session?.ends_at, session?.status])
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)')
@@ -308,6 +330,7 @@ export default function SessionPage() {
             <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor + '14', border: '1px solid ' + statusColor + '33', padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{statusLabel}</span>
             {members.length > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd, padding: '3px 10px', borderRadius: 50 }}><Users size={10} strokeWidth={1.5} style={{ marginRight: 3, display: 'inline' }} />{members.length + 1}</span>}
             {elapsed && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, background: S.rule, padding: '3px 10px', borderRadius: 50 }}><Clock size={9} strokeWidth={1.5} style={{ marginRight: 2 }} />{elapsed}</span>}
+            {remaining && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: remaining === 'terminé' ? S.red : S.p, background: remaining === 'terminé' ? S.red + '22' : S.p2, padding: '3px 10px', borderRadius: 50 }}>{remaining === 'terminé' ? 'Terminé' : remaining + ' restant'}</span>}
           </div>
 
           {/* Tags */}

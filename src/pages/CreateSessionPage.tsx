@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {Moon, Pill, Headphones, Sparkles, ArrowLeft} from 'lucide-react'
+import {Moon, Pill, Headphones, Sparkles, ArrowLeft, Clock, Zap} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -50,6 +50,10 @@ export default function CreateSessionPage() {
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [isPublic, setIsPublic] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
+  const [startsNow, setStartsNow] = useState(true)
+  const [startsAt, setStartsAt] = useState('')
+  const [durationHours, setDurationHours] = useState(3)
+  const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
 
   useEffect(() => {
     if (tplParam) {
@@ -92,6 +96,9 @@ export default function CreateSessionPage() {
     setError('')
     setLoading(true)
     const directionsFiltered = directions.filter(d => d.text.trim().length > 0 || d.photo_url)
+    const now = new Date()
+    const start = startsNow ? now : (startsAt ? new Date(startsAt) : now)
+    const end = new Date(start.getTime() + durationHours * 3600000)
     const { data, error: err } = await supabase.from('sessions').insert({
       host_id: user.id,
       title,
@@ -101,6 +108,9 @@ export default function CreateSessionPage() {
       status: 'open',
       tags: selectedTags,
       invite_code: Math.random().toString(36).slice(2, 10),
+      starts_at: start.toISOString(),
+      ends_at: end.toISOString(),
+      max_capacity: maxCapacity || null,
       lineup_json: {
         ...(directionsFiltered.length > 0 ? { directions: directionsFiltered } : {}),
         ...(Object.keys(rolesWanted).length > 0 ? { roles_wanted: rolesWanted } : {}),
@@ -232,6 +242,34 @@ export default function CreateSessionPage() {
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Description</p>
             <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder='Cherche 2-3 mecs pour ce soir. Ambiance détendue...' rows={3} style={{...inp,resize:'none',lineHeight:1.5}} />
+          </div>
+          {/* Timing */}
+          <div>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Quand</p>
+            <div style={{display:'flex',gap:8,marginBottom:10}}>
+              <button onClick={()=>{setStartsNow(true);setStartsAt('')}} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:startsNow?'none':'1px solid '+S.rule,background:startsNow?S.grad:S.bg2,color:startsNow?'#fff':S.tx3}}>
+                <Zap size={14} /> Maintenant
+              </button>
+              <button onClick={()=>setStartsNow(false)} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:!startsNow?'none':'1px solid '+S.rule,background:!startsNow?S.grad:S.bg2,color:!startsNow?'#fff':S.tx3}}>
+                <Clock size={14} /> Plus tard
+              </button>
+            </div>
+            {!startsNow && (
+              <input type="datetime-local" value={startsAt} onChange={e=>setStartsAt(e.target.value)} style={{...inp,marginBottom:8,colorScheme:'dark'}} />
+            )}
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'8px 0 6px'}}>Durée</p>
+            <div style={{display:'flex',gap:6}}>
+              {[1,2,3,4,6,8].map(h => (
+                <button key={h} onClick={()=>setDurationHours(h)} style={{flex:1,padding:'8px 0',borderRadius:10,fontSize:13,fontWeight:600,cursor:'pointer',border:durationHours===h?'none':'1px solid '+S.rule,background:durationHours===h?S.p2:S.bg2,color:durationHours===h?S.p:S.tx3}}>
+                  {h}h
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Capacité max */}
+          <div>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Capacité max (optionnel)</p>
+            <input type="number" value={maxCapacity} onChange={e=>setMaxCapacity(e.target.value ? parseInt(e.target.value) : '')} placeholder="Ex: 8" min={2} max={50} style={inp} />
           </div>
           <div>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Tags de session</p>

@@ -78,10 +78,20 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
-## PHASE 9: TIMING SESSIONS
-### P9.1 — Schema DB (starts_at, ends_at, max_capacity)
-### P9.2 — CreateSessionPage (date picker, "Now" button, duree)
-### P9.3 — SessionPage (countdown, duree restante)
+## PHASE 9: TIMING SESSIONS ✅ DONE
+### P9.1 — Schema DB ✅ DONE
+- [x] Colonnes starts_at, ends_at (timestamptz), max_capacity (integer) ajoutees
+
+### P9.2 — CreateSessionPage ✅ DONE
+- [x] Bouton "Maintenant" / "Plus tard" avec datetime-local picker
+- [x] Selecteur duree (1h, 2h, 3h, 4h, 6h, 8h)
+- [x] Champ capacite max (optionnel)
+- [x] starts_at, ends_at, max_capacity envoyes a la DB
+
+### P9.3 — SessionPage ✅ DONE
+- [x] Timer elapsed depuis starts_at (ou created_at fallback)
+- [x] Countdown "Xh restant" depuis ends_at avec badge peach
+- [x] Badge "Termine" quand ends_at depasse
 
 ---
 
