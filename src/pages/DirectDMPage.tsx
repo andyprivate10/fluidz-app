@@ -9,6 +9,7 @@ import { formatMessageTime } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { useTypingIndicator } from '../hooks/useTypingIndicator'
 import { useTranslation } from 'react-i18next'
+import { sendPushToUser } from '../lib/pushSender'
 
 const S = colors
 
@@ -128,10 +129,11 @@ export default function DirectDMPage() {
     // Notify peer
     await supabase.from('notifications').insert({
       user_id: peerId, type: 'direct_dm',
-      title: '💬 ' + displayName,
+      title: displayName,
       body: msgText.length > 60 ? msgText.slice(0, 60) + '...' : msgText,
       href: '/dm/' + currentUser.id,
-    }).then(() => {})
+    })
+    if (peerId) sendPushToUser(peerId, displayName, msgText.length > 60 ? msgText.slice(0, 60) + '...' : msgText, '/dm/' + currentUser.id)
     setNewMessage('')
     setSending(false)
   }

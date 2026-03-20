@@ -4,6 +4,7 @@ import { showToast } from '../components/Toast'
 import { Camera, ArrowLeft, Copy, Map, MapPin } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { sendPushToUser } from '../lib/pushSender'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -326,6 +327,7 @@ export default function DMPage() {
         body: text.length > 60 ? text.slice(0, 60) + '…' : text,
         href: `/session/${id}/dm/${currentUser.id}`,
       })
+      sendPushToUser(peerId, senderLabel, text.length > 60 ? text.slice(0, 60) + '…' : text, `/session/${id}/dm/${currentUser.id}`)
     }
   }
 

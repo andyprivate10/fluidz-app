@@ -177,6 +177,28 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
+## PHASE 13: PUSH BACKEND + i18n COMPLETE ✅ DONE
+
+### P13.1 — Supabase Edge Function send-push ✅ DONE
+- [x] supabase/functions/send-push/index.ts (Deno Edge Function)
+- [x] Lit push_subscription depuis user_profiles
+- [x] Envoie via Web Push API avec VAPID
+
+### P13.2 — Push sender integration ✅ DONE
+- [x] src/lib/pushSender.ts — helper sendPushToUser()
+- [x] DMPage : push on new DM message
+- [x] DirectDMPage : push on new direct DM
+- [x] HostDashboard : push on accept/reject decision
+- [x] ApplyPage : push to host on new application
+
+### P13.3 — i18n complete (250+ cles, 29 fichiers) ✅ DONE
+- [x] Toutes les 27 pages + BottomNav wirées avec useTranslation()
+- [x] fr.json + en.json : 250+ cles dans 12+ namespaces
+- [x] Switcher FR/EN dans MePage
+- [x] Detection auto langue navigateur
+
+---
+
 ## NOTES
 - Peach = #E0887A (JAMAIS #F07858)
 - Font titres = Bricolage Grotesque 800

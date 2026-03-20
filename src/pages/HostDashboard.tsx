@@ -11,6 +11,7 @@ import { formatElapsed, formatRemaining } from '../lib/timing'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { SYSTEM_SENDER } from '../lib/constants'
 import { useTranslation } from 'react-i18next'
+import { sendPushToUser } from '../lib/pushSender'
 
 const S = colors
 
@@ -137,6 +138,7 @@ export default function HostDashboard() {
         body,
         href,
       })
+      sendPushToUser(app.applicant_id, title, body, href)
 
       // Safety tip DM on acceptance (1 per candidate)
       if (status === 'accepted' && user) {

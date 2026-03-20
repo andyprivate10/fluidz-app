@@ -8,6 +8,7 @@ import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
+import { sendPushToUser } from '../lib/pushSender'
 
 const S = colors
 
@@ -292,6 +293,7 @@ export default function ApplyPage() {
           body: name + ' a postulé pour "' + (sess.title || 'ta session') + '"',
           href: '/session/' + id + '/host',
         })
+        sendPushToUser(sess.host_id, 'Nouvelle candidature', name + ' a postule pour "' + (sess.title || 'ta session') + '"', '/session/' + id + '/host')
       }
     }
     showToast('Candidature envoyée !', 'success')
