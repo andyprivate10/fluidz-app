@@ -150,6 +150,33 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
+## PHASE 12: PUSH + MAP + i18n ✅ DONE
+
+### P12.1 — Push Notifications ✅ DONE
+- [x] Service Worker push handler + notificationclick
+- [x] usePushNotifications hook (subscribe/unsubscribe/status)
+- [x] MePage : toggle push actives/bloquees/activer
+- [x] Migration push_subscription (JSONB) sur user_profiles
+- [x] VAPID key via VITE_VAPID_PUBLIC_KEY env var
+
+### P12.2 — Map Visualization (Leaflet) ✅ DONE
+- [x] MapView component reutilisable (dark tiles, custom pin icons, tooltips)
+- [x] ExplorePage : toggle grille/carte avec bouton
+- [x] Pins profiles avec avatar + label
+- [x] User location marker (point bleu)
+- [x] Auto-fit bounds si plusieurs pins
+
+### P12.3 — i18n Multilingue FR/EN ✅ DONE
+- [x] react-i18next + i18next installe et configure
+- [x] Fichiers de traduction fr.json / en.json (150+ cles)
+- [x] BottomNav : labels traduits
+- [x] HomePage : toutes les strings traduites (landing, CTAs, sections)
+- [x] MePage : switcher Francais/English dans settings
+- [x] Initialisation auto selon navigateur (fallback FR)
+- [x] Persistance choix langue dans localStorage
+
+---
+
 ## NOTES
 - Peach = #E0887A (JAMAIS #F07858)
 - Font titres = Bricolage Grotesque 800

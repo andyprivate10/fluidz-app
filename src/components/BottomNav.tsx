@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../brand'
 
@@ -66,6 +67,7 @@ const tabs = [
 export default function BottomNav() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useTranslation()
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
   const [unreadChatCount, setUnreadChatCount] = useState(0)
   const [hasNewApplication, setHasNewApplication] = useState(false)
@@ -172,7 +174,7 @@ export default function BottomNav() {
                 transition: 'color 0.2s',
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}>
-                {tab.label}
+                {t(`nav.${tab.id}`)}
               </span>
             </button>
           )

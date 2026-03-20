@@ -6,6 +6,7 @@ import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { Compass, BookOpen, MapPin, User, Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 const R = radius
@@ -14,6 +15,7 @@ type QuickSession = { id: string; title: string; approx_area: string; status: st
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [userId, setUserId] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [latestHost, setLatestHost] = useState<QuickSession | null>(null)
@@ -92,20 +94,20 @@ export default function HomePage() {
       <div style={{ position: 'relative', zIndex: 1, padding: '52px 24px 20px' }}>
         <h1 style={{ ...typeStyle('hero'), color: S.p, margin: '0 0 6px' }}>fluidz</h1>
         {userId && displayName ? (
-          <p style={{ ...typeStyle('body'), color: S.tx2, margin: 0 }}>Hey {displayName}</p>
+          <p style={{ ...typeStyle('body'), color: S.tx2, margin: 0 }}>{t('home.hey', { name: displayName })}</p>
         ) : !userId ? (
           <div style={{ marginTop: 8 }}>
             <p style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 8px', lineHeight: 1.2 }}>
-              Organise tes soirees privees
+              {t('home.tagline')}
             </p>
             <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 16px', lineHeight: 1.6 }}>
-              Cree une session, partage le lien, les candidats postulent avec leur profil. Tu choisis qui vient.
+              {t('home.subtitle')}
             </p>
             <div style={{ display: 'flex', gap: 12, marginBottom: 4 }}>
               {[
-                { n: '1', t: 'Cree', d: 'Lieu, heure, vibe' },
-                { n: '2', t: 'Partage', d: 'Lien invitation' },
-                { n: '3', t: 'Choisis', d: 'Profils + photos' },
+                { n: '1', t: t('home.step1'), d: t('home.step1_desc') },
+                { n: '2', t: t('home.step2'), d: t('home.step2_desc') },
+                { n: '3', t: t('home.step3'), d: t('home.step3_desc') },
               ].map(step => (
                 <div key={step.n} style={{ flex: 1, textAlign: 'center' }}>
                   <div style={{ width: 28, height: 28, borderRadius: '50%', background: S.p2, border: '1px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px', ...typeStyle('label'), color: S.p }}>{step.n}</div>
@@ -145,7 +147,7 @@ export default function HomePage() {
         {/* Host active session */}
         {latestHost && (
           <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, border: `1px solid ${S.pbd}`, cursor: 'pointer' }}>
-            <p style={{ ...typeStyle('micro'), color: S.p, margin: '0 0 8px' }}>TA SESSION ACTIVE</p>
+            <p style={{ ...typeStyle('micro'), color: S.p, margin: '0 0 8px' }}>{t('home.your_session')}</p>
             <p style={{ ...typeStyle('section'), color: S.tx, margin: 0 }}>{latestHost.title}</p>
             {latestHost.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '4px 0 0' }}>{latestHost.approx_area}</p>}
             <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, flexWrap: 'wrap' }}>
@@ -163,7 +165,7 @@ export default function HomePage() {
         {/* Pending applications */}
         {pendingApps.length > 0 && (
           <div style={{ ...card, border: `1px solid ${S.lavbd}` }}>
-            <p style={{ ...typeStyle('micro'), color: S.lav, margin: '0 0 10px' }}>CANDIDATURES EN ATTENTE</p>
+            <p style={{ ...typeStyle('micro'), color: S.lav, margin: '0 0 10px' }}>{t('home.pending_apps')}</p>
             {pendingApps.map(app => (
               <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: `1px solid ${S.rule}` }}>
@@ -177,7 +179,7 @@ export default function HomePage() {
         {/* Active sessions */}
         {activeApps.length > 0 && (
           <div style={{ ...card, border: `1px solid ${S.sagebd}` }}>
-            <p style={{ ...typeStyle('micro'), color: S.sage, margin: '0 0 10px' }}>SESSIONS ACTIVES</p>
+            <p style={{ ...typeStyle('micro'), color: S.sage, margin: '0 0 10px' }}>{t('home.active_sessions')}</p>
             {activeApps.map(app => (
               <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: `1px solid ${S.rule}` }}>
@@ -190,12 +192,12 @@ export default function HomePage() {
 
         {/* Join code */}
         <div style={card}>
-          <p style={{ ...typeStyle('label'), color: S.tx2, margin: '0 0 10px' }}>Rejoindre avec un lien</p>
+          <p style={{ ...typeStyle('label'), color: S.tx2, margin: '0 0 10px' }}>{t('home.join_link')}</p>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
               value={inviteCode} onChange={e => setInviteCode(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleJoinCode()}
-              placeholder="Code ou lien d'invitation"
+              placeholder={t('home.join_placeholder')}
               style={{
                 flex: 1, padding: '10px 14px', background: S.bg2, border: `1px solid ${S.rule}`,
                 borderRadius: R.icon, color: S.tx, fontSize: 13, outline: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -216,9 +218,9 @@ export default function HomePage() {
         {userId && !latestHost && pendingApps.length === 0 && activeApps.length === 0 && (
           <div style={{ ...card, textAlign: 'center', padding: '28px 20px' }}>
             <Flame size={28} style={{ color: S.p, margin: '0 auto 10px', display: 'block' }} strokeWidth={1.5} />
-            <p style={{ ...typeStyle('section'), color: S.tx, margin: '0 0 6px' }}>Prêt pour ce soir ?</p>
+            <p style={{ ...typeStyle('section'), color: S.tx, margin: '0 0 6px' }}>{t('home.ready')}</p>
             <p style={{ ...typeStyle('body'), color: S.tx2, lineHeight: 1.6 }}>
-              Crée une session et partage le lien, ou explore les profils autour de toi.
+              {t('home.ready_desc')}
             </p>
           </div>
         )}
@@ -234,7 +236,7 @@ export default function HomePage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>
               <Plus size={18} strokeWidth={2.5} />
-              Créer une session
+              {t('home.create_session')}
               {/* Shimmer */}
               <div style={{
                 position: 'absolute', top: 0, bottom: 0, width: '60%',
@@ -265,7 +267,7 @@ export default function HomePage() {
               background: S.p, border: 'none', borderRadius: R.btn, color: '#fff',
               ...typeStyle('section'), cursor: 'pointer', boxShadow: `0 4px 24px ${S.pbd}`,
             }}>
-              Créer une session
+              {t('home.create_session')}
               <div style={{
                 position: 'absolute', top: 0, bottom: 0, width: '60%',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
@@ -276,7 +278,7 @@ export default function HomePage() {
               width: '100%', padding: 14, borderRadius: R.btn, ...typeStyle('label'),
               color: S.tx2, border: `1px solid ${S.rule}`, background: 'transparent', cursor: 'pointer',
             }}>
-              Se connecter
+              {t('home.login')}
             </button>
             <button onClick={() => navigate('/ghost/setup')} style={{
               width: '100%', padding: 12, borderRadius: R.btn, ...typeStyle('meta'),
@@ -284,7 +286,7 @@ export default function HomePage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}>
               <Ghost size={14} strokeWidth={1.5} />
-              Mode Ghost (24h, sans compte)
+              {t('home.ghost_mode')}
             </button>
           </div>
         )}

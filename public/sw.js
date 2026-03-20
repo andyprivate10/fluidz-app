@@ -15,6 +15,34 @@ self.addEventListener('activate', (event) => {
   )
 })
 
+// Push notifications
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {}
+  const title = data.title || 'fluidz'
+  const options = {
+    body: data.body || '',
+    icon: '/vite.svg',
+    badge: '/vite.svg',
+    data: { url: data.url || '/' },
+    vibrate: [100, 50, 100],
+    tag: data.tag || 'fluidz-notif',
+    renotify: true,
+  }
+  event.waitUntil(self.registration.showNotification(title, options))
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const url = event.notification.data?.url || '/'
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      const existing = clients.find((c) => c.url.includes(self.location.origin))
+      if (existing) { existing.navigate(url); return existing.focus() }
+      return self.clients.openWindow(url)
+    })
+  )
+})
+
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return
   const url = new URL(event.request.url)

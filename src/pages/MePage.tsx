@@ -7,7 +7,8 @@ import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Bell, BookOpen, Users, MapPin, Eye, Share2, Heart, Check } from 'lucide-react'
+import { Bell, BellRing, BookOpen, Users, MapPin, Eye, Share2, Heart, Check } from 'lucide-react'
+import { usePushNotifications } from '../hooks/usePushNotifications'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { monthsAgoCount } from '../lib/timing'
 
@@ -81,6 +82,7 @@ export default function MePage() {
   const [profileViews, setProfileViews] = useState(0)
   const [contactRequests, setContactRequests] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
+  const { status: pushStatus, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications()
 
   async function mergeGhost(mergeId: string, userId: string) {
     const { data: ghost } = await supabase.from('ghost_sessions').select('id, display_name, profile_json').eq('id', mergeId).maybeSingle()
@@ -448,6 +450,20 @@ export default function MePage() {
           <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p3, cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <Bell size={14} strokeWidth={1.5} style={{marginRight:4}} /> Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
           </button>
+          {pushStatus !== 'unsupported' && (
+            <button onClick={() => pushStatus === 'subscribed' ? pushUnsubscribe() : pushSubscribe()} style={{
+              width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, marginTop: 4,
+              color: pushStatus === 'subscribed' ? S.sage : S.tx2,
+              border: '1px solid ' + (pushStatus === 'subscribed' ? S.sagebd : S.rule),
+              background: pushStatus === 'subscribed' ? S.sagebg : 'transparent',
+              cursor: pushStatus === 'denied' ? 'not-allowed' : 'pointer',
+              opacity: pushStatus === 'denied' ? 0.5 : 1,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              <BellRing size={14} strokeWidth={1.5} />
+              {pushStatus === 'subscribed' ? 'Push actives' : pushStatus === 'denied' ? 'Push bloquees (navigateur)' : 'Activer les push'}
+            </button>
+          )}
           <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
             <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p2, cursor: 'pointer' }}>
               <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> Naughty Book
@@ -459,6 +475,24 @@ export default function MePage() {
           <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <MapPin size={13} strokeWidth={1.5} style={{marginRight:3}} /> Mes adresses
           </button>
+
+          {/* Language switcher */}
+          <div style={{ marginTop: 8, display: 'flex', gap: 6 }}>
+            {(['fr', 'en'] as const).map(lang => {
+              const current = (typeof window !== 'undefined' && localStorage.getItem('fluidz_lang')) || 'fr'
+              const active = current === lang
+              return (
+                <button key={lang} onClick={() => { import('../i18n').then(m => m.setLanguage(lang)); window.location.reload() }} style={{
+                  flex: 1, padding: '8px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  border: '1px solid ' + (active ? S.pbd : S.rule),
+                  background: active ? S.p2 : 'transparent',
+                  color: active ? S.p : S.tx3,
+                }}>
+                  {lang === 'fr' ? 'Francais' : 'English'}
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
 

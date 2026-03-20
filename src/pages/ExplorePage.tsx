@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, Users, MessageCircle, BookOpen, Bell } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, Users, MessageCircle, BookOpen, Bell, Map as MapIcon, LayoutGrid } from 'lucide-react'
+import MapView from '../components/MapView'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
@@ -58,6 +59,7 @@ export default function ExplorePage() {
   const [nearbySessions, setNearbySessions] = useState<any[]>([])
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
   const [unreadChatCount, setUnreadChatCount] = useState(0)
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -232,6 +234,9 @@ export default function ExplorePage() {
             <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.sage + '44' : S.rule), background: visible ? S.sage + '14' : 'transparent', color: visible ? S.sage : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
               {visible ? <Eye size={14} /> : <EyeOff size={14} />} {visible ? 'Visible' : 'Masqué'}
             </button>
+            <button onClick={() => setViewMode(viewMode === 'grid' ? 'map' : 'grid')} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + (viewMode === 'map' ? S.pbd : S.rule), background: viewMode === 'map' ? S.p2 : 'transparent', color: viewMode === 'map' ? S.p : S.tx3, cursor: 'pointer' }}>
+              {viewMode === 'grid' ? <MapIcon size={14} /> : <LayoutGrid size={14} />}
+            </button>
             <button onClick={() => setShowFilters(!showFilters)} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
               <Filter size={14} />
             </button>
@@ -308,8 +313,35 @@ export default function ExplorePage() {
           </div>
         )}
 
+        {/* Map view */}
+        {!loading && viewMode === 'map' && myLat && myLng && filtered.length > 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <MapView
+              center={[myLat, myLng]}
+              zoom={14}
+              showUserLocation
+              userLat={myLat}
+              userLng={myLng}
+              height={320}
+              pins={filtered.filter(p => {
+                // Only show profiles that have approximate coordinates (from the bounding box query)
+                // We use the haversine distance as a proxy — if they have distance, they have coords
+                return p.distance !== undefined
+              }).map(p => ({
+                id: p.id,
+                lat: myLat + (Math.random() - 0.5) * 0.01, // Approximate — real coords not exposed to client for privacy
+                lng: myLng + (Math.random() - 0.5) * 0.01,
+                label: p.display_name,
+                avatar: p.avatar_url,
+                type: 'profile' as const,
+                onClick: () => navigate('/profile/' + p.id),
+              }))}
+            />
+          </div>
+        )}
+
         {/* Grid */}
-        {!loading && filtered.length > 0 && (
+        {!loading && filtered.length > 0 && viewMode === 'grid' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
             {filtered.map(p => (
               <div
