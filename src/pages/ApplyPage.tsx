@@ -441,8 +441,8 @@ export default function ApplyPage() {
               const preview = getPreview(sec.id)
               return (
                 <div key={sec.id} onClick={() => toggle(sec.id)} style={{
-                  background: on ? S.p + '10' : S.bg1,
-                  border: '1px solid ' + (on ? S.p + '55' : S.rule),
+                  background: on ? S.p3 : S.bg1,
+                  border: '1px solid ' + (on ? S.pbd : S.rule),
                   borderRadius:14,padding:'12px 14px',cursor:'pointer',
                   display:'flex',alignItems:'center',justifyContent:'space-between',transition:'all 0.2s',
                 }}>

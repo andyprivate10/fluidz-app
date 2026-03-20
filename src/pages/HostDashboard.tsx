@@ -370,7 +370,7 @@ export default function HostDashboard() {
               {linkCopied ? t('session.link_copied') : t('host.share_session')}
             </button>
             <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-              <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
+              <div style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
               <button
                 onClick={() => {
                   const url = window.location.origin + '/join/' + sess.invite_code
@@ -435,7 +435,7 @@ export default function HostDashboard() {
           })
           return (
             <div style={{marginTop:12,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule}}>
-              <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>RÔLES</div>
+              <div style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>RÔLES</div>
               <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                 {Object.entries(wanted).map(([role, count]) => {
                   const have = currentRoles[role] || 0

@@ -151,7 +151,7 @@ export default function CandidateProfilePage() {
     : (eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : []))
   const hasAdulteMedia = photosAdulte.length > 0 || videosAdulte.length > 0
 
-  const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 12 }
+  const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 20, padding: 16, marginBottom: 12 }
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', position: 'relative' }}>
@@ -179,11 +179,11 @@ export default function CandidateProfilePage() {
               <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosAdulte.map((url: string, i: number) => (
-                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.p + '55' }} />
+                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd }} />
                 ))}
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                    <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.p + '55' }} />
+                    <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
                     <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
                   </div>
                 ))}
@@ -331,7 +331,7 @@ export default function CandidateProfilePage() {
 
             {/* Limites */}
             {limits && (
-              <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
+              <div style={{ ...card, borderColor: S.redbd, background: S.redbg }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('profile.limits')}</p>
                 <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
               </div>
@@ -343,13 +343,13 @@ export default function CandidateProfilePage() {
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.health')}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {health.prep_status === 'Actif' && (
-                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.sage, background: S.sage + '18', border: '1px solid ' + S.sage + '44' }}>PrEP actif</span>
+                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}>PrEP actif</span>
                   )}
                   {health.prep_status && health.prep_status !== 'Actif' && (
                     <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, color: S.tx3 }}>PrEP {health.prep_status}</span>
                   )}
                   {health.dernier_test && (
-                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.blue + '18', border: '1px solid ' + S.blue + '44' }}>Test {monthsAgoLabel(health.dernier_test)}</span>
+                    <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.blue, background: S.bluebg, border: '1px solid ' + S.bluebd }}>Test {monthsAgoLabel(health.dernier_test)}</span>
                   )}
                 </div>
               </div>
@@ -372,7 +372,7 @@ export default function CandidateProfilePage() {
 
             {/* Occasion note */}
             {eps.occasion_note && eps.occasion_note !== messageText && (
-              <div style={{ ...card, borderColor: S.p + '33' }}>
+              <div style={{ ...card, borderColor: S.pbd }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
                 <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
               </div>
@@ -397,7 +397,7 @@ export default function CandidateProfilePage() {
         }}>
           <button onClick={() => handleDecision('rejected')} disabled={actioning} style={{
             flex: 1, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
-            color: S.red, border: '1px solid ' + S.red + '44', background: S.red + '10', cursor: 'pointer',
+            color: S.red, border: '1px solid ' + S.redbd, background: S.redbg, cursor: 'pointer',
           }}>
             {t('host.reject')}
           </button>

@@ -129,7 +129,7 @@ export default function ChatsHubPage() {
             return (
               <button key={k} onClick={() => setTab(k)} style={{
                 flex: 1, padding: '7px 4px', borderRadius: R.chip, ...typeStyle('meta'), cursor: 'pointer',
-                border: `1px solid ${tab === k ? S.p + '44' : S.rule}`,
+                border: `1px solid ${tab === k ? S.pbd : S.rule}`,
                 background: tab === k ? S.p2 : 'transparent',
                 color: tab === k ? S.p : S.tx3,
               }}>

@@ -460,7 +460,7 @@ export default function SessionPage() {
 
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>ACCÈS</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>ACCÈS</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {session.lineup_json.directions.map((step, i) => {
                 const text = typeof step === 'string' ? step : step.text
@@ -588,7 +588,7 @@ export default function SessionPage() {
 
         {members.length >= 3 ? (
           <div style={card}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>VOTE CONSULTATIF</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>VOTE CONSULTATIF</div>
             {pendingApps.filter(p => !currentUser || p.applicant_id !== currentUser.id).length === 0 ? (
               <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>{t('session.no_pending')}</p>
             ) : (

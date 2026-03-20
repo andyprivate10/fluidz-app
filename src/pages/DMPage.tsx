@@ -411,7 +411,7 @@ export default function DMPage() {
             {session.exact_address}
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-            <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sage + '44', background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sagebd, background: 'transparent', cursor: 'pointer' }}>
               <Copy size={11} strokeWidth={1.5} style={{marginRight:2}} /> Copier
             </button>
             <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid '+S.bluebd, background: 'transparent', cursor: 'pointer' }}>

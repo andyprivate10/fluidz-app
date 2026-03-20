@@ -47,16 +47,17 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
   )
 }
 
-function Section({ title, badge, children }: { title:string; badge?:string; children:React.ReactNode }) {
+function Section({ title, badge, children, color }: { title:string; badge?:string; children:React.ReactNode; color?:string }) {
+  const c = color || S.tx3
   return (
     <div style={{ background:S.bg1, borderRadius:20, padding:'16px', border:`1px solid ${S.rule}`, marginBottom:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
-        <span style={{ fontSize:11, fontWeight:700, color:S.tx3, textTransform:'uppercase', letterSpacing:'0.08em' }}>
+        <span style={{ fontSize:10, fontWeight:700, color:c, textTransform:'uppercase', letterSpacing:'0.08em' }}>
           {title}
         </span>
         {badge && (
-          <span style={{ fontSize:11, fontWeight:600, padding:'2px 8px', borderRadius:99,
-            background:`${S.p}18`, color:S.p, border:`1px solid ${S.p}33` }}>
+          <span style={{ fontSize:10, fontWeight:600, padding:'2px 8px', borderRadius:99,
+            background:S.p2, color:S.p, border:`1px solid ${S.pbd}` }}>
             {badge}
           </span>
         )}
@@ -576,7 +577,7 @@ export default function MePage() {
             )
           })()}
 
-          <Section title="Photos profil">
+          <Section title="Photos profil" color={S.p}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>Visage, corps. Visible par défaut.</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosProfil.map((url) => (
@@ -603,7 +604,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosProfil.length} photo{photosProfil.length !== 1 ? 's' : ''}</p>
           </Section>
 
-          <Section title="Infos">
+          <Section title="Infos" color={S.lav}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
@@ -669,7 +670,7 @@ export default function MePage() {
         <div style={{ padding:'16px 20px' }}>
 
           {/* Body Part Photos Grid */}
-          <Section title="Photos par zone">
+          <Section title="Photos par zone" color={S.p}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>Assigne une photo a chaque zone. Visible uniquement dans le bloc Adulte.</p>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
               {BODY_PARTS.map(bp => {
@@ -722,7 +723,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:'10px 0 0' }}>{Object.keys(bodyPartPhotos).length}/{BODY_PARTS.length} zones remplies</p>
           </Section>
 
-          <Section title="Photos & videos adultes">
+          <Section title="Photos & videos adultes" color={S.p}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>NSFW. Partage uniquement si le candidat active le bloc "Adulte".</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosIntime.map((url) => (
@@ -761,7 +762,7 @@ export default function MePage() {
             {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>Upload en cours...</p>}
           </Section>
 
-          <Section title="Kinks" badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''}` : undefined}>
+          <Section title="Kinks" color={S.p} badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''}` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {kinkOptions.map(k => (
                 <Chip key={k.label} label={k.label} active={kinks.includes(k.label)} onClick={() => toggleKink(k.label)} />
@@ -769,7 +770,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Sante" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgoCount(dernierTest)} mois` : undefined}>
+          <Section title="Santé" color={S.sage} badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgoCount(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>PrEP actif</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
@@ -789,7 +790,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Limites">
+          <Section title="Limites" color={S.red}>
             <textarea
               value={limits} onChange={e => setLimits(e.target.value)}
               placeholder="Hard limits, no-go..." rows={3}

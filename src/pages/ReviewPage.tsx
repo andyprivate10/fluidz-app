@@ -145,14 +145,14 @@ export default function ReviewPage() {
 
       {alreadyReviewed && !submitted ? (
         <div style={{ padding: '0 20px' }}>
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
+          <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sagebd }}>
             <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>{t('review.already')}</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '8px 0 0' }}>{t('review.already_desc')}</p>
           </div>
         </div>
       ) : submitted ? (
         <div style={{ padding: '0 20px' }}>
-          <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
+          <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sagebd }}>
             
             <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>{t('review.thanks')}</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>{t('review.thanks_desc')}</p>

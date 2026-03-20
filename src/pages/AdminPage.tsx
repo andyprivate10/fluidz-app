@@ -231,7 +231,7 @@ export default function AdminPage() {
     return (
       <div key={item.id} style={{
         display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
-        background: S.bg1, borderRadius: 12, border: '1px solid ' + (item.active ? S.rule : S.red + '33'),
+        background: S.bg1, borderRadius: 12, border: '1px solid ' + (item.active ? S.rule : S.redbd),
         marginBottom: 4, opacity: item.active ? 1 : 0.5,
       }}>
         <GripVertical size={14} color={S.tx4} strokeWidth={1.5} style={{ flexShrink: 0 }} />
@@ -263,7 +263,7 @@ export default function AdminPage() {
 
           {/* Delete */}
           <button onClick={() => deleteItem(item)} style={{
-            width: 28, height: 28, borderRadius: 8, border: '1px solid ' + S.red + '33',
+            width: 28, height: 28, borderRadius: 8, border: '1px solid ' + S.redbd,
             background: 'transparent', color: S.red, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
           }}>

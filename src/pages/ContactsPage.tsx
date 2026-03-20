@@ -141,7 +141,7 @@ export default function ContactsPage() {
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                border: '1px solid ' + (active ? S.p + '55' : S.rule),
+                border: '1px solid ' + (active ? S.pbd : S.rule),
                 background: active ? S.p2 : 'transparent',
                 color: active ? S.p : S.tx3,
                 whiteSpace: 'nowrap',

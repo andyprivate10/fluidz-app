@@ -209,7 +209,7 @@ export default function ContactDetailPage() {
           {editingNotes ? (
             <div>
               <textarea value={notesText} onChange={e => setNotesText(e.target.value)} placeholder="Notes perso (privées)..." maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
-              <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.sage + '22', color: S.sage, border: '1px solid ' + S.sage + '44', cursor: 'pointer' }}>Sauvegarder</button>
+              <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.sagebg, color: S.sage, border: '1px solid ' + S.sagebd, cursor: 'pointer' }}>Sauvegarder</button>
             </div>
           ) : (
             <p style={{ fontSize: 13, color: contact?.notes ? S.tx2 : S.tx4, margin: 0, lineHeight: 1.5 }}>
@@ -251,7 +251,7 @@ export default function ContactDetailPage() {
                   <span style={{
                     fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
                     color: s.status === 'open' ? S.sage : s.status === 'ended' ? S.red : S.tx4,
-                    background: s.status === 'open' ? S.sage + '18' : s.status === 'ended' ? S.red + '18' : S.bg3,
+                    background: s.status === 'open' ? S.sagebg : s.status === 'ended' ? S.redbg : S.bg3,
                   }}>{s.status === 'open' ? 'Active' : s.status === 'ended' ? 'Terminée' : s.status}</span>
                 </button>
               ))}
@@ -323,7 +323,7 @@ export default function ContactDetailPage() {
 
         {/* Remove */}
         {contact && (
-          <button onClick={removeContact} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12, borderRadius: 12, background: 'transparent', border: '1px solid ' + S.red + '33', color: S.red, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: 0.7 }}>
+          <button onClick={removeContact} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12, borderRadius: 12, background: 'transparent', border: '1px solid ' + S.redbd, color: S.red, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: 0.7 }}>
             <Trash2 size={14} /> {t('contacts.remove_contact')}
           </button>
         )}

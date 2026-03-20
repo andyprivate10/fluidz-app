@@ -185,14 +185,14 @@ export default function GhostSetupPage() {
 
         {step === 'done' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16, textAlign: 'center' }}>
-            <div style={{ background: S.bg1, border: '1px solid ' + S.sage + '44', borderRadius: 20, padding: 24 }}>
+            <div style={{ background: S.bg1, border: '1px solid ' + S.sagebd, borderRadius: 20, padding: 24 }}>
               <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 16 }}>{t('ghost.title')}</div>
 
               <div style={{ marginBottom: 16 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Ton code de récupération</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
                   <span style={{ fontSize: 36, fontWeight: 800, color: S.p, letterSpacing: '0.15em', fontFamily: 'monospace' }}>{ghostCode}</span>
-                  <button onClick={handleCopyCode} style={{ background: codeCopied ? S.sage + '22' : S.bg2, border: '1px solid ' + (codeCopied ? S.sage : S.rule), borderRadius: 10, padding: 8, cursor: 'pointer', color: codeCopied ? S.sage : S.tx3 }}>
+                  <button onClick={handleCopyCode} style={{ background: codeCopied ? S.sagebg : S.bg2, border: '1px solid ' + (codeCopied ? S.sage : S.rule), borderRadius: 10, padding: 8, cursor: 'pointer', color: codeCopied ? S.sage : S.tx3 }}>
                     {codeCopied ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                 </div>
@@ -209,7 +209,7 @@ export default function GhostSetupPage() {
                 </div>
               </div>
 
-              <div style={{ background: S.orange + '14', border: '1px solid ' + S.orange + '33', borderRadius: 12, padding: 12, marginBottom: 4 }}>
+              <div style={{ background: S.orangebg, border: '1px solid ' + S.orangebd, borderRadius: 12, padding: 12, marginBottom: 4 }}>
                 <p style={{ fontSize: 12, color: S.orange, margin: 0, fontWeight: 600 }}>
                   {t('ghost.valid_24h')}
                 </p>

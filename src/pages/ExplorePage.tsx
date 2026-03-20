@@ -233,7 +233,7 @@ export default function ExplorePage() {
             <button onClick={() => navigate('/contacts')} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
               <BookOpen size={14} />
             </button>
-            <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.sage + '44' : S.rule), background: visible ? S.sage + '14' : 'transparent', color: visible ? S.sage : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
+            <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.sagebd : S.rule), background: visible ? S.sagebg : 'transparent', color: visible ? S.sage : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
               {visible ? <Eye size={14} /> : <EyeOff size={14} />} {visible ? t('explore.visible') : t('explore.hidden')}
             </button>
             <button onClick={() => setViewMode(viewMode === 'grid' ? 'map' : 'grid')} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + (viewMode === 'map' ? S.pbd : S.rule), background: viewMode === 'map' ? S.p2 : 'transparent', color: viewMode === 'map' ? S.p : S.tx3, cursor: 'pointer' }}>
@@ -251,7 +251,7 @@ export default function ExplorePage() {
             {roleFilters.map(r => (
               <button key={r} onClick={() => setRoleFilter(r)} style={{
                 padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
-                border: '1px solid ' + (roleFilter === r ? S.p + '55' : S.rule),
+                border: '1px solid ' + (roleFilter === r ? S.pbd : S.rule),
                 background: roleFilter === r ? S.p2 : 'transparent',
                 color: roleFilter === r ? S.p : S.tx3,
               }}>{r}</button>
@@ -411,7 +411,7 @@ export default function ExplorePage() {
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
                   {s.approx_area && <span style={{ fontSize: 12, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} /> {s.approx_area}</span>}
                   {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}{s.max_capacity ? '/' + s.max_capacity : ''}</span>}
-                  {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.red + '14', padding: '2px 8px', borderRadius: 99 }}>{t('explore.full_session')}</span>}
+                  {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.redbg, padding: '2px 8px', borderRadius: 99 }}>{t('explore.full_session')}</span>}
                   {(() => { const t = sessionTiming(s); if (!t) return null; const isEnded = t === 'Terminé'; return <span style={{ fontSize: 10, color: isEnded ? S.red : S.tx3 }}>{t}</span> })()}
                 </div>
                 {s.tags && s.tags.length > 0 && (
@@ -422,7 +422,7 @@ export default function ExplorePage() {
                   </div>
                 )}
                 {s.max_capacity && s.member_count >= s.max_capacity ? (
-                  <button disabled style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.red + '22', border: '1px solid ' + S.red + '44', color: S.red, fontSize: 13, fontWeight: 700 }}>
+                  <button disabled style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, fontSize: 13, fontWeight: 700 }}>
                     {t('explore.full_session')}
                   </button>
                 ) : (
