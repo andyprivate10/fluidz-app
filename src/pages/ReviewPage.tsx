@@ -118,7 +118,7 @@ export default function ReviewPage() {
       rating: r, vibe_tags: peerTags[targetId] || [], is_anonymous: true,
     })
     if (error) {
-      if (error.code === '23505') showToast('Deja note', 'error')
+      if (error.code === '23505') showToast('Déjà noté', 'error')
       else showToast('Erreur', 'error')
       return
     }

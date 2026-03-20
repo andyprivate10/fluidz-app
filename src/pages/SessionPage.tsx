@@ -775,7 +775,7 @@ export default function SessionPage() {
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              {pendingCount > 0 ? `Gerer (${pendingCount} en attente)` : 'Gerer la session'}
+              {pendingCount > 0 ? `Gerer (${pendingCount} en attente)` : 'Gérer la session'}
             </button>
             {session.invite_code && (
               <button onClick={() => {
@@ -898,12 +898,12 @@ export default function SessionPage() {
               Candidature envoyée
             </button>
           ) : session.max_capacity && (members.length + 1) >= session.max_capacity ? (
-            <button disabled style={{ width: '100%', padding: 16, background: 'rgba(248,113,113,0.12)', border: '1px solid ' + 'rgba(248,113,113,0.25)', borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>
+            <button disabled style={{ width: '100%', padding: 16, background: S.redbg, border: '1px solid ' + S.redbd, borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>
               Session complète
             </button>
           ) : (
-            <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-              Postuler a cette session
+            <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} className='btn-shimmer' style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', position: 'relative' as const, overflow: 'hidden', boxShadow: '0 4px 20px ' + S.pbd }}>
+              Postuler à cette session
             </button>
           )}
         </div>

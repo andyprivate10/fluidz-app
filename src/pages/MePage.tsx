@@ -656,7 +656,7 @@ export default function MePage() {
             color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
             transition:'color 0.3s',
           }}>
-            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Les modifications sont sauvegardees automatiquement'}
+            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Les modifications sont sauvegardées automatiquement'}
           </div>
 
           {devMode && (
