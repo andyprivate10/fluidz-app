@@ -11,8 +11,10 @@ CREATE TABLE IF NOT EXISTS contact_groups (
 CREATE INDEX IF NOT EXISTS idx_contact_groups_owner ON contact_groups(owner_id);
 ALTER TABLE contact_groups ENABLE ROW LEVEL SECURITY;
 
+do $$ begin
 CREATE POLICY "Owner manages groups" ON contact_groups
   FOR ALL USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
+exception when duplicate_object then null; end $$;
 
 -- Group members (link contacts to groups)
 CREATE TABLE IF NOT EXISTS contact_group_members (
@@ -27,9 +29,11 @@ CREATE INDEX IF NOT EXISTS idx_contact_group_members_group ON contact_group_memb
 ALTER TABLE contact_group_members ENABLE ROW LEVEL SECURITY;
 
 -- Members readable/writable only by group owner
+do $$ begin
 CREATE POLICY "Group owner manages members" ON contact_group_members
   FOR ALL USING (
     group_id IN (SELECT id FROM contact_groups WHERE owner_id = auth.uid())
   ) WITH CHECK (
     group_id IN (SELECT id FROM contact_groups WHERE owner_id = auth.uid())
   );
+exception when duplicate_object then null; end $$;

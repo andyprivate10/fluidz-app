@@ -19,13 +19,19 @@ CREATE INDEX IF NOT EXISTS idx_ephemeral_media_context ON ephemeral_media(contex
 ALTER TABLE ephemeral_media ENABLE ROW LEVEL SECURITY;
 
 -- Owner can manage their media
+do $$ begin
 CREATE POLICY "Owner manages ephemeral media" ON ephemeral_media
   FOR ALL USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
+exception when duplicate_object then null; end $$;
 
 -- Target user can view if views remaining
+do $$ begin
 CREATE POLICY "Target can view ephemeral media" ON ephemeral_media
   FOR SELECT USING (target_user_id = auth.uid() OR target_user_id IS NULL);
+exception when duplicate_object then null; end $$;
 
 -- Anyone can increment view count
+do $$ begin
 CREATE POLICY "Anyone can increment views" ON ephemeral_media
   FOR UPDATE USING (true) WITH CHECK (true);
+exception when duplicate_object then null; end $$;

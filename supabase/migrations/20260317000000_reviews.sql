@@ -17,9 +17,13 @@ CREATE INDEX IF NOT EXISTS idx_reviews_target ON reviews(target_id) WHERE target
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
 -- Participants can review sessions they were in
+do $$ begin
 CREATE POLICY "Participants can create reviews" ON reviews
   FOR INSERT WITH CHECK (reviewer_id = auth.uid());
+exception when duplicate_object then null; end $$;
 
 -- Reviews are readable by session participants
+do $$ begin
 CREATE POLICY "Participants can read session reviews" ON reviews
   FOR SELECT USING (true);
+exception when duplicate_object then null; end $$;

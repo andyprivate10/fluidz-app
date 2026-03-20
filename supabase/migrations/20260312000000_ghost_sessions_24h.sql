@@ -20,16 +20,22 @@ CREATE INDEX IF NOT EXISTS idx_ghost_sessions_expires ON ghost_sessions(expires_
 ALTER TABLE ghost_sessions ENABLE ROW LEVEL SECURITY;
 
 -- Anyone can create a ghost session (no auth required)
+do $$ begin
 CREATE POLICY "Anyone can create ghost session" ON ghost_sessions
   FOR INSERT WITH CHECK (true);
+exception when duplicate_object then null; end $$;
 
 -- Anyone can read a ghost session by code (for recovery)
+do $$ begin
 CREATE POLICY "Anyone can read ghost session by code" ON ghost_sessions
   FOR SELECT USING (true);
+exception when duplicate_object then null; end $$;
 
 -- Ghost can update their own session (for profile updates)
+do $$ begin
 CREATE POLICY "Anyone can update ghost session" ON ghost_sessions
   FOR UPDATE USING (true) WITH CHECK (true);
+exception when duplicate_object then null; end $$;
 
 -- Add ghost_session_id to applications for ghost candidates
 ALTER TABLE applications ADD COLUMN IF NOT EXISTS ghost_session_id uuid REFERENCES ghost_sessions(id);
