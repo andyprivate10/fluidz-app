@@ -247,7 +247,7 @@ export default function CandidateProfilePage() {
           }}>
             {app.status === 'accepted' ? 'Accepté' : app.status === 'checked_in' ? 'Check-in' : app.status === 'rejected' ? 'Refusé' : 'En attente'}
           </span>
-          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>▶ Story</button>
+          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Story</button>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
           {!eps.is_phantom && <AddContactButton targetUserId={app.applicant_id} />}
         </div>

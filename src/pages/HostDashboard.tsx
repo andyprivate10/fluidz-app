@@ -281,7 +281,7 @@ export default function HostDashboard() {
       user_id: uid,
       session_id: id,
       type: 'group_invite',
-      title: `📩 Tu es invité à "${sess.title}"`,
+      title: `Tu es invité à "${sess.title}"`,
       body: `${hostDisplayName || 'Un host'} t'invite via le groupe "${group.name}"`,
       href: `/session/${id}`,
     }))

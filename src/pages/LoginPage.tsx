@@ -59,7 +59,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative' }}>
+    <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', maxWidth: 480, margin: '0 auto' }}>
       <OrbLayer />
       <div style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}>
 

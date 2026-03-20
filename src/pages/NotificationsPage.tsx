@@ -16,7 +16,7 @@ type Notif = { id: string; type: string; title: string; body: string; href: stri
 const TYPE_ICONS: Record<string, string> = {
   new_application: '→', application_accepted: '●', application_rejected: '—',
   session_invite: '→', group_invite: '⊕', direct_dm: '↗',
-  direct_join: '⚡', contact_request: '♡', check_in: '◎',
+  direct_join: '→', contact_request: '♡', check_in: '◎',
   check_in_confirmed: '◉', review_request: '★', nudge: '⏱',
 }
 

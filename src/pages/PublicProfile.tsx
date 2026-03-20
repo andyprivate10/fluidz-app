@@ -156,7 +156,7 @@ function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
       user_id: targetUserId,
       session_id: sessionId,
       type: 'session_invite',
-      title: '📩 Tu es invité !',
+      title: 'Tu es invité !',
       body: 'Tu es invité à "' + (sess?.title || 'une session') + '"',
       href: '/session/' + sessionId,
     })

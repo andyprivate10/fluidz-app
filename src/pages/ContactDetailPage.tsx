@@ -116,7 +116,7 @@ export default function ContactDetailPage() {
       user_id: contactUserId,
       session_id: sessionId,
       type: 'session_invite',
-      title: '📩 Tu es invité !',
+      title: 'Tu es invité !',
       body: (profile?.display_name || 'Quelqu\'un') + ' t\'invite à "' + (sess?.title || 'une session') + '"',
       href: '/session/' + sessionId,
     })
@@ -314,7 +314,7 @@ export default function ContactDetailPage() {
                   border: '1px solid ' + S.pbd, background: S.p2, color: S.p,
                   cursor: inviting ? 'not-allowed' : 'pointer', textAlign: 'left',
                 }}>
-                  📩 Inviter à "{s.title}"
+                  Inviter à "{s.title}"
                 </button>
               ))}
             </div>

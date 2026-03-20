@@ -167,7 +167,7 @@ export default function CreateSessionPage() {
 
   if (createdSession) {
     return (
-      <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
+      <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,maxWidth:480,margin:'0 auto',position:'relative' as const}}>
         <div style={{padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
@@ -191,7 +191,7 @@ export default function CreateSessionPage() {
   }
 
   return (
-    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,maxWidth:480,margin:'0 auto',position:'relative' as const}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
         <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back')}</button>
         <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>{t('session.new_session')}</h1>

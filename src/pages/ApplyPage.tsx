@@ -288,7 +288,7 @@ export default function ApplyPage() {
           user_id: sess.host_id,
           session_id: id,
           type: 'new_application',
-          title: '📩 Nouvelle candidature',
+          title: 'Nouvelle candidature',
           body: name + ' a postulé pour "' + (sess.title || 'ta session') + '"',
           href: '/session/' + id + '/host',
         })
@@ -317,7 +317,7 @@ export default function ApplyPage() {
     </div>
   )
   return (
-    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative'}}>
+    <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative',maxWidth:480,margin:'0 auto'}}>
       <OrbLayer />
       <EventContextNav role="candidate" sessionTitle={session?.title} />
       <div style={{padding:'12px 20px 16px',borderBottom:'1px solid ' + S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)'}}>
