@@ -315,9 +315,9 @@ export default function GroupChatPage() {
         {isHost && (
           <button onClick={toggleGroupChat} style={{
             padding:'6px 10px', borderRadius:10, fontSize:11, fontWeight:600, cursor:'pointer',
-            background: session.group_chat_enabled ? S.sage+'18' : S.p2,
+            background: session.group_chat_enabled ? S.sagebg : S.p2,
             color: session.group_chat_enabled ? S.sage : S.p,
-            border:'1px solid ' + (session.group_chat_enabled ? S.sage+'44' : S.pbd),
+            border:'1px solid ' + (session.group_chat_enabled ? S.sagebd : S.pbd),
           }}>
             {session.group_chat_enabled ? 'ON' : 'OFF'}
           </button>
@@ -355,7 +355,7 @@ export default function GroupChatPage() {
 
       {/* Not enabled banner for host */}
       {isHost && !session.group_chat_enabled && (
-        <div style={{ padding:'10px 16px', background:S.p+'12', borderBottom:'1px solid '+S.pbd }}>
+        <div style={{ padding:'10px 16px', background:S.p3, borderBottom:'1px solid '+S.pbd }}>
           <p style={{ margin:0, fontSize:12, color:S.p }}>
             Le group chat est désactivé. Clique "ON" pour l'activer pour les membres.
           </p>

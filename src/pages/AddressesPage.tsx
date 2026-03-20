@@ -191,7 +191,7 @@ export default function AddressesPage() {
                   )}
                   <div style={{ display:'flex',gap:8,marginTop:12 }}>
                     <button onClick={() => openEdit(addr)} style={{ flex:1,padding:'8px',borderRadius:10,fontSize:12,fontWeight:600,color:S.p,border:'1px solid '+S.pbd,background:S.p2,cursor:'pointer' }}>Modifier</button>
-                    <button onClick={() => deleteAddress(addr.id)} style={{ padding:'8px 12px',borderRadius:10,fontSize:12,color:S.red,border:'1px solid '+S.red+'33',background:'transparent',cursor:'pointer' }}><Trash2 size={14} /></button>
+                    <button onClick={() => deleteAddress(addr.id)} style={{ padding:'8px 12px',borderRadius:10,fontSize:12,color:S.red,border:'1px solid '+S.redbd,background:'transparent',cursor:'pointer' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
               )}

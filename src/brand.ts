@@ -36,19 +36,25 @@ export const colors = {
 
   // Secondary accents
   violet:  '#A78BFA',
+  violetbg: 'rgba(167,139,250,0.10)',
+  violetbd: 'rgba(167,139,250,0.22)',
   emerald: '#34D399',
+  emeraldbg: 'rgba(52,211,153,0.10)',
+  emeraldbd: 'rgba(52,211,153,0.22)',
   amber:   '#FB923C',
+  amberbg: 'rgba(251,146,60,0.10)',
+  amberbd: 'rgba(251,146,60,0.22)',
 
   // Semantic
   red:    '#F87171',
-  redbg:  'rgba(248,113,113,0.06)',
-  redbd:  'rgba(248,113,113,0.20)',
+  redbg:  'rgba(248,113,113,0.08)',
+  redbd:  'rgba(248,113,113,0.22)',
   orange: '#FBBF24',
+  orangebg: 'rgba(251,191,36,0.10)',
   orangebd: 'rgba(251,191,36,0.25)',
-  orangebg: 'rgba(251,191,36,0.12)',
   blue:   '#7DD3FC',
-  bluebd: 'rgba(125,211,252,0.27)',
-  amberbd: 'rgba(251,191,36,0.27)',
+  bluebg: 'rgba(125,211,252,0.10)',
+  bluebd: 'rgba(125,211,252,0.25)',
   grad:   '#E0887A',
 
   // Spinner / pull-to-refresh

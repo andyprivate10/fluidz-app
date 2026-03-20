@@ -358,7 +358,7 @@ export default function DMPage() {
 
       {/* Status banner */}
       {!isHost && appStatus === 'pending' && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: S.orange+'14', border: '1px solid '+S.orange+'44', borderRadius: 12, flexShrink: 0 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.orangebg, border: '1px solid '+S.orangebd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.orange, fontWeight: 600, textAlign: 'center' }}>
             Candidature en attente...
           </div>
@@ -383,7 +383,7 @@ export default function DMPage() {
       )}
 
       {!isHost && appStatus === 'rejected' && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: S.red+'14', border: '1px solid '+S.red+'44', borderRadius: 12, flexShrink: 0 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.redbg, border: '1px solid '+S.redbd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.red, fontWeight: 600, textAlign: 'center' }}>
             Candidature refusee
           </div>

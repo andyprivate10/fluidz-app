@@ -336,7 +336,7 @@ export default function MePage() {
         
       }}>
         {hasGuestToken && (
-          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p+'18', border:'1px solid '+S.pbd, maxWidth:360, width:'100%' }}>
+          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p2, border:'1px solid '+S.pbd, maxWidth:360, width:'100%' }}>
             <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>Vous avez une candidature en attente — créer un compte pour la conserver.</p>
             <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>Connecte-toi avec ton email pour récupérer ta candidature.</p>
           </div>
@@ -735,8 +735,8 @@ export default function MePage() {
 
           <Section title="Sante" badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgoCount(dernierTest)} mois` : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sage+'22', color:S.sage, border:'1px solid '+S.sage+'44' }}>PrEP actif</span>}
-              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.blue+'22', color:S.blue, border:'1px solid '+S.blue+'44' }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
+              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>PrEP actif</span>}
+              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               {PREP_OPTIONS.map(p => (

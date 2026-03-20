@@ -184,7 +184,7 @@ export default function JoinPage() {
 
       {status === 'error' && (
         <div className="animate-fade-in" style={{textAlign:'center'}}>
-          <div style={{width:64,height:64,borderRadius:'50%',background:S.red+'14',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
+          <div style={{width:64,height:64,borderRadius:'50%',background:S.redbg,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
             <Lock size={28} style={{color:S.red}} />
           </div>
           <p style={{color:S.tx,fontWeight:700,fontSize:20,marginBottom:8}}>Lien invalide</p>
@@ -240,7 +240,7 @@ export default function JoinPage() {
                 </div>
                 <div className="stagger-children" style={{display:'flex',flexDirection:'column',gap:6}}>
                   {lineup.slice(0, 5).map((m) => (
-                    <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:S.bg+'cc',borderRadius:12,border:'1px solid '+S.rule}}>
+                    <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:'rgba(5,4,10,0.80)',borderRadius:12,border:'1px solid '+S.rule}}>
                       {m.avatar_url ? (
                         <img src={m.avatar_url} alt="" style={{width:36,height:36,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
                       ) : (
@@ -261,7 +261,7 @@ export default function JoinPage() {
             )}
 
             {/* Locked address */}
-            <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:S.bg+'cc',borderRadius:12,border:'1px solid '+S.rule}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:'rgba(5,4,10,0.80)',borderRadius:12,border:'1px solid '+S.rule}}>
               <Lock size={14} style={{color:S.tx4,flexShrink:0}} />
               <p style={{fontSize:12,color:S.tx3,margin:0}}>Adresse révélée après acceptation</p>
             </div>
@@ -294,7 +294,7 @@ export default function JoinPage() {
               padding:'16px 20px', paddingBottom:'calc(16px + env(safe-area-inset-bottom, 0px))',
               maxWidth:420, margin:'0 auto',
             }}>
-              <button disabled style={{ width:'100%', padding:'16px', borderRadius:16, fontWeight:700, fontSize:16, color:S.red, background:S.red+'22', border:'1px solid '+S.red+'44' }}>
+              <button disabled style={{ width:'100%', padding:'16px', borderRadius:16, fontWeight:700, fontSize:16, color:S.red, background:S.redbg, border:'1px solid '+S.redbd }}>
                 Session complète
               </button>
               {!user && (

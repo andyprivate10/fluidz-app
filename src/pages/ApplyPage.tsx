@@ -324,7 +324,7 @@ export default function ApplyPage() {
       </div>
 
       {capacityFull && (
-        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.red+'18',border:'1px solid '+S.red+'44'}}>
+        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
           <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Session complète</p>
           <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Le nombre max de participants a été atteint.</p>
         </div>
@@ -358,7 +358,7 @@ export default function ApplyPage() {
       )}
 
       {isRateLimited && rateLimitedUntil && (
-        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.red+'18',border:'1px solid '+S.red+'44'}}>
+        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
           <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Tu as déjà postulé récemment.</p>
           <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Réessaye dans {Math.ceil((rateLimitedUntil.getTime() - Date.now()) / 60000)} min.</p>
         </div>
@@ -527,7 +527,7 @@ export default function ApplyPage() {
               const entries = Object.entries(bp).filter(([, url]) => url)
               if (entries.length === 0) return null
               return (
-                <div style={{marginTop:6,marginLeft:28,padding:10,background:S.bg1,borderRadius:12,border:'1px solid '+S.p+'33'}}>
+                <div style={{marginTop:6,marginLeft:28,padding:10,background:S.bg1,borderRadius:12,border:'1px solid '+S.pbd}}>
                   <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                     {entries.map(([partId, url]) => {
                       const on = !!selectedBodyParts[partId]
