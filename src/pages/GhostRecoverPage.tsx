@@ -106,7 +106,7 @@ export default function GhostRecoverPage() {
   const timeLeft = ghost ? Math.max(0, Math.floor((new Date(ghost.expires_at).getTime() - Date.now()) / 3600000)) : 0
 
   return (
-    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <OrbLayer />
       <div style={{ width: '100%', maxWidth: 400 }}>
 

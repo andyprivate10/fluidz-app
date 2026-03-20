@@ -223,7 +223,7 @@ export default function PublicProfile() {
   }, [userId])
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: S.bg, maxWidth: 480, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <p style={{ color: S.tx3 }}>Chargement...</p>
     </div>
   )
