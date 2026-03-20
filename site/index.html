@@ -102,11 +102,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;display:fl
 /* APP PREVIEW */
 .preview{padding:80px 24px;text-align:center}
 .pg{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px}
-.ps{width:220px;height:400px;border-radius:28px;background:var(--bg2);border:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;overflow:hidden}
-.ps::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(224,136,122,0.04) 100%)}
-.ps .pi{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center}
-.ps .pl{font-size:12px;font-weight:600;color:var(--tx3)}
-.ps .pt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:4px 10px;border-radius:99px;color:var(--p);background:var(--p2);border:1px solid var(--pbd)}
+.phone-frame{width:200px;position:relative;flex-shrink:0}
+.phone-notch{width:80px;height:6px;border-radius:0 0 8px 8px;background:var(--bg);margin:0 auto;position:relative;z-index:2}
+.phone-screen{background:var(--bg1);border:1px solid var(--rule2);border-radius:24px;overflow:hidden;min-height:340px;position:relative}
+.phone-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 70%,rgba(224,136,122,0.03) 100%);pointer-events:none;z-index:1}
+.phone-label{text-align:center;font-size:12px;font-weight:600;color:var(--tx2);margin-top:10px}
 
 /* PRO BANNER */
 .pro-banner{padding:80px 24px;text-align:center;position:relative}
@@ -146,7 +146,7 @@ footer{padding:48px 24px 32px;border-top:1px solid var(--rule);max-width:960px;m
   nav{padding:12px 16px}.nav-r{gap:8px}.nav-r a.hm{display:none}
   .hero{padding:100px 20px 60px}.sec{padding:80px 20px}
   .ag{grid-template-columns:1fr}.after-card{padding:28px 20px}
-  .pg{gap:10px}.ps{width:160px;height:300px}
+  .pg{gap:10px}.phone-frame{width:160px}.phone-screen{min-height:260px}
   .ft{flex-direction:column}.ft-ls{gap:24px}
 }
 </style>
@@ -237,10 +237,131 @@ footer{padding:48px 24px 32px;border-top:1px solid var(--rule);max-width:960px;m
 <section class="preview">
   <div class="sec-label rv" style="color:var(--p);text-align:center" data-fr="Aperçu" data-en="Preview">Preview</div>
   <h2 class="sec-title rv" style="text-align:center;margin:0 auto 0" data-fr="Conçue pour l'intimité" data-en="Designed for intimacy">Designed for intimacy</h2>
+  <p class="rv" style="color:var(--tx2);font-size:14px;text-align:center;max-width:400px;margin:8px auto 24px;line-height:1.6" data-fr="Interface dark, pensée pour le mobile. Chaque détail compte." data-en="Dark interface, designed mobile-first. Every detail matters.">Dark interface, designed mobile-first. Every detail matters.</p>
   <div class="pg">
-    <div class="ps rv"><div class="pi" style="background:var(--p2);border:1px solid var(--pbd)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="pl" data-fr="Profil modulaire" data-en="Modular profile">Modular profile</div><div class="pt" data-fr="Bientôt" data-en="Coming soon">Coming soon</div></div>
-    <div class="ps rv"><div class="pi" style="background:var(--lavbg);border:1px solid var(--lavbd)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lav)" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="pl" data-fr="Host Dashboard" data-en="Host Dashboard">Host Dashboard</div><div class="pt" data-fr="Bientôt" data-en="Coming soon">Coming soon</div></div>
-    <div class="ps rv"><div class="pi" style="background:var(--sagebg);border:1px solid var(--sagebd)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="pl" data-fr="Chat privé" data-en="Private chat">Private chat</div><div class="pt" data-fr="Bientôt" data-en="Coming soon">Coming soon</div></div>
+    <!-- Phone 1: Profile -->
+    <div class="phone-frame rv">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding:14px 12px 6px;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-family:var(--fh);font-size:16px;font-weight:800">Marcus</div>
+          <div style="display:flex;gap:3px">
+            <span style="font-size:8px;padding:2px 6px;border-radius:99px;background:var(--p2);border:1px solid var(--pbd);color:var(--p);font-weight:700">Profil</span>
+            <span style="font-size:8px;padding:2px 6px;border-radius:99px;background:var(--rule);color:var(--tx3);font-weight:600">Adulte</span>
+          </div>
+        </div>
+        <div style="padding:0 12px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+            <span style="font-size:20px;font-weight:800;font-family:var(--fh)">41</span>
+            <span style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:99px;background:var(--sagebg);border:1px solid var(--sagebd);color:var(--sage)">Starter</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:4px;font-size:7px;color:var(--tx3)"><span style="width:30px">Reviews</span><div style="flex:1;height:2px;border-radius:1px;background:var(--rule);overflow:hidden"><div style="width:50%;height:100%;background:var(--sage);border-radius:1px"></div></div></div>
+            <div style="display:flex;align-items:center;gap:4px;font-size:7px;color:var(--tx3)"><span style="width:30px">Trust</span><div style="flex:1;height:2px;border-radius:1px;background:var(--rule);overflow:hidden"><div style="width:100%;height:100%;background:var(--blue);border-radius:1px"></div></div></div>
+            <div style="display:flex;align-items:center;gap:4px;font-size:7px;color:var(--tx3)"><span style="width:30px">Profile</span><div style="flex:1;height:2px;border-radius:1px;background:var(--rule);overflow:hidden"><div style="width:80%;height:100%;background:var(--p);border-radius:1px"></div></div></div>
+          </div>
+          <div style="font-size:8px;color:var(--sage);font-weight:600;margin-bottom:4px">100% complete</div>
+          <div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:8px">
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--sagebg);color:var(--sage)">Pseudo</span>
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--sagebg);color:var(--sage)">Photo</span>
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--sagebg);color:var(--sage)">Role</span>
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--sagebg);color:var(--sage)">Bio</span>
+          </div>
+          <div style="height:1px;background:var(--rule);margin:6px 0"></div>
+          <div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--p);margin-bottom:4px">PHOTOS</div>
+          <div style="display:flex;gap:3px">
+            <div style="width:34px;height:42px;border-radius:6px;background:var(--bg3);border:1px solid var(--rule)"></div>
+            <div style="width:34px;height:42px;border-radius:6px;background:var(--bg3);border:1px solid var(--rule)"></div>
+            <div style="width:34px;height:42px;border-radius:6px;border:1px dashed var(--pbd);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--p)">+</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label" data-fr="Profil modulaire" data-en="Modular profile">Modular profile</div>
+    </div>
+
+    <!-- Phone 2: Session -->
+    <div class="phone-frame rv">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding:14px 12px 6px">
+          <div style="font-family:var(--fh);font-size:14px;font-weight:800;margin-bottom:5px">Dark Room ce soir</div>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">
+            <span style="font-size:7px;padding:2px 6px;border-radius:99px;background:var(--sagebg);border:1px solid var(--sagebd);color:var(--sage);font-weight:700">OUVERTE</span>
+            <span style="font-size:7px;padding:2px 6px;border-radius:99px;background:var(--rule);color:var(--tx3);font-weight:600">5</span>
+            <span style="font-size:7px;padding:2px 6px;border-radius:99px;background:var(--rule);color:var(--tx3);font-weight:600">45h</span>
+          </div>
+          <div style="display:flex;gap:2px;margin-bottom:8px">
+            <span style="font-size:6px;padding:2px 6px;border-radius:99px;background:var(--p2);border:1px solid var(--pbd);color:var(--p);font-weight:600">Dark Room</span>
+            <span style="font-size:6px;padding:2px 6px;border-radius:99px;background:var(--p2);border:1px solid var(--pbd);color:var(--p);font-weight:600">Top</span>
+            <span style="font-size:6px;padding:2px 6px;border-radius:99px;background:var(--p2);border:1px solid var(--pbd);color:var(--p);font-weight:600">Bottom</span>
+          </div>
+          <div style="display:flex;margin-bottom:6px">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg1)"></div>
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg1);margin-left:-5px"></div>
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg1);margin-left:-5px"></div>
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg1);margin-left:-5px"></div>
+          </div>
+          <div style="height:1px;background:var(--rule);margin:6px 0"></div>
+          <div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--p);margin-bottom:3px">DESCRIPTION</div>
+          <div style="font-size:8px;color:var(--tx2);line-height:1.4;margin-bottom:6px">Session privee. PrEP obligatoire.</div>
+          <div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--lav);margin-bottom:3px">ROLES</div>
+          <div style="display:flex;gap:2px">
+            <span style="font-size:6px;padding:2px 6px;border-radius:99px;background:var(--sagebg);color:var(--sage);font-weight:600">1x Top</span>
+            <span style="font-size:6px;padding:2px 6px;border-radius:99px;background:var(--p2);color:var(--p);font-weight:600">1x Versa</span>
+          </div>
+          <div style="height:1px;background:var(--rule);margin:6px 0"></div>
+          <div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--sage);margin-bottom:3px">LINEUP</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:16px;border-radius:50%;background:var(--bg3)"></div><span style="font-size:8px;color:var(--tx)">Alex</span><span style="font-size:7px;color:var(--p)">Top</span></div>
+            <div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:16px;border-radius:50%;background:var(--bg3)"></div><span style="font-size:8px;color:var(--tx)">Karim</span><span style="font-size:7px;color:var(--p)">Bottom</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label" data-fr="Page session" data-en="Session page">Session page</div>
+    </div>
+
+    <!-- Phone 3: Host Dashboard -->
+    <div class="phone-frame rv">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding:14px 12px 6px">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
+            <span style="font-size:7px;padding:2px 6px;border-radius:99px;background:var(--p2);border:1px solid var(--pbd);color:var(--p);font-weight:700">HOST</span>
+            <span style="font-size:7px;font-weight:600;color:var(--sage)">Live</span>
+          </div>
+          <div style="font-family:var(--fh);font-size:13px;font-weight:800;margin-bottom:6px">Dark Room ce soir</div>
+          <div style="display:flex;gap:14px;text-align:center;margin-bottom:8px">
+            <div><div style="font-family:var(--fh);font-size:16px;font-weight:800;color:var(--sage)">2</div><div style="font-size:6px;color:var(--tx3)">Arrived</div></div>
+            <div><div style="font-family:var(--fh);font-size:16px;font-weight:800;color:var(--tx2)">2</div><div style="font-size:6px;color:var(--tx3)">En route</div></div>
+            <div><div style="font-family:var(--fh);font-size:16px;font-weight:800;color:var(--p)">4</div><div style="font-size:6px;color:var(--tx3)">Total</div></div>
+          </div>
+          <div style="display:flex;gap:2px;margin-bottom:6px">
+            <span style="font-size:7px;padding:2px 6px;border-radius:6px;background:var(--p2);border:1px solid var(--pbd);color:var(--p);font-weight:700;flex:1;text-align:center">Pending</span>
+            <span style="font-size:7px;padding:2px 6px;border-radius:6px;background:var(--rule);color:var(--tx3);font-weight:600;flex:1;text-align:center">Accepted</span>
+          </div>
+          <div style="display:flex;gap:2px;margin-bottom:6px">
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--sagebg);color:var(--sage);font-weight:600">1/2 Top</span>
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--p2);color:var(--p);font-weight:600">0/1 Versa</span>
+            <span style="font-size:6px;padding:2px 5px;border-radius:99px;background:var(--rule);color:var(--tx2);font-weight:600">3/3 Bot</span>
+          </div>
+          <div style="height:1px;background:var(--rule);margin:5px 0"></div>
+          <div style="padding:6px;background:var(--bg2);border:1px solid var(--rule);border-radius:8px">
+            <div style="font-size:6px;color:var(--tx3);margin-bottom:3px">Broadcast</div>
+            <div style="font-size:7px;color:var(--tx3);padding:4px 6px;background:var(--bg);border:1px solid var(--rule);border-radius:5px">Message to all...</div>
+          </div>
+          <div style="height:1px;background:var(--rule);margin:5px 0"></div>
+          <div style="display:flex;gap:3px">
+            <div style="flex:1;padding:5px;border-radius:6px;background:var(--p);text-align:center;font-size:7px;font-weight:700;color:#fff">Accept</div>
+            <div style="flex:1;padding:5px;border-radius:6px;border:1px solid var(--rule);text-align:center;font-size:7px;font-weight:600;color:var(--tx3)">Reject</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label" data-fr="Host Dashboard" data-en="Host Dashboard">Host Dashboard</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:24px" class="rv">
+    <a href="https://fluidz-app.netlify.app" target="_blank" class="btn-l btn-g" style="font-size:13px;padding:12px 24px" data-fr="Essayer l'app" data-en="Try the app">Try the app</a>
   </div>
 </section>
 
