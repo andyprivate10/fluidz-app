@@ -15,8 +15,8 @@ const VIBE_TAGS = [
   { id: 'intense', label: 'Intense', color: S.p },
   { id: 'chill', label: 'Chill', color: S.p },
   { id: 'respectful', label: 'Respectueux', color: S.sage },
-  { id: 'awkward', label: '😬 Awkward', color: S.red },
-  { id: 'hot', label: '🌶️ Hot', color: S.p },
+  { id: 'awkward', label: 'Awkward', color: S.red },
+  { id: 'hot', label: 'Hot', color: S.p },
   { id: 'welcoming', label: 'Accueillant', color: S.blue },
 ]
 
@@ -27,7 +27,7 @@ export default function ReviewPage() {
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<{ title: string } | null>(null)
-  const [_participants, setParticipants] = useState<Participant[]>([])
+  const [participants, setParticipants] = useState<Participant[]>([])
   const [loading, setLoading] = useState(true)
   const [alreadyReviewed, setAlreadyReviewed] = useState(false)
 
@@ -37,6 +37,11 @@ export default function ReviewPage() {
   const [comment, setComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+  // Peer reviews
+  const [peerRatings, setPeerRatings] = useState<Record<string, number>>({})
+  const [peerTags, setPeerTags] = useState<Record<string, string[]>>({})
+  const [peerReviewedIds, setPeerReviewedIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     async function load() {
@@ -67,6 +72,11 @@ export default function ReviewPage() {
         })))
       }
 
+      // Check existing peer reviews
+      const { data: existingPeer } = await supabase.from('reviews')
+        .select('target_id').eq('session_id', id).eq('reviewer_id', u.id).not('target_id', 'is', null)
+      if (existingPeer) setPeerReviewedIds(new Set(existingPeer.map((r: any) => r.target_id)))
+
       setLoading(false)
     }
     load()
@@ -96,6 +106,22 @@ export default function ReviewPage() {
     setSubmitted(true)
     setSubmitting(false)
     showToast('Merci pour ton avis !', 'success')
+  }
+
+  async function submitPeerReview(targetId: string) {
+    const r = peerRatings[targetId]
+    if (!r || !user || !id) return
+    const { error } = await supabase.from('reviews').insert({
+      session_id: id, reviewer_id: user.id, target_id: targetId,
+      rating: r, vibe_tags: peerTags[targetId] || [], is_anonymous: true,
+    })
+    if (error) {
+      if (error.code === '23505') showToast('Deja note', 'error')
+      else showToast('Erreur', 'error')
+      return
+    }
+    setPeerReviewedIds(prev => new Set([...prev, targetId]))
+    showToast('Avis envoye', 'success')
   }
 
   if (loading) return (
@@ -203,6 +229,68 @@ export default function ReviewPage() {
           <p style={{ fontSize: 11, color: S.tx4, textAlign: 'center' }}>
             Ton avis est anonyme. Il contribue au Vibe Score des participants.
           </p>
+
+          {/* Peer reviews */}
+          {participants.length > 0 && (
+            <>
+              <div style={{ height: 1, background: S.rule, margin: '8px 0' }} />
+              <p style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 4px' }}>Noter les participants</p>
+              <p style={{ fontSize: 12, color: S.tx3, margin: '0 0 12px' }}>Optionnel, anonyme</p>
+
+              {participants.map(p => {
+                const reviewed = peerReviewedIds.has(p.applicant_id)
+                const pr = peerRatings[p.applicant_id] || 0
+                const pt = peerTags[p.applicant_id] || []
+                return (
+                  <div key={p.applicant_id} style={{ background: S.bg1, borderRadius: 16, padding: 16, border: '1px solid ' + S.rule, marginBottom: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                      {p.avatar_url ? (
+                        <img src={p.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+                      ) : (
+                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx3 }}>
+                          {p.display_name[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{p.display_name}</p>
+                        {p.role && <span style={{ fontSize: 11, color: S.p }}>{p.role}</span>}
+                      </div>
+                      {reviewed && <span style={{ marginLeft: 'auto', fontSize: 11, color: S.sage, fontWeight: 600 }}>Note envoyee</span>}
+                    </div>
+
+                    {reviewed ? null : (
+                      <>
+                        <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 8 }}>
+                          {[1, 2, 3, 4, 5].map(n => (
+                            <button key={n} onClick={() => setPeerRatings(prev => ({ ...prev, [p.applicant_id]: n }))} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}>
+                              <Star size={24} fill={pr >= n ? S.p : 'none'} stroke={pr >= n ? S.p : S.tx4} strokeWidth={1.5} />
+                            </button>
+                          ))}
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
+                          {VIBE_TAGS.slice(0, 5).map(tag => {
+                            const on = pt.includes(tag.id)
+                            return (
+                              <button key={tag.id} onClick={() => setPeerTags(prev => ({ ...prev, [p.applicant_id]: on ? pt.filter(t => t !== tag.id) : [...pt, tag.id] }))} style={{
+                                padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                                border: on ? 'none' : '1px solid ' + S.rule, background: on ? tag.color + '22' : S.bg2, color: on ? tag.color : S.tx3,
+                              }}>{tag.label}</button>
+                            )
+                          })}
+                        </div>
+                        {pr > 0 && (
+                          <button onClick={() => submitPeerReview(p.applicant_id)} style={{
+                            width: '100%', padding: 10, borderRadius: 10, fontSize: 13, fontWeight: 700,
+                            background: S.grad, color: '#fff', border: 'none', cursor: 'pointer',
+                          }}>Envoyer</button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )
+              })}
+            </>
+          )}
         </div>
       )}
     </div>

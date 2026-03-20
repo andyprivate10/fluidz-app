@@ -9,6 +9,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { formatMessageTime } from '../lib/timing'
+import { useTypingIndicator } from '../hooks/useTypingIndicator'
 
 type Message = {
   id: string
@@ -50,6 +51,12 @@ export default function DMPage() {
   const isHost = currentUser?.id === session?.host_id
   const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
   const showCheckInBanner = !isHost && appStatus === 'accepted'
+
+  const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
+    id && peerId ? `typing:dm:${id}:${[currentUser?.id, peerId].sort().join(':')}` : '',
+    currentUser?.id,
+    displayName || 'Anonyme',
+  )
 
   useEffect(() => {
     if (!id) { setLoading(false); return }
@@ -497,6 +504,15 @@ export default function DMPage() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Typing indicator */}
+      {typingUsers.length > 0 && (
+        <div style={{ padding: '4px 24px', flexShrink: 0 }}>
+          <span style={{ fontSize: 11, color: S.tx3, fontStyle: 'italic' }}>
+            {typingUsers.join(', ')} ecrit...
+          </span>
+        </div>
+      )}
+
       {/* Input bar */}
       <div style={{
         background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: '1px solid '+S.rule,
@@ -516,8 +532,8 @@ export default function DMPage() {
         <input
           type="text"
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          onChange={(e) => { setNewMessage(e.target.value); sendTyping() }}
+          onKeyDown={(e) => { if (e.key === 'Enter') { stopTyping(); handleSend() } }}
           placeholder={uploading ? 'Envoi photo...' : 'Ton message...'}
           style={{
             flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,

@@ -122,6 +122,34 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
+## PHASE 11: REAL-TIME + REVIEWS + LANDING ✅ DONE
+
+### P11.1 — Real-time ChatsHub ✅ DONE
+- [x] Supabase Realtime subscription sur messages + notifications
+- [x] Auto-refresh thread list quand un nouveau message arrive
+
+### P11.2 — Typing Indicator ✅ DONE
+- [x] Hook useTypingIndicator (Supabase Realtime Presence API)
+- [x] DMPage : "X ecrit..." sous les messages + sendTyping sur input
+- [x] DirectDMPage : meme integration
+- [x] Auto-stop apres 2s inactivite
+
+### P11.3 — Peer Reviews ✅ DONE
+- [x] ReviewPage : section peer reviews sous la review session
+- [x] Stars + vibe tags par participant
+- [x] Soumission individuelle par participant
+- [x] Detection des reviews deja envoyees (peerReviewedIds)
+- [x] VibeScore integre automatiquement les peer reviews (target_id query)
+
+### P11.4 — Landing Page amelioree ✅ DONE
+- [x] HomePage non-connecte : value prop en 3 etapes (Cree / Partage / Choisis)
+- [x] CTAs : Creer session, Se connecter, Mode Ghost
+
+### P11.5 — Emoji cleanup ReviewPage ✅ DONE
+- [x] Retire emojis des VIBE_TAGS (Awkward, Hot)
+
+---
+
 ## NOTES
 - Peach = #E0887A (JAMAIS #F07858)
 - Font titres = Bricolage Grotesque 800

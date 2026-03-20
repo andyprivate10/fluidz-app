@@ -86,6 +86,17 @@ export default function ChatsHubPage() {
   }, [navigate])
 
   useEffect(() => { loadThreads() }, [loadThreads])
+
+  // Realtime: refresh thread list on new messages
+  useEffect(() => {
+    const channel = supabase
+      .channel('chatshub-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => { loadThreads() })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, () => { loadThreads() })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [loadThreads])
+
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadThreads)
 
   const filtered = tab === 'all' ? threads : threads.filter(t => t.type === tab || (tab === 'dm' && t.type === 'dm_session'))

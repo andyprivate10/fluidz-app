@@ -7,6 +7,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { formatMessageTime } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
+import { useTypingIndicator } from '../hooks/useTypingIndicator'
 
 const S = colors
 
@@ -44,6 +45,12 @@ export default function DirectDMPage() {
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
+    currentUser?.id && peerId ? `typing:direct:${[currentUser.id, peerId].sort().join(':')}` : '',
+    currentUser?.id,
+    displayName || 'Anonyme',
+  )
 
   useEffect(() => {
     if (!peerId) return
@@ -265,6 +272,13 @@ export default function DirectDMPage() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Typing indicator */}
+      {typingUsers.length > 0 && (
+        <div style={{ padding: '4px 16px', flexShrink: 0 }}>
+          <span style={{ fontSize: 11, color: S.tx3, fontStyle: 'italic' }}>{typingUsers.join(', ')} ecrit...</span>
+        </div>
+      )}
+
       {/* Input */}
       <div style={{ background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 12, borderTop: '1px solid ' + S.rule, display: 'flex', gap: 8, flexShrink: 0 }}>
         <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
@@ -276,8 +290,8 @@ export default function DirectDMPage() {
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input
-          type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleSend()}
+          type="text" value={newMessage} onChange={e => { setNewMessage(e.target.value); sendTyping() }}
+          onKeyDown={e => { if (e.key === 'Enter') { stopTyping(); handleSend() } }}
           placeholder="Message..." style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         />
         <button onClick={handleSend} disabled={!newMessage.trim() || sending} style={{ width: 40, height: 40, borderRadius: 12, background: newMessage.trim() ? S.grad : S.bg2, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

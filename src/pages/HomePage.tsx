@@ -94,9 +94,27 @@ export default function HomePage() {
         {userId && displayName ? (
           <p style={{ ...typeStyle('body'), color: S.tx2, margin: 0 }}>Hey {displayName}</p>
         ) : !userId ? (
-          <p style={{ ...typeStyle('body'), color: S.tx2, margin: '8px 0 0', lineHeight: 1.6 }}>
-            Recrute ton groupe pour ce soir. Partage un lien, les candidats postulent, tu choisis.
-          </p>
+          <div style={{ marginTop: 8 }}>
+            <p style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 8px', lineHeight: 1.2 }}>
+              Organise tes soirees privees
+            </p>
+            <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 16px', lineHeight: 1.6 }}>
+              Cree une session, partage le lien, les candidats postulent avec leur profil. Tu choisis qui vient.
+            </p>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 4 }}>
+              {[
+                { n: '1', t: 'Cree', d: 'Lieu, heure, vibe' },
+                { n: '2', t: 'Partage', d: 'Lien invitation' },
+                { n: '3', t: 'Choisis', d: 'Profils + photos' },
+              ].map(step => (
+                <div key={step.n} style={{ flex: 1, textAlign: 'center' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: S.p2, border: '1px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 6px', ...typeStyle('label'), color: S.p }}>{step.n}</div>
+                  <p style={{ ...typeStyle('label'), color: S.tx, margin: '0 0 2px' }}>{step.t}</p>
+                  <p style={{ ...typeStyle('meta'), color: S.tx3, margin: 0 }}>{step.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : null}
 
         {/* Quick nav */}
