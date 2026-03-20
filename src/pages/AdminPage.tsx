@@ -65,14 +65,24 @@ export default function AdminPage() {
     </div>
   )
 
-  if (!isAdmin) return (
-    <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <OrbLayer />
-      <p style={{ color: S.red, fontSize: 18, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", marginBottom: 8 }}>Acces refuse</p>
-      <p style={{ color: S.tx3, fontSize: 13, marginBottom: 24 }}>Cette page est reservee aux administrateurs.</p>
-      <button onClick={() => navigate('/')} style={adminStyles.btnSecondary}>Retour</button>
-    </div>
-  )
+  if (!isAdmin) {
+    // Show Auth Express even when not logged in / not admin
+    return (
+      <div style={{ minHeight: '100vh', background: S.bg, position: 'relative', maxWidth: 480, margin: '0 auto', padding: '24px 20px' }}>
+        <OrbLayer />
+        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 8px' }}>Admin Dashboard</h1>
+        <p style={{ color: S.tx3, fontSize: 13, marginBottom: 20 }}>Connecte-toi avec un compte admin pour accéder au dashboard.</p>
+        <AdminAuthTab user={user} setUser={(u) => {
+          setUser(u)
+          if (u) {
+            supabase.from('user_profiles').select('is_admin').eq('id', u.id).maybeSingle().then(({ data }) => {
+              setIsAdmin(data?.is_admin === true)
+            })
+          }
+        }} />
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, position: 'relative', maxWidth: 480, margin: '0 auto', paddingBottom: 20 }}>
