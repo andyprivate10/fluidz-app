@@ -7,7 +7,7 @@ import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import {MessageCircle, Sparkles, ArrowLeft} from 'lucide-react'
+import {MessageCircle, Sparkles, ArrowLeft, Play} from 'lucide-react'
 import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
@@ -257,7 +257,8 @@ export default function PublicProfile() {
   const hasMedia = allPhotos.length > 0 || allVideos.length > 0
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96 }}>
+    <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96, maxWidth: 480, margin: '0 auto', position: 'relative' as const }}>
+      <OrbLayer />
       <div style={{ padding: '40px 20px 20px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
 
@@ -318,7 +319,7 @@ export default function PublicProfile() {
 
         {/* Story button */}
         <button onClick={() => setShowStory(true)} style={{ marginTop: 10, padding: '8px 16px', borderRadius: 12, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 12px rgba(244,114,114,0.3)' }}>
-          <span style={{marginRight:4}}>▶</span> Voir la Story
+          <Play size={13} strokeWidth={2} fill="white" style={{marginRight:4}} /> Voir la Story
         </button>
         {/* Add to contacts button */}
         {/* Direct DM button */}
@@ -365,7 +366,6 @@ export default function PublicProfile() {
           const defaultStyle = { bg: S.bg2, color: S.tx2, border: S.rule }
           return (
             <div style={card}>
-      <OrbLayer />
               <div style={label}>Pratiques ({kinks.length})</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {kinks.map((k: string) => {
@@ -378,7 +378,7 @@ export default function PublicProfile() {
         })()}
 
         {p.limits && (
-          <div style={{ ...card, borderColor: S.red + '55' }}>
+          <div style={{ ...card, borderColor: S.redbd }}>
             <div style={{ ...label, color: S.red }}>Hard limits</div>
             <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p>
           </div>
@@ -392,7 +392,7 @@ export default function PublicProfile() {
                 <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '4px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd }}>PrEP Actif</span>
               )}
               {p.health?.dernier_test && (
-                <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '4px 12px', borderRadius: 99, background: S.blue + '22', border: '1px solid ' + S.blue + '44' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '4px 12px', borderRadius: 99, background: S.bluebg, border: '1px solid ' + S.bluebd }}>
                   Testé il y a {monthsAgoCount(p.health.dernier_test)} mois
                 </span>
               )}
