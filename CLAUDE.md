@@ -1,10 +1,10 @@
 # Fluidz - Claude Code Config
 
 ## Supabase
-- SUPABASE_ACCESS_TOKEN=sbp_afa56e8c72fe3dda15572bd28055f5ced7221bca
+- SUPABASE_ACCESS_TOKEN : stocker dans ~/.zshrc ou variable d'env locale (NE PAS committer)
 - Project ref: kxbrfjqxufvskcxmliak
-- Pour toute migration SQL : npx supabase db push ou npx supabase migration new puis npx supabase db push --project-ref kxbrfjqxufvskcxmliak
-- Lier le projet : SUPABASE_ACCESS_TOKEN=sbp_afa56e8c72fe3dda15572bd28055f5ced7221bca npx supabase link --project-ref kxbrfjqxufvskcxmliak
+- Pour toute migration SQL : SUPABASE_ACCESS_TOKEN=$SUPABASE_ACCESS_TOKEN npx supabase db push
+- Lier le projet : SUPABASE_ACCESS_TOKEN=$SUPABASE_ACCESS_TOKEN npx supabase link --project-ref kxbrfjqxufvskcxmliak
 
 ## App
 - Dev: localhost:5173

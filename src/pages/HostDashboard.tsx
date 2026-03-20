@@ -83,6 +83,8 @@ export default function HostDashboard() {
         uid ? supabase.from('user_profiles').select('display_name').eq('id', uid).maybeSingle() : Promise.resolve({ data: null }),
         supabase.from('votes').select('applicant_id, vote').eq('session_id', id),
       ])
+      // Security: verify current user is the host
+      if (s && uid && s.host_id !== uid) { navigate('/session/' + id); return }
       setSess(s)
       setApps(a || [])
       setVotes((v as { applicant_id: string; vote: string }[]) || [])

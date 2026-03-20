@@ -40,7 +40,7 @@ export default function LoginPage() {
   }
 
   // Dev login
-  const isDev = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).get('dev') === '1' || import.meta.env.DEV)
+  const isDev = import.meta.env.DEV
   const [devEmail, setDevEmail] = useState('marcus@fluidz.test')
   const [devPass, setDevPass] = useState('testpass123')
 
