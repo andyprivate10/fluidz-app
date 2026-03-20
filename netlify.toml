@@ -6,8 +6,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-[build.environment]
-  VITE_SUPABASE_URL = "https://kxbrfjqxufvskcxmliak.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4YnJmanF4dWZ2c2tjeG1saWFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Nzg0NjYsImV4cCI6MjA4ODI1NDQ2Nn0.twnxJsGtpfTbXLTCOzIlGMpggXIuClZMZISIftp2btE"
-  VITE_VAPID_PUBLIC_KEY = "BPwwFUHvXjhcSxMzFEz5g_sFPbJkq1stI9-MFcgX4p3jKR_YntaPLwkz6s4RXw_1Vd6muIlcUUGE2FxiVNqCTk4"
