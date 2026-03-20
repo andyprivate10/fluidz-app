@@ -10,6 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { formatMessageTime } from '../lib/timing'
 import { useTypingIndicator } from '../hooks/useTypingIndicator'
+import { useTranslation } from 'react-i18next'
 
 type Message = {
   id: string
@@ -24,6 +25,7 @@ type Message = {
 const S = colors
 
 export default function DMPage() {
+  const { t } = useTranslation()
   const { id, peerId: peerIdParam } = useParams<{ id: string; peerId?: string }>()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
@@ -358,7 +360,7 @@ export default function DMPage() {
         </div>
         {peerId && (
           <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
-            Voir profil
+            {t('profile.see_profile')}
           </button>
         )}
       </header>
@@ -444,7 +446,7 @@ export default function DMPage() {
           <p style={{ color: S.red, margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>Impossible de charger les données. Réessaie.</p>
         ) : messages.length === 0 ? (
           <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
-            Aucun message. Envoie le premier !
+            {t('chat.send_first')}
           </p>
         ) : (
           messages.map((message) => {
@@ -472,7 +474,7 @@ export default function DMPage() {
                 onContextMenu={(e) => {
                   if (message.sender_id !== currentUser?.id) return
                   e.preventDefault()
-                  if (window.confirm('Supprimer ce message ?')) {
+                  if (window.confirm(t('chat.delete_msg'))) {
                     supabase.from('messages').delete().eq('id', message.id).then(() => {
                       setMessages(prev => prev.filter(m => m.id !== message.id))
                     })
@@ -534,7 +536,7 @@ export default function DMPage() {
           value={newMessage}
           onChange={(e) => { setNewMessage(e.target.value); sendTyping() }}
           onKeyDown={(e) => { if (e.key === 'Enter') { stopTyping(); handleSend() } }}
-          placeholder={uploading ? 'Envoi photo...' : 'Ton message...'}
+          placeholder={uploading ? t('chat.sending_photo') : t('chat.send')}
           style={{
             flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
             borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',

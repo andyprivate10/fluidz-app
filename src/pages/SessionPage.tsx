@@ -10,6 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { formatElapsed, formatRemaining } from '../lib/timing'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
+import { useTranslation } from 'react-i18next'
 const S = colors
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
@@ -21,6 +22,7 @@ const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position
 const card: React.CSSProperties = { background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 16 }
 
 export default function SessionPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<Session | null>(null)
@@ -278,7 +280,7 @@ export default function SessionPage() {
       <p style={{ color: S.red, textAlign: 'center' }}>Impossible de charger les données. Réessaie.</p>
     </div>
   )
-  if (!session) return <div style={{ ...st, padding: 24, color: S.red }}>Session introuvable.</div>
+  if (!session) return <div style={{ ...st, padding: 24, color: S.red }}>{t('session.not_found')}</div>
 
   const statusLabel = session.status === 'open' ? 'Ouverte' : session.status === 'ended' ? 'Terminée' : 'Brouillon'
   const statusColor = session.status === 'open' ? S.sage : session.status === 'ended' ? S.red : S.tx2
@@ -588,7 +590,7 @@ export default function SessionPage() {
           <div style={card}>
             <div style={{ fontSize: 12, fontWeight: 600, color: S.tx2, marginBottom: 8 }}>VOTE CONSULTATIF</div>
             {pendingApps.filter(p => !currentUser || p.applicant_id !== currentUser.id).length === 0 ? (
-              <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>Aucune candidature en attente de vote pour le moment.</p>
+              <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>{t('session.no_pending')}</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {pendingApps
@@ -609,7 +611,7 @@ export default function SessionPage() {
                           )}
                           <div style={{ flex: 1 }}>
                             <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}</div>
-                            <div style={{ fontSize: 11, color: S.tx2 }}>Candidature en attente</div>
+                            <div style={{ fontSize: 11, color: S.tx2 }}>{t('session.application_pending')}</div>
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: 8 }}>
@@ -676,22 +678,22 @@ export default function SessionPage() {
             disabled={checkInLoading}
             style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,'+S.sage+','+S.emerald+')', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
           >
-            {checkInLoading ? 'Enregistrement...' : 'Je suis arrive ! Check-in'}
+            {checkInLoading ? t('session.checking_in') : t('session.check_in')}
           </button>
         )}
 
         {checkInDone && myApp?.status !== 'checked_in' && (
           <div style={{ ...card, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
             <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
-            <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>En attente de confirmation du host</div>
+            <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>{t('session.awaiting_confirmation')}</div>
             <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
           </div>
         )}
 
         {myApp?.status === 'checked_in' && (
           <div style={{ ...card, background: S.sagebg, borderColor: S.sage, textAlign: 'center' }}>
-            <div style={{ fontSize: 20 }}>Bienvenue !</div>
-            <div style={{ fontSize: 14, color: S.sage, marginTop: 4 }}>Check-in confirme</div>
+            <div style={{ fontSize: 20 }}>{t('session.welcome')}</div>
+            <div style={{ fontSize: 14, color: S.sage, marginTop: 4 }}>{t('session.checkin_confirmed')}</div>
             {session.exact_address && <div style={{ fontSize: 14, color: S.tx, marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
             {session.invite_code && (
               <>
@@ -702,7 +704,7 @@ export default function SessionPage() {
                 }}
                 style={{ marginTop: 12, width: '100%', padding: 12, borderRadius: 12, border: '1px solid '+S.sage, background: inviteLinkCopied ? S.sagebg : 'transparent', color: S.sage, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
               >
-                {inviteLinkCopied ? 'Lien copié !' : 'Partager le lien d\'invitation'}
+                {inviteLinkCopied ? t('session.link_copied') : t('session.invite_link')}
               </button>
               <button
                 onClick={() => {
@@ -724,7 +726,7 @@ export default function SessionPage() {
                   }}
                   style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.sage, background: 'transparent', color: S.sage, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
                 >
-                  <Share2 size={13} strokeWidth={1.5} style={{marginRight:4}} /> Partager
+                  <Share2 size={13} strokeWidth={1.5} style={{marginRight:4}} /> {t('session.share')}
                 </button>
               )}
               </>
@@ -784,12 +786,12 @@ export default function SessionPage() {
           <div style={{ ...card }}>
             {myApp.status === 'pending' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid '+S.amberbd }}>En attente de réponse...</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid '+S.amberbd }}>{t('session.pending')}</span>
               </div>
             )}
             {myApp.status === 'accepted' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />Accepté</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />{t('session.accepted')}</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
@@ -802,11 +804,11 @@ export default function SessionPage() {
               </div>
             )}
             {myApp.status === 'rejected' && (
-              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: 'rgba(248,113,113,0.10)', border: '1px solid '+'rgba(248,113,113,0.25)' }}>Non retenu</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: 'rgba(248,113,113,0.10)', border: '1px solid '+'rgba(248,113,113,0.25)' }}>{t('session.rejected')}</span>
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />Check-in confirmé</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />{t('session.checkin_confirmed')}</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
@@ -831,7 +833,7 @@ export default function SessionPage() {
         <div style={{ padding: '0 16px 12px' }}>
           <div style={{ background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avis des participants</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('session.reviews_title')}</span>
               <span style={{ fontSize: 11, color: S.tx2 }}>{reviewSummary.count} avis</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>

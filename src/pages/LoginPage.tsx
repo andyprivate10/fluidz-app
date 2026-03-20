@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { Mail, Ghost, ArrowRight } from 'lucide-react'
@@ -10,6 +11,7 @@ const S = colors
 const R = radius
 
 export default function LoginPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const next = searchParams.get('next') || '/'
@@ -21,14 +23,14 @@ export default function LoginPage() {
 
   async function handleMagicLink() {
     const trimmed = email.trim().toLowerCase()
-    if (!trimmed || !trimmed.includes('@')) { showToast('Email invalide', 'error'); return }
+    if (!trimmed || !trimmed.includes('@')) { showToast(t('auth.email_invalid'), 'error'); return }
     setLoading(true)
     const { error } = await supabase.auth.signInWithOtp({
       email: trimmed,
       options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + next },
     })
     if (error) {
-      showToast(error.message.includes('rate limit') ? 'Trop de tentatives. Attends 15-30 min.' : 'Erreur: ' + error.message, 'error')
+      showToast(error.message.includes('rate limit') ? t('auth.too_many') : 'Erreur: ' + error.message, 'error')
       setLoading(false); return
     }
     setStep('sent'); setLoading(false)
@@ -64,7 +66,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <h1 style={{ ...typeStyle('hero'), color: S.p, margin: '0 0 10px', fontSize: 40 }}>fluidz</h1>
-          <p style={{ ...typeStyle('body'), color: S.tx2, margin: 0 }}>Recrute ton groupe pour ce soir</p>
+          <p style={{ ...typeStyle('body'), color: S.tx2, margin: 0 }}>{t('auth.tagline')}</p>
         </div>
 
         {step === 'email' && (
@@ -73,12 +75,12 @@ export default function LoginPage() {
             <div style={{ background: S.bg1, borderRadius: R.card, padding: 24, border: `1px solid ${S.rule}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
                 <Mail size={16} strokeWidth={1.5} style={{ color: S.p }} />
-                <span style={{ ...typeStyle('label'), color: S.tx }}>Connexion par email</span>
+                <span style={{ ...typeStyle('label'), color: S.tx }}>{t('auth.email_login')}</span>
               </div>
               <input
                 value={email} onChange={e => setEmail(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleMagicLink()}
-                placeholder="ton@email.com" type="email" autoFocus
+                placeholder={t('auth.email_placeholder')} type="email" autoFocus
                 style={inp}
               />
               <button onClick={handleMagicLink} disabled={loading || !email.trim()} style={{
@@ -90,7 +92,7 @@ export default function LoginPage() {
                 boxShadow: `0 4px 24px ${S.pbd}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               }}>
-                {loading ? 'Envoi...' : <>Envoyer le lien magique <ArrowRight size={16} strokeWidth={2} /></>}
+                {loading ? t('auth.sending') : <>{t('auth.send_magic_link')} <ArrowRight size={16} strokeWidth={2} /></>}
                 <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)', animation: 'shimmer 3s ease-in-out infinite' }} />
               </button>
             </div>
@@ -98,7 +100,7 @@ export default function LoginPage() {
             {/* Separator */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1, height: 1, background: S.rule }} />
-              <span style={{ ...typeStyle('meta'), color: S.tx3 }}>ou</span>
+              <span style={{ ...typeStyle('meta'), color: S.tx3 }}>{t('auth.or')}</span>
               <div style={{ flex: 1, height: 1, background: S.rule }} />
             </div>
 
@@ -108,13 +110,13 @@ export default function LoginPage() {
               color: S.lav, border: `1px solid ${S.lavbd}`, background: S.lavbg,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>
-              <Ghost size={15} strokeWidth={1.5} /> Mode Ghost (24h, sans inscription)
+              <Ghost size={15} strokeWidth={1.5} /> {t('home.ghost_mode')}
             </button>
 
             <button onClick={() => navigate('/ghost/recover')} style={{
               background: 'none', border: 'none', ...typeStyle('meta'), color: S.tx3, cursor: 'pointer', textAlign: 'center', padding: 8,
             }}>
-              J'ai un code ghost — Récupérer mon profil
+              {t('auth.ghost_recover')}
             </button>
 
             {/* Dev */}
@@ -133,9 +135,9 @@ export default function LoginPage() {
           <div className="animate-slide-up" style={{ textAlign: 'center' }}>
             <div style={{ background: S.bg1, borderRadius: R.card, padding: 32, border: `1px solid ${S.sagebd}` }}>
               <Mail size={32} strokeWidth={1.5} style={{ color: S.sage, marginBottom: 14 }} />
-              <h2 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 10px' }}>Lien envoyé</h2>
+              <h2 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 10px' }}>{t('auth.link_sent')}</h2>
               <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 20px', lineHeight: 1.6 }}>
-                Ouvre <strong style={{ color: S.tx }}>{email}</strong> et clique sur le lien pour te connecter.
+                {t('auth.check_email_instructions', { email })}
               </p>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 20 }}>
                 <a href="https://mail.google.com" target="_blank" rel="noopener" style={{
@@ -151,10 +153,10 @@ export default function LoginPage() {
                 background: 'none', border: 'none', ...typeStyle('label'),
                 color: cooldown > 0 ? S.tx3 : S.p, cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
               }}>
-                {cooldown > 0 ? `Renvoyer dans ${cooldown}s` : 'Renvoyer le lien'}
+                {cooldown > 0 ? t('auth.resend_cooldown', { seconds: cooldown }) : t('auth.resend_link')}
               </button>
             </div>
-            <p style={{ ...typeStyle('meta'), color: S.tx3, marginTop: 14 }}>Vérifie tes spams si tu ne trouves pas l'email</p>
+            <p style={{ ...typeStyle('meta'), color: S.tx3, marginTop: 14 }}>{t('auth.check_spam')}</p>
           </div>
         )}
 

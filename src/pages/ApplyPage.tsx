@@ -7,6 +7,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -44,6 +45,7 @@ const GUEST_TOKEN_KEY = 'guest_token'
 const GUEST_SESSION_KEY = 'guest_session_id'
 
 export default function ApplyPage() {
+  const { t } = useTranslation()
   const { roles } = useAdminConfig()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -299,7 +301,7 @@ export default function ApplyPage() {
   if (!user && !guestMode) return (
     <div style={{minHeight:'100vh',background:S.bg,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{textAlign:'center',padding:24}}>
-        <p style={{color:S.tx3,marginBottom:16}}>Connecte-toi pour postuler</p>
+        <p style={{color:S.tx3,marginBottom:16}}>{t('session.login_to_apply')}</p>
         <button onClick={() => navigate('/login?next=' + encodeURIComponent('/session/' + id + '/apply'))} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer'}}>Se connecter</button>
       </div>
     </div>
@@ -319,20 +321,20 @@ export default function ApplyPage() {
       <OrbLayer />
       <EventContextNav role="candidate" sessionTitle={session?.title} />
       <div style={{padding:'12px 20px 16px',borderBottom:'1px solid ' + S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)'}}>
-        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>Ma candidature</h1>
+        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>{t('session.my_application')}</h1>
         {session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{session.approx_area}</p>}
       </div>
 
       {capacityFull && (
         <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
-          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Session complète</p>
-          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Le nombre max de participants a été atteint.</p>
+          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>{t('session.full')}</p>
+          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>{t('session.session_full_desc')}</p>
         </div>
       )}
 
       {(profile || guestMode) && (
         <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.rule}}>
-          <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>Aperçu de ton profil (ce qui sera partagé)</div>
+          <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>{t('session.profile_preview')}</div>
           {guestMode ? (
             <input value={guestDisplayName} onChange={e=>setGuestDisplayName(e.target.value)} placeholder="Ton pseudo *" style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:10,padding:'10px 14px',border:'1px solid '+S.rule,fontSize:14,marginBottom:8,boxSizing:'border-box'}} />
           ) : (
@@ -359,7 +361,7 @@ export default function ApplyPage() {
 
       {isRateLimited && rateLimitedUntil && (
         <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
-          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>Tu as déjà postulé récemment.</p>
+          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>{t('session.already_applied')}</p>
           <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Réessaye dans {Math.ceil((rateLimitedUntil.getTime() - Date.now()) / 60000)} min.</p>
         </div>
       )}
@@ -374,7 +376,7 @@ export default function ApplyPage() {
         <div style={{padding:'8px 20px 24px'}}>
           <div style={{marginBottom:16}}>
             <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Ton Candidate Pack</h2>
-            <p style={{fontSize:13,color:S.tx3,margin:0}}>Choisis ce que tu partages avec le host</p>
+            <p style={{fontSize:13,color:S.tx3,margin:0}}>{t('session.choose_share_sections')}</p>
           </div>
           {!guestMode && profile && (() => {
             const pj = profile.profile_json || {}
@@ -392,14 +394,14 @@ export default function ApplyPage() {
               }}>
                 <span style={{ fontSize: 14, color: S.orange }}>!</span>
                 <div>
-                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: S.p }}>Profil incomplet</p>
+                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: S.p }}>{t('session.profile_incomplete')}</p>
                   <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx2 }}>Manque : {missing.join(', ')}. Complète-le pour plus de chances !</p>
                 </div>
               </button>
             )
           })()}
           <div style={{marginBottom:16}}>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Votre rôle</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.your_role')}</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
               {roles.map(r => {
                 const on = selectedRole === r.label
@@ -580,28 +582,28 @@ export default function ApplyPage() {
             )
           })()}
 
-          {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>Ton pseudo est requis</p>}
+          {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>{t('session.pseudo_required')}</p>}
           <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
           <button onClick={() => setStep('note')} disabled={capacityFull || isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:capacityFull||isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:capacityFull||isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
-            {capacityFull ? 'Session complète' : 'Continuer →'}
+            {capacityFull ? t('session.full') : t('session.continue_button')}
           </button>
         </div>
       )}
 
       {step === 'note' && (
         <div style={{padding:'16px 20px'}}>
-          <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Pour cette session</h2>
+          <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.for_this_session')}</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 8px'}}>Un mot pour le host ? Dispo, ambiance...</p>
           <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30...' rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
           <div style={{marginBottom:12}}>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>Message au host (optionnel)</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>{t('session.message_to_host')}</p>
             <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           </div>
           {/* Visual preview */}
           <div style={{padding:'14px',background:S.bg1,borderRadius:14,border:'1px solid '+S.rule,marginBottom:12}}>
-            <p style={{fontSize:11,fontWeight:700,color:S.p,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>Ce que le host verra</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.p,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>{t('session.what_host_sees')}</p>
             <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:10}}>
               {profile?.profile_json?.avatar_url ? (
                 <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule}} />

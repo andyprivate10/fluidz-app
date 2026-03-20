@@ -4,10 +4,12 @@ import { supabase } from '../lib/supabase'
 import { MapPin, Lock, Users, ChevronRight, Ghost } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
 export default function JoinPage() {
+  const { t } = useTranslation()
   const { code } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -178,7 +180,7 @@ export default function JoinPage() {
       {status === 'loading' && (
         <div className="animate-fade-in" style={{textAlign:'center'}}>
           <div style={{width:32,height:32,border:'3px solid '+S.p,borderTopColor:'transparent',borderRadius:'50%',animation:'spin 0.8s linear infinite',margin:'0 auto 12px'}} />
-          <p style={{color:S.tx3,fontSize:14}}>Vérification du lien...</p>
+          <p style={{color:S.tx3,fontSize:14}}>{t('session.verifying_link')}</p>
         </div>
       )}
 
@@ -187,9 +189,9 @@ export default function JoinPage() {
           <div style={{width:64,height:64,borderRadius:'50%',background:S.redbg,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
             <Lock size={28} style={{color:S.red}} />
           </div>
-          <p style={{color:S.tx,fontWeight:700,fontSize:20,marginBottom:8}}>Lien invalide</p>
-          <p style={{color:S.tx3,fontSize:14,marginBottom:24,lineHeight:1.5}}>Ce lien d'invitation n'existe pas ou a expiré</p>
-          <button onClick={()=>navigate('/')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>Retour</button>
+          <p style={{color:S.tx,fontWeight:700,fontSize:20,marginBottom:8}}>{t('session.invalid_link')}</p>
+          <p style={{color:S.tx3,fontSize:14,marginBottom:24,lineHeight:1.5}}>{t('session.invalid_link_desc')}</p>
+          <button onClick={()=>navigate('/')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>{t('common.back')}</button>
         </div>
       )}
 
@@ -205,7 +207,7 @@ export default function JoinPage() {
             </div>
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:4,marginBottom:8}}>
               <Lock size={11} style={{color:S.tx3}} />
-              <span style={{fontSize:11,color:S.tx3}}>Adresse exacte révélée après acceptation</span>
+              <span style={{fontSize:11,color:S.tx3}}>{t('session.address_revealed_later')}</span>
             </div>
 
             {hostName && session.host_id && (
@@ -236,7 +238,7 @@ export default function JoinPage() {
               <div style={{marginBottom:16}}>
                 <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:10}}>
                   <Users size={14} style={{color:S.tx3}} />
-                  <span style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em'}}>Lineup · {lineup.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>
+                  <span style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em'}}>{t('session.lineup_label')} · {lineup.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>
                 </div>
                 <div className="stagger-children" style={{display:'flex',flexDirection:'column',gap:6}}>
                   {lineup.slice(0, 5).map((m) => (
@@ -255,7 +257,7 @@ export default function JoinPage() {
                       <ChevronRight size={14} style={{color:S.tx4,flexShrink:0}} />
                     </div>
                   ))}
-                  {lineup.length > 5 && <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'4px 0 0'}}>+{lineup.length - 5} autres</p>}
+                  {lineup.length > 5 && <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'4px 0 0'}}>{t('session.lineup_more', { count: lineup.length - 5 })}</p>}
                 </div>
               </div>
             )}
@@ -263,7 +265,7 @@ export default function JoinPage() {
             {/* Locked address */}
             <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:'rgba(5,4,10,0.80)',borderRadius:12,border:'1px solid '+S.rule}}>
               <Lock size={14} style={{color:S.tx4,flexShrink:0}} />
-              <p style={{fontSize:12,color:S.tx3,margin:0}}>Adresse révélée après acceptation</p>
+              <p style={{fontSize:12,color:S.tx3,margin:0}}>{t('session.address_locked_note')}</p>
             </div>
           </div>
 
@@ -283,7 +285,7 @@ export default function JoinPage() {
                 width:'100%',padding:'14px',borderRadius:14,fontWeight:600,fontSize:14,
                 color:S.tx2,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
               }}>
-                Voir la session
+                {t('session.view_session')}
               </button>
             </div>
           ) : session.max_capacity && (lineup.length + 1) >= session.max_capacity ? (
@@ -295,13 +297,13 @@ export default function JoinPage() {
               maxWidth:420, margin:'0 auto',
             }}>
               <button disabled style={{ width:'100%', padding:'16px', borderRadius:16, fontWeight:700, fontSize:16, color:S.red, background:S.redbg, border:'1px solid '+S.redbd }}>
-                Session complète
+                {t('session.full')}
               </button>
               {!user && (
                 <>
                   <div style={{display:'flex',alignItems:'center',gap:12,margin:'12px 0 0'}}>
                     <div style={{flex:1,height:1,background:S.rule}} />
-                    <span style={{fontSize:10,color:S.tx3}}>Préfères-tu rester anonyme ?</span>
+                    <span style={{fontSize:10,color:S.tx3}}>{t('session.ghost_question')}</span>
                     <div style={{flex:1,height:1,background:S.rule}} />
                   </div>
                   <button onClick={() => {
@@ -311,7 +313,7 @@ export default function JoinPage() {
                     color:S.lav,border:'1px solid '+S.lavbd,background:S.lavbg,cursor:'pointer',
                     display:'flex',alignItems:'center',justifyContent:'center',gap:8,
                   }}>
-                    <Ghost size={14} /> Mode Ghost (24h)
+                    <Ghost size={14} /> {t('home.ghost_mode')}
                   </button>
                 </>
               )}
@@ -331,12 +333,12 @@ export default function JoinPage() {
                     color:'#fff',background:S.grad,border:'none',cursor:'pointer',
                     boxShadow:'0 4px 24px '+S.pbd, position:'relative', overflow:'hidden',
                   }}>
-                    Postuler
+                    {t('session.apply')}
                   </button>
-                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 6px',fontFamily:"'Plus Jakarta Sans', sans-serif"}}>Tu choisis ce que tu partages</p>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 6px',fontFamily:"'Plus Jakarta Sans', sans-serif"}}>{t('session.profile_choice_note')}</p>
                   <div style={{display:'flex',alignItems:'center',gap:12,margin:'4px 0 0'}}>
                     <div style={{flex:1,height:1,background:S.rule}} />
-                    <span style={{fontSize:10,color:S.tx3}}>Préfères-tu rester anonyme ?</span>
+                    <span style={{fontSize:10,color:S.tx3}}>{t('session.ghost_question')}</span>
                     <div style={{flex:1,height:1,background:S.rule}} />
                   </div>
                   <button onClick={() => {
@@ -346,7 +348,7 @@ export default function JoinPage() {
                     color:S.lav,border:'1px solid '+S.lavbd,background:S.lavbg,cursor:'pointer',
                     display:'flex',alignItems:'center',justifyContent:'center',gap:8,
                   }}>
-                    <Ghost size={14} /> Mode Ghost (24h)
+                    <Ghost size={14} /> {t('home.ghost_mode')}
                   </button>
                   <p style={{fontSize:9,color:S.tx4,textAlign:'center',margin:'8px 0 0'}}>Ton numéro ne sera jamais demandé.</p>
                 </>
@@ -358,14 +360,14 @@ export default function JoinPage() {
                     boxShadow:'0 4px 24px '+S.pbd,opacity:quickApplying?0.7:1,
                     position:'relative', overflow:'hidden',
                   }}>
-                    {quickApplying ? 'Envoi...' : 'Postuler'}
+                    {quickApplying ? t('session.applying') : t('session.apply')}
                   </button>
-                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 0'}}>Tu choisis ce que tu partages</p>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 0'}}>{t('session.profile_choice_note')}</p>
                   <button onClick={() => navigate('/session/' + session.id + '/apply')} style={{
                     width:'100%',marginTop:6,padding:'10px',borderRadius:12,fontWeight:600,fontSize:12,
                     color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer',
                   }}>
-                    Personnaliser ma candidature
+                    {t('session.customize_application')}
                   </button>
                 </>
               ) : (
@@ -376,9 +378,9 @@ export default function JoinPage() {
                     boxShadow:'0 4px 24px '+S.pbd,
                     position:'relative', overflow:'hidden',
                   }}>
-                    Postuler
+                    {t('session.apply')}
                   </button>
-                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 0'}}>Tu choisis ce que tu partages</p>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 0'}}>{t('session.profile_choice_note')}</p>
                 </>
               )}
             </div>

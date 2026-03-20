@@ -7,6 +7,7 @@ import OrbLayer from '../components/OrbLayer'
 import { sessionTiming } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { Plus, Clock, CheckCircle2, XCircle, Radio } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 const R = radius
@@ -22,6 +23,7 @@ const statusMap: Record<string, { text: string; color: string; Icon: typeof Cloc
 }
 
 export default function SessionsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [hosted, setHosted] = useState<Session[]>([])
   const [applied, setApplied] = useState<AppSession[]>([])
@@ -78,7 +80,7 @@ export default function SessionsPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, position: 'relative', overflow: 'hidden',
             }}>
               <Plus size={16} strokeWidth={2.5} />
-              Nouvelle session
+              {t('session.new_session')}
               <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)', animation: 'shimmer 3s ease-in-out infinite' }} />
             </button>
 
@@ -101,7 +103,7 @@ export default function SessionsPage() {
                       display: 'flex', alignItems: 'center', gap: 4,
                     }}>
                       {isOpen && <Radio size={8} />}
-                      {isOpen ? 'Live' : isEnded ? 'Terminée' : 'Brouillon'}
+                      {isOpen ? t('session.live') : isEnded ? t('session.ended') : t('session.draft')}
                     </span>
                   </div>
                   {sess.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '5px 0 0' }}>{sess.approx_area}</p>}

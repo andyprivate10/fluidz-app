@@ -8,6 +8,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useTranslation } from 'react-i18next'
 
 
 const S = colors
@@ -32,6 +33,7 @@ const RELATION_STYLES = {
 }
 
 export default function ContactsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
@@ -110,12 +112,12 @@ export default function ContactsPage() {
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>Naughty Book</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>{t('contacts.title')}</h1>
             <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => navigate('/groups')} style={{ padding: '6px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Users size={14} /> Groupes
+              <Users size={14} /> {t('contacts.groups')}
             </button>
           </div>
         </div>
@@ -126,7 +128,7 @@ export default function ContactsPage() {
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Rechercher un contact..."
+            placeholder={t('contacts.search')}
             style={{ width: '100%', padding: '10px 14px 10px 38px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
           />
         </div>
@@ -158,8 +160,8 @@ export default function ContactsPage() {
             {contacts.length === 0 ? (
               <>
                 <Users size={40} style={{ color: S.tx4, marginBottom: 12 }} />
-                <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>Ton carnet est vide</p>
-                <p style={{ fontSize: 13 }}>Ajoute des contacts depuis les profils ou après un event</p>
+                <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>{t('contacts.no_contacts')}</p>
+                <p style={{ fontSize: 13 }}>{t('contacts.no_contacts_desc')}</p>
               </>
             ) : (
               <p style={{ fontSize: 14 }}>Aucun contact dans ce filtre</p>

@@ -5,10 +5,12 @@ import {Ghost, ArrowRight, Mail, ArrowLeft} from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
 export default function GhostRecoverPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const sessionId = searchParams.get('session_id') || ''
@@ -112,8 +114,8 @@ export default function GhostRecoverPage() {
 
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>Récupérer mon profil</h1>
-          <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Entre ton code de session et ton PIN</p>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>{t('ghost.recover_title')}</h1>
+          <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('ghost.recover_desc')}</p>
         </div>
 
         {!ghost ? (
@@ -152,10 +154,10 @@ export default function GhostRecoverPage() {
         ) : (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ background: S.bg1, border: '1px solid ' + S.sage + '44', borderRadius: 20, padding: 24, textAlign: 'center' }}>
-              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 12 }}>Profil retrouvé</div>
+              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 12 }}>{t('ghost.found')}</div>
               <div style={{ fontSize: 20, fontWeight: 800, color: S.tx, marginBottom: 4 }}>{ghost.display_name}</div>
               <div style={{ fontSize: 12, color: S.tx3 }}>
-                {timeLeft > 0 ? `${timeLeft}h restantes` : 'Expire bientôt'}
+                {timeLeft > 0 ? t('ghost.hours_left', { hours: timeLeft }) : t('ghost.expires_soon')}
               </div>
               {Object.keys(ghost.profile_json || {}).length > 0 && (
                 <div style={{ marginTop: 12, display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>

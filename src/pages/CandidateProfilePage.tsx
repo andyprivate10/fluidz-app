@@ -11,10 +11,12 @@ import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { monthsAgoLabel } from '../lib/timing'
 import { SYSTEM_SENDER } from '../lib/constants'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
 export default function CandidateProfilePage() {
+  const { t } = useTranslation()
   const { id: sessionId, applicantId } = useParams()
   const navigate = useNavigate()
   const [app, setApp] = useState<any>(null)
@@ -260,7 +262,7 @@ export default function CandidateProfilePage() {
           {/* Bio */}
           {bio && (
             <div style={card}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Bio</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.bio')}</p>
               <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
             </div>
           )}
@@ -286,7 +288,7 @@ export default function CandidateProfilePage() {
             {/* Body part photos grid */}
             {pj.body_part_photos && Object.keys(pj.body_part_photos).length > 0 && (
               <div style={card}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Photos par zone</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.body_parts')}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
                   {Object.entries(pj.body_part_photos as Record<string, string>).map(([part, url]) => (
                     <div key={part} style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', aspectRatio: '1' }}>
@@ -330,7 +332,7 @@ export default function CandidateProfilePage() {
             {/* Limites */}
             {limits && (
               <div style={{ ...card, borderColor: S.red + '44', background: S.red + '08' }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Limites</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('profile.limits')}</p>
                 <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
               </div>
             )}
@@ -338,7 +340,7 @@ export default function CandidateProfilePage() {
             {/* Sante */}
             {(health.prep_status || health.dernier_test) && (
               <div style={card}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Sante</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.health')}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {health.prep_status === 'Actif' && (
                     <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.sage, background: S.sage + '18', border: '1px solid ' + S.sage + '44' }}>PrEP actif</span>
@@ -397,14 +399,14 @@ export default function CandidateProfilePage() {
             flex: 1, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
             color: S.red, border: '1px solid ' + S.red + '44', background: S.red + '10', cursor: 'pointer',
           }}>
-            Refuser
+            {t('host.reject')}
           </button>
           <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
             flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
             color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer',
             boxShadow: '0 4px 16px ' + S.pbd,
           }}>
-            {actioning ? '...' : 'Accepter'}
+            {actioning ? '...' : t('host.accept')}
           </button>
         </div>
       )}

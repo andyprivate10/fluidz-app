@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast'
 import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -22,6 +23,7 @@ type Group = {
 type Contact = { id: string; contact_user_id: string; display_name: string; avatar_url?: string }
 
 export default function GroupsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [groups, setGroups] = useState<Group[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -140,7 +142,7 @@ export default function GroupsPage() {
       <div style={{ padding:'40px 20px 16px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
           <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', padding:0, marginBottom:8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
-          <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>Mes Groupes</h1>
+          <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>{t('contacts.groups')}</h1>
           <p style={{ fontSize:12, color:S.tx3, margin:'2px 0 0' }}>{groups.length} groupe{groups.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={openCreate} style={{ width:40, height:40, borderRadius:12, background:S.grad, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
@@ -150,7 +152,7 @@ export default function GroupsPage() {
 
       {/* Groups list */}
       <div style={{ padding:'0 20px', display:'flex', flexDirection:'column', gap:10 }}>
-        {loading && <p style={{ color:S.tx3, textAlign:'center', padding:24 }}>Chargement...</p>}
+        {loading && <p style={{ color:S.tx3, textAlign:'center', padding:24 }}>{t('common.loading')}</p>}
 
         {!loading && groups.length === 0 && (
           <div style={{ textAlign:'center', padding:40, color:S.tx3 }}>

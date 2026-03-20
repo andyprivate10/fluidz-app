@@ -7,6 +7,7 @@ import {User as UserIcon, Camera, Sparkles, ChevronRight, ArrowLeft} from 'lucid
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -17,6 +18,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function OnboardingPage() {
+  const { t } = useTranslation()
   const { roles: roleOptions, morphologies: morphoOptions } = useAdminConfig()
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
@@ -102,7 +104,7 @@ export default function OnboardingPage() {
 
   const progress = step === 1 ? 33 : step === 2 ? 66 : 100
   const completeness = [displayName.trim(), age, role, avatarUrl].filter(Boolean).length
-  const completenessLabel = completeness <= 1 ? 'Débutant' : completeness <= 2 ? 'En route' : completeness <= 3 ? 'Presque complet' : 'Complet'
+  const completenessLabel = completeness <= 1 ? t('onboarding.level_beginner') : completeness <= 2 ? t('onboarding.level_on_way') : completeness <= 3 ? t('onboarding.level_almost') : t('onboarding.level_complete')
   const completenessColor = completeness <= 1 ? S.tx4 : completeness <= 2 ? S.p : completeness <= 3 ? S.blue : S.sage
 
   return (
@@ -112,7 +114,7 @@ export default function OnboardingPage() {
       {/* Progress bar */}
       <div style={{ padding: '16px 20px 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontSize: 12, color: S.tx3, fontWeight: 600 }}>Étape {step}/3</span>
+          <span style={{ fontSize: 12, color: S.tx3, fontWeight: 600 }}>{t('onboarding.step_label', { step })}</span>
           <span style={{ fontSize: 11, color: completenessColor, fontWeight: 600 }}>{completenessLabel}</span>
         </div>
         <div style={{ background: S.bg2, borderRadius: 6, height: 6, overflow: 'hidden' }}>
@@ -125,29 +127,29 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
             <UserIcon size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Dis-nous qui tu es</h1>
-            <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Les bases pour ton profil</p>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step1_title')}</h1>
+            <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('onboarding.step1_desc')}</p>
           </div>
 
           <div>
-            <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block' }}>PSEUDO *</label>
-            <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Comment tu veux qu'on t'appelle" maxLength={30} autoFocus style={inp} />
+            <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block' }}>{t('onboarding.pseudo_label')}</label>
+            <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder={t('onboarding.pseudo_placeholder')} maxLength={30} autoFocus style={inp} />
           </div>
 
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1 }}>
-              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block' }}>ÂGE</label>
+              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block' }}>{t('onboarding.age_label')}</label>
               <input value={age} onChange={e => setAge(e.target.value.replace(/\D/g, '').slice(0, 2))} placeholder="25" inputMode="numeric" maxLength={2} style={inp} />
             </div>
             <div style={{ flex: 2 }}>
-              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block' }}>LOCALISATION</label>
-              <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Paris 4ème, Métro..." maxLength={50} style={inp} />
+              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block' }}>{t('onboarding.location_label')}</label>
+              <input value={location} onChange={e => setLocation(e.target.value)} placeholder={t('onboarding.location_placeholder')} maxLength={50} style={inp} />
             </div>
           </div>
 
-          <button onClick={() => { if (!displayName.trim()) { showToast('Choisis un pseudo', 'error'); return }; setStep(2) }}
+          <button onClick={() => { if (!displayName.trim()) { showToast(t('onboarding.pseudo_required'), 'error'); return }; setStep(2) }}
             style={{ width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            Suivant <ChevronRight size={18} />
+            {t('onboarding.next')} <ChevronRight size={18} />
           </button>
         </div>
       )}
@@ -157,12 +159,12 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
             <Sparkles size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Tes préférences</h1>
-            <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Optionnel mais augmente tes chances</p>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step2_title')}</h1>
+            <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('onboarding.step2_desc')}</p>
           </div>
 
           <div>
-            <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>RÔLE</label>
+            <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>{t('onboarding.role_label')}</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {roleOptions.map(r => (
                 <button key={r.label} onClick={() => setRole(role === r.label ? '' : r.label)} style={{
@@ -176,7 +178,7 @@ export default function OnboardingPage() {
           </div>
 
           <div>
-            <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>MORPHOLOGIE</label>
+            <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>{t('onboarding.morpho_label')}</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {morphoOptions.map(m => (
                 <button key={m.label} onClick={() => setMorpho(morpho === m.label ? '' : m.label)} style={{
@@ -192,12 +194,12 @@ export default function OnboardingPage() {
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
             <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              Suivant <ChevronRight size={18} />
+              {t('onboarding.next')} <ChevronRight size={18} />
             </button>
           </div>
 
           <button onClick={() => { setStep(3) }} style={{ background: 'none', border: 'none', color: S.tx4, fontSize: 12, cursor: 'pointer' }}>
-            Passer cette étape →
+            {t('onboarding.skip')} →
           </button>
         </div>
       )}
@@ -207,8 +209,8 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <Camera size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Ajoute une photo</h1>
-            <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>Les profils avec photo ont 5x plus de chances</p>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step3_title')}</h1>
+            <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('onboarding.step3_desc')}</p>
           </div>
 
           {/* Avatar preview */}
@@ -225,7 +227,7 @@ export default function OnboardingPage() {
               <input type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
             </label>
           </div>
-          {uploading && <p style={{ fontSize: 12, color: S.p }}>Upload en cours...</p>}
+          {uploading && <p style={{ fontSize: 12, color: S.p }}>{t('onboarding.uploading')}</p>}
 
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', gap: 10 }}>
@@ -236,7 +238,7 @@ export default function OnboardingPage() {
                 opacity: saving || !displayName.trim() ? 0.6 : 1,
                 boxShadow: '0 4px 20px ' + S.pbd,
               }}>
-                {saving ? 'Sauvegarde...' : avatarUrl ? 'Terminer' : 'Terminer sans photo'}
+                {saving ? t('onboarding.saving') : avatarUrl ? t('onboarding.finish') : t('onboarding.finish_no_photo')}
               </button>
             </div>
           </div>

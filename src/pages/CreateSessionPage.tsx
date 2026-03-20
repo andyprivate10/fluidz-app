@@ -6,6 +6,7 @@ import type { LucideIcon } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -29,6 +30,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function CreateSessionPage() {
+  const { t } = useTranslation()
   const { sessionTags, roles } = useAdminConfig()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -167,8 +169,8 @@ export default function CreateSessionPage() {
     return (
       <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
         <div style={{padding:'40px 20px 24px'}}>
-          <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>Session créée !</h1>
-          <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>Partage le lien avec ton message</p>
+          <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
+          <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
             {(['grindr','whatsapp','telegram'] as const).map(app => (
               <button key={app} onClick={() => copyShareMessage(app)} style={{
@@ -176,12 +178,12 @@ export default function CreateSessionPage() {
                 background: copyFeedback === app ? S.p2 : S.bg1, color: copyFeedback === app ? S.p : S.tx2,
                 cursor:'pointer',textAlign:'left',
               }}>
-                {copyFeedback === app ? 'Copié !' : (app === 'grindr' ? 'Copier pour Grindr' : app === 'whatsapp' ? 'Copier pour WhatsApp' : 'Copier pour Telegram')}
+                {copyFeedback === app ? t('session.copied') : (app === 'grindr' ? t('session.copy_grindr') : app === 'whatsapp' ? t('session.copy_whatsapp') : t('session.copy_telegram'))}
               </button>
             ))}
           </div>
           <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
-            Aller à la session
+            {t('session.go_to_session')}
           </button>
         </div>
       </div>
@@ -191,9 +193,9 @@ export default function CreateSessionPage() {
   return (
     <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96}}>
       <div style={{padding:'40px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
-        <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
-        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>Nouvelle session</h1>
-        <p style={{fontSize:13,color:S.tx3,margin:0}}>Étape {stepIdx+1}/3</p>
+        <button onClick={() => step==='template' ? navigate(-1) : setStep(steps[stepIdx-1] as any)} style={{background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',marginBottom:12,padding:0}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back')}</button>
+        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>{t('session.new_session')}</h1>
+        <p style={{fontSize:13,color:S.tx3,margin:0}}>{t('session.create_step', { step: stepIdx+1 })}</p>
       </div>
 
       <div style={{display:'flex',padding:'12px 20px 0',gap:6}}>
@@ -204,8 +206,8 @@ export default function CreateSessionPage() {
 
       {step === 'template' && (
         <div style={{padding:'20px 20px'}}>
-          <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Choisis un template</h2>
-          <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>Il pré-remplira les tags et le titre</p>
+          <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.choose_template')}</h2>
+          <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>{t('session.template_help')}</p>
           <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
             {QUICK_TEMPLATES.map(qt => (
               <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setDescription(qt.description); setSelectedTags(qt.tags); setRolesWanted(qt.roles); setDirections([{ text: '' }]); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
@@ -237,28 +239,28 @@ export default function CreateSessionPage() {
       {step === 'details' && (
         <div style={{padding:'20px 20px',display:'flex',flexDirection:'column',gap:12}}>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Titre de la session</p>
-            <input value={title} onChange={e=>setTitle(e.target.value)} placeholder='Plan ce soir' style={inp} />
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.title_label')}</p>
+            <input value={title} onChange={e=>setTitle(e.target.value)} placeholder={t('session.title_placeholder')} style={inp} />
           </div>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Description</p>
-            <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder='Cherche 2-3 mecs pour ce soir. Ambiance détendue...' rows={3} style={{...inp,resize:'none',lineHeight:1.5}} />
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.description_label')}</p>
+            <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder={t('session.description_placeholder')} rows={3} style={{...inp,resize:'none',lineHeight:1.5}} />
           </div>
           {/* Timing */}
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Quand</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.timing_label')}</p>
             <div style={{display:'flex',gap:8,marginBottom:10}}>
               <button onClick={()=>{setStartsNow(true);setStartsAt('')}} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:startsNow?'none':'1px solid '+S.rule,background:startsNow?S.grad:S.bg2,color:startsNow?'#fff':S.tx3}}>
-                <Zap size={14} /> Maintenant
+                <Zap size={14} /> {t('session.start_now')}
               </button>
               <button onClick={()=>setStartsNow(false)} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:!startsNow?'none':'1px solid '+S.rule,background:!startsNow?S.grad:S.bg2,color:!startsNow?'#fff':S.tx3}}>
-                <Clock size={14} /> Plus tard
+                <Clock size={14} /> {t('session.start_later')}
               </button>
             </div>
             {!startsNow && (
               <input type="datetime-local" value={startsAt} onChange={e=>setStartsAt(e.target.value)} style={{...inp,marginBottom:8,colorScheme:'dark'}} />
             )}
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'8px 0 6px'}}>Durée</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'8px 0 6px'}}>{t('session.duration_label')}</p>
             <div style={{display:'flex',gap:6}}>
               {[1,2,3,4,6,8].map(h => (
                 <button key={h} onClick={()=>setDurationHours(h)} style={{flex:1,padding:'8px 0',borderRadius:10,fontSize:13,fontWeight:600,cursor:'pointer',border:durationHours===h?'none':'1px solid '+S.rule,background:durationHours===h?S.p2:S.bg2,color:durationHours===h?S.p:S.tx3}}>
@@ -269,11 +271,11 @@ export default function CreateSessionPage() {
           </div>
           {/* Capacité max */}
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Capacité max (optionnel)</p>
-            <input type="number" value={maxCapacity} onChange={e=>setMaxCapacity(e.target.value ? parseInt(e.target.value) : '')} placeholder="Ex: 8" min={2} max={50} style={inp} />
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.capacity_label')}</p>
+            <input type="number" value={maxCapacity} onChange={e=>setMaxCapacity(e.target.value ? parseInt(e.target.value) : '')} placeholder={t('session.capacity_placeholder')} min={2} max={50} style={inp} />
           </div>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Tags de session</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.tags_label')}</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
               {sessionTags.map(tag => {
                 const on = selectedTags.includes(tag.label)
@@ -289,7 +291,7 @@ export default function CreateSessionPage() {
           </div>
           {/* Rôles recherchés */}
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Rôles recherchés (optionnel)</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.roles_label')}</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
               {roles.map(r => {
                 const count = rolesWanted[r.label] || 0
@@ -313,7 +315,7 @@ export default function CreateSessionPage() {
             )}
           </div>
           <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.pbd,marginTop:4}}>
-            Continuer →
+            {t('session.continue_button')}
           </button>
         </div>
       )}
@@ -322,7 +324,7 @@ export default function CreateSessionPage() {
         <div style={{padding:'20px 20px',display:'flex',flexDirection:'column',gap:12}}>
           {savedAddresses.length > 0 && (
             <div>
-              <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresses sauvegardées</p>
+              <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.saved_addresses')}</p>
               <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
                 {savedAddresses.map((addr, i) => (
                   <button key={addr.id || i} type="button" onClick={() => pickSavedAddress(addr)} style={{
@@ -335,18 +337,18 @@ export default function CreateSessionPage() {
             </div>
           )}
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Zone approximative <span style={{color:S.p}}>*</span></p>
-            <input value={approxArea} onChange={e=>setApproxArea(e.target.value)} placeholder='Paris 11ème, Métro Bastille' style={inp} />
-            <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Visible par tous les candidats</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.approx_area_label')}</p>
+            <input value={approxArea} onChange={e=>setApproxArea(e.target.value)} placeholder={t('session.approx_area_placeholder')} style={inp} />
+            <p style={{fontSize:11,color:S.tx4,marginTop:6}}>{t('session.approx_area_note')}</p>
           </div>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Adresse exacte</p>
-            <input value={exactAddress} onChange={e=>setExactAddress(e.target.value)} placeholder='14 rue de la Roquette, code 1234' style={inp} />
-            <p style={{fontSize:11,color:S.tx4,marginTop:6}}>Révélée uniquement après ton acceptation</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.exact_address_label')}</p>
+            <input value={exactAddress} onChange={e=>setExactAddress(e.target.value)} placeholder={t('session.exact_address_placeholder')} style={inp} />
+            <p style={{fontSize:11,color:S.tx4,marginTop:6}}>{t('session.exact_address_note')}</p>
           </div>
           <div>
-            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>Accès</p>
-            <p style={{fontSize:12,color:S.tx4,marginBottom:8}}>Étapes pour arriver (visibles par les membres acceptés)</p>
+            <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.directions_label')}</p>
+            <p style={{fontSize:12,color:S.tx4,marginBottom:8}}>{t('session.directions_help')}</p>
             {directions.map((step, i) => (
               <div key={i} style={{marginBottom:8,padding:10,background:S.bg,borderRadius:10,border:'1px solid '+S.rule}}>
                 <div style={{display:'flex',gap:8,alignItems:'center'}}>
@@ -370,14 +372,14 @@ export default function CreateSessionPage() {
               </div>
             ))}
             <button type="button" onClick={()=>setDirections([...directions,{text:''}])} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
-              Ajouter une étape
+              {t('session.add_direction')}
             </button>
           </div>
           {/* Public toggle */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Publier dans l'app</p>
-              <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore pour les profils à proximité</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('session.publish_label')}</p>
+              <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>{t('session.publish_help')}</p>
             </div>
             <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
               width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
@@ -388,14 +390,14 @@ export default function CreateSessionPage() {
           </div>
 
           <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:'transparent',color:S.p,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
-            {savingAddress ? 'Sauvegarde...' : 'Sauvegarder cette adresse'}
+            {savingAddress ? t('common.saving') : t('session.save_address')}
           </button>
           <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
-            <p style={{fontSize:12,color:S.tx3,margin:0}}>L'adresse exacte n'est jamais visible avant acceptation</p>
+            <p style={{fontSize:12,color:S.tx3,margin:0}}>{t('session.address_privacy_note')}</p>
           </div>
           {error && <p style={{color:S.p,fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:S.p3,borderRadius:10}}>{error}</p>}
           <button onClick={create} disabled={loading||!title||!approxArea} className='btn-shimmer' style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.pbd,marginTop:4}}>
-            {loading ? 'Création...' : 'Créer la session'}
+            {loading ? t('session.creating') : t('session.create_button')}
           </button>
         </div>
       )}

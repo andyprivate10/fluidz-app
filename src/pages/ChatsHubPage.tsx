@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
@@ -18,6 +19,7 @@ type ChatThread = {
 }
 
 export default function ChatsHubPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
@@ -108,10 +110,10 @@ export default function ChatsHubPage() {
   }
 
   const tabDefs = [
-    { k: 'all' as const, label: 'Tous' },
-    { k: 'direct' as const, label: 'Directs' },
-    { k: 'dm' as const, label: 'Sessions' },
-    { k: 'group' as const, label: 'Groupes' },
+    { k: 'all' as const, label: t('chat.all') },
+    { k: 'direct' as const, label: t('chat.direct') },
+    { k: 'dm' as const, label: t('chat.sessions') },
+    { k: 'group' as const, label: t('chat.groups') },
   ]
 
   return (
@@ -120,7 +122,7 @@ export default function ChatsHubPage() {
       {pullIndicator}
 
       <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${S.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
-        <h1 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 14px' }}>Messages</h1>
+        <h1 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 14px' }}>{t('chat.title')}</h1>
         <div style={{ display: 'flex', gap: 6 }}>
           {tabDefs.map(({ k, label }) => {
             const count = k === 'all' ? 0 : threads.filter(t => k === 'direct' ? t.type === 'direct' : k === 'dm' ? t.type === 'dm_session' : t.type === 'group').length
@@ -139,16 +141,16 @@ export default function ChatsHubPage() {
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, padding: '4px 16px', paddingBottom: 96 }}>
-        {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 24 }}>Chargement...</p>}
+        {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 24 }}>{t('common.loading')}</p>}
 
         {!loading && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 16px', color: S.tx3 }}>
             <MessageCircle size={28} style={{ color: S.tx3, marginBottom: 10 }} strokeWidth={1.5} />
-            <p style={{ ...typeStyle('section'), margin: '0 0 6px' }}>Pas encore de messages</p>
-            <p style={{ ...typeStyle('body'), color: S.tx3, margin: '0 0 16px' }}>Rejoins une session ou explore les profils</p>
+            <p style={{ ...typeStyle('section'), margin: '0 0 6px' }}>{t('chat.no_messages')}</p>
+            <p style={{ ...typeStyle('body'), color: S.tx3, margin: '0 0 16px' }}>{t('chat.no_messages_desc')}</p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
               <button onClick={() => navigate('/explore')} style={{ padding: '8px 16px', borderRadius: R.chip, ...typeStyle('label'), color: S.p, border: `1px solid ${S.pbd}`, background: S.p3, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Compass size={12} /> Explorer
+                <Compass size={12} /> {t('chat.explore')}
               </button>
               <button onClick={() => navigate('/sessions')} style={{ padding: '8px 16px', borderRadius: R.chip, ...typeStyle('label'), color: S.tx3, border: `1px solid ${S.rule}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
                 <Zap size={12} /> Sessions
@@ -157,51 +159,51 @@ export default function ChatsHubPage() {
           </div>
         )}
 
-        {filtered.map(t => {
-          const isUnread = !!t.unread
+        {filtered.map(thread => {
+          const isUnread = !!thread.unread
           return (
-            <button key={t.id} onClick={() => goToThread(t)} style={{
+            <button key={thread.id} onClick={() => goToThread(thread)} style={{
               display: 'flex', alignItems: 'center', gap: 12, padding: '14px 4px',
               background: 'transparent', border: 'none', borderBottom: `1px solid ${S.rule}`,
               cursor: 'pointer', textAlign: 'left', width: '100%',
             }}>
               {/* Avatar */}
-              {t.type === 'group' ? (
+              {thread.type === 'group' ? (
                 <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.p3, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: `1px solid ${S.pbd}` }}>
                   <Users size={18} strokeWidth={1.5} style={{ color: S.p }} />
                 </div>
-              ) : t.peerAvatar ? (
-                <img src={t.peerAvatar} alt="" style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', flexShrink: 0, border: `1px solid ${S.rule2}` }} />
+              ) : thread.peerAvatar ? (
+                <img src={thread.peerAvatar} alt="" style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', flexShrink: 0, border: `1px solid ${S.rule2}` }} />
               ) : (
                 <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', ...typeStyle('label'), color: S.tx3, flexShrink: 0 }}>
-                  {(t.peerName || '?')[0].toUpperCase()}
+                  {(thread.peerName || '?')[0].toUpperCase()}
                 </div>
               )}
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ ...typeStyle('label'), color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {t.type === 'group' ? t.sessionTitle : t.peerName || 'Anonyme'}
+                    {thread.type === 'group' ? thread.sessionTitle : thread.peerName || t('common.anonymous')}
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0, marginLeft: 8 }}>
                     {isUnread && <div style={{ width: 6, height: 6, borderRadius: '50%', background: S.p }} />}
-                    <span style={{ ...typeStyle('meta'), color: S.tx3 }}>{timeAgo(t.lastMessageAt)}</span>
+                    <span style={{ ...typeStyle('meta'), color: S.tx3 }}>{timeAgo(thread.lastMessageAt)}</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                   <span style={{
                     ...typeStyle('meta'), fontWeight: 600, flexShrink: 0,
-                    color: t.type === 'direct' ? S.blue : t.type === 'group' ? S.lav : S.sage,
+                    color: thread.type === 'direct' ? S.blue : thread.type === 'group' ? S.lav : S.sage,
                   }}>
-                    {t.type === 'direct' ? 'Direct' : t.type === 'group' ? 'Groupe' : t.isHost ? 'Host' : 'Session'}
+                    {thread.type === 'direct' ? t('chat.label_direct') : thread.type === 'group' ? t('chat.label_group') : thread.isHost ? t('chat.label_host') : t('chat.label_session')}
                   </span>
-                  {t.type !== 'direct' && <>
+                  {thread.type !== 'direct' && <>
                     <span style={{ ...typeStyle('meta'), color: S.tx3 }}>·</span>
-                    <span style={{ ...typeStyle('meta'), color: S.tx3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.sessionTitle}</span>
+                    <span style={{ ...typeStyle('meta'), color: S.tx3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thread.sessionTitle}</span>
                   </>}
                 </div>
                 <p style={{ ...typeStyle('body'), color: S.tx3, margin: '3px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  {t.lastMessage.startsWith('[Photo]') ? <><Camera size={11} style={{ flexShrink: 0 }} /> Photo</> : t.lastMessage.startsWith('[Video]') ? <><Video size={11} style={{ flexShrink: 0 }} /> Vidéo</> : t.lastMessage.slice(0, 60)}
+                  {thread.lastMessage.startsWith('[Photo]') ? <><Camera size={11} style={{ flexShrink: 0 }} /> {t('chat.photo')}</> : thread.lastMessage.startsWith('[Video]') ? <><Video size={11} style={{ flexShrink: 0 }} /> {t('chat.video')}</> : thread.lastMessage.slice(0, 60)}
                 </p>
               </div>
             </button>

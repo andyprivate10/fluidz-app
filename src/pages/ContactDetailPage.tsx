@@ -7,6 +7,7 @@ import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft} from 'lucide-reac
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { timeAgo } from '../lib/timing'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -32,6 +33,7 @@ const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }
 }
 
 export default function ContactDetailPage() {
+  const { t } = useTranslation()
   const { contactUserId } = useParams<{ contactUserId: string }>()
   const navigate = useNavigate()
   const [profile, setProfile] = useState<{ display_name: string; profile_json: Record<string, unknown> } | null>(null)
@@ -322,7 +324,7 @@ export default function ContactDetailPage() {
         {/* Remove */}
         {contact && (
           <button onClick={removeContact} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12, borderRadius: 12, background: 'transparent', border: '1px solid ' + S.red + '33', color: S.red, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: 0.7 }}>
-            <Trash2 size={14} /> Retirer du carnet
+            <Trash2 size={14} /> {t('contacts.remove_contact')}
           </button>
         )}
       </div>

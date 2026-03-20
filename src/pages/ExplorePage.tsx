@@ -10,6 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { sessionTiming } from '../lib/timing'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -40,6 +41,7 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
 }
 
 export default function ExplorePage() {
+  const { t } = useTranslation()
   const { roles: roleOptions } = useAdminConfig()
   const roleFilters = ['Tous', ...roleOptions.map(r => r.label)]
   const navigate = useNavigate()
@@ -216,8 +218,8 @@ export default function ExplorePage() {
       <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 12px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>Autour de moi</h1>
-            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? `${filtered.length} profils` : `${nearbySessions.length} sessions`} à proximité{myViewCount > 0 ? ` · Vu par ${myViewCount} cette semaine` : ''}</p>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>{t('explore.title')}</h1>
+            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? t('explore.profiles_count', { count: filtered.length }) : t('explore.sessions_count', { count: nearbySessions.length })} {t('explore.nearby')}{myViewCount > 0 ? ` · ${t('explore.views_week', { count: myViewCount })}` : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <button onClick={() => navigate('/notifications')} style={{ position: 'relative', padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
@@ -232,7 +234,7 @@ export default function ExplorePage() {
               <BookOpen size={14} />
             </button>
             <button onClick={toggleVisibility} style={{ padding: '6px 10px', borderRadius: 10, border: '1px solid ' + (visible ? S.sage + '44' : S.rule), background: visible ? S.sage + '14' : 'transparent', color: visible ? S.sage : S.tx4, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600 }}>
-              {visible ? <Eye size={14} /> : <EyeOff size={14} />} {visible ? 'Visible' : 'Masqué'}
+              {visible ? <Eye size={14} /> : <EyeOff size={14} />} {visible ? t('explore.visible') : t('explore.hidden')}
             </button>
             <button onClick={() => setViewMode(viewMode === 'grid' ? 'map' : 'grid')} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + (viewMode === 'map' ? S.pbd : S.rule), background: viewMode === 'map' ? S.p2 : 'transparent', color: viewMode === 'map' ? S.p : S.tx3, cursor: 'pointer' }}>
               {viewMode === 'grid' ? <MapIcon size={14} /> : <LayoutGrid size={14} />}
@@ -259,13 +261,13 @@ export default function ExplorePage() {
 
         {/* Explore tabs */}
         <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          {(['profils', 'sessions'] as const).map(t => (
-            <button key={t} onClick={() => setExploreTab(t)} style={{
+          {(['profils', 'sessions'] as const).map(tab => (
+            <button key={tab} onClick={() => setExploreTab(tab)} style={{
               flex: 1, padding: '7px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              border: '1px solid ' + (exploreTab === t ? S.pbd : S.rule),
-              background: exploreTab === t ? S.p2 : 'transparent',
-              color: exploreTab === t ? S.p : S.tx2,
-            }}>{t === 'profils' ? 'Profils' : 'Sessions'}</button>
+              border: '1px solid ' + (exploreTab === tab ? S.pbd : S.rule),
+              background: exploreTab === tab ? S.p2 : 'transparent',
+              color: exploreTab === tab ? S.p : S.tx2,
+            }}>{tab === 'profils' ? t('explore.tab_profiles') : t('explore.tab_sessions')}</button>
           ))}
         </div>
       </div>
@@ -275,7 +277,7 @@ export default function ExplorePage() {
         <div style={{ padding: '8px 16px 0' }}>
           <input
             type="text" value={searchText} onChange={e => setSearchText(e.target.value)}
-            placeholder="Rechercher un profil..." style={{
+            placeholder={t('explore.search_profile')} style={{
               width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
               border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
               fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
@@ -290,10 +292,10 @@ export default function ExplorePage() {
         {geoError && (
           <div style={{ textAlign: 'center', padding: 32, color: S.tx3 }}>
             <MapPin size={32} style={{ color: S.tx4, marginBottom: 8 }} />
-            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>Localisation nécessaire</p>
-            <p style={{ fontSize: 12, margin: '0 0 16px' }}>Active la géolocalisation pour voir les profils à proximité</p>
+            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>{t('explore.geo_needed')}</p>
+            <p style={{ fontSize: 12, margin: '0 0 16px' }}>{t('explore.geo_desc')}</p>
             <button onClick={requestLocation} style={{ padding: '10px 20px', borderRadius: 12, background: S.p, color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-              Activer la localisation
+              {t('explore.enable_geo')}
             </button>
           </div>
         )}
@@ -301,15 +303,15 @@ export default function ExplorePage() {
         {loading && !geoError && (
           <div style={{ textAlign: 'center', padding: 40 }}>
             <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid '+S.pbd, borderTopColor: S.p, animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-            <p style={{ color: S.tx3, fontSize: 13 }}>Recherche de profils...</p>
+            <p style={{ color: S.tx3, fontSize: 13 }}>{t('explore.searching')}</p>
             <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
           </div>
         )}
 
         {!loading && !geoError && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
-            <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>Personne à proximité</p>
-            <p style={{ fontSize: 12 }}>Reviens plus tard ou élargis ta zone</p>
+            <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>{t('explore.nobody')}</p>
+            <p style={{ fontSize: 12 }}>{t('explore.nobody_desc')}</p>
           </div>
         )}
 
@@ -379,7 +381,7 @@ export default function ExplorePage() {
           {/* Session search */}
           <div style={{ marginBottom: 10 }}>
             <input type="text" value={sessionSearch} onChange={e => setSessionSearch(e.target.value)}
-              placeholder="Rechercher une session..." style={{
+              placeholder={t('explore.search_session')} style={{
                 width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
                 border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
                 fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
@@ -387,8 +389,8 @@ export default function ExplorePage() {
           </div>
           {nearbySessions.filter(s => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).length === 0 && !loading && (
             <div style={{ textAlign: 'center', padding: 40, color: S.tx2 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>Pas de sessions publiques</p>
-              <p style={{ fontSize: 12 }}>Les sessions publiques à proximité apparaîtront ici</p>
+              <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>{t('explore.no_public_sessions')}</p>
+              <p style={{ fontSize: 12 }}>{t('explore.no_public_sessions_desc')}</p>
             </div>
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -409,7 +411,7 @@ export default function ExplorePage() {
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
                   {s.approx_area && <span style={{ fontSize: 12, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} /> {s.approx_area}</span>}
                   {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}{s.max_capacity ? '/' + s.max_capacity : ''}</span>}
-                  {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.red + '14', padding: '2px 8px', borderRadius: 99 }}>Complet</span>}
+                  {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.red + '14', padding: '2px 8px', borderRadius: 99 }}>{t('explore.full_session')}</span>}
                   {(() => { const t = sessionTiming(s); if (!t) return null; const isEnded = t === 'Terminé'; return <span style={{ fontSize: 10, color: isEnded ? S.red : S.tx3 }}>{t}</span> })()}
                 </div>
                 {s.tags && s.tags.length > 0 && (
@@ -421,11 +423,11 @@ export default function ExplorePage() {
                 )}
                 {s.max_capacity && s.member_count >= s.max_capacity ? (
                   <button disabled style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.red + '22', border: '1px solid ' + S.red + '44', color: S.red, fontSize: 13, fontWeight: 700 }}>
-                    Complet
+                    {t('explore.full_session')}
                   </button>
                 ) : (
                   <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                    Postuler →
+                    {t('explore.apply_button')} →
                   </button>
                 )}
               </div>

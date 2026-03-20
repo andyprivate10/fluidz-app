@@ -9,6 +9,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import {MessageCircle, Sparkles, ArrowLeft, Play} from 'lucide-react'
 import { monthsAgoCount } from '../lib/timing'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -72,6 +73,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
 }
 
 function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; targetName: string }) {
+  const { t } = useTranslation()
   const nav = useNavigate()
   const [creating, setCreating] = useState(false)
 
@@ -122,7 +124,7 @@ function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; 
       fontSize: 13, fontWeight: 600, cursor: creating ? 'not-allowed' : 'pointer',
       opacity: creating ? 0.6 : 1,
     }}>
-      {creating ? 'Création...' : <><Sparkles size={13} strokeWidth={1.5} style={{marginRight:3}} /> Session 1-to-1</>}
+      {creating ? t('session.creating') : <><Sparkles size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('profile.session_1to1')}</>}
     </button>
   )
 }
@@ -177,6 +179,7 @@ function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
 }
 
 export default function PublicProfile() {
+  const { t } = useTranslation()
   const { userId } = useParams<{ userId: string }>()
   const navigate = useNavigate()
   const [profile, setProfile] = useState<any>(null)
@@ -224,7 +227,7 @@ export default function PublicProfile() {
 
   if (loading) return (
     <div style={{ minHeight: '100vh', background: S.bg, maxWidth: 480, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <p style={{ color: S.tx3 }}>Chargement...</p>
+      <p style={{ color: S.tx3 }}>{t('common.loading')}</p>
     </div>
   )
 
@@ -402,7 +405,7 @@ export default function PublicProfile() {
 
         {p.bio && (
           <div style={card}>
-            <div style={label}>Bio</div>
+            <div style={label}>{t('profile.bio')}</div>
             <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.bio}</p>
           </div>
         )}

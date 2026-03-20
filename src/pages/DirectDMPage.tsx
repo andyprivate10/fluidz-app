@@ -8,6 +8,7 @@ import OrbLayer from '../components/OrbLayer'
 import { formatMessageTime } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { useTypingIndicator } from '../hooks/useTypingIndicator'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -30,6 +31,7 @@ function directDmSessionId(uid1: string, uid2: string): string {
 }
 
 export default function DirectDMPage() {
+  const { t } = useTranslation()
   const { peerId } = useParams<{ peerId: string }>()
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState<any>(null)
@@ -230,8 +232,8 @@ export default function DirectDMPage() {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {messages.length === 0 && (
           <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
-            <p style={{ fontSize: 14, fontWeight: 600 }}>Nouveau DM</p>
-            <p style={{ fontSize: 12 }}>Envoie le premier message</p>
+            <p style={{ fontSize: 14, fontWeight: 600 }}>{t('chat.new_dm')}</p>
+            <p style={{ fontSize: 12 }}>{t('chat.send_first')}</p>
           </div>
         )}
         {messages.map(msg => (
@@ -246,7 +248,7 @@ export default function DirectDMPage() {
             onContextMenu={(e) => {
               if (!isMe(msg.sender_id)) return
               e.preventDefault()
-              if (window.confirm('Supprimer ce message ?')) {
+              if (window.confirm(t('chat.delete_msg'))) {
                 supabase.from('messages').delete().eq('id', msg.id).then(() => {
                   setMessages(prev => prev.filter(m => m.id !== msg.id))
                 })

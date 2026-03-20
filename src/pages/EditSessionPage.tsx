@@ -7,6 +7,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -17,6 +18,7 @@ const inp: React.CSSProperties = {
 }
 
 export default function EditSessionPage() {
+  const { t } = useTranslation()
   const { sessionTags } = useAdminConfig()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -92,7 +94,7 @@ export default function EditSessionPage() {
 
   if (loading) return (
     <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <p style={{ color:S.tx3 }}>Chargement...</p>
+      <p style={{ color:S.tx3 }}>{t('common.loading')}</p>
     </div>
   )
 
@@ -108,19 +110,19 @@ export default function EditSessionPage() {
       <div style={{ padding:'20px', display:'flex', flexDirection:'column', gap:16 }}>
         {/* Title */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Titre</label>
-          <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Plan ce soir" style={inp} />
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.title_label')}</label>
+          <input value={title} onChange={e => setTitle(e.target.value)} placeholder={t('session.title_placeholder')} style={inp} />
         </div>
 
         {/* Description */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Description</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.description_label')}</label>
           <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Session test pour dev." rows={3} style={{ ...inp, resize:'vertical' }} />
         </div>
 
         {/* Tags */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>Tags</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>{t('session.tags_label')}</label>
           <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
             {sessionTags.map(tag => (
               <button key={tag.label} onClick={() => toggleTag(tag.label)} style={{
@@ -135,13 +137,13 @@ export default function EditSessionPage() {
 
         {/* Approx area */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Zone approximative</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.approx_area_label')}</label>
           <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder="Paris 4ème" style={inp} />
         </div>
 
         {/* Exact address */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Adresse exacte (révélée après acceptation)</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.exact_address_label')}</label>
           <input value={exactAddress} onChange={e => setExactAddress(e.target.value)} placeholder="14 rue de la Roquette, code 4521" style={inp} />
         </div>
 
@@ -171,7 +173,7 @@ export default function EditSessionPage() {
             </div>
           ))}
           <button type="button" onClick={() => setDirections([...directions,{text:''}])} style={{ padding:'8px 16px', borderRadius:10, fontSize:12, fontWeight:600, border:'1px solid '+S.rule, background:S.bg2, color:S.tx2, cursor:'pointer' }}>
-            + Ajouter une étape
+            {t('session.add_direction')}
           </button>
         </div>
 
@@ -185,14 +187,14 @@ export default function EditSessionPage() {
           <input type="datetime-local" value={endsAt} onChange={e => setEndsAt(e.target.value)} style={{...inp, colorScheme:'dark'}} />
         </div>
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Capacité max (optionnel)</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.capacity_label')}</label>
           <input type="number" value={maxCapacity} onChange={e => setMaxCapacity(e.target.value ? parseInt(e.target.value) : '')} placeholder="Ex: 8" min={2} max={50} style={inp} />
         </div>
 
         {/* Public toggle */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
           <div>
-            <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Publier dans l'app</p>
+            <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('session.publish_label')}</p>
             <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore</p>
           </div>
           <button type="button" onClick={() => setIsPublic(!isPublic)} style={{

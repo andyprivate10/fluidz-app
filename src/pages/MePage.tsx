@@ -9,6 +9,7 @@ import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Bell, BellRing, BookOpen, Users, MapPin, Eye, Share2, Heart, Check } from 'lucide-react'
 import { usePushNotifications } from '../hooks/usePushNotifications'
+import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { monthsAgoCount } from '../lib/timing'
 
@@ -66,6 +67,7 @@ function Section({ title, badge, children }: { title:string; badge?:string; chil
 }
 
 export default function MePage() {
+  const { t } = useTranslation()
   const { kinks: kinkOptions, morphologies, roles } = useAdminConfig()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -393,7 +395,7 @@ export default function MePage() {
           padding:'7px 14px', borderRadius:10, fontSize:12, color:S.tx3,
           border:`1px solid ${S.rule}`, background:'transparent', cursor:'pointer',
         }}>
-          Déco
+          {t('settings.logout')}
         </button>
       </div>
 
@@ -426,14 +428,14 @@ export default function MePage() {
             fontSize:14, color:S.tx2, border:`1px solid ${S.rule}`,
             background:S.bg2, cursor:'pointer',
           }}>
-            Se déconnecter
+            {t('settings.logout')}
           </button>
 
           {/* Gallery visibility toggle */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>Visible dans la galerie</p>
-              <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>Les profils à proximité te voient</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('profile.gallery_visible')}</p>
+              <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>{t('profile.gallery_visible_desc')}</p>
             </div>
             <button onClick={async () => {
               const nv = !locationVisible
@@ -461,19 +463,19 @@ export default function MePage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}>
               <BellRing size={14} strokeWidth={1.5} />
-              {pushStatus === 'subscribed' ? 'Push actives' : pushStatus === 'denied' ? 'Push bloquees (navigateur)' : 'Activer les push'}
+              {pushStatus === 'subscribed' ? t('settings.push_active') : pushStatus === 'denied' ? t('settings.push_denied') : t('settings.push_enable')}
             </button>
           )}
           <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
             <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p2, cursor: 'pointer' }}>
-              <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> Naughty Book
+              <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('settings.contacts')}
             </button>
             <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
-              <Users size={13} strokeWidth={1.5} style={{marginRight:3}} /> Groupes
+              <Users size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('settings.groups')}
             </button>
           </div>
           <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <MapPin size={13} strokeWidth={1.5} style={{marginRight:3}} /> Mes adresses
+            <MapPin size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('settings.addresses')}
           </button>
 
           {/* Language switcher */}
@@ -488,7 +490,7 @@ export default function MePage() {
                   background: active ? S.p2 : 'transparent',
                   color: active ? S.p : S.tx3,
                 }}>
-                  {lang === 'fr' ? 'Francais' : 'English'}
+                  {lang === 'fr' ? t('settings.french') : t('settings.english')}
                 </button>
               )
             })}
@@ -511,7 +513,7 @@ export default function MePage() {
           {user && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.pbd, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                <Eye size={13} strokeWidth={1.5} style={{marginRight:3}} /> Voir mon profil
+                <Eye size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('profile.see_profile')}
               </button>
               <button onClick={() => {
                 const url = window.location.origin + '/profile/' + user.id

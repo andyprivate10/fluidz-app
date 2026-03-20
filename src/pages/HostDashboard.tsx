@@ -10,10 +10,12 @@ import EventContextNav from '../components/EventContextNav'
 import { formatElapsed, formatRemaining } from '../lib/timing'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { SYSTEM_SENDER } from '../lib/constants'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
 export default function HostDashboard() {
+  const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
@@ -345,7 +347,7 @@ export default function HostDashboard() {
               Modifier
             </button>
             <button onClick={closeSession} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>
-              Fermer la session
+              {t('host.end_session')}
             </button>
           </div>
         )}
@@ -363,7 +365,7 @@ export default function HostDashboard() {
               }}
               style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:linkCopied ? S.sagebg : 'transparent',color:linkCopied ? S.sage : S.p,cursor:'pointer',width:'100%'}}
             >
-              {linkCopied ? 'Lien copié' : 'Partager'}
+              {linkCopied ? t('session.link_copied') : t('host.share_session')}
             </button>
             <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
               <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
@@ -477,14 +479,14 @@ export default function HostDashboard() {
         )}
 
         <div style={{display:'flex',gap:8,marginTop:16}}>
-          {([['pending','En attente',S.orange],['accepted','Acceptés',S.sage],['rejected','Refusés',S.red]] as const).map(([t,l,c]) => (
-            <button key={t} onClick={() => setTab(t as any)} style={{
+          {([['pending',t('host.pending'),S.orange],['accepted',t('host.accepted_tab'),S.sage],['rejected',t('host.rejected_tab'),S.red]] as const).map(([k,l,c]) => (
+            <button key={k} onClick={() => setTab(k as any)} style={{
               flex:1,padding:'8px 4px',borderRadius:10,fontSize:12,fontWeight:600,cursor:'pointer',
-              border:'1px solid '+(tab===t ? c+'55' : S.rule),
-              background: tab===t ? c+'14' : S.bg2,
-              color: tab===t ? c : S.tx3,
+              border:'1px solid '+(tab===k ? c+'55' : S.rule),
+              background: tab===k ? c+'14' : S.bg2,
+              color: tab===k ? c : S.tx3,
             }}>
-              {l} {counts[t as keyof typeof counts] > 0 && <span style={{fontWeight:800}}>({counts[t as keyof typeof counts]})</span>}
+              {l} {counts[k as keyof typeof counts] > 0 && <span style={{fontWeight:800}}>({counts[k as keyof typeof counts]})</span>}
             </button>
           ))}
         </div>
@@ -492,7 +494,7 @@ export default function HostDashboard() {
 
       <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
         <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-          <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Broadcast</div>
+          <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>{t('host.broadcast')}</div>
           <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder="Message à envoyer à tous les membres..." rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
           <button onClick={sendBroadcast} disabled={broadcastSending || !broadcastText.trim()} style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'none',background:S.grad,color:'#fff',cursor: broadcastSending || !broadcastText.trim() ? 'not-allowed' : 'pointer',opacity: broadcastSending || !broadcastText.trim() ? 0.7 : 1}}>
             {broadcastSending ? 'Envoi...' : 'Envoyer à tous'}

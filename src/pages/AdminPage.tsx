@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { ArrowLeft, Plus, Trash2, GripVertical, ChevronDown, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -33,6 +34,7 @@ const inputStyle: React.CSSProperties = {
 }
 
 export default function AdminPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [items, setItems] = useState<ConfigItem[]>([])
@@ -143,7 +145,7 @@ export default function AdminPage() {
       {/* Header */}
       <div style={{ padding: '40px 20px 16px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
-          <ArrowLeft size={16} strokeWidth={1.5} /> Retour
+          <ArrowLeft size={16} strokeWidth={1.5} /> {t('common.back')}
         </button>
         <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: 0 }}>
           Admin

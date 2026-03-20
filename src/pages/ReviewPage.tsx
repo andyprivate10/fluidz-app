@@ -6,6 +6,7 @@ import {Star, Send, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -23,6 +24,7 @@ const VIBE_TAGS = [
 type Participant = { applicant_id: string; display_name: string; avatar_url?: string; role?: string }
 
 export default function ReviewPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [user, setUser] = useState<any>(null)
@@ -135,27 +137,27 @@ export default function ReviewPage() {
       <OrbLayer />
       <EventContextNav role='member' />
       <div style={{ padding: '40px 20px 20px' }}>
-        <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour à la session</button>
+        <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('review.back_session')}</button>
 
-        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>Comment c'était ?</h1>
+        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('review.title')}</h1>
         <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{session?.title || 'Session'}</p>
       </div>
 
       {alreadyReviewed && !submitted ? (
         <div style={{ padding: '0 20px' }}>
           <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
-            <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>Tu as déjà laissé un avis</p>
-            <p style={{ fontSize: 13, color: S.tx3, margin: '8px 0 0' }}>Merci pour ton retour !</p>
+            <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>{t('review.already')}</p>
+            <p style={{ fontSize: 13, color: S.tx3, margin: '8px 0 0' }}>{t('review.already_desc')}</p>
           </div>
         </div>
       ) : submitted ? (
         <div style={{ padding: '0 20px' }}>
           <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sage + '44' }}>
             
-            <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>Merci !</p>
-            <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>Ton avis est anonyme et aide la communauté</p>
+            <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>{t('review.thanks')}</p>
+            <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>{t('review.thanks_desc')}</p>
             <button onClick={() => navigate('/')} style={{ padding: '12px 24px', borderRadius: 12, background: S.grad, color: '#fff', border: 'none', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
-              Retour à l'accueil
+              {t('review.back_home')}
             </button>
           </div>
         </div>
@@ -163,7 +165,7 @@ export default function ReviewPage() {
         <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Star rating */}
           <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Note globale</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>{t('review.overall')}</p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
               {[1, 2, 3, 4, 5].map(n => (
                 <button key={n} onClick={() => setRating(n)} style={{
@@ -177,14 +179,14 @@ export default function ReviewPage() {
             </div>
             {rating > 0 && (
               <p style={{ textAlign: 'center', fontSize: 12, color: S.orange, marginTop: 8 }}>
-                {rating === 1 ? 'Bof' : rating === 2 ? 'Moyen' : rating === 3 ? 'Bien' : rating === 4 ? 'Très bien' : 'Incroyable !'}
+                {rating === 1 ? t('review.rating_1') : rating === 2 ? t('review.rating_2') : rating === 3 ? t('review.rating_3') : rating === 4 ? t('review.rating_4') : t('review.rating_5')}
               </p>
             )}
           </div>
 
           {/* Vibe tags */}
           <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Vibes (optionnel)</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>{t('review.vibes')}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {VIBE_TAGS.map(tag => {
                 const on = selectedTags.includes(tag.id)
@@ -202,11 +204,11 @@ export default function ReviewPage() {
 
           {/* Comment */}
           <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>Commentaire (optionnel, anonyme)</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>{t('review.comment')}</p>
             <textarea
               value={comment}
               onChange={e => setComment(e.target.value)}
-              placeholder="Comment ça s'est passé ?"
+              placeholder={t('review.comment_placeholder')}
               maxLength={500}
               rows={3}
               style={{ width: '100%', padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 14, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
@@ -223,19 +225,19 @@ export default function ReviewPage() {
             boxShadow: rating > 0 ? '0 4px 20px ' + S.pbd : 'none',
           }}>
             <Send size={16} />
-            {submitting ? 'Envoi...' : 'Envoyer mon avis'}
+            {submitting ? t('review.submitting') : t('review.submit')}
           </button>
 
           <p style={{ fontSize: 11, color: S.tx4, textAlign: 'center' }}>
-            Ton avis est anonyme. Il contribue au Vibe Score des participants.
+            {t('review.anonymous_note')}
           </p>
 
           {/* Peer reviews */}
           {participants.length > 0 && (
             <>
               <div style={{ height: 1, background: S.rule, margin: '8px 0' }} />
-              <p style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 4px' }}>Noter les participants</p>
-              <p style={{ fontSize: 12, color: S.tx3, margin: '0 0 12px' }}>Optionnel, anonyme</p>
+              <p style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 4px' }}>{t('review.rate_participants')}</p>
+              <p style={{ fontSize: 12, color: S.tx3, margin: '0 0 12px' }}>{t('review.optional_anon')}</p>
 
               {participants.map(p => {
                 const reviewed = peerReviewedIds.has(p.applicant_id)
@@ -255,7 +257,7 @@ export default function ReviewPage() {
                         <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{p.display_name}</p>
                         {p.role && <span style={{ fontSize: 11, color: S.p }}>{p.role}</span>}
                       </div>
-                      {reviewed && <span style={{ marginLeft: 'auto', fontSize: 11, color: S.sage, fontWeight: 600 }}>Note envoyee</span>}
+                      {reviewed && <span style={{ marginLeft: 'auto', fontSize: 11, color: S.sage, fontWeight: 600 }}>{t('review.review_sent')}</span>}
                     </div>
 
                     {reviewed ? null : (

@@ -6,6 +6,7 @@ import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -17,6 +18,7 @@ function generateCode(): string {
 }
 
 export default function GhostSetupPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const sessionId = searchParams.get('session_id') || ''
@@ -117,9 +119,9 @@ export default function GhostSetupPage() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>Mode Ghost ◌</h1>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>{t('ghost.title')} ◌</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0, lineHeight: 1.5 }}>
-            Profil temporaire 24h. Pas d'email, pas de compte. Tu peux le convertir plus tard.
+            {t('ghost.subtitle')}
           </p>
         </div>
 
@@ -184,7 +186,7 @@ export default function GhostSetupPage() {
         {step === 'done' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16, textAlign: 'center' }}>
             <div style={{ background: S.bg1, border: '1px solid ' + S.sage + '44', borderRadius: 20, padding: 24 }}>
-              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 16 }}>Profil ghost créé</div>
+              <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 16 }}>{t('ghost.title')}</div>
 
               <div style={{ marginBottom: 16 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Ton code de récupération</div>
@@ -209,7 +211,7 @@ export default function GhostSetupPage() {
 
               <div style={{ background: S.orange + '14', border: '1px solid ' + S.orange + '33', borderRadius: 12, padding: 12, marginBottom: 4 }}>
                 <p style={{ fontSize: 12, color: S.orange, margin: 0, fontWeight: 600 }}>
-                  Profil valide 24h. Note ce code pour retrouver ton profil !
+                  {t('ghost.valid_24h')}
                 </p>
               </div>
             </div>
@@ -218,7 +220,7 @@ export default function GhostSetupPage() {
               onClick={goToApply}
               style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
-              Continuer <ArrowRight size={18} />
+              {t('session.continue_button')} <ArrowRight size={18} />
             </button>
 
             <button

@@ -6,6 +6,7 @@ import { compressImage } from '../lib/media'
 import {MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -22,6 +23,7 @@ type SavedAddress = {
 const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' }
 
 export default function AddressesPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [addresses, setAddresses] = useState<SavedAddress[]>([])
   const [loading, setLoading] = useState(true)
@@ -141,7 +143,7 @@ export default function AddressesPage() {
         <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <div>
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>Mes adresses</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>{t('settings.addresses')}</h1>
             <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length} adresse{addresses.length !== 1 ? 's' : ''} sauvegardée{addresses.length !== 1 ? 's' : ''}</p>
           </div>
           <button onClick={openCreate} className='btn-shimmer' style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
@@ -151,7 +153,7 @@ export default function AddressesPage() {
       </div>
 
       <div style={{ padding:'0 20px',display:'flex',flexDirection:'column',gap:10 }}>
-        {loading && <p style={{ color:S.tx3,textAlign:'center',padding:24 }}>Chargement...</p>}
+        {loading && <p style={{ color:S.tx3,textAlign:'center',padding:24 }}>{t('common.loading')}</p>}
         {!loading && addresses.length === 0 && (
           <div style={{ textAlign:'center',padding:40,color:S.tx3 }}>
             <MapPin size={32} style={{ color:S.tx4,marginBottom:8 }} />
@@ -257,7 +259,7 @@ export default function AddressesPage() {
                 width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
                 cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || !exactAddress.trim() ? 0.6 : 1,
               }}>
-                {saving ? 'Sauvegarde...' : editId ? 'Mettre à jour' : 'Sauvegarder'}
+                {saving ? t('common.saving') : editId ? t('common.save') : t('common.save')}
               </button>
             </div>
           </div>

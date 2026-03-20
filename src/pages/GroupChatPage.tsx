@@ -10,6 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { formatMessageTime } from '../lib/timing'
 import { SYSTEM_SENDER } from '../lib/constants'
+import { useTranslation } from 'react-i18next'
 
 type Message = {
   id: string
@@ -32,6 +33,7 @@ type Member = {
 const S = colors
 
 export default function GroupChatPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
@@ -264,8 +266,8 @@ export default function GroupChatPage() {
   if (!session) {
     return (
       <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12 }}>
-        <p style={{ color:S.tx3, fontSize:14 }}>Session introuvable</p>
-        <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>Retour</button>
+        <p style={{ color:S.tx3, fontSize:14 }}>{t('session.not_found')}</p>
+        <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back')}</button>
       </div>
     )
   }
@@ -302,7 +304,7 @@ export default function GroupChatPage() {
             {session.title}
           </p>
           <p style={{ margin:0, fontSize:11, color:S.tx3 }}>
-            {members.length + (isHost ? 1 : 0)} membres
+            {t('session.members')} ({members.length + (isHost ? 1 : 0)})
           </p>
         </div>
         <button onClick={() => setShowMembers(!showMembers)} style={{
@@ -400,7 +402,7 @@ export default function GroupChatPage() {
               onContextMenu={(e) => {
                 if (!isMe) return
                 e.preventDefault()
-                if (window.confirm('Supprimer ce message ?')) {
+                if (window.confirm(t('chat.delete_msg'))) {
                   supabase.from('messages').delete().eq('id', msg.id).then(() => {
                     setMessages(prev => prev.filter(m => m.id !== msg.id))
                   })

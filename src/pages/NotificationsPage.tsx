@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
@@ -20,6 +21,7 @@ const TYPE_ICONS: Record<string, string> = {
 }
 
 export default function NotificationsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [notifs, setNotifs] = useState<Notif[]>([])
   const [loading, setLoading] = useState(true)
@@ -55,8 +57,8 @@ export default function NotificationsPage() {
 
       <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 14px', borderBottom: `1px solid ${S.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', ...typeStyle('body'), color: S.tx2, cursor: 'pointer', padding: 0, marginBottom: 8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
-          <h1 style={{ ...typeStyle('title'), color: S.tx, margin: 0 }}>Notifications</h1>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', ...typeStyle('body'), color: S.tx2, cursor: 'pointer', padding: 0, marginBottom: 8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back')}</button>
+          <h1 style={{ ...typeStyle('title'), color: S.tx, margin: 0 }}>{t('notifications.title')}</h1>
         </div>
         {notifs.some(n => !n.read_at) && (
           <button onClick={markAllRead} style={{
@@ -64,19 +66,19 @@ export default function NotificationsPage() {
             color: S.sage, background: S.sagebg, border: `1px solid ${S.sagebd}`,
             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4,
           }}>
-            <CheckCheck size={12} /> Tout lire
+            <CheckCheck size={12} /> {t('notifications.mark_all')}
           </button>
         )}
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, padding: '8px 16px', paddingBottom: 96 }}>
-        {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 24 }}>Chargement...</p>}
+        {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 24 }}>{t('notifications.loading')}</p>}
 
         {!loading && notifs.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 16px' }}>
             <Bell size={28} strokeWidth={1.5} style={{ color: S.tx3, marginBottom: 10 }} />
-            <p style={{ ...typeStyle('section'), color: S.tx3, margin: '0 0 4px' }}>Aucune notification</p>
-            <p style={{ ...typeStyle('body'), color: S.tx3 }}>Tu seras notifié des candidatures, messages et check-ins</p>
+            <p style={{ ...typeStyle('section'), color: S.tx3, margin: '0 0 4px' }}>{t('notifications.empty')}</p>
+            <p style={{ ...typeStyle('body'), color: S.tx3 }}>{t('notifications.empty_desc')}</p>
           </div>
         )}
 
@@ -85,10 +87,10 @@ export default function NotificationsPage() {
             const now = new Date()
             const date = new Date(d)
             const diff = Math.floor((now.getTime() - date.getTime()) / 86400000)
-            if (diff === 0 && now.getDate() === date.getDate()) return "Aujourd'hui"
-            if (diff <= 1 && now.getDate() - date.getDate() === 1) return 'Hier'
-            if (diff < 7) return 'Cette semaine'
-            return 'Plus ancien'
+            if (diff === 0 && now.getDate() === date.getDate()) return t('notifications.today')
+            if (diff <= 1 && now.getDate() - date.getDate() === 1) return t('notifications.yesterday')
+            if (diff < 7) return t('notifications.this_week')
+            return t('notifications.older')
           }
           let lastGroup = ''
           return notifs.map(n => {
