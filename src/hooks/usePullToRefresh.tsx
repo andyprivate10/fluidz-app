@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { colors as S } from '../brand'
 
 /**
  * usePullToRefresh — adds pull-to-refresh behavior
@@ -47,7 +48,7 @@ export function usePullToRefresh(onRefresh: () => Promise<void>) {
       }}>
         <div style={{
           width: 24, height: 24, borderRadius: '50%',
-          border: '3px solid #F9A8A822', borderTopColor: '#F9A8A8',
+          border: '3px solid '+S.spinnerbg, borderTopColor: S.spinner,
           animation: refreshing ? 'ptr-spin 0.8s linear infinite' : 'none',
           transform: `rotate(${pullDistance * 3}deg)`,
           opacity: Math.min(pullDistance / threshold, 1),

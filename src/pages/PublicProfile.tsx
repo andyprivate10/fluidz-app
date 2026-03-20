@@ -118,7 +118,7 @@ function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; 
   return (
     <button onClick={create} disabled={creating} style={{
       marginTop: 6, width: '100%', padding: '10px 16px', borderRadius: 12,
-      background: 'transparent', border: '1px solid #7DD3FC44', color: S.blue,
+      background: 'transparent', border: '1px solid '+S.bluebd, color: S.blue,
       fontSize: 13, fontWeight: 600, cursor: creating ? 'not-allowed' : 'pointer',
       opacity: creating ? 0.6 : 1,
     }}>
@@ -350,7 +350,7 @@ export default function PublicProfile() {
 
         {kinks.length > 0 && (() => {
           const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
-            'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
+            'Dominant': { bg: S.p2, color: S.p, border: S.pbd },
             'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
             'SM léger': { bg: S.p2, color: S.p, border: S.pbd },
             'SM hard': { bg: S.red+'22', color: S.red, border: S.red+'44' },

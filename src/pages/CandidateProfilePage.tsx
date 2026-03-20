@@ -301,7 +301,7 @@ export default function CandidateProfilePage() {
             {/* Pratiques */}
             {kinks.length > 0 && (() => {
               const kinkColors: Record<string, { bg: string; color: string; border: string }> = {
-                'Dominant': { bg: '#F4727222', color: S.p, border: '#F4727244' },
+                'Dominant': { bg: S.p2, color: S.p, border: S.pbd },
                 'Soumis': { bg: S.p2, color: S.p, border: S.pbd },
                 'SM leger': { bg: S.p2, color: S.p, border: S.pbd },
                 'SM hard': { bg: S.red+'22', color: S.red, border: S.red+'44' },

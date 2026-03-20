@@ -209,7 +209,7 @@ export default function GhostSetupPage() {
 
               <div style={{ background: S.orange + '14', border: '1px solid ' + S.orange + '33', borderRadius: 12, padding: 12, marginBottom: 4 }}>
                 <p style={{ fontSize: 12, color: S.orange, margin: 0, fontWeight: 600 }}>
-                  ⏳ Profil valide 24h. Note ce code pour retrouver ton profil !
+                  Profil valide 24h. Note ce code pour retrouver ton profil !
                 </p>
               </div>
             </div>

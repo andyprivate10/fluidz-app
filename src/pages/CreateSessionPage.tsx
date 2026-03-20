@@ -393,7 +393,7 @@ export default function CreateSessionPage() {
           <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}>L'adresse exacte n'est jamais visible avant acceptation</p>
           </div>
-          {error && <p style={{color:S.p,fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:'#F4727215',borderRadius:10}}>{error}</p>}
+          {error && <p style={{color:S.p,fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:S.p3,borderRadius:10}}>{error}</p>}
           <button onClick={create} disabled={loading||!title||!approxArea} className='btn-shimmer' style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:loading||!title||!approxArea?'not-allowed':'pointer',opacity:loading||!title||!approxArea?0.5:1,boxShadow:'0 4px 20px '+S.pbd,marginTop:4}}>
             {loading ? 'Création...' : 'Créer la session'}
           </button>

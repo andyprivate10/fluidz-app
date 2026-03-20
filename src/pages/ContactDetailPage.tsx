@@ -13,7 +13,7 @@ const S = colors
 const RELATIONS = [
   { level: 'connaissance', label: 'Connaissance', icon: '○', color: S.tx3 },
   { level: 'close', label: 'Close', icon: '◉', color: S.sage },
-  { level: 'favori', label: 'Favori', icon: '⭐', color: S.p },
+  { level: 'favori', label: 'Favori', icon: '★', color: S.p },
 ] as const
 
 type Interaction = {

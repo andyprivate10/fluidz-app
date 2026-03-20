@@ -527,7 +527,7 @@ export default function MePage() {
                   <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
                 </div>
                 <div style={{ background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
-                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,'+S.p+',#c0503a)', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
+                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,'+S.p+','+S.pDark+')', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {checks.map(c => (

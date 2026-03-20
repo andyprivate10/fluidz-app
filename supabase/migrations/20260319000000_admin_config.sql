@@ -15,23 +15,35 @@ create table if not exists admin_config (
 -- RLS: everyone can read, only admins can write
 alter table admin_config enable row level security;
 
-create policy "Anyone can read admin_config"
-  on admin_config for select
-  using (true);
+do $$ begin
+  create policy "Anyone can read admin_config"
+    on admin_config for select
+    using (true);
+exception when duplicate_object then null;
+end $$;
 
 -- Admin write policy: check is_admin flag on user_profiles
 -- For now, allow authenticated users (will restrict later with is_admin column)
-create policy "Admins can insert admin_config"
-  on admin_config for insert
-  with check (auth.uid() is not null);
+do $$ begin
+  create policy "Admins can insert admin_config"
+    on admin_config for insert
+    with check (auth.uid() is not null);
+exception when duplicate_object then null;
+end $$;
 
-create policy "Admins can update admin_config"
-  on admin_config for update
-  using (auth.uid() is not null);
+do $$ begin
+  create policy "Admins can update admin_config"
+    on admin_config for update
+    using (auth.uid() is not null);
+exception when duplicate_object then null;
+end $$;
 
-create policy "Admins can delete admin_config"
-  on admin_config for delete
-  using (auth.uid() is not null);
+do $$ begin
+  create policy "Admins can delete admin_config"
+    on admin_config for delete
+    using (auth.uid() is not null);
+exception when duplicate_object then null;
+end $$;
 
 -- Add is_admin column to user_profiles
 alter table user_profiles add column if not exists is_admin boolean not null default false;

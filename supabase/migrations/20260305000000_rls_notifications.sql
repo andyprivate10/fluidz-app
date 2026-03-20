@@ -1,13 +1,16 @@
 -- RLS policy: allow session hosts to update applications (accept/reject)
-create policy "Host can update applications"
-  on applications for update
-  using (
-    exists (
-      select 1 from sessions
-      where sessions.id = applications.session_id
-        and sessions.host_id = auth.uid()
-    )
-  );
+do $$ begin
+  create policy "Host can update applications"
+    on applications for update
+    using (
+      exists (
+        select 1 from sessions
+        where sessions.id = applications.session_id
+          and sessions.host_id = auth.uid()
+      )
+    );
+exception when duplicate_object then null;
+end $$;
 
 -- Notifications table
 create table if not exists notifications (
@@ -22,13 +25,19 @@ create table if not exists notifications (
 
 alter table notifications enable row level security;
 
-create policy "Users can read own notifications"
-  on notifications for select
-  using (auth.uid() = user_id);
+do $$ begin
+  create policy "Users can read own notifications"
+    on notifications for select
+    using (auth.uid() = user_id);
+exception when duplicate_object then null;
+end $$;
 
-create policy "Users can update own notifications"
-  on notifications for update
-  using (auth.uid() = user_id);
+do $$ begin
+  create policy "Users can update own notifications"
+    on notifications for update
+    using (auth.uid() = user_id);
+exception when duplicate_object then null;
+end $$;
 
 -- Auto-create notification when a new application is inserted
 create or replace function notify_host_on_application()
@@ -42,6 +51,7 @@ begin
 end;
 $$ language plpgsql security definer;
 
+drop trigger if exists on_new_application on applications;
 create trigger on_new_application
   after insert on applications
   for each row execute function notify_host_on_application();

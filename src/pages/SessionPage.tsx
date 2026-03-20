@@ -333,7 +333,7 @@ export default function SessionPage() {
                 const isCheckedIn = m.status === 'checked_in'
                 return (
                   <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/profile/' + m.applicant_id)}>
-                    <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, #E0887A, #9080BA)' : S.rule2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, '+S.p+', '+S.lav+')' : S.rule2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {avatar ? (
                         <img src={avatar} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg }} />
                       ) : (
@@ -354,7 +354,7 @@ export default function SessionPage() {
           {/* Host row */}
           {!isHost && hostProfile && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, cursor: 'pointer' }} onClick={() => navigate('/profile/' + session.host_id)}>
-              <div style={{ width: 28, height: 28, borderRadius: '50%', padding: 1.5, background: 'linear-gradient(135deg, #E0887A, #9080BA)' }}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', padding: 1.5, background: 'linear-gradient(135deg, '+S.p+', '+S.lav+')' }}>
                 {hostProfile.avatar ? (
                   <img src={hostProfile.avatar} alt="" style={{ width: 25, height: 25, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid ' + S.bg }} />
                 ) : (
@@ -674,7 +674,7 @@ export default function SessionPage() {
           <button
             onClick={handleCheckIn}
             disabled={checkInLoading}
-            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,'+S.sage+',#16a34a)', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
+            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,'+S.sage+','+S.emerald+')', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
           >
             {checkInLoading ? 'Enregistrement...' : 'Je suis arrive ! Check-in'}
           </button>
@@ -784,7 +784,7 @@ export default function SessionPage() {
           <div style={{ ...card }}>
             {myApp.status === 'pending' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid #FBBF2444' }}>En attente de réponse...</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid '+S.amberbd }}>En attente de réponse...</span>
               </div>
             )}
             {myApp.status === 'accepted' && (
@@ -857,11 +857,11 @@ export default function SessionPage() {
       {/* Review CTA for ended sessions */}
       {session.status === 'ended' && myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
         <div style={{ padding: '0 16px 16px' }}>
-          <div style={{ background: S.bg1, border: '1px solid #FBBF2444', borderRadius: 16, padding: 20, textAlign: 'center' }}>
+          <div style={{ background: S.bg1, border: '1px solid '+S.amberbd, borderRadius: 16, padding: 20, textAlign: 'center' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>Comment c'était ?</p>
             <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 14px' }}>Ton avis anonyme aide la communauté</p>
-            <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: S.p, border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px #F4727244' }}>
-              ⭐ Laisser un avis
+            <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: S.p, border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px '+S.pbd }}>
+              Laisser un avis
             </button>
           </div>
         </div>

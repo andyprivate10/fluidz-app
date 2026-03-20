@@ -155,7 +155,7 @@ export default function GhostRecoverPage() {
               <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 12 }}>Profil retrouvé</div>
               <div style={{ fontSize: 20, fontWeight: 800, color: S.tx, marginBottom: 4 }}>{ghost.display_name}</div>
               <div style={{ fontSize: 12, color: S.tx3 }}>
-                ⏳ {timeLeft > 0 ? `${timeLeft}h restantes` : 'Expire bientôt'}
+                {timeLeft > 0 ? `${timeLeft}h restantes` : 'Expire bientôt'}
               </div>
               {Object.keys(ghost.profile_json || {}).length > 0 && (
                 <div style={{ marginTop: 12, display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>

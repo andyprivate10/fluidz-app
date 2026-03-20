@@ -109,7 +109,7 @@ export default function EditSessionPage() {
         {/* Title */}
         <div>
           <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Titre</label>
-          <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Plan ce soir 🔥" style={inp} />
+          <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Plan ce soir" style={inp} />
         </div>
 
         {/* Description */}

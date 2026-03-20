@@ -24,6 +24,7 @@ export const colors = {
   p2:  'rgba(224,136,122,0.15)',
   p3:  'rgba(224,136,122,0.06)',
   pbd: 'rgba(224,136,122,0.28)',
+  pDark: '#C0706A',
 
   // Statuts
   sage:    '#6BA888',
@@ -40,9 +41,19 @@ export const colors = {
 
   // Semantic
   red:    '#F87171',
+  redbg:  'rgba(248,113,113,0.06)',
+  redbd:  'rgba(248,113,113,0.20)',
   orange: '#FBBF24',
+  orangebd: 'rgba(251,191,36,0.25)',
+  orangebg: 'rgba(251,191,36,0.12)',
   blue:   '#7DD3FC',
+  bluebd: 'rgba(125,211,252,0.27)',
+  amberbd: 'rgba(251,191,36,0.27)',
   grad:   '#E0887A',
+
+  // Spinner / pull-to-refresh
+  spinner:   '#F9A8A8',
+  spinnerbg: 'rgba(249,168,168,0.13)',
 } as const
 
 // ─── Typography ───────────────────────────────────────

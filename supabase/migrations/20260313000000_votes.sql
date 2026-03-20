@@ -10,9 +10,14 @@ CREATE TABLE IF NOT EXISTS votes (
 
 ALTER TABLE votes ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "members can vote" ON votes
-  FOR ALL USING (auth.uid() = voter_id);
+do $$ begin
+  CREATE POLICY "members can vote" ON votes
+    FOR ALL USING (auth.uid() = voter_id);
+exception when duplicate_object then null;
+end $$;
 
-CREATE POLICY "members can read votes" ON votes
-  FOR SELECT USING (true);
-
+do $$ begin
+  CREATE POLICY "members can read votes" ON votes
+    FOR SELECT USING (true);
+exception when duplicate_object then null;
+end $$;

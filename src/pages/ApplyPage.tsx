@@ -387,7 +387,7 @@ export default function ApplyPage() {
             return (
               <button type="button" onClick={() => navigate('/me')} style={{
                 width: '100%', padding: '10px 14px', borderRadius: 12, marginBottom: 14,
-                background: S.p2, border: '1px solid #FBBF2444', cursor: 'pointer',
+                background: S.p2, border: '1px solid '+S.amberbd, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
               }}>
                 <span style={{ fontSize: 14, color: S.orange }}>!</span>

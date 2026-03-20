@@ -557,7 +557,7 @@ export default function HostDashboard() {
                 )}
 
                 {app.eps_json?.message && (
-                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid #7DD3FC33',marginBottom:8}}>
+                  <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.bluebd,marginBottom:8}}>
                     <p style={{fontSize:11,color:S.blue,fontWeight:700,margin:'0 0 2px'}}>Message au host</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0,lineHeight:1.4}}>{app.eps_json.message}</p>
                   </div>
@@ -629,7 +629,7 @@ export default function HostDashboard() {
                           href: '/session/' + id,
                         })
                         showToast('Relance envoyée', 'success')
-                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid #FBBF2444',background:'transparent',cursor:'pointer'}}>Relancer</button>
+                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid '+S.amberbd,background:'transparent',cursor:'pointer'}}>Relancer</button>
                     )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Annuler</button>
                   </div>

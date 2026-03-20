@@ -96,8 +96,8 @@ export default function SessionsPage() {
                     <span style={{
                       ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.pill, marginLeft: 8,
                       color: isOpen ? S.sage : isEnded ? S.red : S.tx3,
-                      background: isOpen ? S.sagebg : isEnded ? '#F8717114' : S.bg2,
-                      border: `1px solid ${isOpen ? S.sagebd : isEnded ? '#F871712e' : S.rule}`,
+                      background: isOpen ? S.sagebg : isEnded ? S.redbg : S.bg2,
+                      border: `1px solid ${isOpen ? S.sagebd : isEnded ? S.redbd : S.rule}`,
                       display: 'flex', alignItems: 'center', gap: 4,
                     }}>
                       {isOpen && <Radio size={8} />}

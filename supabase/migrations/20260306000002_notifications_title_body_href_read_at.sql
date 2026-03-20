@@ -5,14 +5,12 @@ alter table notifications
   add column if not exists href text,
   add column if not exists read_at timestamptz;
 
--- Backfill from existing message/read
-update notifications
-set
-  title = coalesce(title, message),
-  body = coalesce(body, ''),
-  href = coalesce(href, '/session/' || session_id || '/host'),
-  read_at = case when read then coalesce(read_at, created_at) else null end
-where title is null or (read and read_at is null);
+-- Backfill from existing message/read (skip if columns no longer exist)
+do $$ begin
+  if exists (select 1 from information_schema.columns where table_schema='public' and table_name='notifications' and column_name='message') then
+    execute 'update notifications set title=coalesce(title,message), body=coalesce(body,''''), href=coalesce(href,''/session/''||session_id||''/host'') where title is null';
+  end if;
+end $$;
 
 -- Trigger: set title, body, href on insert
 create or replace function notify_host_on_application()

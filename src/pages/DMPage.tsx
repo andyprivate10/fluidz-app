@@ -377,7 +377,7 @@ export default function DMPage() {
       )}
 
       {showCheckInConfirmed && (
-        <div style={{ margin: '12px 16px 0', padding: 14, background: S.p2, border: '1px solid #FBBF2444', borderRadius: 12, flexShrink: 0 }}>
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.p2, border: '1px solid '+S.amberbd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.p, fontWeight: 600, textAlign: 'center' }}>Check-in envoyé — en attente de confirmation du host</div>
         </div>
       )}
@@ -403,7 +403,7 @@ export default function DMPage() {
             <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast('Adresse copiée', 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sage + '44', background: 'transparent', cursor: 'pointer' }}>
               <Copy size={11} strokeWidth={1.5} style={{marginRight:2}} /> Copier
             </button>
-            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid #7DD3FC44', background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid '+S.bluebd, background: 'transparent', cursor: 'pointer' }}>
               <Map size={11} strokeWidth={1.5} style={{marginRight:2}} /> Maps
             </button>
           </div>
@@ -455,7 +455,7 @@ export default function DMPage() {
                 )}
                 <div style={{
                   padding: message.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
-                  background: isMine ? 'linear-gradient(135deg, #E0887A, #C0706A)' : S.bg2,
+                  background: isMine ? 'linear-gradient(135deg, '+S.p+', '+S.pDark+')' : S.bg2,
                   color: isMine ? 'white' : S.tx,
                   borderRadius: isMine ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   border: isMine ? 'none' : '1px solid ' + S.rule,

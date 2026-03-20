@@ -28,7 +28,7 @@ type Contact = {
 const RELATION_STYLES = {
   connaissance: { label: 'Connaissance', color: S.tx3, icon: '○' },
   close: { label: 'Close', color: S.sage, icon: '◉' },
-  favori: { label: 'Favori', color: S.p, icon: '⭐' },
+  favori: { label: 'Favori', color: S.p, icon: '★' },
 }
 
 export default function ContactsPage() {
