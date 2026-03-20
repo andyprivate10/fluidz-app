@@ -168,7 +168,7 @@ export default function CandidateProfilePage() {
               {hasAdulteMedia && <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Profil</p>}
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosProfil.map((url: string, i: number) => (
-                  <LazyImage key={i} src={url} style={{ width: photosProfil.length === 1 && !hasAdulteMedia ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
+                  <LazyImage key={i} src={url} style={{ width: photosProfil.length === 1 && !hasAdulteMedia ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
                 ))}
               </div>
             </>
@@ -179,11 +179,11 @@ export default function CandidateProfilePage() {
               <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosAdulte.map((url: string, i: number) => (
-                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd }} />
+                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd }} />
                 ))}
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                    <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
+                    <video src={url} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
                     <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
                   </div>
                 ))}
@@ -194,11 +194,11 @@ export default function CandidateProfilePage() {
           {photosProfil.length === 0 && !hasAdulteMedia && candidatePhotos.length > 0 && (
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
               {candidatePhotos.map((url: string, i: number) => (
-                <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 16, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
+                <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
               ))}
               {candidateVideos.map((url: string, i: number) => (
                 <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
-                  <video src={url} style={{ width: 140, height: 180, borderRadius: 16, objectFit: 'cover', border: '1px solid ' + S.rule }} />
+                  <video src={url} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', border: '1px solid ' + S.rule }} />
                   <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
                 </div>
               ))}
@@ -242,8 +242,8 @@ export default function CandidateProfilePage() {
           <span style={{
             fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 99,
             color: app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange,
-            background: (app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange) + '18',
-            border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.sage : app.status === 'rejected' ? S.red : S.orange) + '44',
+            background: app.status === 'accepted' || app.status === 'checked_in' ? S.sagebg : app.status === 'rejected' ? S.redbg : S.orangebg,
+            border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.sagebd : app.status === 'rejected' ? S.redbd : S.orangebd),
           }}>
             {app.status === 'accepted' ? 'Accepté' : app.status === 'checked_in' ? 'Check-in' : app.status === 'rejected' ? 'Refusé' : 'En attente'}
           </span>
