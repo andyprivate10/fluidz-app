@@ -199,6 +199,32 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 
 ---
 
+## PHASE 14: MVP FUNCTIONAL GAPS ✅ DONE
+
+### P14.1 — Auto-end sessions ✅ DONE
+- [x] Migration auto_end_expired_sessions() RPC function
+- [x] SessionPage : auto-transition open → ended quand ends_at depasse
+- [x] Transparent pour le user (check au chargement)
+
+### P14.2 — Map sur SessionPage ✅ DONE
+- [x] MapView integre dans SessionPage pour membres accepted + checked_in
+- [x] Affiche le pin session quand approx_lat/approx_lng disponibles
+- [x] 2 blocs : accepted et checked_in voient la carte
+
+### P14.3 — PWA Install Prompt ✅ DONE
+- [x] InstallPrompt component (beforeinstallprompt API)
+- [x] Banner en bas avec bouton Installer
+- [x] Dismiss persiste dans localStorage
+- [x] Integre dans App.tsx
+
+### P14.4 — Group Invite to Session ✅ DONE
+- [x] CreateSessionPage : charge les groupes du user apres creation
+- [x] Bouton "Inviter un groupe" envoie notification a tous les membres
+- [x] Feedback "Invite envoye" par groupe
+- [x] Notification type session_invite avec lien vers /join/
+
+---
+
 ## NOTES
 - Peach = #E0887A (JAMAIS #F07858)
 - Font titres = Bricolage Grotesque 800

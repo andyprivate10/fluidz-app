@@ -33,6 +33,7 @@ import DirectDMPage from './pages/DirectDMPage'
 import AddressesPage from './pages/AddressesPage'
 import AdminPage from './pages/AdminPage'
 import BottomNav from './components/BottomNav'
+import InstallPrompt from './components/InstallPrompt'
 
 const routes = [
   { path: '/', element: <HomePage /> },
@@ -96,6 +97,7 @@ export default function App() {
         <ToastProvider />
         <AnimatedRoutes />
         <BottomNav />
+        <InstallPrompt />
       </BrowserRouter>
     </ErrorBoundary>
   )

@@ -11,6 +11,7 @@ import EventContextNav from '../components/EventContextNav'
 import { formatElapsed, formatRemaining } from '../lib/timing'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { useTranslation } from 'react-i18next'
+import MapView from '../components/MapView'
 const S = colors
 
 type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
@@ -87,6 +88,11 @@ export default function SessionPage() {
 
       const { data: sess, error: sessErr } = await supabase.from('sessions').select('*').eq('id', id).single()
       if (sessErr) throw sessErr
+      // Auto-end if ends_at has passed
+      if (sess.status === 'open' && sess.ends_at && new Date(sess.ends_at) < new Date()) {
+        await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
+        sess.status = 'ended'
+      }
       setSession(sess)
 
       // Fetch host profile
@@ -798,6 +804,14 @@ export default function SessionPage() {
                     <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}
+                {(session as any).approx_lat && (session as any).approx_lng && (
+                  <MapView
+                    center={[(session as any).approx_lat, (session as any).approx_lng]}
+                    zoom={15}
+                    height={180}
+                    pins={[{ id: session.id, lat: (session as any).approx_lat, lng: (session as any).approx_lng, label: session.title, type: 'session' }]}
+                  />
+                )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM
                 </button>
@@ -814,6 +828,14 @@ export default function SessionPage() {
                     <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
                     <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
+                )}
+                {(session as any).approx_lat && (session as any).approx_lng && (
+                  <MapView
+                    center={[(session as any).approx_lat, (session as any).approx_lng]}
+                    zoom={15}
+                    height={180}
+                    pins={[{ id: session.id, lat: (session as any).approx_lat, lng: (session as any).approx_lng, label: session.title, type: 'session' }]}
+                  />
                 )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   Ouvrir le DM

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {Moon, Pill, Headphones, Sparkles, ArrowLeft, Clock, Zap} from 'lucide-react'
+import {Moon, Pill, Headphones, Sparkles, ArrowLeft, Clock, Zap, Users} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -52,6 +52,8 @@ export default function CreateSessionPage() {
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [isPublic, setIsPublic] = useState(false)
   const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
+  const [groups, setGroups] = useState<{ id: string; name: string; members: string[] }[]>([])
+  const [notifiedGroups, setNotifiedGroups] = useState<Set<string>>(new Set())
   const [startsNow, setStartsNow] = useState(true)
   const [startsAt, setStartsAt] = useState('')
   const [durationHours, setDurationHours] = useState(3)
@@ -125,7 +127,20 @@ export default function CreateSessionPage() {
       setError(err.message)
       return
     }
-    if (data) setCreatedSession({ id: data.id, title: data.title, approx_area: data.approx_area, invite_code: data.invite_code })
+    if (data) {
+      setCreatedSession({ id: data.id, title: data.title, approx_area: data.approx_area, invite_code: data.invite_code })
+      // Load user's groups for invite
+      const { data: pData } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
+      const gIds = ((pData?.profile_json as any)?.contact_groups || []).map((g: any) => g.id)
+      if (gIds.length > 0) {
+        const { data: groupRows } = await supabase.from('contact_groups').select('id, name').in('id', gIds)
+        const { data: memberRows } = await supabase.from('contact_group_members').select('group_id, contact_user_id').in('group_id', gIds)
+        setGroups((groupRows || []).map((g: any) => ({
+          id: g.id, name: g.name,
+          members: (memberRows || []).filter((m: any) => m.group_id === g.id).map((m: any) => m.contact_user_id),
+        })))
+      }
+    }
   }
 
   function copyShareMessage(app: 'grindr'|'whatsapp'|'telegram') {
@@ -182,6 +197,41 @@ export default function CreateSessionPage() {
               </button>
             ))}
           </div>
+          {/* Group invite */}
+          {groups.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: S.tx2, margin: '0 0 8px' }}>
+                <Users size={14} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />
+                Inviter un groupe
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {groups.map(g => {
+                  const done = notifiedGroups.has(g.id)
+                  return (
+                    <button key={g.id} disabled={done} onClick={async () => {
+                      const notifs = g.members.map(uid => ({
+                        user_id: uid, type: 'session_invite' as const,
+                        title: createdSession.title,
+                        body: 'Tu es invite ! Postule ici.',
+                        href: '/join/' + createdSession.invite_code,
+                      }))
+                      if (notifs.length > 0) await supabase.from('notifications').insert(notifs)
+                      setNotifiedGroups(prev => new Set([...prev, g.id]))
+                    }} style={{
+                      padding: '10px 14px', borderRadius: 12, fontSize: 13, fontWeight: 600,
+                      border: '1px solid ' + (done ? S.sagebd : S.rule),
+                      background: done ? S.sagebg : S.bg1,
+                      color: done ? S.sage : S.tx2, cursor: done ? 'default' : 'pointer',
+                      textAlign: 'left',
+                    }}>
+                      {done ? 'Invite envoye — ' : ''}{g.name} ({g.members.length})
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
             {t('session.go_to_session')}
           </button>
