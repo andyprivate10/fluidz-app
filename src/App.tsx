@@ -63,8 +63,10 @@ const routes = [
   { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },
   { path: '/admin', element: <AdminPage /> },
-  { path: '/dev-loop', element: <DevLoopPage /> },
-  { path: '/dev/test', element: <DevTestMenu /> },
+  ...(import.meta.env.DEV ? [
+    { path: '/dev-loop', element: <DevLoopPage /> },
+    { path: '/dev/test', element: <DevTestMenu /> },
+  ] : []),
   { path: '*', element: <NotFoundPage /> },
 ]
 

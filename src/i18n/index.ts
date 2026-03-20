@@ -7,7 +7,7 @@ const savedLang = (() => { try { return localStorage.getItem('fluidz_lang') } ca
 
 i18n.use(initReactI18next).init({
   resources: { fr: { translation: fr }, en: { translation: en } },
-  lng: savedLang || navigator.language.startsWith('en') ? 'en' : 'fr',
+  lng: savedLang || (navigator.language.startsWith('en') ? 'en' : 'fr'),
   fallbackLng: 'fr',
   interpolation: { escapeValue: false },
 })
