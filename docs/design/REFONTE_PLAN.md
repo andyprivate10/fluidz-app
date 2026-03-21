@@ -273,47 +273,6 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 - Tipping entre membres
 - Tickets payants pour events B2B
 
-### B6 — Système de contact DM (Apply to DM)
-**Principe** : Entrer en contact avec un profil suit la même mécanique que les sessions.
-
-**Phase 1 : DM direct conditionnel**
-- Chaque profil a un setting `accept_dm_from` : `everyone` | `contacts_only` | `apply_only`
-- Si `everyone` → bouton "DM" direct sur le PublicProfile, ouvre un DM 1-to-1
-- Si `contacts_only` → DM disponible uniquement si déjà dans les contacts mutuels
-- Si `apply_only` → bouton "Apply to DM" (voir Phase 2)
-- Default pour nouveaux profils : `apply_only` (protection par défaut)
-
-**Phase 2 : Apply to DM (candidature de contact)**
-- Bouton "Apply to DM" sur PublicProfile quand DM direct pas autorisé
-- Flow identique aux candidatures session :
-  1. L'initiateur écrit un premier message (obligatoire, max 280 chars)
-  2. L'initiateur sélectionne les sections de profil à partager (toggle ON/OFF comme le Candidate Pack)
-  3. Le destinataire reçoit une notification "X veut entrer en contact"
-  4. Le destinataire voit : le premier message + les sections partagées du profil
-  5. Le destinataire accepte ou refuse
-  6. Si accepté → DM 1-to-1 ouvert, ajout mutuel dans les contacts (level connaissance)
-  7. Si refusé → notification discrète à l'initiateur, pas de spam possible (cooldown 30 jours)
-
-**Phase 3 : Request types (intents)**
-- L'initiateur peut préciser son intent : "Rencontre", "Plan ce soir", "Juste discuter", "Inviter à une session"
-- Le destinataire filtre par type d'intent dans ses settings
-- Matching d'intents : si deux profils ont des intents compatibles, notification mutuelle
-
-### B7 — Niveaux d'interaction & Intent Matching
-**Échelle de relations entre profils (évolutive)**
-- **Inconnu** → peut voir le profil public, pas de DM
-- **Demande envoyée** → Apply to DM en attente
-- **Connaissance** → DM ouvert, profil basique visible, ajouté automatiquement après session commune
-- **Contact** → profil complet visible, historique sessions communes
-- **Favori** → notifications prioritaires, raccourci dans le Book
-- **Bloqué** → invisible mutuellement, aucune interaction possible
-
-**Intent Matching**
-- Chaque profil définit ce qu'il cherche : "Plans group", "Rencontre 1-to-1", "Amitié+", "Soirée ce soir"
-- Matching automatique : quand 2 profils à proximité ont des intents compatibles
-- Notification discrète : "X cherche aussi un plan ce soir" (opt-in uniquement)
-- Pas de swipe/feed — c'est du matching d'intent, pas du dating app
-- Compatible avec le mode Ghost : les ghosts peuvent aussi définir un intent temporaire
 
 ### B6 — DM Contact System (Prise de contact entre profils)
 **Concept** : Un utilisateur qui veut contacter un profil a 2 chemins selon les préférences du profil cible.
@@ -369,62 +328,97 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 3. Feed "Profils compatibles" trié par score
 4. Notifications "Match d'intention" quand 2 profils se correspondent
 5. Sessions suggérées basées sur les intents du profil
-6. Échelle de relation visible sur le profil de chaque contact (Naughty Book)
+6. Échelle de relation visible sur chaque contact du Naughty Book
 
-### B6 — DM Contact System (Apply to DM)
-**Concept** : Deux modes de prise de contact avec un profil inconnu.
+---
 
-**Mode 1 : DM ouvert**
-- Le profil cible a activé "Accepter les DM de profils inconnus" dans ses settings
-- L'expéditeur peut envoyer un message directement
-- Le message apparaît dans une section "Demandes" (pas dans les DM principaux)
-- Le destinataire peut accepter (→ DM normal) ou ignorer
+## NOTES
+- Peach = #E0887A (JAMAIS #F07858)
+- Font titres = Bricolage Grotesque 800
+- ZERO emoji dans UI — SVG icons stroke 1.5px
+- npm run build AVANT chaque commit
+- Netlify auto-deploy sur push
 
-**Mode 2 : Apply to DM (défaut)**
-- L'expéditeur envoie une "demande de contact" :
-  - Un premier message d'accroche (texte libre, max 280 chars)
-  - Sélection des sections profil à partager (même mécanique que le Candidate Pack pour les sessions)
-  - Le destinataire voit : message + aperçu du profil partagé
-- Le destinataire peut :
-  - Accepter → DM ouvert entre les deux profils, ajout mutuel en contacts
-  - Refuser → notification discrète à l'expéditeur, cooldown 7 jours
-  - Ignorer → expire après 48h
-- Rate limit : max 5 Apply to DM / jour par user (anti-spam)
+---
 
-**Settings profil (nouveau)**
-- Toggle "Accepter les DM directs" (défaut: off)
-- Toggle "Accepter les demandes de contact" (défaut: on)
-- Option "Exiger au moins X sections partagées" (défaut: 2)
+## NAV RESTRUCTURATION (PRIORITÉ — Avant nouvelles features)
 
-**UX Flow**
-1. PublicProfile → bouton "Envoyer un message" ou "Demander un contact"
-2. Si DM ouvert : modal message direct → envoi
-3. Si Apply to DM : bottom sheet avec message + toggle sections profil → envoi
-4. Destinataire : notification "X souhaite te contacter" → voir message + profil → Accepter/Refuser
-5. Si accepté : DM ouvert + contacts mutuels ajoutés
+### État actuel (BottomNav 5 tabs)
+```
+Plans    | Profils  | Chats   | Book    | Moi
+(Home)   | (Explore)| (Hub)   | (Contacts)| (Profil)
+```
 
-### B7 — Niveaux d'interaction & Intent Matching
-**Concept** : Échelle d'évolution des relations entre profils + matching par intentions.
+### Problèmes identifiés
+1. "Plans" n'est pas le bon nom — c'est les Sessions
+2. Chats est en double (BottomNav + accessible depuis Book/Sessions)
+3. Profils et Sessions sont mélangés dans le même espace
+4. Groupes sont dans Moi/Compte alors qu'ils font partie du Book
+5. Notifications, géoloc, visibilité galerie, adresses, langue sont éparpillés dans Moi
+6. Profil et Adulte sont séparés en 2 onglets alors que c'est le même profil
+7. Pas de concept de Settings unifié
 
-**Niveaux de relation (évolutifs)**
-- Niveau 0 : Inconnu (aucune interaction)
-- Niveau 1 : Contact demandé (Apply to DM envoyé)
-- Niveau 2 : Contact accepté (DM ouvert, connaissance)
-- Niveau 3 : Close (favoris, confiance établie)
-- Niveau 4 : Régulier (historique de sessions partagées, reviews positives)
+### Nouvelle structure (BottomNav 4 tabs)
+```
+Sessions | Profils  | Book    | Moi
+```
 
-**Intent Matching**
-- Chaque profil déclare ses "intents" : ce qu'il cherche maintenant
-  - Disponible ce soir / cette semaine / en général
-  - Cherche : plan groupe, plan duo, discussion, amitié, régulier
-  - Rôle recherché chez l'autre : Top, Bottom, Versa
-  - Vibes : chill, intense, fetish, party
-- Le système match les intents compatibles et suggère des profils
-- Notification "X est dispo ce soir et cherche un Bottom" (si match)
+#### Tab 1 — SESSIONS (ex "Plans")
+- Mes sessions actives (host + membre)
+- Sessions en attente (candidatures)
+- "Rejoindre avec un lien" (code invite)
+- "Créer une session" → flow création
+- Sessions terminées récentes
 
-**Évolution automatique**
-- Co-session → niveau +1 automatique
-- Review positive mutuelle → niveau +1
-- Inactivité 90 jours → niveau -1
-- Block/Report → niveau 0 permanent
+#### Tab 2 — PROFILS (Galerie)
+- Galerie des profils (Explore actuel)
+- Filtres (rôle, distance, VibeScore)
+- Profils proches (si géoloc activée)
+- Recherche
 
+#### Tab 3 — BOOK (Naughty Book + Groupes)
+- Contacts (favoris, close, connaissances)
+- Groupes (déplacés depuis Moi)
+- Chats DM directs (accessibles ici, plus dans BottomNav)
+- Historique d'interactions
+
+#### Tab 4 — MOI
+- **Mon Profil** (Profil + Adulte fusionnés en un seul espace)
+  - Photos profil + adultes
+  - Infos (pseudo, bio, âge, localisation, physique, rôle)
+  - Pratiques/kinks
+  - Santé/PrEP
+  - Limites
+  - VibeScore
+- **Settings** (nouveau, séparé du profil)
+  - Notifications (on/off, push)
+  - Géolocalisation (activation, visibilité)
+  - Visibilité dans la galerie
+  - Mes adresses sauvegardées
+  - Langue (FR/EN)
+  - Déconnexion
+- **Notifications** (liste in-app, accessible depuis Moi)
+
+### Ce qui disparaît du BottomNav
+- **Chats** → accessible depuis Book (DM directs) et Sessions (DM session)
+- Le 5ème tab → on passe à 4 tabs
+
+### Ce qui bouge
+| Élément | Avant | Après |
+|---------|-------|-------|
+| Groupes | Moi > Compte | Book |
+| Chats hub | BottomNav tab | Book (DM) + Sessions (DM session) |
+| Notifications | Page séparée | Moi > Notifications |
+| Géoloc/Visibilité/Langue | Moi > Compte | Moi > Settings |
+| Adresses | Page séparée | Moi > Settings |
+| Profil + Adulte | 2 onglets séparés | 1 espace unifié |
+
+### User stories
+- [ ] Renommer "Plans" → "Sessions" dans BottomNav
+- [ ] Supprimer tab "Chats" du BottomNav (4 tabs au lieu de 5)
+- [ ] Déplacer Groupes de Moi vers Book
+- [ ] Fusionner Profil + Adulte en un seul espace dans Moi
+- [ ] Créer section Settings dans Moi (notifs, géoloc, visibilité, adresses, langue, déconnexion)
+- [ ] Intégrer Notifications dans Moi
+- [ ] Réorganiser Book : Contacts + Groupes + DM directs
+- [ ] Accès Chats session depuis SessionPage (déjà le cas)
