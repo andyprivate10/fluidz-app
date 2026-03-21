@@ -775,7 +775,7 @@ export default function SessionPage() {
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              {pendingCount > 0 ? `Gerer (${pendingCount} en attente)` : 'Gérer la session'}
+              {pendingCount > 0 ? `Gérer (${pendingCount} en attente)` : 'Gérer la session'}
             </button>
             {session.invite_code && (
               <button onClick={() => {

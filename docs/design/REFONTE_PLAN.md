@@ -231,3 +231,44 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 - ZERO emoji dans UI — SVG icons stroke 1.5px
 - npm run build AVANT chaque commit
 - Netlify auto-deploy sur push
+
+---
+
+## BACKLOG — FUTURES FEATURES (NON PRIORISÉES)
+
+### B1 — Paiements entre membres (Remboursement de frais)
+**Phase 1 : Simple (QR codes + liens)**
+- Chaque user peut ajouter ses infos de paiement dans son profil : QR code Revolut, lien Wise, IBAN
+- Après une session, le host peut créer un "split" : montant total + description (location, boissons, etc.)
+- Le split calcule automatiquement le montant par personne
+- Chaque membre voit le montant dû + le QR code / lien du host pour payer
+- Statut de paiement : en attente / payé (toggle manuel par le host)
+- Historique des splits par session
+
+**Phase 2 : Paiement in-app avec escrow**
+- Session payante : le host fixe un prix d'entrée lors de la création
+- Les candidats paient au moment de l'acceptation (avant de recevoir l'adresse)
+- Escrow : l'argent est bloqué jusqu'à la fin de la session
+- Remboursement automatique si le host annule ou si le candidat est rejeté
+- Commission Fluidz : X% sur chaque transaction
+- Intégration Stripe Connect pour les payouts
+
+### B2 — Vestiaire numérique (Event B2B)
+- Ticket numérique QR code
+- Scan dépôt / retrait
+- Dashboard vestiaire pour le staff
+
+### B3 — Emergency / Sécurité
+- Bouton panique discret
+- Broadcast urgence à tous les membres
+- Alerte staff en temps réel
+
+### B4 — Discovery / Feed
+- Sessions publiques découvrables par localisation
+- Feed d'activité (qui a rejoint quoi)
+- Recommandations basées sur les préférences
+
+### B5 — Monetisation avancée
+- Plans premium (host pro, profil vérifié)
+- Tipping entre membres
+- Tickets payants pour events B2B
