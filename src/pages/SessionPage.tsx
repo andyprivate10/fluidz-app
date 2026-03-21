@@ -20,7 +20,7 @@ type PendingApplication = { id: string; applicant_id: string; display_name?: str
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
 const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
-const card: React.CSSProperties = { background: S.bg1, border: '1px solid '+S.rule, borderRadius: 20, padding: 16 }
+const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 
 export default function SessionPage() {
   const { t } = useTranslation()
@@ -302,12 +302,13 @@ export default function SessionPage() {
       <EventContextNav role={eventRole} sessionTitle={session.title} />
 
       {/* ─── HERO ─── */}
-      <div style={{ position: 'relative', minHeight: 220, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>
+      <div style={{ position: 'relative', minHeight: 240, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>
         {/* Hero gradient background */}
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, ${S.bg} 0%, ${S.bg1} 60%, ${S.bg} 100%)` }} />
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, ${S.bg1} 0%, ${S.bg} 100%)` }} />
         {/* Orbs - vivid in hero */}
-        <div style={{ position: 'absolute', width: 240, height: 240, top: -80, right: -60, borderRadius: '50%', filter: 'blur(60px)', background: 'rgba(224,136,122,0.18)', animation: 'orbDrift1 8s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', width: 180, height: 180, bottom: -50, left: -40, borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(144,128,186,0.14)', animation: 'orbDrift2 11s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', width: 280, height: 280, top: -100, right: -80, borderRadius: '50%', filter: 'blur(70px)', background: 'rgba(224,136,122,0.25)', animation: 'orbDrift1 8s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', width: 220, height: 220, bottom: -60, left: -50, borderRadius: '50%', filter: 'blur(60px)', background: 'rgba(144,128,186,0.20)', animation: 'orbDrift2 11s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', width: 140, height: 140, top: '40%', left: '50%', borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(107,168,136,0.10)', animation: 'orbDrift1 14s ease-in-out infinite reverse' }} />
         {/* Fade bottom */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 200, background: `linear-gradient(to top, ${S.bg} 10%, transparent)` }} />
 
@@ -341,7 +342,7 @@ export default function SessionPage() {
                 const isCheckedIn = m.status === 'checked_in'
                 return (
                   <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/profile/' + m.applicant_id)}>
-                    <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, '+S.p+', '+S.lav+')' : S.rule2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, '+S.p+', '+S.lav+')' : 'linear-gradient(135deg, '+S.p+'66, '+S.lav+'44)', boxShadow: isCheckedIn ? '0 0 8px '+S.p+'44' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {avatar ? (
                         <img src={avatar} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg }} />
                       ) : (
