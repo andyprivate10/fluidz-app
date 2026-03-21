@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { colors, radius } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { ArrowLeft, Zap, Users, Calendar, LayoutTemplate, Settings, FolderOpen, Database, BarChart3 } from 'lucide-react'
+import { ArrowLeft, Zap, Users, Calendar, LayoutTemplate, Settings, FolderOpen, Database, BarChart3, Code } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
 // Lazy-loaded tabs
@@ -15,6 +15,7 @@ import AdminConfigTab from '../components/admin/AdminConfigTab'
 import AdminMediaTab from '../components/admin/AdminMediaTab'
 import AdminSeedTab from '../components/admin/AdminSeedTab'
 import AdminStatsTab from '../components/admin/AdminStatsTab'
+import AdminDevTab from '../components/admin/AdminDevTab'
 
 const S = colors
 const R = radius
@@ -28,6 +29,7 @@ const TABS = [
   { id: 'media', label: 'Media', icon: FolderOpen, color: S.violet },
   { id: 'seed', label: 'Seed', icon: Database, color: S.red },
   { id: 'stats', label: 'Stats', icon: BarChart3, color: S.emerald },
+  { id: 'dev', label: 'Dev', icon: Code, color: S.lav },
 ] as const
 
 type TabId = typeof TABS[number]['id']
@@ -136,6 +138,7 @@ export default function AdminPage() {
         {activeTab === 'media' && <AdminMediaTab />}
         {activeTab === 'seed' && <AdminSeedTab />}
         {activeTab === 'stats' && <AdminStatsTab />}
+        {activeTab === 'dev' && <AdminDevTab />}
       </div>
     </div>
   )
