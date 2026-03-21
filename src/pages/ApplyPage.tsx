@@ -289,11 +289,11 @@ export default function ApplyPage() {
           user_id: sess.host_id,
           session_id: id,
           type: 'new_application',
-          title: 'Nouvelle candidature',
-          body: name + ' a postulé pour "' + (sess.title || 'ta session') + '"',
+          title: name + ' a postulé',
+          body: 'Pour "' + (sess.title || 'ta session') + '"',
           href: '/session/' + id + '/host',
         })
-        sendPushToUser(sess.host_id, 'Nouvelle candidature', name + ' a postule pour "' + (sess.title || 'ta session') + '"', '/session/' + id + '/host')
+        sendPushToUser(sess.host_id, name + ' a postulé', 'Pour "' + (sess.title || 'ta session') + '"', '/session/' + id + '/host')
       }
     }
     showToast('Candidature envoyée !', 'success')

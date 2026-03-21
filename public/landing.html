@@ -410,7 +410,7 @@ footer{padding:48px 24px 32px;border-top:1px solid var(--rule);max-width:960px;m
 <script>
 let lang='en'
 function toggleLang(){lang=lang==='en'?'fr':'en';document.querySelector('.lang-btn').textContent=lang==='en'?'FR':'EN';document.querySelectorAll('[data-fr]').forEach(el=>{const v=el.getAttribute('data-'+lang);if(v.includes('<em>'))el.innerHTML=v;else el.textContent=v})}
-const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target)}})},{threshold:0.12})
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target)}})},{threshold:0.05,rootMargin:'0px 0px 60px 0px'})
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el))
 function handleWL(e){e.preventDefault();const m=document.getElementById('wl-m');m.style.display='block';m.textContent=lang==='fr'?"Merci ! On te tient au courant.":"Thanks! We'll keep you posted.";document.getElementById('wl-e').value=''}
 </script>
