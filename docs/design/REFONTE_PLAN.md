@@ -272,3 +272,159 @@ brand.ts, OrbLayer, BottomNav 5 tabs, EventContextNav, Bricolage/Jakarta fonts, 
 - Plans premium (host pro, profil vérifié)
 - Tipping entre membres
 - Tickets payants pour events B2B
+
+### B6 — Système de contact DM (Apply to DM)
+**Principe** : Entrer en contact avec un profil suit la même mécanique que les sessions.
+
+**Phase 1 : DM direct conditionnel**
+- Chaque profil a un setting `accept_dm_from` : `everyone` | `contacts_only` | `apply_only`
+- Si `everyone` → bouton "DM" direct sur le PublicProfile, ouvre un DM 1-to-1
+- Si `contacts_only` → DM disponible uniquement si déjà dans les contacts mutuels
+- Si `apply_only` → bouton "Apply to DM" (voir Phase 2)
+- Default pour nouveaux profils : `apply_only` (protection par défaut)
+
+**Phase 2 : Apply to DM (candidature de contact)**
+- Bouton "Apply to DM" sur PublicProfile quand DM direct pas autorisé
+- Flow identique aux candidatures session :
+  1. L'initiateur écrit un premier message (obligatoire, max 280 chars)
+  2. L'initiateur sélectionne les sections de profil à partager (toggle ON/OFF comme le Candidate Pack)
+  3. Le destinataire reçoit une notification "X veut entrer en contact"
+  4. Le destinataire voit : le premier message + les sections partagées du profil
+  5. Le destinataire accepte ou refuse
+  6. Si accepté → DM 1-to-1 ouvert, ajout mutuel dans les contacts (level connaissance)
+  7. Si refusé → notification discrète à l'initiateur, pas de spam possible (cooldown 30 jours)
+
+**Phase 3 : Request types (intents)**
+- L'initiateur peut préciser son intent : "Rencontre", "Plan ce soir", "Juste discuter", "Inviter à une session"
+- Le destinataire filtre par type d'intent dans ses settings
+- Matching d'intents : si deux profils ont des intents compatibles, notification mutuelle
+
+### B7 — Niveaux d'interaction & Intent Matching
+**Échelle de relations entre profils (évolutive)**
+- **Inconnu** → peut voir le profil public, pas de DM
+- **Demande envoyée** → Apply to DM en attente
+- **Connaissance** → DM ouvert, profil basique visible, ajouté automatiquement après session commune
+- **Contact** → profil complet visible, historique sessions communes
+- **Favori** → notifications prioritaires, raccourci dans le Book
+- **Bloqué** → invisible mutuellement, aucune interaction possible
+
+**Intent Matching**
+- Chaque profil définit ce qu'il cherche : "Plans group", "Rencontre 1-to-1", "Amitié+", "Soirée ce soir"
+- Matching automatique : quand 2 profils à proximité ont des intents compatibles
+- Notification discrète : "X cherche aussi un plan ce soir" (opt-in uniquement)
+- Pas de swipe/feed — c'est du matching d'intent, pas du dating app
+- Compatible avec le mode Ghost : les ghosts peuvent aussi définir un intent temporaire
+
+### B6 — DM Contact System (Prise de contact entre profils)
+**Concept** : Un utilisateur qui veut contacter un profil a 2 chemins selon les préférences du profil cible.
+
+**Chemin 1 : DM direct (si le profil accepte les DM d'inconnus)**
+- Le profil cible a activé "Accepter les DM d'inconnus" dans ses settings
+- L'utilisateur peut envoyer un DM directement → conversation ouverte
+- Le destinataire reçoit une notification "Nouveau message de [Nom]"
+
+**Chemin 2 : Apply to DM (si le profil n'accepte pas les DM d'inconnus)**
+- L'utilisateur envoie une "demande de contact" qui contient :
+  - Un premier message texte (icebreaker)
+  - Une sélection de sections de son profil à partager (même mécanique que le Candidate Pack des sessions : toggle ON/OFF par section)
+- Le profil cible reçoit une notification "Demande de contact de [Nom]"
+- Il voit le message + les sections partagées du demandeur
+- Il peut : Accepter → DM ouvert | Refuser → notification au demandeur | Ignorer
+- Une fois accepté : conversation DM directe ouverte entre les deux
+
+**Settings profil (nouvelles options)**
+- Toggle "Accepter les DM d'inconnus" (défaut: OFF)
+- Toggle "Recevoir les demandes de contact" (défaut: ON)
+- Option "Exiger un message minimum de X caractères"
+
+**User stories** :
+1. Profil: toggle accepter DM inconnus dans MePage settings
+2. PublicProfile: bouton "Envoyer un DM" si DM ouvert, sinon "Demander un contact"
+3. Formulaire Apply to DM : message + toggle sections profil (réutilise CandidatePack)
+4. Vue destinataire : notification + preview profil + message + Accept/Reject
+5. Après accept : redirection vers DM direct
+6. Notification au demandeur : accepté ou refusé
+
+### B7 — Niveaux d'interaction & Intent Matching
+**Concept** : Les relations entre profils évoluent sur une échelle. Les intentions (intents) sont matchées pour faciliter les rencontres pertinentes.
+
+**Échelle d'interaction (progression)**
+1. **Inconnu** — profil visible dans Explore, pas de contact
+2. **Demande envoyée** — Apply to DM en cours
+3. **Contact** — DM accepté, conversation possible
+4. **Connaissance** — après 1 session ensemble ou échange régulier
+5. **Close** — marqué manuellement, accès à plus de sections profil
+6. **Favori** — top du Naughty Book, notifications prioritaires
+
+**Intent Matching (futur)**
+- Chaque profil peut définir ses "intents" : cherche plan ce soir, cherche régulier, ouvert à tout, etc.
+- Les intents sont matchés entre profils : "cherche Top dominant" × "Top dominant dispo ce soir" → notification mutuelle
+- Compatible avec les sessions : "3 bottoms cherchent un top" → le Top reçoit une suggestion
+- Feed "Compatible avec toi" basé sur les intents croisés
+- Pas de swipe — c'est du matching par intention, pas par apparence
+
+**User stories** :
+1. Profil: section "Ce que je cherche" (intents) avec tags prédéfinis
+2. Algorithme de matching intents → score de compatibilité
+3. Feed "Profils compatibles" trié par score
+4. Notifications "Match d'intention" quand 2 profils se correspondent
+5. Sessions suggérées basées sur les intents du profil
+6. Échelle de relation visible sur le profil de chaque contact (Naughty Book)
+
+### B6 — DM Contact System (Apply to DM)
+**Concept** : Deux modes de prise de contact avec un profil inconnu.
+
+**Mode 1 : DM ouvert**
+- Le profil cible a activé "Accepter les DM de profils inconnus" dans ses settings
+- L'expéditeur peut envoyer un message directement
+- Le message apparaît dans une section "Demandes" (pas dans les DM principaux)
+- Le destinataire peut accepter (→ DM normal) ou ignorer
+
+**Mode 2 : Apply to DM (défaut)**
+- L'expéditeur envoie une "demande de contact" :
+  - Un premier message d'accroche (texte libre, max 280 chars)
+  - Sélection des sections profil à partager (même mécanique que le Candidate Pack pour les sessions)
+  - Le destinataire voit : message + aperçu du profil partagé
+- Le destinataire peut :
+  - Accepter → DM ouvert entre les deux profils, ajout mutuel en contacts
+  - Refuser → notification discrète à l'expéditeur, cooldown 7 jours
+  - Ignorer → expire après 48h
+- Rate limit : max 5 Apply to DM / jour par user (anti-spam)
+
+**Settings profil (nouveau)**
+- Toggle "Accepter les DM directs" (défaut: off)
+- Toggle "Accepter les demandes de contact" (défaut: on)
+- Option "Exiger au moins X sections partagées" (défaut: 2)
+
+**UX Flow**
+1. PublicProfile → bouton "Envoyer un message" ou "Demander un contact"
+2. Si DM ouvert : modal message direct → envoi
+3. Si Apply to DM : bottom sheet avec message + toggle sections profil → envoi
+4. Destinataire : notification "X souhaite te contacter" → voir message + profil → Accepter/Refuser
+5. Si accepté : DM ouvert + contacts mutuels ajoutés
+
+### B7 — Niveaux d'interaction & Intent Matching
+**Concept** : Échelle d'évolution des relations entre profils + matching par intentions.
+
+**Niveaux de relation (évolutifs)**
+- Niveau 0 : Inconnu (aucune interaction)
+- Niveau 1 : Contact demandé (Apply to DM envoyé)
+- Niveau 2 : Contact accepté (DM ouvert, connaissance)
+- Niveau 3 : Close (favoris, confiance établie)
+- Niveau 4 : Régulier (historique de sessions partagées, reviews positives)
+
+**Intent Matching**
+- Chaque profil déclare ses "intents" : ce qu'il cherche maintenant
+  - Disponible ce soir / cette semaine / en général
+  - Cherche : plan groupe, plan duo, discussion, amitié, régulier
+  - Rôle recherché chez l'autre : Top, Bottom, Versa
+  - Vibes : chill, intense, fetish, party
+- Le système match les intents compatibles et suggère des profils
+- Notification "X est dispo ce soir et cherche un Bottom" (si match)
+
+**Évolution automatique**
+- Co-session → niveau +1 automatique
+- Review positive mutuelle → niveau +1
+- Inactivité 90 jours → niveau -1
+- Block/Report → niveau 0 permanent
+
