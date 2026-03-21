@@ -5,7 +5,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
-import { Compass, User, Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
+import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -119,24 +119,6 @@ export default function HomePage() {
           </div>
         ) : null}
 
-        {/* Quick nav */}
-        {userId && (
-          <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-            {[
-              { icon: Compass, label: t('nav.profiles'), path: '/explore' },
-              { icon: User, label: t('home.my_profile'), path: '/me' },
-            ].map(item => (
-              <button key={item.path} onClick={() => navigate(item.path)} style={{
-                flex: 1, padding: '10px 4px', borderRadius: R.block, background: S.bg2,
-                border: `1px solid ${S.rule}`, cursor: 'pointer', textAlign: 'center',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-              }}>
-                <item.icon size={16} strokeWidth={1.5} style={{ color: S.tx3 }} />
-                <span style={{ ...typeStyle('meta'), color: S.tx3 }}>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* ─── Content ─────────────────────────────────── */}
