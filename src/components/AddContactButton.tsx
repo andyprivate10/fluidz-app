@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { showToast } from './Toast'
-import { UserPlus, UserCheck, Star, Heart } from 'lucide-react'
+import { UserPlus, UserCheck, Star, Heart, Check } from 'lucide-react'
 import { colors } from '../brand'
 
 const S = colors
@@ -94,7 +94,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
               }}>
                 <Icon size={14} />
                 <span style={{ fontSize: 13, fontWeight: 600 }}>{r.label}</span>
-                {active && <span style={{ marginLeft: 'auto', fontSize: 11 }}>✓</span>}
+                {active && <Check size={12} strokeWidth={2.5} style={{ marginLeft: 'auto' }} />}
               </button>
             )
           })}

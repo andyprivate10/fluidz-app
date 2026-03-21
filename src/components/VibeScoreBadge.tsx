@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Zap } from 'lucide-react'
 import { calculateVibeScore, vibeScoreBadge } from '../lib/vibeScore'
 import type { VibeScoreData } from '../lib/vibeScore'
 import { colors } from '../brand'
@@ -23,14 +24,13 @@ export function VibeScoreBadge({ userId, size = 'sm' }: { userId: string; size?:
 
   return (
     <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 4,
+      display: 'inline-flex', alignItems: 'center', gap: 3,
       fontSize: isSm ? 10 : 12, fontWeight: 700,
       color: badge.color, background: badge.bg,
       padding: isSm ? '2px 8px' : '3px 10px',
       borderRadius: 99, border: '1px solid ' + badge.color + '44',
-      whiteSpace: 'nowrap',
     }}>
-      ⚡ {data.score}
+      <Zap size={isSm ? 10 : 12} strokeWidth={2} fill={badge.color} /> {data.score}
     </span>
   )
 }
@@ -65,7 +65,7 @@ export function VibeScoreCard({ userId }: { userId: string }) {
     <div style={{ background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 28, fontWeight: 800, color: badge.color }}>⚡ {data.score}</span>
+          <span style={{ fontSize: 28, fontWeight: 800, color: badge.color, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Zap size={24} strokeWidth={2} fill={badge.color} /> {data.score}</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: badge.color, background: badge.bg, padding: '3px 10px', borderRadius: 99 }}>{data.label}</span>
         </div>
       </div>
