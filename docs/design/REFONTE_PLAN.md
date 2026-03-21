@@ -422,3 +422,64 @@ Sessions | Profils  | Book    | Moi
 - [ ] Intégrer Notifications dans Moi
 - [ ] Réorganiser Book : Contacts + Groupes + DM directs
 - [ ] Accès Chats session depuis SessionPage (déjà le cas)
+
+### MISE À JOUR — Navigation 3 tabs + side panel (remplace la version 4 tabs)
+
+**Correction du plan précédent** : pas 4 tabs mais 3 tabs + un menu latéral.
+
+```
+┌──────────────┬──────────────┬──────────────┐
+│   Sessions   │   Profils    │    ≡ Menu    │
+│              │  (Galerie)   │  (Mon espace)│
+└──────────────┴──────────────┴──────────────┘
+```
+
+#### Tab 1 — SESSIONS
+- Mes sessions actives (host + membre)
+- Sessions où j'ai candidaté (en attente)
+- "Rejoindre avec un lien" (code invite)
+- "Créer une session" → flow création
+
+#### Tab 2 — PROFILS (Galerie)
+- Galerie des profils (Explore)
+- Filtres, recherche, proches
+
+#### Tab 3 — MENU (≡) → Side Panel
+Ouvre un **drawer/panel latéral** qui contient TOUT le reste :
+
+**Mon Profil**
+- Profil unifié (photos + infos + adulte + kinks + santé + limites)
+- VibeScore
+- "Voir mon profil" (preview PublicProfile)
+
+**Book (Naughty Book)**
+- Contacts (favoris, close, connaissances)
+- Groupes
+- DM directs
+- Historique d'interactions
+
+**Notifications**
+- Liste in-app
+- Badge unread
+
+**Settings**
+- Notifications (on/off, push)
+- Géolocalisation (activation, visibilité dans la galerie)
+- Mes adresses sauvegardées
+- Langue (FR/EN)
+- Déconnexion
+
+**Admin** (si is_admin)
+- Lien vers /admin
+
+### SessionPage — Rappel du redesign planifié (non implémenté)
+Le redesign visuel de la SessionPage devait inclure :
+1. Hero gradient avec orbs vivides (peach 0.18 + lav 0.14)
+2. Gradient fade 180px (starts at 10%)
+3. EventContextNav tabs en haut : Candidats | Membres | Partager | ...
+4. Section labels micro colorés : DESCRIPTION (peach), RÔLES (lavande), LINEUP (sage)
+5. Avatar rings gradient peach/lav pour les membres
+6. CTA sticky bottom avec shimmer
+7. Cards avec border glow subtle
+→ Les labels ont été fixés, les orbs augmentés, mais le layout complet n'a pas été refait.
+→ À intégrer dans le prochain sprint UX.
