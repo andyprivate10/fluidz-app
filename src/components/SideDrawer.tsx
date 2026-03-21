@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../brand'
-import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, ChevronRight, X, Users } from 'lucide-react'
+import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X } from 'lucide-react'
 
 const S = colors
 
@@ -13,7 +13,7 @@ export default function SideDrawer({ open, onClose }: Props) {
   const navigate = useNavigate()
   const { i18n } = useTranslation()
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
-  const [profile, setProfile] = useState<{ display_name: string; avatar_url?: string; is_admin?: boolean } | null>(null)
+  const [profile, setProfile] = useState<{ display_name: string; avatar_url?: string; is_admin?: boolean; location_visible?: boolean } | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
@@ -21,12 +21,13 @@ export default function SideDrawer({ open, onClose }: Props) {
     supabase.auth.getUser().then(({ data: { user: u } }) => {
       if (!u) return
       setUser(u)
-      supabase.from('user_profiles').select('display_name, profile_json, is_admin').eq('id', u.id).maybeSingle()
+      supabase.from('user_profiles').select('display_name, profile_json, is_admin, location_visible').eq('id', u.id).maybeSingle()
         .then(({ data }) => {
           if (data) setProfile({
             display_name: data.display_name,
             avatar_url: (data.profile_json as any)?.photos_profil?.[0] || (data.profile_json as any)?.avatar_url,
-            is_admin: data.is_admin
+            is_admin: data.is_admin,
+            location_visible: data.location_visible,
           })
         })
       supabase.from('notifications').select('*', { count: 'exact', head: true })
@@ -38,6 +39,12 @@ export default function SideDrawer({ open, onClose }: Props) {
   function go(path: string) { onClose(); navigate(path) }
   async function logout() { await supabase.auth.signOut(); onClose(); navigate('/login') }
   function toggleLang() { i18n.changeLanguage(i18n.language === 'fr' ? 'en' : 'fr') }
+  async function toggleVisibility() {
+    if (!user) return
+    const newVal = !profile?.location_visible
+    setProfile(p => p ? { ...p, location_visible: newVal } : p)
+    await supabase.from('user_profiles').update({ location_visible: newVal }).eq('id', user.id)
+  }
 
   const menuItem = (icon: React.ReactNode, label: string, path: string, badge?: number) => (
     <button onClick={() => go(path)} style={{
@@ -118,11 +125,33 @@ export default function SideDrawer({ open, onClose }: Props) {
           {menuItem(<User size={18} strokeWidth={1.5} />, 'Mon profil', '/me')}
           {menuItem(<Bell size={18} strokeWidth={1.5} />, 'Notifications', '/notifications', unreadCount)}
           {menuItem(<BookOpen size={18} strokeWidth={1.5} />, 'Naughty Book', '/contacts')}
-          {menuItem(<Users size={18} strokeWidth={1.5} />, 'Groupes', '/groups')}
 
           {/* Section: Settings */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>Settings</p>
           {menuItem(<MapPin size={18} strokeWidth={1.5} />, 'Mes adresses', '/addresses')}
+          
+          {/* Visibility toggle */}
+          <button onClick={toggleVisibility} style={{
+            display: 'flex', alignItems: 'center', gap: 14, padding: '14px 0',
+            background: 'none', border: 'none', color: S.tx, cursor: 'pointer',
+            width: '100%', textAlign: 'left', fontFamily: "'Plus Jakarta Sans', sans-serif",
+            borderBottom: '1px solid ' + S.rule,
+          }}>
+            <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}><Eye size={18} strokeWidth={1.5} /></div>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>Visible dans la galerie</span>
+            <div style={{
+              width: 38, height: 22, borderRadius: 11, padding: 2,
+              background: profile?.location_visible ? S.sage : S.bg3,
+              border: '1px solid ' + (profile?.location_visible ? S.sagebd : S.rule),
+              transition: 'background 0.2s', cursor: 'pointer',
+            }}>
+              <div style={{
+                width: 16, height: 16, borderRadius: '50%', background: '#fff',
+                transform: profile?.location_visible ? 'translateX(16px)' : 'translateX(0)',
+                transition: 'transform 0.2s',
+              }} />
+            </div>
+          </button>
           
           <button onClick={toggleLang} style={{
             display: 'flex', alignItems: 'center', gap: 14, padding: '14px 0',
