@@ -31,7 +31,8 @@
     "login": "Se connecter",
     "ghost_mode": "Mode Ghost (24h, sans compte)",
     "members": "{{count}} membres",
-    "pending_count": "{{count}} candidature(s) en attente"
+    "pending_count": "{{count}} candidature(s) en attente",
+    "my_profile": "Mon profil"
   },
   "explore": {
     "title": "Autour de moi",

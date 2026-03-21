@@ -15,8 +15,8 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
   const location = useLocation()
   const { id } = useParams<{ id: string }>()
 
-  const backLabel = 'Plans'
-  const backPath = '/'
+  const backLabel = 'Sessions'
+  const backPath = '/sessions'
 
   // Tabs per role
   const candidateTabs = [

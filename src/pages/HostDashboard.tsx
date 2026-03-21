@@ -332,9 +332,9 @@ export default function HostDashboard() {
           </div>
           <div style={{display:'flex',flexDirection:'column' as const,alignItems:'flex-end',gap:6}}>
             {elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
-            {remaining && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:remaining==='terminé'?S.red:S.p,background:remaining==='terminé'?'rgba(248,113,113,0.12)':S.p2,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>{remaining==='terminé'?'Terminé':remaining+' restant'}</span>}
+            {remaining && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:remaining==='terminé'?S.red:S.p,background:remaining==='terminé'?S.redbg:S.p2,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>{remaining==='terminé'?'Terminé':remaining+' restant'}</span>}
             {totalAccepted > 0 && <span style={{fontSize:11,fontWeight:700,color:S.sage,background:S.sagebg,padding:'3px 10px',borderRadius:50}}>{arrivedCount}/{totalAccepted}</span>}
-            {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?'rgba(248,113,113,0.10)':S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?'rgba(248,113,113,0.20)':S.rule)}}>{total}/{sess.max_capacity}{full?' Complet':''}</span> })()}
+            {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?S.redbg:S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?S.redbd:S.rule)}}>{total}/{sess.max_capacity}{full?' Complet':''}</span> })()}
           </div>
         </div>
         {sess?.status !== 'ended' && (
@@ -577,7 +577,7 @@ export default function HostDashboard() {
                 )}
 
                 {(pj.limits || (isGhost && snapshot?.limits)) && (
-                  <div style={{padding:'8px 12px',background:'rgba(248,113,113,0.06)',borderRadius:10,border:'1px solid '+'rgba(248,113,113,0.20)',marginBottom:8}}>
+                  <div style={{padding:'8px 12px',background:S.redbg,borderRadius:10,border:'1px solid '+S.redbd,marginBottom:8}}>
                     <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>Limites</p>
                     <p style={{fontSize:12,color:S.tx3,margin:0}}>{pj.limits || snapshot?.limits}</p>
                   </div>
@@ -599,7 +599,7 @@ export default function HostDashboard() {
                       )
                     })()}
                     <div style={{display:'flex',gap:8}}>
-                      <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+'rgba(248,113,113,0.25)',background:'rgba(248,113,113,0.06)',cursor:'pointer'}}>
+                      <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.redbd,background:S.redbg,cursor:'pointer'}}>
                         Refuser
                       </button>
                       <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} className="btn-shimmer" style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
@@ -613,7 +613,7 @@ export default function HostDashboard() {
                   <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:10,alignItems:'center'}}>
                     {app.status === 'accepted' && app.checked_in === true && (
                       <>
-                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:'rgba(251,191,36,0.12)',border:'1px solid '+'rgba(251,191,36,0.25)'}}>Arrivée à confirmer</span>
+                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orangebg,border:'1px solid '+S.orangebd}}>Arrivée à confirmer</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sagebg,cursor:'pointer'}}>
                           {actionLoading===app.id ? '...' : <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />Confirmer</>}
                         </button>

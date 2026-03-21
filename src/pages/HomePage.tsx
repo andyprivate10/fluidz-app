@@ -5,7 +5,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
-import { Compass, BookOpen, MapPin, User, Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
+import { Compass, User, Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -123,10 +123,8 @@ export default function HomePage() {
         {userId && (
           <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
             {[
-              { icon: Compass, label: 'Discover', path: '/explore' },
-              { icon: BookOpen, label: 'Book', path: '/contacts' },
-              { icon: MapPin, label: 'Adresses', path: '/addresses' },
-              { icon: User, label: 'Profil', path: '/me' },
+              { icon: Compass, label: t('nav.profiles'), path: '/explore' },
+              { icon: User, label: t('home.my_profile'), path: '/me' },
             ].map(item => (
               <button key={item.path} onClick={() => navigate(item.path)} style={{
                 flex: 1, padding: '10px 4px', borderRadius: R.block, background: S.bg2,

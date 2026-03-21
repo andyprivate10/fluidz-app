@@ -31,7 +31,8 @@
     "login": "Log in",
     "ghost_mode": "Ghost Mode (24h, no account)",
     "members": "{{count}} members",
-    "pending_count": "{{count}} pending application(s)"
+    "pending_count": "{{count}} pending application(s)",
+    "my_profile": "My profile"
   },
   "explore": {
     "title": "Around me",

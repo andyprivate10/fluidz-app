@@ -20,7 +20,7 @@ type PendingApplication = { id: string; applicant_id: string; display_name?: str
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
 const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
-const card: React.CSSProperties = { background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 16 }
+const card: React.CSSProperties = { background: S.bg1, border: '1px solid '+S.rule, borderRadius: 20, padding: 16 }
 
 export default function SessionPage() {
   const { t } = useTranslation()
@@ -316,11 +316,11 @@ export default function SessionPage() {
           {/* Title + badges row */}
           <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, lineHeight: 1.1 }}>{session.title}</h1>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10, alignItems: 'center' }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor + '1a', border: '1px solid ' + statusColor + '33', padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{statusLabel}</span>
+            <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor === S.sage ? S.sagebg : statusColor === S.red ? S.redbg : S.p2, border: '1px solid ' + (statusColor === S.sage ? S.sagebd : statusColor === S.red ? S.redbd : S.pbd), padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{statusLabel}</span>
             {members.length > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd, padding: '3px 10px', borderRadius: 50 }}><Users size={10} strokeWidth={1.5} style={{ marginRight: 3, display: 'inline' }} />{members.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>}
-            {session.max_capacity && (members.length + 1) >= session.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: 'rgba(248,113,113,0.10)', border: '1px solid ' + 'rgba(248,113,113,0.20)', padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Complet</span>}
+            {session.max_capacity && (members.length + 1) >= session.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Complet</span>}
             {elapsed && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, background: S.rule, padding: '3px 10px', borderRadius: 50 }}><Clock size={9} strokeWidth={1.5} style={{ marginRight: 2 }} />{elapsed}</span>}
-            {remaining && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: remaining === 'terminé' ? S.red : S.p, background: remaining === 'terminé' ? 'rgba(248,113,113,0.12)' : S.p2, padding: '3px 10px', borderRadius: 50 }}>{remaining === 'terminé' ? 'Terminé' : remaining + ' restant'}</span>}
+            {remaining && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: remaining === 'terminé' ? S.red : S.p, background: remaining === 'terminé' ? S.redbg : S.p2, padding: '3px 10px', borderRadius: 50 }}>{remaining === 'terminé' ? 'Terminé' : remaining + ' restant'}</span>}
           </div>
 
           {/* Tags */}
@@ -818,7 +818,7 @@ export default function SessionPage() {
               </div>
             )}
             {myApp.status === 'rejected' && (
-              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: 'rgba(248,113,113,0.10)', border: '1px solid '+'rgba(248,113,113,0.25)' }}>{t('session.rejected')}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: S.red, padding: '6px 12px', borderRadius: 99, background: S.redbg, border: '1px solid '+S.redbd }}>{t('session.rejected')}</span>
             )}
             {myApp.status === 'checked_in' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
