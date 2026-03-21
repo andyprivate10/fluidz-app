@@ -483,3 +483,59 @@ Le redesign visuel de la SessionPage devait inclure :
 7. Cards avec border glow subtle
 → Les labels ont été fixés, les orbs augmentés, mais le layout complet n'a pas été refait.
 → À intégrer dans le prochain sprint UX.
+
+### MISE À JOUR FINALE — Navigation 5 tabs + hamburger menu
+
+**Correction** : on garde 5 éléments de nav, pas 3.
+
+```
+┌────────┬──────────┬────────┬────────┬────────┐
+│  Home  │ Sessions │ Chats  │Profils │   ≡    │
+│(Activité)│        │        │(Galerie)│ (Menu) │
+└────────┴──────────┴────────┴────────┴────────┘
+```
+
+#### Tab 1 — HOME (Activité)
+- Feed d'activité / dashboard personnel
+- Sessions où je suis impliqué (host/membre)
+- Dernières interactions
+- Raccourcis rapides
+
+#### Tab 2 — SESSIONS
+- Mes sessions actives
+- Sessions où j'ai candidaté
+- Rejoindre avec un lien/code
+- Créer une session
+
+#### Tab 3 — CHATS
+- Hub de conversations (DM session + DM directs + group chats)
+- Reste dans la nav principale
+
+#### Tab 4 — PROFILS (Galerie)
+- Explore : galerie des profils
+- Filtres, recherche, proches
+
+#### Tab 5 — ≡ MENU (hamburger, côté droit)
+Ouvre un **drawer latéral** avec :
+
+**Mon Profil**
+- Profil unifié (Profil + Adulte fusionnés)
+- VibeScore
+- Voir mon profil (preview)
+
+**Book (Naughty Book)**
+- Contacts
+- Groupes
+- Historique
+
+**Notifications**
+- Liste in-app + badge
+
+**Settings**
+- Notifications on/off, push
+- Géolocalisation, visibilité galerie
+- Mes adresses
+- Langue FR/EN
+- Déconnexion
+
+**Admin** (si is_admin)
