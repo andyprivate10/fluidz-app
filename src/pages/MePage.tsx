@@ -7,8 +7,7 @@ import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Bell, BellRing, BookOpen, Users, MapPin, Eye, Share2, Heart, Check } from 'lucide-react'
-import { usePushNotifications } from '../hooks/usePushNotifications'
+import { Eye, Share2, Heart, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { monthsAgoCount } from '../lib/timing'
@@ -79,13 +78,9 @@ export default function MePage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
-  const [activeTab, setActiveTab] = useState<'compte'|'profil'|'adulte'>('compte')
   const [bodyPartPhotos, setBodyPartPhotos] = useState<Record<string, string>>({})
-  const [locationVisible, setLocationVisible] = useState(false)
   const [profileViews, setProfileViews] = useState(0)
   const [contactRequests, setContactRequests] = useState(0)
-  const [unreadCount, setUnreadCount] = useState(0)
-  const { status: pushStatus, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications()
 
   async function mergeGhost(mergeId: string, userId: string) {
     const { data: ghost } = await supabase.from('ghost_sessions').select('id, display_name, profile_json').eq('id', mergeId).maybeSingle()
@@ -192,11 +187,9 @@ export default function MePage() {
       .maybeSingle()
     if (data) {
       setDisplayName(data.display_name || '')
-        setLocationVisible(!!(data as any).location_visible)
         // Count profile views (last 7 days)
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', uid).eq('type', 'profile_view').gte('created_at', weekAgo).then(({ count }) => setProfileViews(count ?? 0))
-        supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', uid).is('read_at', null).then(({ count }) => setUnreadCount(count ?? 0))
         supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', uid).eq('type', 'contact_request').is('read_at', null).then(({ count }) => setContactRequests(count ?? 0))
       const p = data.profile_json || {}
       const h = p.health || {}
@@ -235,11 +228,7 @@ export default function MePage() {
     setLoading(false)
   }
 
-  async function signOut() {
-    await supabase.auth.signOut()
-    setUser(null)
-    setActiveTab('compte')
-  }
+
 
   const doSave = useCallback(async () => {
     if (!user) return
@@ -384,124 +373,28 @@ export default function MePage() {
       <div style={{
         padding:'40px 20px 16px', borderBottom:`1px solid ${S.rule}`,
         background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)',
-        display:'flex', alignItems:'center', justifyContent:'space-between'
       }}>
-        <div>
-          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>
-            {displayName || 'Mon profil'}
-          </h1>
-          <p style={{ fontSize:12, color:S.tx3, marginTop:3 }}>{user.email}</p>
-        </div>
-        <button onClick={signOut} style={{
-          padding:'7px 14px', borderRadius:10, fontSize:12, color:S.tx3,
-          border:`1px solid ${S.rule}`, background:'transparent', cursor:'pointer',
-        }}>
-          {t('settings.logout')}
-        </button>
-      </div>
-
-      {/* Tabs */}
-      <div style={{ display:'flex', padding:'12px 20px 0', gap:6 }}>
-        {([['compte','Compte'],['profil','Profil'],['adulte','Adulte']] as const).map(([tab, label]) => (
-          <button key={tab} onClick={() => setActiveTab(tab)} style={{
-            flex:1, padding:'10px', borderRadius:12, fontSize:13,
-            fontWeight:600, cursor:'pointer',
-            border: `1px solid ${activeTab===tab ? (tab === 'adulte' ? S.pbd : S.pbd) : S.rule}`,
-            background: activeTab===tab ? (tab === 'adulte' ? S.p2 : S.p2) : S.bg2,
-            color: activeTab===tab ? S.p : S.tx3,
-            transition:'all 0.2s',
-          }}>
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* ── Compte ── */}
-      {activeTab === 'compte' && (
-        <div style={{ padding:'16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
-          <div style={{ background:S.bg1, borderRadius:16, padding:'14px 16px', border:`1px solid ${S.rule}` }}>
-            <p style={{ fontSize:11, color:S.tx3, marginBottom:4, fontWeight:600,
-              textTransform:'uppercase', letterSpacing:'0.06em' }}>Email</p>
-            <p style={{ fontSize:14, color:S.tx, fontWeight:500 }}>{user.email}</p>
-          </div>
-          <button onClick={signOut} style={{
-            width:'100%', padding:'13px', borderRadius:14, fontWeight:600,
-            fontSize:14, color:S.tx2, border:`1px solid ${S.rule}`,
-            background:S.bg2, cursor:'pointer',
-          }}>
-            {t('settings.logout')}
-          </button>
-
-          {/* Gallery visibility toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12 }}>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('profile.gallery_visible')}</p>
-              <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>{t('profile.gallery_visible_desc')}</p>
-            </div>
-            <button onClick={async () => {
-              const nv = !locationVisible
-              if (user) { await supabase.from('user_profiles').update({ location_visible: nv }).eq('id', user.id) }
-              setLocationVisible(nv)
-            }} style={{
-              width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-              background: locationVisible ? S.sage : S.rule, transition: 'background 0.2s',
-            }}>
-              <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: locationVisible ? 21 : 3, transition: 'left 0.2s' }} />
-            </button>
-          </div>
-
-          <button onClick={() => navigate('/notifications')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p3, cursor: 'pointer', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <Bell size={14} strokeWidth={1.5} style={{marginRight:4}} /> Notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
-          </button>
-          {pushStatus !== 'unsupported' && (
-            <button onClick={() => pushStatus === 'subscribed' ? pushUnsubscribe() : pushSubscribe()} style={{
-              width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, marginTop: 4,
-              color: pushStatus === 'subscribed' ? S.sage : S.tx2,
-              border: '1px solid ' + (pushStatus === 'subscribed' ? S.sagebd : S.rule),
-              background: pushStatus === 'subscribed' ? S.sagebg : 'transparent',
-              cursor: pushStatus === 'denied' ? 'not-allowed' : 'pointer',
-              opacity: pushStatus === 'denied' ? 0.5 : 1,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            }}>
-              <BellRing size={14} strokeWidth={1.5} />
-              {pushStatus === 'subscribed' ? t('settings.push_active') : pushStatus === 'denied' ? t('settings.push_denied') : t('settings.push_enable')}
-            </button>
-          )}
-          <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-            <button onClick={() => navigate('/contacts')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.p, border: '1px solid ' + S.pbd, background: S.p2, cursor: 'pointer' }}>
-              <BookOpen size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('settings.contacts')}
-            </button>
-            <button onClick={() => navigate('/groups')} style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
-              <Users size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('settings.groups')}
-            </button>
-          </div>
-          <button onClick={() => navigate('/addresses')} style={{ width: '100%', padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <MapPin size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('settings.addresses')}
-          </button>
-
-          {/* Language switcher */}
-          <div style={{ marginTop: 8, display: 'flex', gap: 6 }}>
-            {(['fr', 'en'] as const).map(lang => {
-              const current = (typeof window !== 'undefined' && localStorage.getItem('fluidz_lang')) || 'fr'
-              const active = current === lang
-              return (
-                <button key={lang} onClick={() => { import('../i18n').then(m => m.setLanguage(lang)); window.location.reload() }} style={{
-                  flex: 1, padding: '8px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                  border: '1px solid ' + (active ? S.pbd : S.rule),
-                  background: active ? S.p2 : 'transparent',
-                  color: active ? S.p : S.tx3,
-                }}>
-                  {lang === 'fr' ? t('settings.french') : t('settings.english')}
-                </button>
-              )
-            })}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div>
+            <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>
+              {displayName || 'Mon profil'}
+            </h1>
+            <p style={{ fontSize:12, color:S.tx3, marginTop:3 }}>{user.email}</p>
           </div>
         </div>
-      )}
+        <div style={{ display:'flex', gap:8, marginTop:12 }}>
+          <button onClick={() => navigate('/profile/' + user.id)} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.pbd, color:S.p, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
+            <Eye size={14} strokeWidth={1.5} /> Voir profil
+          </button>
+          <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/profile/' + user.id); showToast('Lien copié', 'success') }} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.rule, color:S.tx2, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
+            <Share2 size={14} strokeWidth={1.5} /> Partager
+          </button>
+        </div>
+      </div>
 
       {/* ── Profil ── */}
-      {activeTab === 'profil' && (
-        <div style={{ padding:'16px 20px' }}>
+      {/* ── Profil ── */}
+      <div style={{ padding:'16px 20px' }}>
 
           {/* Vibe Score */}
           {user && (
@@ -663,10 +556,8 @@ export default function MePage() {
             <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
           )}
         </div>
-      )}
 
       {/* ── Adulte ── */}
-      {activeTab === 'adulte' && (
         <div style={{ padding:'16px 20px' }}>
 
           {/* Body Part Photos Grid */}
@@ -810,7 +701,6 @@ export default function MePage() {
             {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Auto-save actif'}
           </div>
         </div>
-      )}
 
     </div>
   )
