@@ -4,11 +4,11 @@
     "tagline": "Organize your private parties"
   },
   "nav": {
-    "plans": "Plans",
-    "profiles": "Profiles",
+    "home": "Home",
+    "sessions": "Sessions",
     "chats": "Chats",
-    "book": "Book",
-    "me": "Me"
+    "profiles": "Profiles",
+    "menu": "Menu"
   },
   "home": {
     "hey": "Hey {{name}}",

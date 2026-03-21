@@ -4,11 +4,11 @@
     "tagline": "Organise tes soirees privees"
   },
   "nav": {
-    "plans": "Plans",
-    "profiles": "Profils",
+    "home": "Home",
+    "sessions": "Sessions",
     "chats": "Chats",
-    "book": "Book",
-    "me": "Moi"
+    "profiles": "Profils",
+    "menu": "Menu"
   },
   "home": {
     "hey": "Hey {{name}}",
