@@ -91,7 +91,7 @@ export default function CandidateProfilePage() {
           await supabase.from('messages').insert({
             session_id: sessionId,
             sender_id: user.id,
-            text: '⚠️ Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
+            text: 'Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
             sender_name: SYSTEM_SENDER,
           })
         }

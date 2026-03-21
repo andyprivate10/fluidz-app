@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { X } from 'lucide-react'
+import { X, Flame } from 'lucide-react'
 import { colors } from '../brand'
 
 const S = colors
@@ -129,7 +129,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
         })()}
         {sl.type === 'outro' && (
           <div style={{ textAlign:'center',...anim }}>
-            <p style={{ fontSize:48,marginBottom:12 }}>🔥</p>
+            <Flame size={48} strokeWidth={1.5} style={{ color: S.p, marginBottom: 12 }} />
             <h2 style={{ fontSize:28,fontWeight:800,color:S.tx,margin:'0 0 8px' }}>{v(d.name)}</h2>
             {d.role ? <p style={{ fontSize:20,color:S.p,fontWeight:700 }}>{v(d.role)}</p> : null}
           </div>
