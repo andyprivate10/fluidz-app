@@ -124,7 +124,7 @@ export default function HomePage() {
       </div>
 
       {/* ─── Content ─────────────────────────────────── */}
-      <div style={{ position: 'relative', zIndex: 1, padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 96 }}>
+      <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 96 }}>
 
         {/* Host active session */}
         {latestHost && (

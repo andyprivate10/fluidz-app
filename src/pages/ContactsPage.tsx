@@ -152,7 +152,7 @@ export default function ContactsPage() {
       </div>
 
       {/* Contact list */}
-      <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div className="stagger-children" style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {loading && <>{[1,2,3,4].map(i => <SkeletonProfile key={i} />)}</>}
 
         {!loading && filtered.length === 0 && (

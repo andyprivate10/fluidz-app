@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {ArrowLeft, Clock, Zap, Users, Sparkles} from 'lucide-react'
+import {ArrowLeft, Clock, Zap, Sparkles, Copy} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -40,7 +40,7 @@ export default function CreateSessionPage() {
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [isPublic, setIsPublic] = useState(false)
-  const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
+  const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|'message'|null>(null)
   const [groups, setGroups] = useState<{ id: string; name: string; members: string[] }[]>([])
   const [notifiedGroups, setNotifiedGroups] = useState<Set<string>>(new Set())
   const [startsNow, setStartsNow] = useState(true)
@@ -175,28 +175,68 @@ export default function CreateSessionPage() {
   const stepIdx = steps.indexOf(step)
 
   if (createdSession) {
+    const shareUrl = typeof window !== 'undefined' ? window.location.origin + '/join/' + createdSession.invite_code : ''
+    const shareText = createdSession.title + (createdSession.approx_area ? ' – ' + createdSession.approx_area : '') + '\n\n' + shareUrl
     return (
       <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,maxWidth:480,margin:'0 auto',position:'relative' as const}}>
-        <div style={{padding:'40px 20px 24px'}}>
+        <OrbLayer />
+        <div style={{position:'relative',zIndex:1,padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+
+          {/* Message preview + copy */}
+          <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:16,marginBottom:16}}>
+            <p style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase' as const,letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.share_message')}</p>
+            <p style={{fontSize:13,color:S.tx,whiteSpace:'pre-wrap',lineHeight:1.6,margin:'0 0 12px'}}>{shareText}</p>
+            <button onClick={() => { navigator.clipboard?.writeText(shareText); setCopyFeedback('message') }} style={{
+              width:'100%',padding:12,borderRadius:12,fontSize:13,fontWeight:700,cursor:'pointer',
+              border:'1px solid '+(copyFeedback==='message'?S.sage:S.pbd),
+              background:copyFeedback==='message'?S.sagebg:S.p2,
+              color:copyFeedback==='message'?S.sage:S.p,
+              display:'flex',alignItems:'center',justifyContent:'center',gap:6,
+            }}>
+              <Copy size={14} strokeWidth={1.5} /> {copyFeedback==='message' ? t('session.copied') : t('session.share_link')}
+            </button>
+          </div>
+
+          {/* Share buttons */}
+          <div style={{display:'flex',gap:8,marginBottom:16}}>
+            <button onClick={() => window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank')} style={{
+              flex:1,padding:'12px 8px',borderRadius:12,fontSize:12,fontWeight:600,cursor:'pointer',
+              border:'1px solid '+S.rule2,background:'rgba(22,20,31,0.85)',color:S.tx2,
+              display:'flex',flexDirection:'column' as const,alignItems:'center',gap:4,
+            }}>
+              <span style={{fontSize:16}}>WhatsApp</span>
+            </button>
+            {typeof navigator !== 'undefined' && navigator.share && (
+              <button onClick={() => navigator.share({ title: createdSession.title, text: shareText, url: shareUrl }).catch(() => {})} style={{
+                flex:1,padding:'12px 8px',borderRadius:12,fontSize:12,fontWeight:600,cursor:'pointer',
+                border:'1px solid '+S.rule2,background:'rgba(22,20,31,0.85)',color:S.tx2,
+                display:'flex',flexDirection:'column' as const,alignItems:'center',gap:4,
+              }}>
+                <span style={{fontSize:16}}>{t('session.share_native')}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Platform copy buttons */}
+          <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:16}}>
             {(['grindr','whatsapp','telegram'] as const).map(app => (
               <button key={app} onClick={() => copyShareMessage(app)} style={{
-                padding:'14px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.rule,
-                background: copyFeedback === app ? S.p2 : S.bg1, color: copyFeedback === app ? S.p : S.tx2,
+                padding:'12px 16px',borderRadius:14,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,
+                background: copyFeedback === app ? S.p2 : 'rgba(22,20,31,0.85)', color: copyFeedback === app ? S.p : S.tx2,
                 cursor:'pointer',textAlign:'left',
               }}>
                 {copyFeedback === app ? t('session.copied') : (app === 'grindr' ? t('session.copy_grindr') : app === 'whatsapp' ? t('session.copy_whatsapp') : t('session.copy_telegram'))}
               </button>
             ))}
           </div>
+
           {/* Group invite */}
           {groups.length > 0 && (
-            <div style={{ marginTop: 16 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: S.tx2, margin: '0 0 8px' }}>
-                <Users size={14} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />
-                Inviter un groupe
+            <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:16,marginBottom:16}}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', margin: '0 0 8px' }}>
+                {t('session.invite_group')}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {groups.map(g => {
@@ -206,7 +246,7 @@ export default function CreateSessionPage() {
                       const notifs = g.members.map(uid => ({
                         user_id: uid, type: 'session_invite' as const,
                         title: createdSession.title,
-                        body: 'Tu es invite ! Postule ici.',
+                        body: t('session.invite_body'),
                         href: '/join/' + createdSession.invite_code,
                       }))
                       if (notifs.length > 0) await supabase.from('notifications').insert(notifs)
@@ -214,11 +254,11 @@ export default function CreateSessionPage() {
                     }} style={{
                       padding: '10px 14px', borderRadius: 12, fontSize: 13, fontWeight: 600,
                       border: '1px solid ' + (done ? S.sagebd : S.rule),
-                      background: done ? S.sagebg : S.bg1,
+                      background: done ? S.sagebg : 'transparent',
                       color: done ? S.sage : S.tx2, cursor: done ? 'default' : 'pointer',
                       textAlign: 'left',
                     }}>
-                      {done ? 'Invite envoye — ' : ''}{g.name} ({g.members.length})
+                      {done ? t('session.invite_sent') + ' — ' : ''}{g.name} ({g.members.length})
                     </button>
                   )
                 })}
@@ -226,7 +266,7 @@ export default function CreateSessionPage() {
             </div>
           )}
 
-          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
+          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
             {t('session.go_to_session')}
           </button>
         </div>

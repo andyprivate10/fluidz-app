@@ -703,3 +703,83 @@ Ouvre un **drawer latéral** avec :
 - Ajouter des profils hors-session au groupe
 - Fusionner avec un groupe existant
 - Le host peut désigner des co-admins du groupe
+
+### B13 — Profils connectés (Couple, Trio, Polyamour)
+**Concept** : Un compte unifié multi-personnes qui interagit comme un profil solo.
+
+**Types de profils connectés**
+- Couple (2 personnes)
+- Trio (3 personnes)
+- Polyamour (N personnes, open)
+- Custom (label libre)
+
+**Mécanique**
+- Chaque personne a son profil individuel
+- Un "joint profile" est créé en liant 2+ profils individuels
+- Le joint profile a : son nom, ses photos, sa bio commune, ses préférences combinées
+- Le joint profile peut : candidater à une session, créer une session, apparaître dans la galerie
+- Filtres galerie : Solo / Couple / Trio / Groupe
+- Dans le Naughty Book, un joint profile apparaît comme une seule entrée
+
+**Use cases**
+- Échangisme / swinging : un couple cherche un autre couple
+- Trio cherche un 4ème
+- Couple cherche un solo pour plan à 3
+
+**Invitation à rejoindre un joint profile**
+- Même mécanique que les sessions : lien d'invitation directe ou Apply to join
+- Chaque membre peut quitter le joint profile à tout moment
+
+### B14 — Types de profil à l'inscription + Adaptation de l'expérience
+**Concept** : À l'inscription, choisir son type de profil pour adapter l'expérience.
+
+**Types de profil**
+- Homme gay / bi
+- Homme hétéro
+- Femme hétéro
+- Femme bi / lesbienne
+- Trans (MtF, FtM)
+- Non-binaire
+- Custom
+
+**Adaptation de l'expérience**
+- Filtrage automatique : une femme hétéro ne voit pas les sessions host gay par défaut
+- Galerie filtrée : profils compatibles en priorité
+- Tags et catégories adaptés au contexte
+- Kinks/pratiques adaptés (la checklist change selon le type)
+- Sections profil adaptées
+
+**Règles**
+- Le type est modifiable à tout moment
+- Pas de restriction hard : un user peut toujours voir tous les profils s'il le souhaite (toggle "voir tout")
+- Le type influence le tri/ranking, pas le blocage
+
+### B15 — Invitations groupes (même mécanique que sessions)
+**Concept** : Réutiliser la mécanique candidature/invitation des sessions pour les groupes.
+
+**Types d'invitation**
+- Invitation directe → le profil rejoint immédiatement
+- Candidature → le créateur du groupe accepte/refuse
+- Lien fixe du groupe (regénérable)
+- Lien temporaire (10min, consultation)
+
+**Flow**
+- Créateur du groupe invite depuis : Naughty Book, galerie profils, lien partagé
+- Le candidat voit : nom du groupe, description, membres actuels
+- Le créateur voit la candidature et accepte/refuse
+
+### B16 — Fin de session → Création de groupe
+**Concept** : L'hôte peut créer un groupe à partir des participants d'une session terminée.
+
+**Flow**
+1. Session terminée → l'hôte voit un CTA "Créer un groupe"
+2. Liste des participants avec checkbox (présélectionnés = checked-in)
+3. L'hôte peut décocher des profils
+4. Nom du groupe suggéré (nom de la session)
+5. Option : "Ajouter à un groupe existant" au lieu de créer un nouveau
+6. Le groupe est créé, les membres sont notifiés
+
+**Options supplémentaires**
+- Proposer de noter/review les participants après la session
+- Ajouter des profils qui n'étaient pas dans la session
+- Fusionner avec un groupe existant du Naughty Book

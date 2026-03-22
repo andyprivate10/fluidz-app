@@ -77,7 +77,7 @@
     "anonymous_help": "Your anonymous review helps the community",
     "share": "Share",
     "invite_link": "Invite link",
-    "link_copied": "Link copied",
+    "link_copied": "Link copied!",
     "address_copied": "Address copied",
     "not_found": "Session not found.",
     "copied": "Copied",
@@ -158,7 +158,14 @@
     "application_pending": "Application pending",
     "choose_template": "Choose a template",
     "template_help": "It will pre-fill tags and title",
-    "edit_title": "Edit session"
+    "edit_title": "Edit session",
+    "invite_group": "Invite a group",
+    "invite_sent": "Invite sent",
+    "invite_body": "You are invited! Apply here.",
+    "share_native": "Share via...",
+    "share_whatsapp": "Send on WhatsApp",
+    "share_link": "Copy link",
+    "share_message": "Share message"
   },
   "chat": {
     "title": "Messages",
