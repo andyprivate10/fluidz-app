@@ -177,7 +177,11 @@
     "publish_in_app_desc": "Visible dans les résultats de recherche",
     "keep_secret": "Garder secret",
     "keep_secret_desc": "Invisible, accessible uniquement par lien",
-    "invite_options": "Inviter et partager"
+    "invite_options": "Inviter et partager",
+    "candidates_count": "{count} candidats",
+    "candidates": "Candidats",
+    "vote_info": "Vote consultatif : visible par tous les membres. Le host tranche la décision finale.",
+    "host_must_confirm": "Le host doit confirmer ton arrivée"
   },
   "chat": {
     "title": "Messages",
@@ -200,7 +204,8 @@
     "send_first": "Envoie le premier message",
     "delete_msg": "Supprimer ce message ?",
     "sending_photo": "Envoi photo...",
-    "group_chat": "Chat de groupe"
+    "group_chat": "Chat de groupe",
+    "host_must_enable": "Le host doit activer le group chat pour cette session."
   },
   "profile": {
     "account": "Compte",
@@ -486,6 +491,7 @@
     "ended": "Terminée",
     "closed": "Fermé",
     "active": "Active",
-    "check_in_confirmed": "Check-in confirmé"
+    "check_in_confirmed": "Check-in confirmé",
+    "not_retained": "Non retenu"
   }
 }

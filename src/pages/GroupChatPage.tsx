@@ -277,7 +277,7 @@ export default function GroupChatPage() {
       <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12, padding:24 }}>
         <Shield size={32} style={{ color:S.tx3 }} />
         <p style={{ color:S.tx, fontSize:16, fontWeight:600, textAlign:'center' }}>Group chat pas encore activé</p>
-        <p style={{ color:S.tx3, fontSize:13, textAlign:'center' }}>Le host doit activer le group chat pour cette session.</p>
+        <p style={{ color:S.tx3, fontSize:13, textAlign:'center' }}>{t('chat.host_must_enable')}</p>
         <button onClick={() => navigate('/session/' + id)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>Retour à la session</button>
       </div>
     )

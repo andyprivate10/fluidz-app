@@ -158,7 +158,7 @@ export default function JoinPage() {
     pending: { text: 'Candidature en attente...', color: S.orange },
     accepted: { text: 'Tu es accepté !', color: S.sage },
     checked_in: { text: 'check_in_confirmed', color: S.sage },
-    rejected: { text: 'Non retenu', color: S.red },
+    rejected: { text: t('status.not_retained'), color: S.red },
   }
 
   return (

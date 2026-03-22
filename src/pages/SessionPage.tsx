@@ -418,7 +418,7 @@ export default function SessionPage() {
           <>
             <button onClick={() => navigate('/session/' + id + '/host')} style={{ ...qBtn, borderColor: S.pbd, background: S.p2 }}>
               <Users size={16} strokeWidth={1.5} style={{ color: S.p }} />
-              <span style={{ ...qLabel, color: S.p }}>{pendingCount > 0 ? pendingCount + ' candidats' : 'Candidats'}</span>
+              <span style={{ ...qLabel, color: S.p }}>{pendingCount > 0 ? t('session.candidates_count', { count: pendingCount }) : t('session.candidates')}</span>
             </button>
             <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/join/' + session.invite_code); showToast(t('session.link_copied'), 'success') }} style={qBtn}>
               <Share2 size={16} strokeWidth={1.5} style={{ color: S.lav }} />
@@ -679,7 +679,7 @@ export default function SessionPage() {
                               opacity: disabled && myVote !== 'yes' ? 0.5 : 1,
                             }}
                           >
-                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsUp size={14} /> Oui</span>
+                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsUp size={14} /> {t('common.yes')}</span>
                           </button>
                           <button
                             type="button"
@@ -698,7 +698,7 @@ export default function SessionPage() {
                               opacity: disabled && myVote !== 'no' ? 0.5 : 1,
                             }}
                           >
-                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> Non</span>
+                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> {t('common.no')}</span>
                           </button>
                         </div>
                         <div style={{ fontSize: 12, color: S.tx2, textAlign: 'right' }}>
@@ -710,7 +710,7 @@ export default function SessionPage() {
               </div>
             )}
             <p style={{ fontSize: 11, color: S.tx2, marginTop: 8 }}>
-              Vote consultatif : visible par tous les membres. Le host tranche la décision finale.
+              {t('session.vote_info')}
             </p>
           </div>
         ) : (
@@ -724,7 +724,7 @@ export default function SessionPage() {
           <div style={{ ...card, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
             <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
             <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>{t('session.awaiting_confirmation')}</div>
-            <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
+            <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>{t('session.host_must_confirm')}</p>
           </div>
         )}
 
