@@ -198,7 +198,7 @@ export default function JoinPage() {
       {status === 'found' && session && (
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
           {/* Main card */}
-          <div style={{background:S.bg1,borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3)'}}>
+          <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule2,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)'}}>
             <h1 style={{fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
 
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:4}}>

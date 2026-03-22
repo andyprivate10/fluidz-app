@@ -199,7 +199,7 @@ export default function ContactDetailPage() {
 
       <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {/* Notes */}
-        <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
+        <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Notes privées</span>
             <button onClick={() => setEditingNotes(!editingNotes)} style={{ background: 'none', border: 'none', color: S.tx4, cursor: 'pointer', padding: 2 }}>
@@ -221,15 +221,15 @@ export default function ContactDetailPage() {
         {/* Stats */}
         {contact && (
           <div style={{ display: 'flex', gap: 8 }}>
-            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, textAlign: 'center' }}>
+            <div style={{ flex: 1, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{interactions.filter(i => i.type === 'co_event').length}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Events ensemble</div>
             </div>
-            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, textAlign: 'center' }}>
+            <div style={{ flex: 1, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{interactions.filter(i => i.type === 'dm').length}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>DMs</div>
             </div>
-            <div style={{ flex: 1, background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, textAlign: 'center' }}>
+            <div style={{ flex: 1, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, padding: 12, textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 800, color: S.tx }}>{timeAgo(contact.created_at)}</div>
               <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Ajouté</div>
             </div>
@@ -238,7 +238,7 @@ export default function ContactDetailPage() {
 
         {/* Common sessions */}
         {commonSessions.length > 0 && (
-          <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions en commun ({commonSessions.length})</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
               {commonSessions.map(s => (
@@ -260,7 +260,7 @@ export default function ContactDetailPage() {
         )}
 
         {/* Timeline */}
-        <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
+        <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
           <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Historique</span>
 
           {interactions.length === 0 ? (
@@ -305,7 +305,7 @@ export default function ContactDetailPage() {
 
         {/* Invite to session */}
         {activeSessions.length > 0 && (
-          <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16 }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inviter à une session</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
               {activeSessions.map(s => (

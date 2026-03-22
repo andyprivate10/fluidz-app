@@ -11,7 +11,7 @@ import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield } from 
 import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
-const card: React.CSSProperties = { background: S.bg1, borderRadius: 20, padding: 16, border: '1px solid ' + S.rule, marginBottom: 12 }
+const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 20, padding: 16, border: '1px solid ' + S.rule2, marginBottom: 12, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 const sLabel = (c: string): React.CSSProperties => ({ fontSize: 10, fontWeight: 700, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 })
 
 /* ═══ Sub-components ═══ */

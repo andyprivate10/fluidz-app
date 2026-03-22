@@ -424,7 +424,7 @@ export default function MePage() {
 
           {/* Profile views */}
           {profileViews > 0 && (
-            <div style={{ marginBottom: 12, padding: '10px 14px', background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ marginBottom: 12, padding: '10px 14px', background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: S.tx2 }}><Eye size={12} strokeWidth={1.5} style={{marginRight:3}} /> Vu par <strong style={{ color: S.tx }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
             </div>
           )}
@@ -451,7 +451,7 @@ export default function MePage() {
             const done = checks.filter(c => c.done).length
             const pct = Math.round((done / checks.length) * 100)
             return (
-              <div style={{ marginBottom: 16, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 14, padding: 14 }}>
+              <div style={{ marginBottom: 16, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 14, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2 }}>Profil {pct}% complet</span>
                   <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>

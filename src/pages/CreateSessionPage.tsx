@@ -271,7 +271,7 @@ export default function CreateSessionPage() {
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
             {TEMPLATES.map(t => (
               <div key={t.id} onClick={() => pickTemplate(t)} style={{
-                background:S.bg1,border:'1px solid '+S.rule,borderRadius:16,
+                background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16,
                 padding:'16px',cursor:'pointer',display:'flex',alignItems:'center',gap:14,
                 transition:'all 0.2s',
               }}>

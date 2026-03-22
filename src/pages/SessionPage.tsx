@@ -775,7 +775,7 @@ export default function SessionPage() {
 
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               {pendingCount > 0 ? `Gérer (${pendingCount} en attente)` : 'Gérer la session'}
             </button>
             {session.invite_code && (
@@ -854,7 +854,7 @@ export default function SessionPage() {
       {/* Review summary for ended sessions */}
       {session.status === 'ended' && reviewSummary && (
         <div style={{ padding: '0 16px 12px' }}>
-          <div style={{ background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 20 }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('session.reviews_title')}</span>
               <span style={{ fontSize: 11, color: S.tx2 }}>{reviewSummary.count} avis</span>

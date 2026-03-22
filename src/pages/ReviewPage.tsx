@@ -145,14 +145,14 @@ export default function ReviewPage() {
 
       {alreadyReviewed && !submitted ? (
         <div style={{ padding: '0 20px' }}>
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sagebd }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sagebd, boxShadow: '0 2px 16px rgba(0,0,0,0.2)' }}>
             <p style={{ fontSize: 16, fontWeight: 700, color: S.sage, margin: 0 }}>{t('review.already')}</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '8px 0 0' }}>{t('review.already_desc')}</p>
           </div>
         </div>
       ) : submitted ? (
         <div style={{ padding: '0 20px' }}>
-          <div className="animate-slide-up" style={{ background: S.bg1, borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sagebd }}>
+          <div className="animate-slide-up" style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 24, textAlign: 'center', border: '1px solid ' + S.sagebd, boxShadow: '0 2px 16px rgba(0,0,0,0.2)' }}>
             
             <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>{t('review.thanks')}</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>{t('review.thanks_desc')}</p>
@@ -164,7 +164,7 @@ export default function ReviewPage() {
       ) : (
         <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Star rating */}
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 20, border: '1px solid ' + S.rule2, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>{t('review.overall')}</p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
               {[1, 2, 3, 4, 5].map(n => (
@@ -185,7 +185,7 @@ export default function ReviewPage() {
           </div>
 
           {/* Vibe tags */}
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 20, border: '1px solid ' + S.rule2, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>{t('review.vibes')}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {VIBE_TAGS.map(tag => {
@@ -203,7 +203,7 @@ export default function ReviewPage() {
           </div>
 
           {/* Comment */}
-          <div style={{ background: S.bg1, borderRadius: 16, padding: 20, border: '1px solid ' + S.rule }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 20, border: '1px solid ' + S.rule2, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 12px' }}>{t('review.comment')}</p>
             <textarea
               value={comment}
@@ -244,7 +244,7 @@ export default function ReviewPage() {
                 const pr = peerRatings[p.applicant_id] || 0
                 const pt = peerTags[p.applicant_id] || []
                 return (
-                  <div key={p.applicant_id} style={{ background: S.bg1, borderRadius: 16, padding: 16, border: '1px solid ' + S.rule, marginBottom: 10 }}>
+                  <div key={p.applicant_id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 16, border: '1px solid ' + S.rule2, marginBottom: 10, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                       {p.avatar_url ? (
                         <img src={p.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />

@@ -165,7 +165,7 @@ export default function AddressesPage() {
         {addresses.map(addr => {
           const isExpanded = expandedId === addr.id
           return (
-            <div key={addr.id} style={{ background:S.bg1,border:'1px solid '+S.rule,borderRadius:16,overflow:'hidden' }}>
+            <div key={addr.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16,overflow:'hidden' }}>
       <OrbLayer />
               <div onClick={() => setExpandedId(isExpanded ? null : addr.id)} style={{ padding:16,cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
                 <div>

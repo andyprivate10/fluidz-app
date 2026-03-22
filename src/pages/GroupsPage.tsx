@@ -163,7 +163,7 @@ export default function GroupsPage() {
         )}
 
         {groups.map(group => (
-          <div key={group.id} style={{ background:S.bg1, border:'1px solid '+S.rule, borderRadius:16, padding:16 }}>
+          <div key={group.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding:16 }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }} onClick={() => openEdit(group)}>
                 <div style={{ width:12, height:12, borderRadius:4, background:group.color, flexShrink:0 }} />

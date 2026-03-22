@@ -395,7 +395,7 @@ export default function ExplorePage() {
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {nearbySessions.filter((s: any) => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).map((s: any) => (
-              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: S.bg1, border: '1px solid '+S.rule, borderRadius: 16, padding: 14, cursor: 'pointer' }}>
+              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 14, cursor: 'pointer' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                   {s.host_avatar ? (
                     <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule }} />

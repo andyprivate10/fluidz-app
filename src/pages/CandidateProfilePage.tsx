@@ -151,7 +151,7 @@ export default function CandidateProfilePage() {
     : (eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : []))
   const hasAdulteMedia = photosAdulte.length > 0 || videosAdulte.length > 0
 
-  const card: React.CSSProperties = { background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 20, padding: 16, marginBottom: 12 }
+  const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, marginBottom: 12 }
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', position: 'relative' }}>
