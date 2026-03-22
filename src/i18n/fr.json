@@ -157,7 +157,8 @@
     "no_pending": "Aucune candidature en attente de vote pour le moment.",
     "application_pending": "Candidature en attente",
     "choose_template": "Choisis un template",
-    "template_help": "Il pre-remplira les tags et le titre"
+    "template_help": "Il pre-remplira les tags et le titre",
+    "edit_title": "Modifier la session"
   },
   "chat": {
     "title": "Messages",
@@ -209,7 +210,13 @@
     "intimate_media": "Photos/Videos intimes",
     "email": "Email",
     "see_profile": "Voir profil",
-    "session_1to1": "Session 1-to-1"
+    "session_1to1": "Session 1-to-1",
+    "autosave_saving": "Sauvegarde...",
+    "autosave_saved": "-- Sauvegarde --",
+    "autosave_idle": "Les modifications sont sauvegardées automatiquement",
+    "autosave_active": "Auto-save actif",
+    "interested": "Intéressé · Entrer en contact",
+    "sending": "Envoi..."
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -327,7 +334,8 @@
     "share_session": "Partager la session",
     "no_pending": "Aucune candidature en attente",
     "no_accepted": "Aucun membre accepté",
-    "no_rejected": "Aucun refus"
+    "no_rejected": "Aucun refus",
+    "edit": "Modifier"
   },
   "contacts": {
     "title": "Naughty Book",

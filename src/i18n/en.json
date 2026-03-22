@@ -157,7 +157,8 @@
     "no_pending": "No pending applications to vote on right now.",
     "application_pending": "Application pending",
     "choose_template": "Choose a template",
-    "template_help": "It will pre-fill tags and title"
+    "template_help": "It will pre-fill tags and title",
+    "edit_title": "Edit session"
   },
   "chat": {
     "title": "Messages",
@@ -209,7 +210,13 @@
     "intimate_media": "Intimate photos/videos",
     "email": "Email",
     "see_profile": "See profile",
-    "session_1to1": "1-to-1 session"
+    "session_1to1": "1-to-1 session",
+    "autosave_saving": "Saving...",
+    "autosave_saved": "-- Saved --",
+    "autosave_idle": "Changes are saved automatically",
+    "autosave_active": "Auto-save active",
+    "interested": "Interested · Get in touch",
+    "sending": "Sending..."
   },
   "review": {
     "title": "How was it?",
@@ -327,7 +334,8 @@
     "share_session": "Share session",
     "no_pending": "No pending applications",
     "no_accepted": "No accepted members",
-    "no_rejected": "No rejections"
+    "no_rejected": "No rejections",
+    "edit": "Edit"
   },
   "contacts": {
     "title": "Naughty Book",

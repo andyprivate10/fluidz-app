@@ -549,7 +549,7 @@ export default function MePage() {
             color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
             transition:'color 0.3s',
           }}>
-            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Les modifications sont sauvegardées automatiquement'}
+            {autoSaveStatus === 'saving' ? t('profile.autosave_saving') : autoSaveStatus === 'saved' ? t('profile.autosave_saved') : t('profile.autosave_idle')}
           </div>
 
           {devMode && (
@@ -698,7 +698,7 @@ export default function MePage() {
             color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
             transition:'color 0.3s',
           }}>
-            {autoSaveStatus === 'saving' ? 'Sauvegarde...' : autoSaveStatus === 'saved' ? '-- Sauvegarde --' : 'Auto-save actif'}
+            {autoSaveStatus === 'saving' ? t('profile.autosave_saving') : autoSaveStatus === 'saved' ? t('profile.autosave_saved') : t('profile.autosave_active')}
           </div>
         </div>
 

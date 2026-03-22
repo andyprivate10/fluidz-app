@@ -1,6 +1,7 @@
 import LazyImage from '../components/LazyImage'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
@@ -18,6 +19,7 @@ const sLabel = (c: string): React.CSSProperties => ({ fontSize: 10, fontWeight: 
 
 function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: string; myProfile: Record<string,unknown> | null }) {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
   async function sendRequest() {
@@ -41,7 +43,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
   return (
     <button onClick={sendRequest} disabled={sending} className="btn-shimmer" style={{ width: '100%', padding: '14px', borderRadius: 14, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: '#fff', fontSize: 15, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer', boxShadow: '0 4px 20px ' + S.pbd, opacity: sending ? 0.7 : 1, position: 'relative' as const, overflow: 'hidden' }}>
       <Heart size={15} strokeWidth={2} fill="white" style={{ marginRight: 6, display: 'inline' }} />
-      {sending ? 'Envoi...' : 'Intéressé · Entrer en contact'}
+      {sending ? t('profile.sending') : t('profile.interested')}
     </button>
   )
 }

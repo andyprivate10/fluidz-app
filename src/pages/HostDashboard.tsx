@@ -361,7 +361,7 @@ export default function HostDashboard() {
               {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
             </button>
             <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'8px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
-              Modifier
+              {t('host.edit')}
             </button>
             <button onClick={closeSession} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>
               {t('host.end_session')}
