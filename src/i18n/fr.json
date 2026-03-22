@@ -373,5 +373,18 @@
     "not_found": "Page introuvable",
     "not_found_desc": "Cette page n'existe pas",
     "back_home": "Retour a l'accueil"
+  },
+  "drawer": {
+    "my_space": "Mon espace",
+    "my_profile": "Mon profil",
+    "notifications": "Notifications",
+    "naughty_book": "Naughty Book",
+    "settings": "Settings",
+    "addresses": "Mes adresses",
+    "gallery_visible": "Visible dans la galerie",
+    "language": "Langue",
+    "admin": "Admin",
+    "admin_dashboard": "Dashboard admin",
+    "logout": "Déconnexion"
   }
 }

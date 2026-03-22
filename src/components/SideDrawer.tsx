@@ -11,7 +11,7 @@ type Props = { open: boolean; onClose: () => void }
 
 export default function SideDrawer({ open, onClose }: Props) {
   const navigate = useNavigate()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [profile, setProfile] = useState<{ display_name: string; avatar_url?: string; is_admin?: boolean; location_visible?: boolean } | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
@@ -109,7 +109,7 @@ export default function SideDrawer({ open, onClose }: Props) {
             )}
             <div>
               <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
-                {profile?.display_name || 'Mon profil'}
+                {profile?.display_name || t('drawer.my_profile')}
               </p>
               <p style={{ fontSize: 12, color: S.tx2, margin: '2px 0 0' }}>
                 {user?.email || ''}
@@ -121,14 +121,14 @@ export default function SideDrawer({ open, onClose }: Props) {
         {/* Menu items */}
         <div style={{ padding: '8px 20px', flex: 1 }}>
           {/* Section: Mon espace */}
-          <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>Mon espace</p>
-          {menuItem(<User size={18} strokeWidth={1.5} />, 'Mon profil', '/me')}
-          {menuItem(<Bell size={18} strokeWidth={1.5} />, 'Notifications', '/notifications', unreadCount)}
-          {menuItem(<BookOpen size={18} strokeWidth={1.5} />, 'Naughty Book', '/contacts')}
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>{t('drawer.my_space')}</p>
+          {menuItem(<User size={18} strokeWidth={1.5} />, t('drawer.my_profile'), '/me')}
+          {menuItem(<Bell size={18} strokeWidth={1.5} />, t('drawer.notifications'), '/notifications', unreadCount)}
+          {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.naughty_book'), '/contacts')}
 
           {/* Section: Settings */}
-          <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>Settings</p>
-          {menuItem(<MapPin size={18} strokeWidth={1.5} />, 'Mes adresses', '/addresses')}
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('drawer.settings')}</p>
+          {menuItem(<MapPin size={18} strokeWidth={1.5} />, t('drawer.addresses'), '/addresses')}
           
           {/* Visibility toggle */}
           <button onClick={toggleVisibility} style={{
@@ -138,7 +138,7 @@ export default function SideDrawer({ open, onClose }: Props) {
             borderBottom: '1px solid ' + S.rule,
           }}>
             <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}><Eye size={18} strokeWidth={1.5} /></div>
-            <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>Visible dans la galerie</span>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{t('drawer.gallery_visible')}</span>
             <div style={{
               width: 38, height: 22, borderRadius: 11, padding: 2,
               background: profile?.location_visible ? S.sage : S.bg3,
@@ -160,7 +160,7 @@ export default function SideDrawer({ open, onClose }: Props) {
             borderBottom: '1px solid ' + S.rule,
           }}>
             <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}><Globe size={18} strokeWidth={1.5} /></div>
-            <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>Langue</span>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{t('drawer.language')}</span>
             <span style={{ fontSize: 12, fontWeight: 600, color: S.p, padding: '2px 10px', borderRadius: 99, background: S.p2, border: '1px solid ' + S.pbd }}>
               {i18n.language === 'fr' ? 'FR' : 'EN'}
             </span>
@@ -169,8 +169,8 @@ export default function SideDrawer({ open, onClose }: Props) {
           {/* Admin */}
           {profile?.is_admin && (
             <>
-              <p style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>Admin</p>
-              {menuItem(<Shield size={18} strokeWidth={1.5} />, 'Dashboard admin', '/admin')}
+              <p style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('drawer.admin')}</p>
+              {menuItem(<Shield size={18} strokeWidth={1.5} />, t('drawer.admin_dashboard'), '/admin')}
             </>
           )}
         </div>
@@ -184,7 +184,7 @@ export default function SideDrawer({ open, onClose }: Props) {
             fontSize: 13, fontWeight: 600, cursor: 'pointer',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
           }}>
-            <LogOut size={16} strokeWidth={1.5} /> Déconnexion
+            <LogOut size={16} strokeWidth={1.5} />{` ${t('drawer.logout')}`}
           </button>
         </div>
       </div>
