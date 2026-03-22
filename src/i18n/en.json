@@ -164,8 +164,14 @@
     "invite_body": "You are invited! Apply here.",
     "share_native": "Share via...",
     "share_whatsapp": "Send on WhatsApp",
-    "share_link": "Copy link",
-    "share_message": "Share message"
+    "share_link": "Share link",
+    "share_message": "Share message",
+    "manage": "Manage session",
+    "manage_pending": "Manage ({count} pending)",
+    "applied": "Application sent",
+    "apply_cta": "Apply to this session",
+    "copy_share_msg": "Copy message for Grindr / WhatsApp",
+    "msg_copied": "Message copied!"
   },
   "chat": {
     "title": "Messages",
@@ -344,7 +350,14 @@
     "no_pending": "No pending applications",
     "no_accepted": "No accepted members",
     "no_rejected": "No rejections",
-    "edit": "Edit"
+    "edit": "Edit",
+    "copy_grindr": "Copy Grindr message",
+    "copied": "Copied!",
+    "group_chat": "Group Chat",
+    "accepted_for": "Accepted for \"{title}\"",
+    "rejected_for": "Not selected for \"{title}\"",
+    "accepted_route": "Accepted — on the way",
+    "auto_accepted": "Automatically accepted via direct link"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -452,5 +465,16 @@
     "sending": "Sending...",
     "send_to_all": "Send to all",
     "accept": "Accept"
+  },
+  "status": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "checked_in": "Checked in",
+    "rejected": "Rejected",
+    "open": "Open",
+    "ended": "Ended",
+    "closed": "Closed",
+    "active": "Active",
+    "check_in_confirmed": "Check-in confirmed"
   }
 }

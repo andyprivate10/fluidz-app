@@ -723,7 +723,7 @@ export default function SessionPage() {
                 }}
                 style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.rule, background: copied ? S.sagebg : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
               >
-                {copied ? 'Message copié !' : 'Copier message pour Grindr / WhatsApp'}
+                {copied ? t('session.msg_copied') : t('session.copy_share_msg')}
               </button>
               {typeof navigator !== 'undefined' && navigator.share && (
                 <button
@@ -776,14 +776,14 @@ export default function SessionPage() {
         {isHost && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              {pendingCount > 0 ? `Gérer (${pendingCount} en attente)` : 'Gérer la session'}
+              {pendingCount > 0 ? t('session.manage_pending', { count: pendingCount }) : t('session.manage')}
             </button>
             {session.invite_code && (
               <button onClick={() => {
                 const url = window.location.origin + '/join/' + session.invite_code
                 copyMessage(url)
               }} style={{ width: '100%', padding: 14, background: copied ? S.sagebg : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                {copied ? 'Lien copie !' : 'Partager le lien'}
+                {copied ? t('session.link_copied') : t('session.share_link')}
               </button>
             )}
           </div>
@@ -896,15 +896,15 @@ export default function SessionPage() {
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, '+S.bg+' 60%, transparent)', zIndex: 50 }}>
           {showPostulerSuccess ? (
             <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
-              Candidature envoyée
+              {t('session.applied')}
             </button>
           ) : session.max_capacity && (members.length + 1) >= session.max_capacity ? (
             <button disabled style={{ width: '100%', padding: 16, background: S.redbg, border: '1px solid ' + S.redbd, borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>
-              Session complète
+              {t('session.full')}
             </button>
           ) : (
             <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} className='btn-shimmer' style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', position: 'relative' as const, overflow: 'hidden', boxShadow: '0 4px 20px ' + S.pbd }}>
-              Postuler à cette session
+              {t('session.apply_cta')}
             </button>
           )}
         </div>

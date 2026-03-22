@@ -123,8 +123,8 @@ export default function HostDashboard() {
     if (app && sess) {
       // Notification
       const title = status === 'accepted'
-        ? `Accepté pour "${sess.title}" `
-        : `Non retenu pour "${sess.title}"`
+        ? t('host.accepted_for', { title: sess.title })
+        : t('host.rejected_for', { title: sess.title })
       const body = status === 'accepted'
         ? "Tu peux maintenant accéder au DM et à l'adresse."
         : ''
@@ -358,7 +358,7 @@ export default function HostDashboard() {
               background: sess?.status==='open' ? S.sagebg : S.bg2,
               color: sess?.status==='open' ? S.sage : S.tx3,
             }}>
-              {sess?.status==='open' ? 'Ouvert' : 'Fermé'}
+              {sess?.status==='open' ? t('status.open') : t('status.closed')}
             </button>
             <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'8px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
               {t('host.edit')}
@@ -399,7 +399,7 @@ export default function HostDashboard() {
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sagebg : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
               >
-                {grinderCopied ? 'Copié !' : 'Copier message Grindr'}
+                {grinderCopied ? t('host.copied') : t('host.copy_grindr')}
               </button>
               <button
                 onClick={() => {
@@ -636,7 +636,7 @@ export default function HostDashboard() {
                       <span style={{fontSize:12,color:S.sage,fontWeight:600,display:'inline-flex',alignItems:'center',gap:3}}><Check size={12} strokeWidth={2.5} />Arrivé</span>
                     )}
                     {app.status === 'accepted' && !app.checked_in && (
-                      <span style={{fontSize:12,color:S.sage,fontWeight:600}}>Accepté — en route</span>
+                      <span style={{fontSize:12,color:S.sage,fontWeight:600}}>{t('host.accepted_route')}</span>
                     )}
                     <button onClick={() => navigate('/session/' + id + '/dm/' + app.applicant_id)} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid '+S.pbd,background:'transparent',cursor:'pointer'}}>DM</button>
                     {app.status === 'accepted' && !app.checked_in && (

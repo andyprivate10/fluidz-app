@@ -90,7 +90,7 @@
     "welcome": "Bienvenue !",
     "awaiting_confirmation": "En attente de confirmation du host",
     "rejected": "Non retenu",
-    "full": "Session complete",
+    "full": "Session complète",
     "new_session": "Nouvelle session",
     "create_step": "Etape {{step}}/3",
     "title_label": "Titre de la session",
@@ -164,8 +164,14 @@
     "invite_body": "Tu es invité ! Postule ici.",
     "share_native": "Partager via...",
     "share_whatsapp": "Envoyer sur WhatsApp",
-    "share_link": "Copier le lien",
-    "share_message": "Message à partager"
+    "share_link": "Partager le lien",
+    "share_message": "Message à partager",
+    "manage": "Gérer la session",
+    "manage_pending": "Gérer ({count} en attente)",
+    "applied": "Candidature envoyée",
+    "apply_cta": "Postuler à cette session",
+    "copy_share_msg": "Copier message pour Grindr / WhatsApp",
+    "msg_copied": "Message copié !"
   },
   "chat": {
     "title": "Messages",
@@ -344,7 +350,14 @@
     "no_pending": "Aucune candidature en attente",
     "no_accepted": "Aucun membre accepté",
     "no_rejected": "Aucun refus",
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "copy_grindr": "Copier message Grindr",
+    "copied": "Copié !",
+    "group_chat": "Group Chat",
+    "accepted_for": "Accepté pour \"{title}\"",
+    "rejected_for": "Non retenu pour \"{title}\"",
+    "accepted_route": "Accepté — en route",
+    "auto_accepted": "Accepté automatiquement via lien direct"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -452,5 +465,16 @@
     "sending": "Envoi...",
     "send_to_all": "Envoyer a tous",
     "accept": "Accepter"
+  },
+  "status": {
+    "pending": "En attente",
+    "accepted": "Accepté",
+    "checked_in": "Check-in",
+    "rejected": "Refusé",
+    "open": "Ouvert",
+    "ended": "Terminée",
+    "closed": "Fermé",
+    "active": "Active",
+    "check_in_confirmed": "Check-in confirmé"
   }
 }

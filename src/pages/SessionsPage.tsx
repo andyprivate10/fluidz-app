@@ -16,10 +16,10 @@ type Session = { id: string; title: string; status: string; approx_area: string;
 type AppSession = { session_id: string; status: string; title: string; approx_area: string }
 
 const statusMap: Record<string, { text: string; color: string; Icon: typeof Clock }> = {
-  pending:    { text: 'En attente',  color: S.lav,  Icon: Clock },
-  accepted:   { text: 'Accepté',     color: S.sage, Icon: CheckCircle2 },
-  checked_in: { text: 'Check-in',    color: S.sage, Icon: CheckCircle2 },
-  rejected:   { text: 'Refusé',      color: S.red, Icon: XCircle },
+  pending:    { text: 'pending',  color: S.lav,  Icon: Clock },
+  accepted:   { text: 'accepted',     color: S.sage, Icon: CheckCircle2 },
+  checked_in: { text: 'checked_in',    color: S.sage, Icon: CheckCircle2 },
+  rejected:   { text: 'rejected',      color: S.red, Icon: XCircle },
 }
 
 export default function SessionsPage() {
@@ -139,7 +139,7 @@ export default function SessionsPage() {
                       display: 'flex', alignItems: 'center', gap: 4,
                     }}>
                       <st.Icon size={10} />
-                      {st.text}
+                      {t('status.' + st.text)}
                     </span>
                   </div>
                   {app.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '6px 0 0' }}>{app.approx_area}</p>}

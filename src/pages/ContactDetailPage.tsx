@@ -252,7 +252,7 @@ export default function ContactDetailPage() {
                     fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
                     color: s.status === 'open' ? S.sage : s.status === 'ended' ? S.red : S.tx4,
                     background: s.status === 'open' ? S.sagebg : s.status === 'ended' ? S.redbg : S.bg3,
-                  }}>{s.status === 'open' ? 'Active' : s.status === 'ended' ? 'Terminée' : s.status}</span>
+                  }}>{t('status.' + s.status)}</span>
                 </button>
               ))}
             </div>

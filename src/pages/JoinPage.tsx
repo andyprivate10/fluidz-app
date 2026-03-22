@@ -124,7 +124,7 @@ export default function JoinPage() {
         session_id: session.id,
         type: 'direct_join',
         title: `${name} a rejoint (invite directe)`,
-        body: `Accepté automatiquement via lien direct`,
+        body: t('host.auto_accepted'),
         href: `/session/${session.id}/host`,
       })
     }
@@ -157,7 +157,7 @@ export default function JoinPage() {
   const statusLabels: Record<string, { text: string; color: string }> = {
     pending: { text: 'Candidature en attente...', color: S.orange },
     accepted: { text: 'Tu es accepté !', color: S.sage },
-    checked_in: { text: 'Check-in confirmé', color: S.sage },
+    checked_in: { text: 'check_in_confirmed', color: S.sage },
     rejected: { text: 'Non retenu', color: S.red },
   }
 
@@ -278,7 +278,7 @@ export default function JoinPage() {
                 border: '1px solid ' + (statusLabels[myAppStatus]?.color || S.rule) + '44',
               }}>
                 <p style={{margin:0,fontSize:15,fontWeight:700,color:statusLabels[myAppStatus]?.color || S.tx}}>
-                  {statusLabels[myAppStatus]?.text || myAppStatus}
+                  {t('status.' + (statusLabels[myAppStatus]?.text || myAppStatus))}
                 </p>
               </div>
               <button onClick={() => navigate('/session/' + session.id)} style={{
