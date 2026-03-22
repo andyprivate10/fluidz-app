@@ -400,7 +400,7 @@ export default function SessionPage() {
             {!checkInDone && session.status === 'open' && (
               <button onClick={handleCheckIn} disabled={checkInLoading} style={{ ...qBtn, borderColor: S.sage, background: S.sagebg, opacity: checkInLoading ? 0.6 : 1 }}>
                 <UserCheck size={16} strokeWidth={1.5} style={{ color: S.sage }} />
-                <span style={{ ...qLabel, color: S.sage }}>{checkInLoading ? '...' : 'Check-in'}</span>
+                <span style={{ ...qLabel, color: S.sage }}>{checkInLoading ? '...' : t('session.check_in_action')}</span>
               </button>
             )}
             <button onClick={() => navigate('/session/' + id + '/chat')} style={qBtn}>
@@ -816,7 +816,7 @@ export default function SessionPage() {
                 <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />{t('session.accepted')}</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
-                    <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
+                    <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>{t('session.address_label')}</p>
                     <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}
@@ -841,7 +841,7 @@ export default function SessionPage() {
                 <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />{t('session.checkin_confirmed')}</span>
                 {session.exact_address && (
                   <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
-                    <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>Adresse</p>
+                    <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>{t('session.address_label')}</p>
                     <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
                   </div>
                 )}

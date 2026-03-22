@@ -464,7 +464,7 @@ export default function CreateSessionPage() {
                   <button key={addr.id || i} type="button" onClick={() => pickSavedAddress(addr)} style={{
                     padding:'6px 12px',borderRadius:99,fontSize:12,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer',
                   }}>
-                    {addr.label || addr.approx_area || 'Adresse'}
+                    {addr.label || addr.approx_area || t('session.address_label')}
                   </button>
                 ))}
               </div>
