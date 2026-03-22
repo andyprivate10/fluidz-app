@@ -181,7 +181,8 @@
     "candidates_count": "{{count}} candidats",
     "candidates": "Candidats",
     "vote_info": "Vote consultatif : visible par tous les membres. Le host tranche la décision finale.",
-    "host_must_confirm": "Le host doit confirmer ton arrivée"
+    "host_must_confirm": "Le host doit confirmer ton arrivée",
+    "copy": "Copier"
   },
   "chat": {
     "title": "Messages",
@@ -253,11 +254,11 @@
     "upload_in_progress": "Upload en cours...",
     "media_count": "{{photos}} photo(s) · {{videos}} vidéo(s)",
     "infos": "Infos",
-    "kinks_badge": "{count} pratique(s)",
+    "kinks_badge": "{{count}} pratique(s)",
     "body_zones": "Zones intimes",
     "body_zones_desc": "torse, sex, fessier...",
     "health_badge_prep": "PrEP actif",
-    "health_badge_test": "Test il y a {months} mois",
+    "health_badge_test": "Test il y a {{months}} mois",
     "kinks_count": "{{count}} pratique(s)",
     "health_prep": "PrEP actif",
     "health_test": "Test il y a {{months}} mois"
