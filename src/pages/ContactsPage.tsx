@@ -172,7 +172,7 @@ export default function ContactsPage() {
         {filtered.map(contact => {
           const rel = RELATION_STYLES[contact.relation_level]
           return (
-            <div key={contact.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div key={contact.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid ' + S.rule2, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
               {/* Avatar */}
               <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
                 {contact.avatar_url ? (

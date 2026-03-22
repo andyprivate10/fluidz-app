@@ -45,7 +45,7 @@ export default function SessionsPage() {
   useEffect(() => { loadData() }, [loadData])
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadData)
 
-  const card: React.CSSProperties = { background: S.bg1, border: `1px solid ${S.rule}`, borderRadius: R.card, padding: 16, cursor: 'pointer' }
+  const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: `1px solid ${S.rule2}`, borderRadius: R.card, padding: 16, cursor: 'pointer', boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 
   return (
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>

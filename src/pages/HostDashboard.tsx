@@ -536,7 +536,7 @@ export default function HostDashboard() {
           const displayName = prof?.display_name || snapshot?.display_name || 'Anonyme'
           const displayRole = pj.role || snapshot?.role
           return (
-            <div key={app.id} style={{background:S.bg1,borderRadius:18,border:'1px solid '+S.rule,overflow:'hidden'}}>
+            <div key={app.id} style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:18,border:'1px solid '+S.rule2,overflow:'hidden',boxShadow:'0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)'}}>
               <div style={{padding:'16px'}}>
                 <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:10}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
