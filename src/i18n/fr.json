@@ -324,7 +324,10 @@
     "arrival_to_confirm": "Arrivee a confirmer",
     "end_session": "Terminer la session",
     "broadcast": "Broadcast",
-    "share_session": "Partager la session"
+    "share_session": "Partager la session",
+    "no_pending": "Aucune candidature en attente",
+    "no_accepted": "Aucun membre accepté",
+    "no_rejected": "Aucun refus"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -338,7 +341,8 @@
     "add_contact": "Ajouter",
     "remove_contact": "Retirer",
     "groups": "Groupes",
-    "interactions": "Interactions"
+    "interactions": "Interactions",
+    "empty_filter": "Aucun contact dans ce filtre"
   },
   "settings": {
     "push_active": "Push actives",
@@ -386,5 +390,12 @@
     "admin": "Admin",
     "admin_dashboard": "Dashboard admin",
     "logout": "Déconnexion"
+  },
+  "sessions": {
+    "empty_hosted": "Aucune session. Crée ta première.",
+    "empty_applied": "Aucune candidature. Rejoins une session via un lien."
+  },
+  "addresses": {
+    "empty": "Aucune adresse"
   }
 }

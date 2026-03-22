@@ -524,7 +524,7 @@ export default function HostDashboard() {
         )}
         {filtered.length === 0 && (
           <div style={{textAlign:'center',padding:'40px 20px',color:S.tx3,fontSize:14}}>
-            {tab==='pending' ? 'Aucune candidature en attente' : tab==='accepted' ? 'Aucun membre accepté' : 'Aucun refus'}
+            {tab==='pending' ? t('host.no_pending') : tab==='accepted' ? t('host.no_accepted') : t('host.no_rejected')}
           </div>
         )}
 

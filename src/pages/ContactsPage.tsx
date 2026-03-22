@@ -164,7 +164,7 @@ export default function ContactsPage() {
                 <p style={{ fontSize: 13 }}>{t('contacts.no_contacts_desc')}</p>
               </>
             ) : (
-              <p style={{ fontSize: 14 }}>Aucun contact dans ce filtre</p>
+              <p style={{ fontSize: 14 }}>{t('contacts.empty_filter')}</p>
             )}
           </div>
         )}

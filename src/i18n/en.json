@@ -324,7 +324,10 @@
     "arrival_to_confirm": "Arrival to confirm",
     "end_session": "End session",
     "broadcast": "Broadcast",
-    "share_session": "Share session"
+    "share_session": "Share session",
+    "no_pending": "No pending applications",
+    "no_accepted": "No accepted members",
+    "no_rejected": "No rejections"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -338,7 +341,8 @@
     "add_contact": "Add",
     "remove_contact": "Remove",
     "groups": "Groups",
-    "interactions": "Interactions"
+    "interactions": "Interactions",
+    "empty_filter": "No contacts in this filter"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -386,5 +390,12 @@
     "admin": "Admin",
     "admin_dashboard": "Admin dashboard",
     "logout": "Sign out"
+  },
+  "sessions": {
+    "empty_hosted": "No sessions. Create your first one.",
+    "empty_applied": "No applications. Join a session via a link."
+  },
+  "addresses": {
+    "empty": "No addresses"
   }
 }

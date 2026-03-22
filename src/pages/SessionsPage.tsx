@@ -86,7 +86,7 @@ export default function SessionsPage() {
 
             {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 20 }}>Chargement...</p>}
             {!loading && hosted.length === 0 && (
-              <div style={{ textAlign: 'center', padding: 32, color: S.tx3, ...typeStyle('body') }}>Aucune session. Crée ta première.</div>
+              <div style={{ textAlign: 'center', padding: 32, color: S.tx3, ...typeStyle('body') }}>{t('sessions.empty_hosted')}</div>
             )}
             {hosted.map(sess => {
               const isOpen = sess.status === 'open'
@@ -125,7 +125,7 @@ export default function SessionsPage() {
           <>
             {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 20 }}>Chargement...</p>}
             {!loading && applied.length === 0 && (
-              <div style={{ textAlign: 'center', padding: 32, color: S.tx3, ...typeStyle('body') }}>Aucune candidature. Rejoins une session via un lien.</div>
+              <div style={{ textAlign: 'center', padding: 32, color: S.tx3, ...typeStyle('body') }}>{t('sessions.empty_applied')}</div>
             )}
             {applied.map(app => {
               const st = statusMap[app.status] || { text: app.status, color: S.tx3, Icon: Clock }

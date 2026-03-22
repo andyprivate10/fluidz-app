@@ -157,7 +157,7 @@ export default function AddressesPage() {
         {!loading && addresses.length === 0 && (
           <div style={{ textAlign:'center',padding:40,color:S.tx3 }}>
             <MapPin size={32} style={{ color:S.tx4,marginBottom:8 }} />
-            <p style={{ fontSize:14,fontWeight:600,margin:'0 0 6px' }}>Aucune adresse</p>
+            <p style={{ fontSize:14,fontWeight:600,margin:'0 0 6px' }}>{t('addresses.empty')}</p>
             <p style={{ fontSize:12 }}>Sauvegarde tes adresses pour les réutiliser</p>
           </div>
         )}
