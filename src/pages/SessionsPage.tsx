@@ -9,6 +9,7 @@ import { getSessionCover } from '../lib/sessionCover'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { Plus, Clock, CheckCircle2, Radio, MapPin, Globe } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { SkeletonCard } from '../components/Skeleton'
 
 const S = colors
 const R = radius
@@ -151,7 +152,7 @@ export default function SessionsPage() {
         )}
 
         {sectionLabel(t('sessions.nearby'), S.lav)}
-        {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 20 }}>{t('common.loading')}</p>}
+        {loading && <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}><SkeletonCard lines={2} /><SkeletonCard lines={3} /><SkeletonCard lines={2} /></div>}
         {!loading && publicSessions.length === 0 && (
           <div style={{ textAlign: 'center', padding: 28, color: S.tx3 }}>
             <Globe size={24} strokeWidth={1.5} style={{ margin: '0 auto 8px', display: 'block', color: S.tx3 }} />

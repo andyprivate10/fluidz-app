@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SkeletonCard } from '../components/Skeleton'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
@@ -141,7 +142,7 @@ export default function ChatsHubPage() {
       </div>
 
       <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '4px 16px', paddingBottom: 96 }}>
-        {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 24 }}>{t('common.loading')}</p>}
+        {loading && <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}><SkeletonCard lines={2} /><SkeletonCard lines={2} /><SkeletonCard lines={2} /><SkeletonCard lines={2} /></div>}
 
         {!loading && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 16px', color: S.tx3 }}>

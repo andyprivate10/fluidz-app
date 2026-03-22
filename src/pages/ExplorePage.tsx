@@ -270,10 +270,16 @@ export default function ExplorePage() {
         )}
 
         {loading && !geoError && (
-          <div style={{ textAlign: 'center', padding: 40 }}>
-            <div style={{ width: 24, height: 24, borderRadius: '50%', border: '3px solid '+S.pbd, borderTopColor: S.p, animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-            <p style={{ color: S.tx3, fontSize: 13 }}>{t('explore.searching')}</p>
-            <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, padding: '0 0 20px' }}>
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} style={{ background: 'rgba(22,20,31,0.85)', borderRadius: 14, overflow: 'hidden', border: '1px solid '+S.rule2 }}>
+                <div style={{ width: '100%', aspectRatio: '3/4', background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite' }} />
+                <div style={{ padding: 10 }}>
+                  <div style={{ width: '60%', height: 12, borderRadius: 6, background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite', marginBottom: 6 }} />
+                  <div style={{ width: '40%', height: 10, borderRadius: 6, background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite' }} />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
