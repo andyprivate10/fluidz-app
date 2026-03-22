@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { MapPin, Lock, Users, ChevronRight, Ghost } from 'lucide-react'
+import { MapPin, Lock, Users, ChevronRight, Ghost, Shield } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
+import { getSessionCover } from '../lib/sessionCover'
 
 const S = colors
 
@@ -16,7 +17,7 @@ export default function JoinPage() {
   const isDirect = searchParams.get('direct') === '1'
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
-  const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string }[]>([])
+  const [lineup, setLineup] = useState<{ applicant_id: string; avatar_url?: string; display_name?: string; role?: string; photos?: string[]; bio?: string; kinks_count?: number; prep?: string }[]>([])
   const [hostName, setHostName] = useState<string>('')
   const [hostAvatar, setHostAvatar] = useState<string>('')
   const [myAppStatus, setMyAppStatus] = useState<string | null>(null)
@@ -49,8 +50,11 @@ export default function JoinPage() {
     const ids = (accepted || []).map((a: { applicant_id: string }) => a.applicant_id)
     if (ids.length > 0) {
       const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ids)
-      setLineup((profiles || []).map((p: { id: string; display_name?: string; profile_json?: { avatar_url?: string; role?: string } }) => ({
+      setLineup((profiles || []).map((p: { id: string; display_name?: string; profile_json?: { avatar_url?: string; role?: string; photos_profil?: string[]; photos?: string[]; bio?: string; kinks?: string[]; prep?: string } }) => ({
         applicant_id: p.id, display_name: p.display_name, avatar_url: p.profile_json?.avatar_url, role: p.profile_json?.role,
+        photos: Array.isArray(p.profile_json?.photos_profil) ? p.profile_json!.photos_profil : Array.isArray(p.profile_json?.photos) ? p.profile_json!.photos : p.profile_json?.avatar_url ? [p.profile_json.avatar_url] : [],
+        bio: p.profile_json?.bio, kinks_count: Array.isArray(p.profile_json?.kinks) ? p.profile_json!.kinks.length : 0,
+        prep: p.profile_json?.prep,
       })))
     }
 
@@ -197,8 +201,26 @@ export default function JoinPage() {
 
       {status === 'found' && session && (
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
+          {/* Cover gradient */}
+          <div style={{position:'absolute',top:0,left:0,right:0,height:180,borderRadius:'24px 24px 0 0',overflow:'hidden',zIndex:0}}>
+            <div style={{position:'absolute',inset:0,background:getSessionCover(session.tags).bg}} />
+            <div style={{position:'absolute',width:200,height:200,top:-80,right:-40,borderRadius:'50%',filter:'blur(60px)',background:getSessionCover(session.tags).overlay}} />
+            <div style={{position:'absolute',bottom:0,left:0,right:0,height:120,background:`linear-gradient(to top, rgba(22,20,31,0.95) 10%, transparent)`}} />
+          </div>
+
+          {/* Photo strip of members */}
+          {lineup.some(m => m.photos && m.photos.length > 0) && (
+            <div style={{position:'relative',zIndex:1,padding:'16px 16px 0',display:'flex',gap:6,overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none'}}>
+              {lineup.filter(m => m.photos && m.photos.length > 0).flatMap(m => (m.photos || []).slice(0, 2).map((url, i) => (
+                <div key={m.applicant_id + '-' + i} onClick={() => navigate('/profile/' + m.applicant_id)} style={{flexShrink:0,cursor:'pointer'}}>
+                  <img src={url} alt="" style={{width:56,height:72,borderRadius:12,objectFit:'cover',border:'1.5px solid '+S.rule2}} />
+                </div>
+              )))}
+            </div>
+          )}
+
           {/* Main card */}
-          <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule2,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)'}}>
+          <div style={{position:'relative',zIndex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule2,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)',marginTop: lineup.some(m => m.photos && m.photos.length > 0) ? 0 : 0}}>
             <h1 style={{fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
 
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:4}}>
@@ -241,26 +263,51 @@ export default function JoinPage() {
                   <span style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em'}}>{t('session.lineup_label')} · {lineup.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>
                 </div>
                 <div className="stagger-children" style={{display:'flex',flexDirection:'column',gap:6}}>
-                  {lineup.slice(0, 5).map((m) => (
-                    <div key={m.applicant_id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:'rgba(5,4,10,0.80)',borderRadius:12,border:'1px solid '+S.rule}}>
+                  {lineup.slice(0, 8).map((m) => (
+                    <div key={m.applicant_id} onClick={() => navigate('/profile/' + m.applicant_id)} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',background:'rgba(5,4,10,0.80)',borderRadius:12,border:'1px solid '+S.rule,cursor:'pointer',transition:'border-color 0.2s'}}>
                       {m.avatar_url ? (
-                        <img src={m.avatar_url} alt="" style={{width:36,height:36,borderRadius:'50%',objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
+                        <img src={m.avatar_url} alt="" style={{width:40,height:40,borderRadius:'50%',objectFit:'cover',border:'2px solid '+S.rule2,flexShrink:0}} />
                       ) : (
-                        <div style={{width:36,height:36,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'#fff',flexShrink:0}}>
+                        <div style={{width:40,height:40,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'#fff',flexShrink:0}}>
                           {(m.display_name || '?')[0].toUpperCase()}
                         </div>
                       )}
                       <div style={{flex:1,minWidth:0}}>
                         <p style={{margin:0,fontSize:13,fontWeight:600,color:S.tx}}>{m.display_name || 'Anonyme'}</p>
-                        {m.role && <p style={{margin:0,fontSize:11,color:S.p}}>{m.role}</p>}
+                        <div style={{display:'flex',gap:4,alignItems:'center',marginTop:2,flexWrap:'wrap'}}>
+                          {m.role && <span style={{fontSize:10,fontWeight:600,color:S.p,background:S.p2,padding:'1px 6px',borderRadius:99,border:'1px solid '+S.pbd}}>{m.role}</span>}
+                          {m.prep === 'Actif' && <Shield size={10} strokeWidth={2} style={{color:S.sage}} />}
+                          {m.kinks_count && m.kinks_count > 0 ? <span style={{fontSize:9,color:S.tx4}}>{m.kinks_count} pratiques</span> : null}
+                        </div>
                       </div>
                       <ChevronRight size={14} style={{color:S.tx4,flexShrink:0}} />
                     </div>
                   ))}
-                  {lineup.length > 5 && <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'4px 0 0'}}>{t('session.lineup_more', { count: lineup.length - 5 })}</p>}
+                  {lineup.length > 8 && <p style={{fontSize:12,color:S.tx3,textAlign:'center',margin:'4px 0 0'}}>{t('session.lineup_more', { count: lineup.length - 8 })}</p>}
                 </div>
               </div>
             )}
+
+            {/* Role distribution */}
+            {lineup.length > 0 && (() => {
+              const roles: Record<string, number> = {}
+              lineup.forEach(m => { if (m.role) roles[m.role] = (roles[m.role] || 0) + 1 })
+              const prepCount = lineup.filter(m => m.prep === 'Actif').length
+              return Object.keys(roles).length > 0 ? (
+                <div style={{display:'flex',flexWrap:'wrap',gap:6,justifyContent:'center',marginBottom:12}}>
+                  {Object.entries(roles).map(([role, count]) => (
+                    <span key={role} style={{fontSize:11,fontWeight:600,color:S.tx2,background:'rgba(5,4,10,0.80)',padding:'4px 10px',borderRadius:99,border:'1px solid '+S.rule}}>
+                      {count}× {role}
+                    </span>
+                  ))}
+                  {prepCount > 0 && (
+                    <span style={{fontSize:11,fontWeight:600,color:S.sage,background:S.sagebg,padding:'4px 10px',borderRadius:99,border:'1px solid '+S.sagebd,display:'flex',alignItems:'center',gap:3}}>
+                      <Shield size={10} strokeWidth={2} /> {prepCount} PrEP
+                    </span>
+                  )}
+                </div>
+              ) : null
+            })()}
 
             {/* Locked address */}
             <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 14px',background:'rgba(5,4,10,0.80)',borderRadius:12,border:'1px solid '+S.rule}}>
