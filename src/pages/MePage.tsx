@@ -7,7 +7,7 @@ import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Eye, Share2, Heart, Check } from 'lucide-react'
+import { Eye, Share2, Heart, Check, Mail } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { monthsAgoCount } from '../lib/timing'
@@ -357,7 +357,7 @@ export default function MePage() {
             border:'none', cursor:'pointer', opacity: loading ? 0.7 : 1,
             boxShadow:`0 4px 20px ${S.p}44`,
           }}>
-          {loading ? t('me.sending') : hasGuestToken ? t('me.create_account') : t('me.send_magic_link')}
+          {loading ? t('me.sending') : hasGuestToken ? t('me.create_account') : <><Mail size={16} strokeWidth={2} style={{display:'inline',verticalAlign:'middle',marginRight:6}} />{t('me.send_magic_link')}</>}
         </button>
         {msg && <p style={{ marginTop:16, fontSize:13, color:S.tx2, textAlign:'center' }}>{msg}</p>}
       </div>
