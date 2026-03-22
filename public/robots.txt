@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /landing
+Allow: /pro
+
+Disallow: /admin
+Disallow: /dev/
+Disallow: /session/create
+Disallow: /ghost/
+
+Sitemap: https://fluidz-app.netlify.app/sitemap.xml

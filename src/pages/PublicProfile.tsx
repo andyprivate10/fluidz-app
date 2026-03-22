@@ -141,7 +141,8 @@ export default function PublicProfile() {
   if (!profile) return (<div style={{ minHeight: '100vh', background: S.bg, padding: 24, maxWidth: 480, margin: '0 auto' }}><button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />Retour</button><p style={{ color: S.red, marginTop: 16 }}>Profil introuvable.</p></div>)
 
   const p = profile.profile_json || {}
-  const kinks: string[] = p.kinks || []
+  const kinkNorm: Record<string, string> = { 'SM leger': 'SM léger', 'Fetichisme': 'Fétichisme', 'Jeux de role': 'Jeux de rôle' }
+  const kinks: string[] = Array.from(new Set((p.kinks || []).map((k: string) => kinkNorm[k] || k))) as string[]
   const allPhotos: string[] = [...(Array.isArray(p.photos_profil) ? p.photos_profil : []), ...(Array.isArray(p.photos_intime) ? p.photos_intime : []), ...(Array.isArray(p.photos) ? p.photos : []), ...(!Array.isArray(p.photos_profil) && !Array.isArray(p.photos) && p.avatar_url ? [p.avatar_url] : [])].filter((v, i, a) => a.indexOf(v) === i)
   const allVideos: string[] = [...(Array.isArray(p.videos_intime) ? p.videos_intime : []), ...(Array.isArray(p.videos) ? p.videos : [])]
   const hasPhotos = allPhotos.length > 0

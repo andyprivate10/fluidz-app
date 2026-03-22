@@ -211,7 +211,11 @@ export default function MePage() {
       setHeight(p.height || '')
       setWeight(p.weight || '')
       setMorphology(p.morphology || '')
-      setKinks(p.kinks || [])
+      // Normalize old kink names to current accented versions
+      const kinkNorm: Record<string, string> = { 'SM leger': 'SM léger', 'Fetichisme': 'Fétichisme', 'Jeux de role': 'Jeux de rôle' }
+      const rawKinks: string[] = p.kinks || []
+      const normalized = [...new Set(rawKinks.map(k => kinkNorm[k] || k))]
+      setKinks(normalized)
       setPrep(h.prep_status || p.prep || '')
       setDernierTest(h.dernier_test || '')
       setSeroStatus(h.sero_status || '')
