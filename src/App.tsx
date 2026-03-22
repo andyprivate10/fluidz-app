@@ -1,39 +1,43 @@
 import { BrowserRouter, useLocation, useRoutes } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastProvider from './components/Toast'
 import HomePage from './pages/HomePage'
-import SessionPage from './pages/SessionPage'
-import CreateSessionPage from './pages/CreateSessionPage'
-import ApplyPage from './pages/ApplyPage'
-import DMPage from './pages/DMPage'
-import GroupChatPage from './pages/GroupChatPage'
-import MePage from './pages/MePage'
-import HostDashboard from './pages/HostDashboard'
-import SessionsPage from './pages/SessionsPage'
-import JoinPage from './pages/JoinPage'
 import NotFoundPage from './pages/NotFoundPage'
-import CandidateProfilePage from './pages/CandidateProfilePage'
-import PublicProfile from './pages/PublicProfile'
-import NotificationsPage from './pages/NotificationsPage'
-import DevLoopPage from './pages/DevLoopPage'
-import DevTestMenu from './pages/DevTestMenu'
-import EditSessionPage from './pages/EditSessionPage'
-import GhostSetupPage from './pages/GhostSetupPage'
-import GhostRecoverPage from './pages/GhostRecoverPage'
 import LoginPage from './pages/LoginPage'
-import OnboardingPage from './pages/OnboardingPage'
-import ContactsPage from './pages/ContactsPage'
-import GroupsPage from './pages/GroupsPage'
-import ContactDetailPage from './pages/ContactDetailPage'
-import ReviewPage from './pages/ReviewPage'
-import ExplorePage from './pages/ExplorePage'
-import ChatsHubPage from './pages/ChatsHubPage'
-import DirectDMPage from './pages/DirectDMPage'
-import AddressesPage from './pages/AddressesPage'
-import AdminPage from './pages/AdminPage'
 import BottomNav from './components/BottomNav'
 import InstallPrompt from './components/InstallPrompt'
+
+// Lazy-loaded pages
+const SessionPage = lazy(() => import('./pages/SessionPage'))
+const CreateSessionPage = lazy(() => import('./pages/CreateSessionPage'))
+const ApplyPage = lazy(() => import('./pages/ApplyPage'))
+const DMPage = lazy(() => import('./pages/DMPage'))
+const GroupChatPage = lazy(() => import('./pages/GroupChatPage'))
+const MePage = lazy(() => import('./pages/MePage'))
+const HostDashboard = lazy(() => import('./pages/HostDashboard'))
+const SessionsPage = lazy(() => import('./pages/SessionsPage'))
+const JoinPage = lazy(() => import('./pages/JoinPage'))
+const CandidateProfilePage = lazy(() => import('./pages/CandidateProfilePage'))
+const PublicProfile = lazy(() => import('./pages/PublicProfile'))
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage'))
+const DevLoopPage = lazy(() => import('./pages/DevLoopPage'))
+const DevTestMenu = lazy(() => import('./pages/DevTestMenu'))
+const EditSessionPage = lazy(() => import('./pages/EditSessionPage'))
+const GhostSetupPage = lazy(() => import('./pages/GhostSetupPage'))
+const GhostRecoverPage = lazy(() => import('./pages/GhostRecoverPage'))
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'))
+const ContactsPage = lazy(() => import('./pages/ContactsPage'))
+const GroupsPage = lazy(() => import('./pages/GroupsPage'))
+const ContactDetailPage = lazy(() => import('./pages/ContactDetailPage'))
+const ReviewPage = lazy(() => import('./pages/ReviewPage'))
+const ExplorePage = lazy(() => import('./pages/ExplorePage'))
+const ChatsHubPage = lazy(() => import('./pages/ChatsHubPage'))
+const DirectDMPage = lazy(() => import('./pages/DirectDMPage'))
+const AddressesPage = lazy(() => import('./pages/AddressesPage'))
+const AdminPage = lazy(() => import('./pages/AdminPage'))
 
 const routes = [
   { path: '/', element: <HomePage /> },
@@ -71,6 +75,12 @@ const routes = [
   { path: '*', element: <NotFoundPage /> },
 ]
 
+const LazyFallback = () => (
+  <div style={{ minHeight: '100vh', background: '#05040A', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div style={{ width: 28, height: 28, border: '2px solid rgba(224,136,122,0.3)', borderTopColor: '#E0887A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+  </div>
+)
+
 function AnimatedRoutes() {
   const location = useLocation()
   const element = useRoutes(routes)
@@ -95,7 +105,7 @@ export default function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <ToastProvider />
-        <AnimatedRoutes />
+        <Suspense fallback={<LazyFallback />}><AnimatedRoutes /></Suspense>
         <BottomNav />
         <InstallPrompt />
       </BrowserRouter>
