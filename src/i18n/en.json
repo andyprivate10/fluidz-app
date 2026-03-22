@@ -167,7 +167,7 @@
     "share_link": "Share link",
     "share_message": "Share message",
     "manage": "Manage session",
-    "manage_pending": "Manage ({count} pending)",
+    "manage_pending": "Manage ({{count}} pending)",
     "applied": "Application sent",
     "apply_cta": "Apply to this session",
     "copy_share_msg": "Copy message for Grindr / WhatsApp",
@@ -178,7 +178,7 @@
     "keep_secret": "Keep secret",
     "keep_secret_desc": "Invisible, accessible only via link",
     "invite_options": "Invite and share",
-    "candidates_count": "{count} candidates",
+    "candidates_count": "{{count}} candidates",
     "candidates": "Candidates",
     "vote_info": "Advisory vote: visible to all members. The host makes the final decision.",
     "host_must_confirm": "The host must confirm your arrival"
@@ -249,9 +249,9 @@
     "adult_zones_desc": "Photos and videos by zone. Max 4 files per zone.",
     "adult_free": "Adult — Free",
     "adult_free_desc": "Free adult content. Mixed photos and videos.",
-    "zones_filled": "{count}/{total} zones",
+    "zones_filled": "{{count}}/{{total}} zones",
     "upload_in_progress": "Uploading...",
-    "media_count": "{photos} photo(s) · {videos} video(s)"
+    "media_count": "{{photos}} photo(s) · {{videos}} video(s)"
   },
   "review": {
     "title": "How was it?",
@@ -375,8 +375,8 @@
     "copy_grindr": "Copy Grindr message",
     "copied": "Copied!",
     "group_chat": "Group Chat",
-    "accepted_for": "Accepted for \"{title}\"",
-    "rejected_for": "Not selected for \"{title}\"",
+    "accepted_for": "Accepted for \"{{title}}\"",
+    "rejected_for": "Not selected for \"{{title}}\"",
     "accepted_route": "Accepted — on the way",
     "auto_accepted": "Automatically accepted via direct link"
   },
