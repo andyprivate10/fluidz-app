@@ -97,7 +97,7 @@ export default function BottomNav() {
 
   return (
     <>
-      <nav style={{
+      <nav aria-label="Main navigation" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
         background: 'rgba(5,4,10,0.92)',
         backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
@@ -117,6 +117,8 @@ export default function BottomNav() {
               <button
                 key={tab.id}
                 onClick={() => navigate(tab.path)}
+                aria-label={t(`nav.${tab.id}`)}
+                aria-current={isActive ? 'page' : undefined}
                 style={{
                   flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', gap: 4,
@@ -164,6 +166,8 @@ export default function BottomNav() {
           {/* Hamburger menu button */}
           <button
             onClick={() => setDrawerOpen(true)}
+            aria-label="Menu"
+            aria-expanded={drawerOpen}
             style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               justifyContent: 'center', gap: 4,

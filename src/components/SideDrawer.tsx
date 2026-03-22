@@ -76,7 +76,7 @@ export default function SideDrawer({ open, onClose }: Props) {
       }} />
 
       {/* Drawer */}
-      <div style={{
+      <div role="dialog" aria-label={t('drawer.my_space')} aria-modal={open} style={{
         position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 201,
         width: 300, maxWidth: '85vw',
         background: S.bg1,
@@ -88,7 +88,7 @@ export default function SideDrawer({ open, onClose }: Props) {
       }}>
         {/* Header */}
         <div style={{ padding: '52px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
-          <button onClick={onClose} style={{
+          <button onClick={onClose} aria-label="Close menu" style={{
             position: 'absolute', top: 14, right: 14,
             width: 32, height: 32, borderRadius: '50%',
             background: S.bg2, border: '1px solid ' + S.rule,
