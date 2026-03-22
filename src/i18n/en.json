@@ -241,7 +241,17 @@
     "autosave_active": "Auto-save active",
     "interested": "Interested · Get in touch",
     "sending": "Sending...",
-    "request_sent": "Request sent"
+    "request_sent": "Request sent",
+    "public_photos": "Public photos",
+    "public_photos_desc": "Visible in profile search and by session candidates/members.",
+    "public_photos_rules": "Non-adult photos only. A public session does not give access to member photos without host approval.",
+    "adult_zones": "Adult — Intimate zones",
+    "adult_zones_desc": "Photos and videos by zone. Max 4 files per zone.",
+    "adult_free": "Adult — Free",
+    "adult_free_desc": "Free adult content. Mixed photos and videos.",
+    "zones_filled": "{count}/{total} zones",
+    "upload_in_progress": "Uploading...",
+    "media_count": "{photos} photo(s) · {videos} video(s)"
   },
   "review": {
     "title": "How was it?",

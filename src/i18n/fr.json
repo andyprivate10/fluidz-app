@@ -241,7 +241,17 @@
     "autosave_active": "Auto-save actif",
     "interested": "Intéressé · Entrer en contact",
     "sending": "Envoi...",
-    "request_sent": "Demande envoyée"
+    "request_sent": "Demande envoyée",
+    "public_photos": "Photos publiques",
+    "public_photos_desc": "Visibles dans la recherche de profils et par les candidats/membres d'une session.",
+    "public_photos_rules": "Photos non-adultes uniquement. Une session publique ne donne pas accès aux photos de membres sans acceptation par l'hôte.",
+    "adult_zones": "Adulte — Zones intimes",
+    "adult_zones_desc": "Photos et vidéos par zone. Max 4 fichiers par zone.",
+    "adult_free": "Adulte — Libre",
+    "adult_free_desc": "Contenu adulte libre. Photos et vidéos mélangées.",
+    "zones_filled": "{count}/{total} zones",
+    "upload_in_progress": "Upload en cours...",
+    "media_count": "{photos} photo(s) · {videos} vidéo(s)"
   },
   "review": {
     "title": "Comment c'etait ?",
