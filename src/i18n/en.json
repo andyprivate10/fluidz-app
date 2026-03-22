@@ -216,7 +216,8 @@
     "autosave_idle": "Changes are saved automatically",
     "autosave_active": "Auto-save active",
     "interested": "Interested · Get in touch",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "request_sent": "Request sent"
   },
   "review": {
     "title": "How was it?",
@@ -404,7 +405,11 @@
   },
   "sessions": {
     "empty_hosted": "No sessions. Create your first one.",
-    "empty_applied": "No applications. Join a session via a link."
+    "empty_applied": "No applications. Join a session via a link.",
+    "title": "Sessions",
+    "my_sessions": "My sessions",
+    "applications": "Applications",
+    "new_session": "New session"
   },
   "addresses": {
     "empty": "No addresses",

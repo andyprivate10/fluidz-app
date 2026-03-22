@@ -216,7 +216,8 @@
     "autosave_idle": "Les modifications sont sauvegardées automatiquement",
     "autosave_active": "Auto-save actif",
     "interested": "Intéressé · Entrer en contact",
-    "sending": "Envoi..."
+    "sending": "Envoi...",
+    "request_sent": "Demande envoyée"
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -404,7 +405,11 @@
   },
   "sessions": {
     "empty_hosted": "Aucune session. Crée ta première.",
-    "empty_applied": "Aucune candidature. Rejoins une session via un lien."
+    "empty_applied": "Aucune candidature. Rejoins une session via un lien.",
+    "title": "Sessions",
+    "my_sessions": "Mes sessions",
+    "applications": "Candidatures",
+    "new_session": "Nouvelle session"
   },
   "addresses": {
     "empty": "Aucune adresse",

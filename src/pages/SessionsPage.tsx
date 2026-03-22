@@ -54,9 +54,9 @@ export default function SessionsPage() {
 
       {/* Header */}
       <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 16px', borderBottom: `1px solid ${S.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
-        <h1 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 14px' }}>Sessions</h1>
+        <h1 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 14px' }}>{t('sessions.title')}</h1>
         <div style={{ display: 'flex', gap: 8 }}>
-          {([['hosted', 'Mes sessions', hosted.length, S.p], ['applied', 'Candidatures', applied.length, S.sage]] as const).map(([k, label, count, color]) => (
+          {([['hosted', t('sessions.my_sessions'), hosted.length, S.p], ['applied', t('sessions.applications'), applied.length, S.sage]] as const).map(([k, label, count, color]) => (
             <button key={k} onClick={() => setTab(k as any)} style={{
               flex: 1, padding: '9px 8px', borderRadius: R.chip, ...typeStyle('label'), cursor: 'pointer',
               border: `1px solid ${tab === k ? color + '44' : S.rule}`,
