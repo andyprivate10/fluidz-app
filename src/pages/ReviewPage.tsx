@@ -284,7 +284,7 @@ export default function ReviewPage() {
                           <button onClick={() => submitPeerReview(p.applicant_id)} style={{
                             width: '100%', padding: 10, borderRadius: 10, fontSize: 13, fontWeight: 700,
                             background: S.grad, color: '#fff', border: 'none', cursor: 'pointer',
-                          }}>Envoyer</button>
+                          }}>{t('review.send')}</button>
                         )}
                       </>
                     )}

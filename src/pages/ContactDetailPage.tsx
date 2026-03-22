@@ -300,7 +300,7 @@ export default function ContactDetailPage() {
 
         {/* Direct DM */}
         <button onClick={() => navigate('/dm/' + contactUserId)} style={{ width: '100%', padding: '12px', borderRadius: 12, background: S.bg1, border: '1px solid '+S.pbd, color: S.p, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          <MessageCircle size={15} strokeWidth={1.5} /> Envoyer un DM
+          <MessageCircle size={15} strokeWidth={1.5} /> {t('contacts.send_dm')}
         </button>
 
         {/* Invite to session */}

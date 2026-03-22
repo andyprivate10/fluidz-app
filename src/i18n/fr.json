@@ -240,7 +240,8 @@
     "rating_2": "Moyen",
     "rating_3": "Bien",
     "rating_4": "Tres bien",
-    "rating_5": "Incroyable !"
+    "rating_5": "Incroyable !",
+    "send": "Envoyer"
   },
   "notifications": {
     "title": "Notifications",
@@ -351,7 +352,8 @@
     "groups": "Groupes",
     "interactions": "Interactions",
     "empty_filter": "Aucun contact dans ce filtre",
-    "no_notes": "Aucune note"
+    "no_notes": "Aucune note",
+    "send_dm": "Envoyer un DM"
   },
   "settings": {
     "push_active": "Push actives",

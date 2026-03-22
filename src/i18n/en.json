@@ -240,7 +240,8 @@
     "rating_2": "Average",
     "rating_3": "Good",
     "rating_4": "Great",
-    "rating_5": "Amazing!"
+    "rating_5": "Amazing!",
+    "send": "Send"
   },
   "notifications": {
     "title": "Notifications",
@@ -351,7 +352,8 @@
     "groups": "Groups",
     "interactions": "Interactions",
     "empty_filter": "No contacts in this filter",
-    "no_notes": "No notes"
+    "no_notes": "No notes",
+    "send_dm": "Send a DM"
   },
   "settings": {
     "push_active": "Push enabled",
