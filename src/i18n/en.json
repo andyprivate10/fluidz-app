@@ -171,7 +171,8 @@
     "applied": "Application sent",
     "apply_cta": "Apply to this session",
     "copy_share_msg": "Copy message for Grindr / WhatsApp",
-    "msg_copied": "Message copied!"
+    "msg_copied": "Message copied!",
+    "custom_desc": "Create your own vibe"
   },
   "chat": {
     "title": "Messages",

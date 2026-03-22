@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, Users, MessageCircle, BookOpen, Bell, Map as MapIcon, LayoutGrid } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
-import { sessionTiming } from '../lib/timing'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -55,12 +54,7 @@ export default function ExplorePage() {
   const [geoError, setGeoError] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [searchText, setSearchText] = useState('')
-  const [sessionSearch, setSessionSearch] = useState('')
   const [myViewCount, setMyViewCount] = useState(0)
-  const [exploreTab, setExploreTab] = useState<'profils'|'sessions'>('profils')
-  const [nearbySessions, setNearbySessions] = useState<any[]>([])
-  const [unreadNotifCount, setUnreadNotifCount] = useState(0)
-  const [unreadChatCount, setUnreadChatCount] = useState(0)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
 
   useEffect(() => {
@@ -70,10 +64,8 @@ export default function ExplorePage() {
       // Unread counts for header badges
       supabase.from('notifications').select('*', { count: 'exact', head: true })
         .eq('user_id', user.id).is('read_at', null)
-        .then(({ count }) => setUnreadNotifCount(count ?? 0))
       supabase.from('notifications').select('*', { count: 'exact', head: true })
         .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
-        .then(({ count }) => setUnreadChatCount(count ?? 0))
       // Load current visibility setting
       supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng').eq('id', user.id).maybeSingle().then(async (res) => {
         // Also load profile view count
@@ -123,7 +115,6 @@ export default function ExplorePage() {
           ;(hProfs || []).forEach((p: any) => hMap.set(p.id, { name: p.display_name, avatar: p.profile_json?.avatar_url }))
           const countMap = new Map<string, number>()
           ;(appCounts || []).forEach((a: any) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1))
-          setNearbySessions(pubSess.map((s: any) => ({ ...s, host_name: hMap.get(s.host_id)?.name || 'Host', host_avatar: hMap.get(s.host_id)?.avatar, member_count: (countMap.get(s.id) || 0) + 1 })))
         }
       },
       () => { setGeoError(true); setLoading(false) },
@@ -158,9 +149,7 @@ export default function ExplorePage() {
       ;(hProfs || []).forEach((p: any) => hMap.set(p.id, { name: p.display_name, avatar: p.profile_json?.avatar_url }))
       const countMap = new Map<string, number>()
       ;(appCounts || []).forEach((a: any) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1))
-      setNearbySessions(pubSess.map((s: any) => ({ ...s, host_name: hMap.get(s.host_id)?.name || 'Host', host_avatar: hMap.get(s.host_id)?.avatar, member_count: (countMap.get(s.id) || 0) + 1 })))
     } else {
-      setNearbySessions([])
     }
   }
 
@@ -219,17 +208,9 @@ export default function ExplorePage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>{t('explore.title')}</h1>
-            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{exploreTab === 'profils' ? t('explore.profiles_count', { count: filtered.length }) : t('explore.sessions_count', { count: nearbySessions.length })} {t('explore.nearby')}{myViewCount > 0 ? ` · ${t('explore.views_week', { count: myViewCount })}` : ''}</p>
+            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{t('explore.profiles_count', { count: filtered.length })} {t('explore.nearby')}{myViewCount > 0 ? ` · ${t('explore.views_week', { count: myViewCount })}` : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            <button onClick={() => navigate('/notifications')} style={{ position: 'relative', padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
-              <Bell size={14} />
-              {unreadNotifCount > 0 && <div style={{ position: 'absolute', top: 2, right: 2, width: 6, height: 6, borderRadius: '50%', background: S.p }} />}
-            </button>
-            <button onClick={() => navigate('/chats')} style={{ position: 'relative', padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
-              <MessageCircle size={14} />
-              {unreadChatCount > 0 && <div style={{ position: 'absolute', top: 2, right: 2, width: 6, height: 6, borderRadius: '50%', background: S.p }} />}
-            </button>
             <button onClick={() => navigate('/contacts')} style={{ padding: '6px 8px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, cursor: 'pointer' }}>
               <BookOpen size={14} />
             </button>
@@ -258,22 +239,10 @@ export default function ExplorePage() {
             ))}
           </div>
         )}
-
-        {/* Explore tabs */}
-        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          {(['profils', 'sessions'] as const).map(tab => (
-            <button key={tab} onClick={() => setExploreTab(tab)} style={{
-              flex: 1, padding: '7px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              border: '1px solid ' + (exploreTab === tab ? S.pbd : S.rule),
-              background: exploreTab === tab ? S.p2 : 'transparent',
-              color: exploreTab === tab ? S.p : S.tx2,
-            }}>{tab === 'profils' ? t('explore.tab_profiles') : t('explore.tab_sessions')}</button>
-          ))}
-        </div>
       </div>
 
       {/* Search */}
-      {exploreTab === 'profils' && (
+      {(
         <div style={{ padding: '8px 16px 0' }}>
           <input
             type="text" value={searchText} onChange={e => setSearchText(e.target.value)}
@@ -288,7 +257,7 @@ export default function ExplorePage() {
 
       {/* Content */}
       <div style={{ padding: 12 }}>
-      {exploreTab === 'profils' ? (<>
+      <>
         {geoError && (
           <div style={{ textAlign: 'center', padding: 32, color: S.tx3 }}>
             <MapPin size={32} style={{ color: S.tx4, marginBottom: 8 }} />
@@ -376,65 +345,7 @@ export default function ExplorePage() {
             ))}
           </div>
         )}
-      </>) : (
-        <>
-          {/* Session search */}
-          <div style={{ marginBottom: 10 }}>
-            <input type="text" value={sessionSearch} onChange={e => setSessionSearch(e.target.value)}
-              placeholder={t('explore.search_session')} style={{
-                width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
-                border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
-                fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
-              }} />
-          </div>
-          {nearbySessions.filter(s => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).length === 0 && !loading && (
-            <div style={{ textAlign: 'center', padding: 40, color: S.tx2 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>{t('explore.no_public_sessions')}</p>
-              <p style={{ fontSize: 12 }}>{t('explore.no_public_sessions_desc')}</p>
-            </div>
-          )}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {nearbySessions.filter((s: any) => !sessionSearch || s.title.toLowerCase().includes(sessionSearch.toLowerCase()) || (s.tags || []).some((t: string) => t.toLowerCase().includes(sessionSearch.toLowerCase()))).map((s: any) => (
-              <div key={s.id} onClick={() => navigate('/session/' + s.id)} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 14, cursor: 'pointer' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  {s.host_avatar ? (
-                    <img src={s.host_avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule }} />
-                  ) : (
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>{(s.host_name || 'H')[0]}</div>
-                  )}
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0 }}>{s.title}</p>
-                    <p style={{ fontSize: 11, color: S.tx2, margin: '2px 0 0' }}>par {s.host_name}</p>
-                  </div>
-                </div>
-                {s.description && <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 6px', lineHeight: 1.4 }}>{s.description.slice(0, 80)}{s.description.length > 80 ? '...' : ''}</p>}
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
-                  {s.approx_area && <span style={{ fontSize: 12, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} /> {s.approx_area}</span>}
-                  {s.member_count > 0 && <span style={{ fontSize: 11, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={11} strokeWidth={1.5} /> {s.member_count}{s.max_capacity ? '/' + s.max_capacity : ''}</span>}
-                  {s.max_capacity && s.member_count >= s.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.redbg, padding: '2px 8px', borderRadius: 99 }}>{t('explore.full_session')}</span>}
-                  {(() => { const t = sessionTiming(s); if (!t) return null; const isEnded = t === 'Terminé'; return <span style={{ fontSize: 10, color: isEnded ? S.red : S.tx3 }}>{t}</span> })()}
-                </div>
-                {s.tags && s.tags.length > 0 && (
-                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    {s.tags.slice(0, 5).map((tag: string) => (
-                      <span key={tag} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: S.p3, color: S.p, fontWeight: 600 }}>{tag}</span>
-                    ))}
-                  </div>
-                )}
-                {s.max_capacity && s.member_count >= s.max_capacity ? (
-                  <button disabled style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, fontSize: 13, fontWeight: 700 }}>
-                    {t('explore.full_session')}
-                  </button>
-                ) : (
-                  <button onClick={(e) => { e.stopPropagation(); navigate('/session/' + s.id + '/apply') }} style={{ marginTop: 8, width: '100%', padding: '8px', borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                    {t('explore.apply_button')} →
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+      </>
       </div>
     </div>
   )

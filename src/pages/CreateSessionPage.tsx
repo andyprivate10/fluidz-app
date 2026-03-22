@@ -293,7 +293,22 @@ export default function CreateSessionPage() {
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.choose_template')}</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>{t('session.template_help')}</p>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-            {sessionTemplates.map(tpl => {
+            {/* Custom option — always first */}
+            <div onClick={() => pickTemplate({ slug: 'custom', label: 'Custom', meta: { tags: [], description: '' } })} style={{
+              borderRadius:14,overflow:'hidden',cursor:'pointer',
+              border:'1px solid '+S.pbd,background:S.bg1,
+              transition:'transform 0.15s',position:'relative' as const,
+              display:'flex',flexDirection:'column',
+            }}>
+              <div style={{width:'100%',height:100,background:`linear-gradient(135deg, ${S.bg2}, ${S.bg3})`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <Sparkles size={32} style={{color:S.p,opacity:0.7}} />
+              </div>
+              <div style={{padding:'10px 12px'}}>
+                <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.p}}>Custom</p>
+                <p style={{margin:0,fontSize:11,color:S.tx3}}>{t('session.custom_desc')}</p>
+              </div>
+            </div>
+            {sessionTemplates.filter(tpl => tpl.slug !== 'chemical').map(tpl => {
               const meta = tpl.meta as any
               const coverUrl = meta?.cover_url
               const color = meta?.color || S.p
@@ -313,21 +328,6 @@ export default function CreateSessionPage() {
                 </div>
               )
             })}
-            {/* Custom option */}
-            <div onClick={() => pickTemplate({ slug: 'custom', label: 'Custom', meta: { tags: [], description: '' } })} style={{
-              borderRadius:14,overflow:'hidden',cursor:'pointer',
-              border:'1px solid '+S.rule2,background:S.bg1,
-              transition:'transform 0.15s',position:'relative' as const,
-              display:'flex',flexDirection:'column',
-            }}>
-              <div style={{width:'100%',height:100,background:S.bg2,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <Sparkles size={32} style={{color:S.p,opacity:0.7}} />
-              </div>
-              <div style={{padding:'10px 12px'}}>
-                <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.tx}}>Custom</p>
-                <p style={{margin:0,fontSize:11,color:S.tx3}}>Crée ton propre vibe</p>
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -349,7 +349,15 @@ export default function CreateSessionPage() {
               <button onClick={()=>{setStartsNow(true);setStartsAt('')}} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:startsNow?'none':'1px solid '+S.rule,background:startsNow?S.grad:S.bg2,color:startsNow?'#fff':S.tx3}}>
                 <Zap size={14} /> {t('session.start_now')}
               </button>
-              <button onClick={()=>setStartsNow(false)} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:!startsNow?'none':'1px solid '+S.rule,background:!startsNow?S.grad:S.bg2,color:!startsNow?'#fff':S.tx3}}>
+              <button onClick={()=>{
+                setStartsNow(false)
+                if (!startsAt) {
+                  const tomorrow = new Date()
+                  tomorrow.setDate(tomorrow.getDate() + 1)
+                  tomorrow.setHours(20, 0, 0, 0)
+                  setStartsAt(tomorrow.toISOString().slice(0, 16))
+                }
+              }} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:!startsNow?'none':'1px solid '+S.rule,background:!startsNow?S.grad:S.bg2,color:!startsNow?'#fff':S.tx3}}>
                 <Clock size={14} /> {t('session.start_later')}
               </button>
             </div>
