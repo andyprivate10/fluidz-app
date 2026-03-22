@@ -251,7 +251,16 @@
     "adult_free_desc": "Free adult content. Mixed photos and videos.",
     "zones_filled": "{{count}}/{{total}} zones",
     "upload_in_progress": "Uploading...",
-    "media_count": "{{photos}} photo(s) · {{videos}} video(s)"
+    "media_count": "{{photos}} photo(s) · {{videos}} video(s)",
+    "infos": "Info",
+    "kinks_badge": "{count} practice(s)",
+    "body_zones": "Intimate zones",
+    "body_zones_desc": "torso, sex, butt...",
+    "health_badge_prep": "PrEP active",
+    "health_badge_test": "Tested {months} months ago",
+    "kinks_count": "{{count}} practice(s)",
+    "health_prep": "PrEP active",
+    "health_test": "Tested {{months}} months ago"
   },
   "review": {
     "title": "How was it?",

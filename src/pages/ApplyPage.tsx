@@ -12,13 +12,11 @@ import { sendPushToUser } from '../lib/pushSender'
 
 const S = colors
 
-const BODY_PARTS = [
-  { id: 'torse', label: 'Torse' },
-  { id: 'bite', label: 'Bite' },
-  { id: 'cul', label: 'Cul' },
-  { id: 'pieds', label: 'Pieds' },
-  { id: 'full', label: 'Full body' },
-  { id: 'autre', label: 'Autre' },
+const BODY_ZONES = [
+  { id: 'torso', label: 'Torse' },
+  { id: 'sex', label: 'Sex' },
+  { id: 'butt', label: 'Fessier' },
+  { id: 'feet', label: 'Pieds' },
 ]
 
 type Section = { id: string; label: string; icon: typeof Camera; desc: string }
@@ -31,7 +29,7 @@ const BLOC_PROFIL: Section[] = [
 
 const BLOC_ADULTE: Section[] = [
   {id:'photos_adulte',label:'Photos & vidéos adultes',icon:Eye,desc:'contenu NSFW'},
-  {id:'body_part_photos',label:'Photos par zone',icon:Grid3X3,desc:'torse, bite, cul...'},
+  {id:'body_part_photos',label:'Zones intimes',icon:Grid3X3,desc:'torse, sex, fessier...'},
   {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
   {id:'pratiques',label:'Pratiques',icon:Flame,desc:'kinks & pratiques'},
   {id:'limites',label:'Limites',icon:ShieldOff,desc:'hard limits, no-go'},
@@ -527,7 +525,13 @@ export default function ApplyPage() {
 
             function renderBodyPartSubSelection() {
               if (!enabled.includes('body_part_photos') || guestMode) return null
-              const bp: Record<string, string> = pj.body_part_photos || {}
+              const rawBp = pj.body_part_photos || {}
+              const keyMap: Record<string,string> = { torse:'torso', bite:'sex', cul:'butt', pieds:'feet' }
+              const bp: Record<string, string> = {}
+              for (const [k, v] of Object.entries(rawBp)) {
+                const nk = keyMap[k] || k
+                bp[nk] = Array.isArray(v) ? (v as string[])[0] || '' : (v as string)
+              }
               const entries = Object.entries(bp).filter(([, url]) => url)
               if (entries.length === 0) return null
               return (
@@ -535,7 +539,7 @@ export default function ApplyPage() {
                   <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                     {entries.map(([partId, url]) => {
                       const on = !!selectedBodyParts[partId]
-                      const partLabel = BODY_PARTS.find(b => b.id === partId)?.label || partId
+                      const partLabel = BODY_ZONES.find(b => b.id === partId)?.label || partId
                       return (
                         <button key={partId} type="button" onClick={() => setSelectedBodyParts(prev => {
                           const next = { ...prev }

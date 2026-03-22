@@ -513,7 +513,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosProfil.length} photo{photosProfil.length !== 1 ? 's' : ''}</p>
           </Section>
 
-          <Section title="Infos" color={S.lav}>
+          <Section title={t('profile.infos')} color={S.lav}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
@@ -668,7 +668,7 @@ export default function MePage() {
             {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>{t('profile.upload_in_progress')}</p>}
           </Section>
 
-          <Section title="Kinks" color={S.p} badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''}` : undefined}>
+          <Section title={t('profile.kinks')} color={S.p} badge={kinks.length > 0 ? t('profile.kinks_badge', { count: kinks.length }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {kinkOptions.map(k => (
                 <Chip key={k.label} label={k.label} active={kinks.includes(k.label)} onClick={() => toggleKink(k.label)} />
@@ -676,7 +676,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Santé" color={S.sage} badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgoCount(dernierTest)} mois` : undefined}>
+          <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>PrEP actif</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
@@ -696,7 +696,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Limites" color={S.red}>
+          <Section title={t('profile.limits')} color={S.red}>
             <textarea
               value={limits} onChange={e => setLimits(e.target.value)}
               placeholder="Hard limits, no-go..." rows={3}
