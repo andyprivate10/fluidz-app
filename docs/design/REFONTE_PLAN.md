@@ -539,3 +539,35 @@ Ouvre un **drawer latéral** avec :
 - Déconnexion
 
 **Admin** (si is_admin)
+
+### B8 — Profil enrichi : Localisation + Langues + Visitor tag
+**Home location dans le profil**
+- Champ "Pays / Ville" dans le profil (Home : France / Paris)
+- Si l'utilisateur est géolocalisé hors de son pays d'origine → tag "Visitor" automatique sur son profil
+- Le tag Visitor différencie les profils de passage de ceux qui habitent sur place
+- Visible dans la galerie Explore, les candidatures, et le PublicProfile
+
+**Langues parlées**
+- Multi-select dans le profil : FR, EN, ES, DE, PT, IT, AR, etc.
+- Affiché sur le PublicProfile et dans le Candidate Pack
+- Filtrable dans Explore
+
+### B9 — Recommander session/profil à un contact
+- Depuis une SessionPage ou un PublicProfile → bouton "Recommander"
+- Ouvre un bottom sheet avec la liste des contacts du Naughty Book
+- Sélectionner un ou plusieurs contacts → envoie une notification/DM avec le lien
+- Le destinataire reçoit "Marcus te recommande cette session/ce profil"
+
+### B10 — Création session : adresse exacte améliorée
+**Google Maps address loader**
+- Champ adresse avec autocomplete Google Places API
+- Sépare automatiquement : adresse, code postal, ville, pays
+- Sauvegarde l'adresse complète structurée (pas juste un texte libre)
+
+**Adresses enregistrées**
+- Bouton "Utiliser une adresse enregistrée" dans le formulaire de création
+- Pré-sélectionne la dernière adresse utilisée par défaut
+- Liste dropdown des adresses sauvegardées
+
+**Avertissement adresse**
+- Le message "L'adresse exacte est révélée uniquement aux membres acceptés" doit être placé JUSTE AU-DESSUS du champ de saisie de l'adresse exacte (pas ailleurs)
