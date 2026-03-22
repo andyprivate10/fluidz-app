@@ -213,7 +213,7 @@ export default function ContactDetailPage() {
             </div>
           ) : (
             <p style={{ fontSize: 13, color: contact?.notes ? S.tx2 : S.tx4, margin: 0, lineHeight: 1.5 }}>
-              {contact?.notes || 'Aucune note'}
+              {contact?.notes || t('contacts.no_notes')}
             </p>
           )}
         </div>

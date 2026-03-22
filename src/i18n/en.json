@@ -342,7 +342,8 @@
     "remove_contact": "Remove",
     "groups": "Groups",
     "interactions": "Interactions",
-    "empty_filter": "No contacts in this filter"
+    "empty_filter": "No contacts in this filter",
+    "no_notes": "No notes"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -396,6 +397,38 @@
     "empty_applied": "No applications. Join a session via a link."
   },
   "addresses": {
-    "empty": "No addresses"
+    "empty": "No addresses",
+    "edit": "Edit",
+    "new_address": "New address"
+  },
+  "apply": {
+    "sending": "Sending...",
+    "rate_limited": "Wait a few minutes",
+    "submit": "Send my application"
+  },
+  "ghost_setup": {
+    "creating": "Creating...",
+    "create_ghost": "Create my ghost profile"
+  },
+  "ghost_recover": {
+    "sending": "Sending...",
+    "send_confirmation": "Send confirmation link"
+  },
+  "groups": {
+    "saving": "Saving...",
+    "update": "Update",
+    "create_group": "Create group",
+    "edit": "Edit",
+    "new_group": "New group"
+  },
+  "me": {
+    "sending": "Sending...",
+    "create_account": "Create my account (magic link)",
+    "send_magic_link": "Send magic link"
+  },
+  "host_actions": {
+    "sending": "Sending...",
+    "send_to_all": "Send to all",
+    "accept": "Accept"
   }
 }

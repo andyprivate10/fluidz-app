@@ -190,7 +190,7 @@ export default function GhostRecoverPage() {
                   disabled={converting || !convertEmail.trim()}
                   style={{ width: '100%', padding: 12, borderRadius: 12, fontWeight: 700, fontSize: 14, color: '#fff', background: S.sage, border: 'none', cursor: converting ? 'not-allowed' : 'pointer', opacity: converting || !convertEmail.trim() ? 0.7 : 1 }}
                 >
-                  {converting ? 'Envoi...' : 'Envoyer le lien de confirmation'}
+                  {converting ? t('ghost_recover.sending') : t('ghost_recover.send_confirmation')}
                 </button>
                 <p style={{ fontSize: 11, color: S.tx4, margin: '8px 0 0', textAlign: 'center' }}>
                   Ton profil, tes photos et tes candidatures seront conservés

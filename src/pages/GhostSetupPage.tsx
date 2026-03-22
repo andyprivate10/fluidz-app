@@ -175,7 +175,7 @@ export default function GhostSetupPage() {
               disabled={loading || pin.length !== 4}
               style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || pin.length !== 4 ? 0.7 : 1 }}
             >
-              {loading ? 'Création...' : 'Créer mon profil ghost'}
+              {loading ? t('ghost_setup.creating') : t('ghost_setup.create_ghost')}
             </button>
             <button onClick={() => setStep('name')} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
               <ArrowLeft size={16} strokeWidth={1.5} />Retour

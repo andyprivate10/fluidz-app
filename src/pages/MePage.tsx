@@ -357,7 +357,7 @@ export default function MePage() {
             border:'none', cursor:'pointer', opacity: loading ? 0.7 : 1,
             boxShadow:`0 4px 20px ${S.p}44`,
           }}>
-          {loading ? 'Envoi...' : hasGuestToken ? 'Créer mon compte (lien magique)' : '✉️ Envoyer le lien magique'}
+          {loading ? t('me.sending') : hasGuestToken ? t('me.create_account') : t('me.send_magic_link')}
         </button>
         {msg && <p style={{ marginTop:16, fontSize:13, color:S.tx2, textAlign:'center' }}>{msg}</p>}
       </div>

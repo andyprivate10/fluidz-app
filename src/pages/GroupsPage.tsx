@@ -208,7 +208,7 @@ export default function GroupsPage() {
           <div onClick={() => setShowCreate(false)} style={{ flex:1, background:'rgba(0,0,0,0.6)' }} />
           <div style={{ background:S.bg1, borderRadius:'24px 24px 0 0', padding:'20px 20px 40px', maxHeight:'80vh', overflowY:'auto' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-              <h2 style={{ fontSize:18, fontWeight:800, color:S.tx, margin:0 }}>{editGroup ? 'Modifier' : 'Nouveau groupe'}</h2>
+              <h2 style={{ fontSize:18, fontWeight:800, color:S.tx, margin:0 }}>{editGroup ? t('groups.edit') : t('groups.new_group')}</h2>
               <button onClick={() => setShowCreate(false)} style={{ background:'none', border:'none', color:S.tx3, cursor:'pointer' }}><X size={20} /></button>
             </div>
 
@@ -270,7 +270,7 @@ export default function GroupsPage() {
                 width:'100%', padding:14, borderRadius:14, fontWeight:700, fontSize:15, color:'#fff', background:S.grad, border:'none',
                 cursor: saving || !newName.trim() ? 'not-allowed' : 'pointer', opacity: saving || !newName.trim() ? 0.6 : 1,
               }}>
-                {saving ? 'Sauvegarde...' : editGroup ? 'Mettre à jour' : 'Créer le groupe'}
+                {saving ? t('groups.saving') : editGroup ? t('groups.update') : t('groups.create_group')}
               </button>
             </div>
           </div>

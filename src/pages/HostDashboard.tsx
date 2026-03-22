@@ -501,7 +501,7 @@ export default function HostDashboard() {
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>{t('host.broadcast')}</div>
           <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder="Message à envoyer à tous les membres..." rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
           <button onClick={sendBroadcast} disabled={broadcastSending || !broadcastText.trim()} style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'none',background:S.grad,color:'#fff',cursor: broadcastSending || !broadcastText.trim() ? 'not-allowed' : 'pointer',opacity: broadcastSending || !broadcastText.trim() ? 0.7 : 1}}>
-            {broadcastSending ? 'Envoi...' : 'Envoyer à tous'}
+            {broadcastSending ? t('host_actions.sending') : t('host_actions.send_to_all')}
           </button>
         </div>
         {/* Group invite */}
@@ -603,7 +603,7 @@ export default function HostDashboard() {
                         Refuser
                       </button>
                       <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} className="btn-shimmer" style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
-                        {actionLoading===app.id ? '...' : 'Accepter'}
+                        {actionLoading===app.id ? '...' : t('host_actions.accept')}
                       </button>
                     </div>
                   </div>

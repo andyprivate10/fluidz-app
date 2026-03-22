@@ -192,7 +192,7 @@ export default function AddressesPage() {
                     </div>
                   )}
                   <div style={{ display:'flex',gap:8,marginTop:12 }}>
-                    <button onClick={() => openEdit(addr)} style={{ flex:1,padding:'8px',borderRadius:10,fontSize:12,fontWeight:600,color:S.p,border:'1px solid '+S.pbd,background:S.p2,cursor:'pointer' }}>Modifier</button>
+                    <button onClick={() => openEdit(addr)} style={{ flex:1,padding:'8px',borderRadius:10,fontSize:12,fontWeight:600,color:S.p,border:'1px solid '+S.pbd,background:S.p2,cursor:'pointer' }}>{t('addresses.edit')}</button>
                     <button onClick={() => deleteAddress(addr.id)} style={{ padding:'8px 12px',borderRadius:10,fontSize:12,color:S.red,border:'1px solid '+S.redbd,background:'transparent',cursor:'pointer' }}><Trash2 size={14} /></button>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export default function AddressesPage() {
           <div onClick={() => setShowForm(false)} style={{ flex:1,background:'rgba(0,0,0,0.6)' }} />
           <div style={{ background:S.bg1,borderRadius:'24px 24px 0 0',padding:'20px 20px 40px',maxHeight:'85vh',overflowY:'auto' }}>
             <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16 }}>
-              <h2 style={{ fontSize:18,fontWeight:800,color:S.tx,margin:0 }}>{editId ? 'Modifier' : 'Nouvelle adresse'}</h2>
+              <h2 style={{ fontSize:18,fontWeight:800,color:S.tx,margin:0 }}>{editId ? t('addresses.edit') : t('addresses.new_address')}</h2>
               <button onClick={() => setShowForm(false)} style={{ background:'none',border:'none',color:S.tx3,cursor:'pointer' }}><X size={20} /></button>
             </div>
             <div style={{ display:'flex',flexDirection:'column',gap:12 }}>
