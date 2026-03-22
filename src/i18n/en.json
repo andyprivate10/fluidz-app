@@ -158,7 +158,8 @@
     "application_pending": "Application pending",
     "choose_template": "Choose a template",
     "template_help": "It will pre-fill tags and title",
-    "edit_title": "Edit session"
+    "edit_title": "Edit session",
+    "copy": "Copy"
   },
   "chat": {
     "title": "Messages",

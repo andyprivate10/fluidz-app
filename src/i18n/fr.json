@@ -158,7 +158,8 @@
     "application_pending": "Candidature en attente",
     "choose_template": "Choisis un template",
     "template_help": "Il pre-remplira les tags et le titre",
-    "edit_title": "Modifier la session"
+    "edit_title": "Modifier la session",
+    "copy": "Copier"
   },
   "chat": {
     "title": "Messages",
