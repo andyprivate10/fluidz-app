@@ -307,8 +307,21 @@ export default function HostDashboard() {
   const totalAccepted = counts.accepted
 
   if (loading) return (
-    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80,maxWidth:480,margin:'0 auto'}}>
-      <div style={{ width: 32, height: 32, border: "3px solid "+S.pbd, borderTopColor: S.p, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+    <div style={{minHeight:'100vh',background:S.bg,maxWidth:480,margin:'0 auto',padding:'80px 20px 40px'}}>
+      <style>{`@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.8}}`}</style>
+      {[0,1,2].map(i => (
+        <div key={i} style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:18,padding:16,marginBottom:12,animation:'pulse 1.5s ease-in-out infinite',animationDelay:i*0.15+'s'}}>
+          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+            <div style={{width:40,height:40,borderRadius:'50%',background:S.bg2}} />
+            <div style={{flex:1}}>
+              <div style={{width:'60%',height:14,borderRadius:6,background:S.bg2,marginBottom:6}} />
+              <div style={{width:'35%',height:10,borderRadius:4,background:S.bg2}} />
+            </div>
+          </div>
+          <div style={{width:'80%',height:10,borderRadius:4,background:S.bg2,marginBottom:8}} />
+          <div style={{width:'50%',height:10,borderRadius:4,background:S.bg2}} />
+        </div>
+      ))}
     </div>
   )
   if (loadError) return (
