@@ -5,6 +5,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { sessionTiming } from '../lib/timing'
+import { getSessionCover } from '../lib/sessionCover'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { Plus, Clock, CheckCircle2, Radio, MapPin, Globe } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -59,7 +60,10 @@ export default function SessionsPage() {
     const isOpen = sess.status === 'open'
     const isEnded = sess.status === 'ended'
     return (
-      <div key={sess.id} onClick={onClick} style={card}>
+      <div key={sess.id} onClick={onClick} style={{ ...card, background: getSessionCover(sess.tags).bg, overflow: 'hidden', position: 'relative' }}>
+        {/* Glass overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <p style={{ ...typeStyle('section'), color: S.tx, margin: 0, flex: 1 }}>{sess.title}</p>
           <span style={{
@@ -81,11 +85,12 @@ export default function SessionsPage() {
         {sess.tags && sess.tags.length > 0 && (
           <div style={{ display: 'flex', gap: 4, marginTop: 8, flexWrap: 'wrap' }}>
             {sess.tags.slice(0, 4).map(tag => (
-              <span key={tag} style={{ ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.chip, background: S.p3, color: S.p, border: `1px solid ${S.pbd}` }}>{tag}</span>
+              <span key={tag} style={{ ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.chip, background: 'rgba(249,168,168,0.15)', color: S.p, border: `1px solid rgba(249,168,168,0.25)` }}>{tag}</span>
             ))}
           </div>
         )}
         <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '8px 0 0' }}>{sessionTiming(sess)}</p>
+        </div>
       </div>
     )
   }
