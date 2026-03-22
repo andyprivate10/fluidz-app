@@ -67,8 +67,8 @@ export default function CandidateProfilePage() {
 
     // Notification
     const title = decision === 'accepted'
-      ? `Accepté pour "${sess.title}" `
-      : `Non retenu pour "${sess.title}"`
+      ? t('host.accepted_for', { title: sess.title })
+      : t('host.rejected_for', { title: sess.title })
     await supabase.from('notifications').insert({
       user_id: app.applicant_id,
       session_id: sessionId,
@@ -245,7 +245,7 @@ export default function CandidateProfilePage() {
             background: app.status === 'accepted' || app.status === 'checked_in' ? S.sagebg : app.status === 'rejected' ? S.redbg : S.orangebg,
             border: '1px solid ' + (app.status === 'accepted' || app.status === 'checked_in' ? S.sagebd : app.status === 'rejected' ? S.redbd : S.orangebd),
           }}>
-            {app.status === 'accepted' ? 'Accepté' : app.status === 'checked_in' ? 'Check-in' : app.status === 'rejected' ? 'Refusé' : 'En attente'}
+            {t('status.' + (app.status || 'pending'))}
           </span>
           <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Story</button>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}

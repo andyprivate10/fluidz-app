@@ -19,6 +19,16 @@ const tabs = [
     ),
   },
   {
+    id: 'profiles',
+    path: '/explore',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.35-4.35"/>
+      </svg>
+    ),
+  },
+  {
     id: 'sessions',
     path: '/sessions',
     icon: (
@@ -34,16 +44,6 @@ const tabs = [
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-    ),
-  },
-  {
-    id: 'profiles',
-    path: '/explore',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="m21 21-4.35-4.35"/>
       </svg>
     ),
   },
@@ -97,7 +97,7 @@ export default function BottomNav() {
 
   return (
     <>
-      <nav style={{
+      <nav aria-label="Main navigation" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
         background: 'rgba(5,4,10,0.92)',
         backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
@@ -117,6 +117,8 @@ export default function BottomNav() {
               <button
                 key={tab.id}
                 onClick={() => navigate(tab.path)}
+                aria-label={t(`nav.${tab.id}`)}
+                aria-current={isActive ? 'page' : undefined}
                 style={{
                   flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', gap: 4,
@@ -164,6 +166,8 @@ export default function BottomNav() {
           {/* Hamburger menu button */}
           <button
             onClick={() => setDrawerOpen(true)}
+            aria-label="Menu"
+            aria-expanded={drawerOpen}
             style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               justifyContent: 'center', gap: 4,

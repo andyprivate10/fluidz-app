@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {ArrowLeft, Clock, Zap, Users, Sparkles} from 'lucide-react'
+import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -40,7 +40,7 @@ export default function CreateSessionPage() {
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
   const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [isPublic, setIsPublic] = useState(false)
-  const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|null>(null)
+  const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|'message'|null>(null)
   const [groups, setGroups] = useState<{ id: string; name: string; members: string[] }[]>([])
   const [notifiedGroups, setNotifiedGroups] = useState<Set<string>>(new Set())
   const [startsNow, setStartsNow] = useState(true)
@@ -175,28 +175,98 @@ export default function CreateSessionPage() {
   const stepIdx = steps.indexOf(step)
 
   if (createdSession) {
+    const shareUrl = typeof window !== 'undefined' ? window.location.origin + '/join/' + createdSession.invite_code : ''
+    const shareText = createdSession.title + (createdSession.approx_area ? ' – ' + createdSession.approx_area : '') + '\n\n' + shareUrl
     return (
       <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,maxWidth:480,margin:'0 auto',position:'relative' as const}}>
-        <div style={{padding:'40px 20px 24px'}}>
+        <OrbLayer />
+        <div style={{position:'relative',zIndex:1,padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+
+          {/* ─── VISIBILITY: Publier / Garder Secret ─── */}
+          <div style={{marginBottom:20}}>
+            <p style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 10px'}}>Visibilité</p>
+            <div style={{display:'flex',gap:8}}>
+              <button onClick={async () => { setIsPublic(true); await supabase.from('sessions').update({ is_public: true }).eq('id', createdSession.id) }} style={{
+                flex:1,padding:'16px 12px',borderRadius:16,cursor:'pointer',textAlign:'center',
+                background: isPublic ? 'linear-gradient(135deg, '+S.sage+', '+S.emerald+')' : 'rgba(22,20,31,0.85)',
+                border: '1px solid '+(isPublic ? S.sage : S.rule2),
+                boxShadow: isPublic ? '0 4px 20px rgba(74,222,128,0.2)' : 'none',
+              }}>
+                <Eye size={20} strokeWidth={1.5} style={{color: isPublic ? '#fff' : S.tx3, margin:'0 auto 6px', display:'block'}} />
+                <p style={{fontSize:14,fontWeight:700,color: isPublic ? '#fff' : S.tx2,margin:0}}>{t('session.publish_in_app')}</p>
+                <p style={{fontSize:11,color: isPublic ? 'rgba(255,255,255,0.7)' : S.tx3,margin:'4px 0 0'}}>{t('session.publish_in_app_desc')}</p>
+              </button>
+              <button onClick={async () => { setIsPublic(false); await supabase.from('sessions').update({ is_public: false }).eq('id', createdSession.id) }} style={{
+                flex:1,padding:'16px 12px',borderRadius:16,cursor:'pointer',textAlign:'center',
+                background: !isPublic ? 'rgba(22,20,31,0.85)' : 'rgba(22,20,31,0.85)',
+                border: '1px solid '+(!isPublic ? S.pbd : S.rule2),
+                boxShadow: !isPublic ? '0 4px 20px '+S.pbd : 'none',
+              }}>
+                <EyeOff size={20} strokeWidth={1.5} style={{color: !isPublic ? S.p : S.tx3, margin:'0 auto 6px', display:'block'}} />
+                <p style={{fontSize:14,fontWeight:700,color: !isPublic ? S.p : S.tx2,margin:0}}>{t('session.keep_secret')}</p>
+                <p style={{fontSize:11,color: !isPublic ? S.tx2 : S.tx3,margin:'4px 0 0'}}>{t('session.keep_secret_desc')}</p>
+              </button>
+            </div>
+          </div>
+
+          {/* ─── INVITER ─── */}
+          <p style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 10px'}}>{t('session.invite_options')}</p>
+
+          {/* Message preview + copy */}
+          <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:16,marginBottom:16}}>
+            <p style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase' as const,letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.share_message')}</p>
+            <p style={{fontSize:13,color:S.tx,whiteSpace:'pre-wrap',lineHeight:1.6,margin:'0 0 12px'}}>{shareText}</p>
+            <button onClick={() => { navigator.clipboard?.writeText(shareText); setCopyFeedback('message') }} style={{
+              width:'100%',padding:12,borderRadius:12,fontSize:13,fontWeight:700,cursor:'pointer',
+              border:'1px solid '+(copyFeedback==='message'?S.sage:S.pbd),
+              background:copyFeedback==='message'?S.sagebg:S.p2,
+              color:copyFeedback==='message'?S.sage:S.p,
+              display:'flex',alignItems:'center',justifyContent:'center',gap:6,
+            }}>
+              <Copy size={14} strokeWidth={1.5} /> {copyFeedback==='message' ? t('session.copied') : t('session.share_link')}
+            </button>
+          </div>
+
+          {/* Share buttons */}
+          <div style={{display:'flex',gap:8,marginBottom:16}}>
+            <button onClick={() => window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank')} style={{
+              flex:1,padding:'12px 8px',borderRadius:12,fontSize:12,fontWeight:600,cursor:'pointer',
+              border:'1px solid '+S.rule2,background:'rgba(22,20,31,0.85)',color:S.tx2,
+              display:'flex',flexDirection:'column' as const,alignItems:'center',gap:4,
+            }}>
+              <span style={{fontSize:16}}>WhatsApp</span>
+            </button>
+            {typeof navigator !== 'undefined' && navigator.share && (
+              <button onClick={() => navigator.share({ title: createdSession.title, text: shareText, url: shareUrl }).catch(() => {})} style={{
+                flex:1,padding:'12px 8px',borderRadius:12,fontSize:12,fontWeight:600,cursor:'pointer',
+                border:'1px solid '+S.rule2,background:'rgba(22,20,31,0.85)',color:S.tx2,
+                display:'flex',flexDirection:'column' as const,alignItems:'center',gap:4,
+              }}>
+                <span style={{fontSize:16}}>{t('session.share_native')}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Platform copy buttons */}
+          <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:16}}>
             {(['grindr','whatsapp','telegram'] as const).map(app => (
               <button key={app} onClick={() => copyShareMessage(app)} style={{
-                padding:'14px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.rule,
-                background: copyFeedback === app ? S.p2 : S.bg1, color: copyFeedback === app ? S.p : S.tx2,
+                padding:'12px 16px',borderRadius:14,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,
+                background: copyFeedback === app ? S.p2 : 'rgba(22,20,31,0.85)', color: copyFeedback === app ? S.p : S.tx2,
                 cursor:'pointer',textAlign:'left',
               }}>
                 {copyFeedback === app ? t('session.copied') : (app === 'grindr' ? t('session.copy_grindr') : app === 'whatsapp' ? t('session.copy_whatsapp') : t('session.copy_telegram'))}
               </button>
             ))}
           </div>
+
           {/* Group invite */}
           {groups.length > 0 && (
-            <div style={{ marginTop: 16 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: S.tx2, margin: '0 0 8px' }}>
-                <Users size={14} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />
-                Inviter un groupe
+            <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:16,marginBottom:16}}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', margin: '0 0 8px' }}>
+                {t('session.invite_group')}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {groups.map(g => {
@@ -206,7 +276,7 @@ export default function CreateSessionPage() {
                       const notifs = g.members.map(uid => ({
                         user_id: uid, type: 'session_invite' as const,
                         title: createdSession.title,
-                        body: 'Tu es invite ! Postule ici.',
+                        body: t('session.invite_body'),
                         href: '/join/' + createdSession.invite_code,
                       }))
                       if (notifs.length > 0) await supabase.from('notifications').insert(notifs)
@@ -214,11 +284,11 @@ export default function CreateSessionPage() {
                     }} style={{
                       padding: '10px 14px', borderRadius: 12, fontSize: 13, fontWeight: 600,
                       border: '1px solid ' + (done ? S.sagebd : S.rule),
-                      background: done ? S.sagebg : S.bg1,
+                      background: done ? S.sagebg : 'transparent',
                       color: done ? S.sage : S.tx2, cursor: done ? 'default' : 'pointer',
                       textAlign: 'left',
                     }}>
-                      {done ? 'Invite envoye — ' : ''}{g.name} ({g.members.length})
+                      {done ? t('session.invite_sent') + ' — ' : ''}{g.name} ({g.members.length})
                     </button>
                   )
                 })}
@@ -226,7 +296,7 @@ export default function CreateSessionPage() {
             </div>
           )}
 
-          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} style={{marginTop:20,width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
+          <button onClick={() => navigate('/session/' + createdSession.id + '/host')} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
             {t('session.go_to_session')}
           </button>
         </div>
@@ -253,7 +323,22 @@ export default function CreateSessionPage() {
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.choose_template')}</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>{t('session.template_help')}</p>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-            {sessionTemplates.map(tpl => {
+            {/* Custom option — always first */}
+            <div onClick={() => pickTemplate({ slug: 'custom', label: 'Custom', meta: { tags: [], description: '' } })} style={{
+              borderRadius:14,overflow:'hidden',cursor:'pointer',
+              border:'1px solid '+S.pbd,background:S.bg1,
+              transition:'transform 0.15s',position:'relative' as const,
+              display:'flex',flexDirection:'column',
+            }}>
+              <div style={{width:'100%',height:100,background:`linear-gradient(135deg, ${S.bg2}, ${S.bg3})`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <Sparkles size={32} style={{color:S.p,opacity:0.7}} />
+              </div>
+              <div style={{padding:'10px 12px'}}>
+                <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.p}}>Custom</p>
+                <p style={{margin:0,fontSize:11,color:S.tx3}}>{t('session.custom_desc')}</p>
+              </div>
+            </div>
+            {sessionTemplates.filter(tpl => tpl.slug !== 'chemical').map(tpl => {
               const meta = tpl.meta as any
               const coverUrl = meta?.cover_url
               const color = meta?.color || S.p
@@ -273,21 +358,6 @@ export default function CreateSessionPage() {
                 </div>
               )
             })}
-            {/* Custom option */}
-            <div onClick={() => pickTemplate({ slug: 'custom', label: 'Custom', meta: { tags: [], description: '' } })} style={{
-              borderRadius:14,overflow:'hidden',cursor:'pointer',
-              border:'1px solid '+S.rule2,background:S.bg1,
-              transition:'transform 0.15s',position:'relative' as const,
-              display:'flex',flexDirection:'column',
-            }}>
-              <div style={{width:'100%',height:100,background:S.bg2,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <Sparkles size={32} style={{color:S.p,opacity:0.7}} />
-              </div>
-              <div style={{padding:'10px 12px'}}>
-                <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.tx}}>Custom</p>
-                <p style={{margin:0,fontSize:11,color:S.tx3}}>Crée ton propre vibe</p>
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -309,7 +379,15 @@ export default function CreateSessionPage() {
               <button onClick={()=>{setStartsNow(true);setStartsAt('')}} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:startsNow?'none':'1px solid '+S.rule,background:startsNow?S.grad:S.bg2,color:startsNow?'#fff':S.tx3}}>
                 <Zap size={14} /> {t('session.start_now')}
               </button>
-              <button onClick={()=>setStartsNow(false)} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:!startsNow?'none':'1px solid '+S.rule,background:!startsNow?S.grad:S.bg2,color:!startsNow?'#fff':S.tx3}}>
+              <button onClick={()=>{
+                setStartsNow(false)
+                if (!startsAt) {
+                  const tomorrow = new Date()
+                  tomorrow.setDate(tomorrow.getDate() + 1)
+                  tomorrow.setHours(20, 0, 0, 0)
+                  setStartsAt(tomorrow.toISOString().slice(0, 16))
+                }
+              }} style={{flex:1,padding:'10px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,border:!startsNow?'none':'1px solid '+S.rule,background:!startsNow?S.grad:S.bg2,color:!startsNow?'#fff':S.tx3}}>
                 <Clock size={14} /> {t('session.start_later')}
               </button>
             </div>
@@ -429,19 +507,6 @@ export default function CreateSessionPage() {
             ))}
             <button type="button" onClick={()=>setDirections([...directions,{text:''}])} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
               {t('session.add_direction')}
-            </button>
-          </div>
-          {/* Public toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('session.publish_label')}</p>
-              <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>{t('session.publish_help')}</p>
-            </div>
-            <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
-              width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-              background: isPublic ? S.sage : S.rule, transition: 'background 0.2s',
-            }}>
-              <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: isPublic ? 21 : 3, transition: 'left 0.2s' }} />
             </button>
           </div>
 

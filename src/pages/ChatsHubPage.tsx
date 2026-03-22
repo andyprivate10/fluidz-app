@@ -140,7 +140,7 @@ export default function ChatsHubPage() {
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, padding: '4px 16px', paddingBottom: 96 }}>
+      <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '4px 16px', paddingBottom: 96 }}>
         {loading && <p style={{ ...typeStyle('body'), color: S.tx3, textAlign: 'center', padding: 24 }}>{t('common.loading')}</p>}
 
         {!loading && filtered.length === 0 && (

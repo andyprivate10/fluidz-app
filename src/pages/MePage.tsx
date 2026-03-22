@@ -7,21 +7,26 @@ import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Eye, Share2, Heart, Check, Mail } from 'lucide-react'
+import { Eye, Share2, Heart, Check, Mail, User as UserIcon, Flame, Circle, Footprints, Plus, ImagePlus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { monthsAgoCount } from '../lib/timing'
 
 const PREP_OPTIONS = ['Actif','Inactif','Non']
 
-const BODY_PARTS = [
-  { id: 'torse', label: 'Torse' },
-  { id: 'bite', label: 'Bite' },
-  { id: 'cul', label: 'Cul' },
-  { id: 'pieds', label: 'Pieds' },
-  { id: 'full', label: 'Full body' },
-  { id: 'autre', label: 'Autre' },
+const BODY_ZONES = [
+  { id: 'torso', label: 'Torse', icon: 'User' },
+  { id: 'sex', label: 'Sex', icon: 'Flame' },
+  { id: 'butt', label: 'Fessier', icon: 'Circle' },
+  { id: 'feet', label: 'Pieds', icon: 'Footprints' },
 ] as const
+
+const ZONE_ICONS: Record<string, React.ReactNode> = {
+  torso: <UserIcon size={18} strokeWidth={1.5} />,
+  sex: <Flame size={18} strokeWidth={1.5} />,
+  butt: <Circle size={18} strokeWidth={1.5} />,
+  feet: <Footprints size={18} strokeWidth={1.5} />,
+}
 
 const S = colors
 
@@ -78,7 +83,7 @@ export default function MePage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
-  const [bodyPartPhotos, setBodyPartPhotos] = useState<Record<string, string>>({})
+  const [bodyPartPhotos, setBodyPartPhotos] = useState<Record<string, string[]>>({})
   const [profileViews, setProfileViews] = useState(0)
   const [contactRequests, setContactRequests] = useState(0)
 
@@ -211,7 +216,17 @@ export default function MePage() {
       setDernierTest(h.dernier_test || '')
       setSeroStatus(h.sero_status || '')
       setLimits(p.limits || '')
-      setBodyPartPhotos(p.body_part_photos || {})
+      setBodyPartPhotos(() => {
+        const raw = p.body_part_photos || {}
+        const keyMap: Record<string, string> = { torse: 'torso', bite: 'sex', cul: 'butt', pieds: 'feet' }
+        const migrated: Record<string, string[]> = {}
+        for (const [k, v] of Object.entries(raw)) {
+          const newKey = keyMap[k] || k
+          if (Array.isArray(v)) migrated[newKey] = v as string[]
+          else if (typeof v === 'string' && v) migrated[newKey] = [v]
+        }
+        return migrated
+      })
     }
     // Allow auto-save after initial load settles
     setTimeout(() => { profileLoaded.current = true }, 500)
@@ -470,8 +485,9 @@ export default function MePage() {
             )
           })()}
 
-          <Section title="Photos profil" color={S.p}>
-            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>Visage, corps. Visible par défaut.</p>
+          <Section title={t('profile.public_photos')} color={S.sage}>
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 4px' }}>{t('profile.public_photos_desc')}</p>
+            <p style={{ fontSize:10, color:S.tx4, margin:'0 0 10px' }}>{t('profile.public_photos_rules')}</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosProfil.map((url) => (
                 <div key={url} style={{ position:'relative', width:80, height:80 }}>
@@ -497,7 +513,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosProfil.length} photo{photosProfil.length !== 1 ? 's' : ''}</p>
           </Section>
 
-          <Section title="Infos" color={S.lav}>
+          <Section title={t('profile.infos')} color={S.lav}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
@@ -557,103 +573,102 @@ export default function MePage() {
           )}
         </div>
 
-      {/* ── Adulte ── */}
+      {/* ── MÉDIAS ADULTES ── */}
         <div style={{ padding:'16px 20px' }}>
 
-          {/* Body Part Photos Grid */}
-          <Section title="Photos par zone" color={S.p}>
-            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>Assigne une photo a chaque zone. Visible uniquement dans le bloc Adulte.</p>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
-              {BODY_PARTS.map(bp => {
-                const url = bodyPartPhotos[bp.id]
+          {/* Zones intimes — 2×2 grid, max 4 per zone, photo+video */}
+          <Section title={t('profile.adult_zones')} color={S.p}>
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 12px' }}>{t('profile.adult_zones_desc')}</p>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              {BODY_ZONES.map(zone => {
+                const files = bodyPartPhotos[zone.id] || []
+                const canAdd = files.length < 4
                 return (
-                  <div key={bp.id} style={{ position:'relative' }}>
-                    <label style={{
-                      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-                      width:'100%', aspectRatio:'1', borderRadius:14,
-                      border: url ? `2px solid ${S.p}88` : `1px dashed ${S.pbd}`,
-                      background: url ? 'none' : S.p3,
-                      cursor: mediaUploading ? 'wait' : 'pointer',
-                      overflow:'hidden', position:'relative',
-                    }}>
-                      {url ? (
-                        <img src={url} alt={bp.label} style={{ width:'100%', height:'100%', objectFit:'cover', position:'absolute', top:0, left:0 }} />
-                      ) : (
-                        <>
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="1.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                          <span style={{ fontSize:10, color:S.p, marginTop:2, fontWeight:600 }}>{bp.label}</span>
-                        </>
+                  <div key={zone.id} style={{ background:'rgba(22,20,31,0.85)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', borderRadius:16, border:'1px solid '+S.rule2, padding:12, position:'relative' }}>
+                    {/* Zone header with icon */}
+                    <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8 }}>
+                      <div style={{ color: S.p, opacity: 0.7 }}>{ZONE_ICONS[zone.id]}</div>
+                      <span style={{ fontSize:12, fontWeight:700, color:S.tx, textTransform:'uppercase', letterSpacing:'0.04em' }}>{zone.label}</span>
+                      <span style={{ fontSize:10, color:S.tx4, marginLeft:'auto' }}>{files.length}/4</span>
+                    </div>
+                    {/* Thumbnails grid */}
+                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
+                      {files.map((url, i) => {
+                        const isVideo = url.match(/\.(mp4|mov|webm|avi)/i)
+                        return (
+                          <div key={i} style={{ position:'relative', aspectRatio:'1', borderRadius:10, overflow:'hidden' }}>
+                            {isVideo ? (
+                              <video src={url} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                            ) : (
+                              <img src={url} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                            )}
+                            <button onClick={() => setBodyPartPhotos(prev => {
+                              const arr = [...(prev[zone.id] || [])]; arr.splice(i, 1)
+                              return { ...prev, [zone.id]: arr }
+                            })} style={{ position:'absolute', top:2, right:2, width:16, height:16, borderRadius:99, background:S.red, border:'1.5px solid '+S.bg, color:'#fff', fontSize:9, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0 }}>×</button>
+                            {isVideo && <div style={{ position:'absolute', bottom:2, right:2, padding:'1px 4px', borderRadius:4, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:8, fontWeight:600 }}>vid</div>}
+                          </div>
+                        )
+                      })}
+                      {canAdd && (
+                        <label style={{ aspectRatio:'1', borderRadius:10, border:'1px dashed '+S.pbd, background:S.p3, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
+                          <input type="file" accept="image/*,video/*" onChange={async (e) => {
+                            const f = e.target.files?.[0]; if (!f || !user) return; e.target.value = ''
+                            const isVid = f.type.startsWith('video/')
+                            const fileToUpload = isVid ? f : await compressImage(f)
+                            const ext = f.name.split('.').pop() || 'jpg'
+                            const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+                            const path = `${user.id}/zone_${zone.id}_${ts}.${ext}`
+                            const { error } = await supabase.storage.from('avatars').upload(path, fileToUpload, { upsert: false })
+                            if (error) { showToast('Upload error', 'error'); return }
+                            const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+                            setBodyPartPhotos(prev => ({ ...prev, [zone.id]: [...(prev[zone.id] || []), publicUrl] }))
+                          }} disabled={mediaUploading} style={{ display:'none' }} />
+                          <Plus size={16} strokeWidth={1.5} style={{ color:S.p }} />
+                        </label>
                       )}
-                      <input type="file" accept="image/*" onChange={async (e) => {
-                        const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
-                        if (!user) return
-                        const fileToUpload = await compressImage(f)
-                        const ext = f.name.split('.').pop() || 'jpg'
-                        const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-                        const path = `${user.id}/bp_${bp.id}_${ts}.${ext}`
-                        const { error } = await supabase.storage.from('avatars').upload(path, fileToUpload, { upsert: false })
-                        if (error) { showToast('Erreur upload', 'error'); return }
-                        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-                        setBodyPartPhotos(prev => ({ ...prev, [bp.id]: publicUrl }))
-                      }} disabled={mediaUploading} style={{ display:'none' }} />
-                    </label>
-                    {url && (
-                      <>
-                        <div style={{ position:'absolute', bottom:6, left:0, right:0, textAlign:'center' }}>
-                          <span style={{ fontSize:9, fontWeight:700, color:'#fff', background:'rgba(0,0,0,0.6)', padding:'2px 8px', borderRadius:6, textTransform:'uppercase', letterSpacing:'0.04em' }}>{bp.label}</span>
-                        </div>
-                        <button onClick={() => setBodyPartPhotos(prev => {
-                          const next = { ...prev }; delete next[bp.id]; return next
-                        })} style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:10, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
-                      </>
-                    )}
+                    </div>
                   </div>
                 )
               })}
             </div>
-            <p style={{ fontSize:11, color:S.tx3, margin:'10px 0 0' }}>{Object.keys(bodyPartPhotos).length}/{BODY_PARTS.length} zones remplies</p>
+            <p style={{ fontSize:11, color:S.tx3, margin:'10px 0 0' }}>{t('profile.zones_filled', { count: Object.keys(bodyPartPhotos).filter(k => (bodyPartPhotos[k]?.length || 0) > 0).length, total: BODY_ZONES.length })}</p>
           </Section>
 
-          <Section title="Photos & videos adultes" color={S.p}>
-            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>NSFW. Partage uniquement si le candidat active le bloc "Adulte".</p>
+          {/* Photos & vidéos adultes — Libre (mixed upload) */}
+          <Section title={t('profile.adult_free')} color={S.p}>
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 8px' }}>{t('profile.adult_free_desc')}</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
-              {photosIntime.map((url) => (
-                <div key={url} style={{ position:'relative', width:80, height:80 }}>
-                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
-                  <button onClick={() => removePhotoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
-                </div>
-              ))}
+              {[...photosIntime, ...videosIntime].map((url) => {
+                const isVideo = url.match(/\.(mp4|mov|webm|avi)/i)
+                return (
+                  <div key={url} style={{ position:'relative', width:80, height:80 }}>
+                    {isVideo ? (
+                      <video src={url} style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
+                    ) : (
+                      <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
+                    )}
+                    <button onClick={() => { removePhotoIntime(url); removeVideoIntime(url) }} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
+                    {isVideo && <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>video</div>}
+                  </div>
+                )
+              })}
               <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p3, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="image/*" multiple onChange={async (e) => {
+                <input type="file" accept="image/*,video/*" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
-                  for (const f of captured) await uploadMedia(f, 'intime', 'photo')
+                  for (const f of captured) {
+                    if (f.type.startsWith('video/')) await uploadMedia(f, 'intime', 'video')
+                    else await uploadMedia(f, 'intime', 'photo')
+                  }
                 }} disabled={mediaUploading} style={{ display:'none' }} />
-                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Photo</span>
+                <ImagePlus size={18} strokeWidth={1.5} style={{ color:S.p }} />
               </label>
             </div>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
-              {videosIntime.map((url) => (
-                <div key={url} style={{ position:'relative', width:100, height:80 }}>
-                  <video src={url} style={{ width:100, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
-                  <button onClick={() => removeVideoIntime(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>x</button>
-                  <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>video</div>
-                </div>
-              ))}
-              <label style={{ width:100, height:80, borderRadius:12, border:'1px dashed ' + S.pbd, background:S.p3, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="video/*" onChange={async (e) => {
-                  const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
-                  await uploadMedia(f, 'intime', 'video')
-                }} disabled={mediaUploading} style={{ display:'none' }} />
-                <span style={{ fontSize:24, color:S.p, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.p, marginTop:2 }}>Video</span>
-              </label>
-            </div>
-            <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosIntime.length} photo{photosIntime.length !== 1 ? 's' : ''} · {videosIntime.length} video{videosIntime.length !== 1 ? 's' : ''}</p>
-            {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>Upload en cours...</p>}
+            <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{t('profile.media_count', { photos: photosIntime.length, videos: videosIntime.length })}</p>
+            {mediaUploading && <p style={{ fontSize:12, color:S.p, marginTop:8 }}>{t('profile.upload_in_progress')}</p>}
           </Section>
 
-          <Section title="Kinks" color={S.p} badge={kinks.length > 0 ? `${kinks.length} pratique${kinks.length > 1 ? 's' : ''}` : undefined}>
+          <Section title={t('profile.kinks')} color={S.p} badge={kinks.length > 0 ? t('profile.kinks_badge', { count: kinks.length }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {kinkOptions.map(k => (
                 <Chip key={k.label} label={k.label} active={kinks.includes(k.label)} onClick={() => toggleKink(k.label)} />
@@ -661,7 +676,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Santé" color={S.sage} badge={prep === 'Actif' ? 'PrEP actif' : dernierTest ? `Test ${monthsAgoCount(dernierTest)} mois` : undefined}>
+          <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>PrEP actif</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
@@ -681,7 +696,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title="Limites" color={S.red}>
+          <Section title={t('profile.limits')} color={S.red}>
             <textarea
               value={limits} onChange={e => setLimits(e.target.value)}
               placeholder="Hard limits, no-go..." rows={3}

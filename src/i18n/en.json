@@ -77,7 +77,7 @@
     "anonymous_help": "Your anonymous review helps the community",
     "share": "Share",
     "invite_link": "Invite link",
-    "link_copied": "Link copied",
+    "link_copied": "Link copied!",
     "address_copied": "Address copied",
     "not_found": "Session not found.",
     "copied": "Copied",
@@ -159,7 +159,29 @@
     "choose_template": "Choose a template",
     "template_help": "It will pre-fill tags and title",
     "edit_title": "Edit session",
-    "copy": "Copy"
+    "invite_group": "Invite a group",
+    "invite_sent": "Invite sent",
+    "invite_body": "You are invited! Apply here.",
+    "share_native": "Share via...",
+    "share_whatsapp": "Send on WhatsApp",
+    "share_link": "Share link",
+    "share_message": "Share message",
+    "manage": "Manage session",
+    "manage_pending": "Manage ({{count}} pending)",
+    "applied": "Application sent",
+    "apply_cta": "Apply to this session",
+    "copy_share_msg": "Copy message for Grindr / WhatsApp",
+    "msg_copied": "Message copied!",
+    "custom_desc": "Create your own vibe",
+    "publish_in_app": "Publish in app",
+    "publish_in_app_desc": "Visible in search results",
+    "keep_secret": "Keep secret",
+    "keep_secret_desc": "Invisible, accessible only via link",
+    "invite_options": "Invite and share",
+    "candidates_count": "{{count}} candidates",
+    "candidates": "Candidates",
+    "vote_info": "Advisory vote: visible to all members. The host makes the final decision.",
+    "host_must_confirm": "The host must confirm your arrival"
   },
   "chat": {
     "title": "Messages",
@@ -182,7 +204,8 @@
     "send_first": "Send the first message",
     "delete_msg": "Delete this message?",
     "sending_photo": "Sending photo...",
-    "group_chat": "Group chat"
+    "group_chat": "Group chat",
+    "host_must_enable": "The host must enable group chat for this session."
   },
   "profile": {
     "account": "Account",
@@ -217,7 +240,27 @@
     "autosave_idle": "Changes are saved automatically",
     "autosave_active": "Auto-save active",
     "interested": "Interested · Get in touch",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "request_sent": "Request sent",
+    "public_photos": "Public photos",
+    "public_photos_desc": "Visible in profile search and by session candidates/members.",
+    "public_photos_rules": "Non-adult photos only. A public session does not give access to member photos without host approval.",
+    "adult_zones": "Adult — Intimate zones",
+    "adult_zones_desc": "Photos and videos by zone. Max 4 files per zone.",
+    "adult_free": "Adult — Free",
+    "adult_free_desc": "Free adult content. Mixed photos and videos.",
+    "zones_filled": "{{count}}/{{total}} zones",
+    "upload_in_progress": "Uploading...",
+    "media_count": "{{photos}} photo(s) · {{videos}} video(s)",
+    "infos": "Info",
+    "kinks_badge": "{count} practice(s)",
+    "body_zones": "Intimate zones",
+    "body_zones_desc": "torso, sex, butt...",
+    "health_badge_prep": "PrEP active",
+    "health_badge_test": "Tested {months} months ago",
+    "kinks_count": "{{count}} practice(s)",
+    "health_prep": "PrEP active",
+    "health_test": "Tested {{months}} months ago"
   },
   "review": {
     "title": "How was it?",
@@ -337,7 +380,14 @@
     "no_pending": "No pending applications",
     "no_accepted": "No accepted members",
     "no_rejected": "No rejections",
-    "edit": "Edit"
+    "edit": "Edit",
+    "copy_grindr": "Copy Grindr message",
+    "copied": "Copied!",
+    "group_chat": "Group Chat",
+    "accepted_for": "Accepted for \"{{title}}\"",
+    "rejected_for": "Not selected for \"{{title}}\"",
+    "accepted_route": "Accepted — on the way",
+    "auto_accepted": "Automatically accepted via direct link"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -405,7 +455,16 @@
   },
   "sessions": {
     "empty_hosted": "No sessions. Create your first one.",
-    "empty_applied": "No applications. Join a session via a link."
+    "empty_applied": "No applications. Join a session via a link.",
+    "title": "Sessions",
+    "my_sessions": "My sessions",
+    "applications": "Applications",
+    "new_session": "New session",
+    "pinned": "My active sessions",
+    "my_hosted": "My sessions (host)",
+    "nearby": "Nearby",
+    "no_public": "No public sessions at the moment",
+    "past": "Past sessions"
   },
   "addresses": {
     "empty": "No addresses",
@@ -441,5 +500,17 @@
     "sending": "Sending...",
     "send_to_all": "Send to all",
     "accept": "Accept"
+  },
+  "status": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "checked_in": "Checked in",
+    "rejected": "Rejected",
+    "open": "Open",
+    "ended": "Ended",
+    "closed": "Closed",
+    "active": "Active",
+    "check_in_confirmed": "Check-in confirmed",
+    "not_retained": "Not retained"
   }
 }

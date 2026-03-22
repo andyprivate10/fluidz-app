@@ -77,7 +77,7 @@
     "anonymous_help": "Ton avis anonyme aide la communaute",
     "share": "Partager",
     "invite_link": "Lien d'invitation",
-    "link_copied": "Lien copie",
+    "link_copied": "Lien copié !",
     "address_copied": "Adresse copiee",
     "not_found": "Session introuvable.",
     "copied": "Copie",
@@ -90,7 +90,7 @@
     "welcome": "Bienvenue !",
     "awaiting_confirmation": "En attente de confirmation du host",
     "rejected": "Non retenu",
-    "full": "Session complete",
+    "full": "Session complète",
     "new_session": "Nouvelle session",
     "create_step": "Etape {{step}}/3",
     "title_label": "Titre de la session",
@@ -159,7 +159,29 @@
     "choose_template": "Choisis un template",
     "template_help": "Il pre-remplira les tags et le titre",
     "edit_title": "Modifier la session",
-    "copy": "Copier"
+    "invite_group": "Inviter un groupe",
+    "invite_sent": "Invite envoyée",
+    "invite_body": "Tu es invité ! Postule ici.",
+    "share_native": "Partager via...",
+    "share_whatsapp": "Envoyer sur WhatsApp",
+    "share_link": "Partager le lien",
+    "share_message": "Message à partager",
+    "manage": "Gérer la session",
+    "manage_pending": "Gérer ({{count}} en attente)",
+    "applied": "Candidature envoyée",
+    "apply_cta": "Postuler à cette session",
+    "copy_share_msg": "Copier message pour Grindr / WhatsApp",
+    "msg_copied": "Message copié !",
+    "custom_desc": "Crée ton propre vibe",
+    "publish_in_app": "Publier dans l'app",
+    "publish_in_app_desc": "Visible dans les résultats de recherche",
+    "keep_secret": "Garder secret",
+    "keep_secret_desc": "Invisible, accessible uniquement par lien",
+    "invite_options": "Inviter et partager",
+    "candidates_count": "{{count}} candidats",
+    "candidates": "Candidats",
+    "vote_info": "Vote consultatif : visible par tous les membres. Le host tranche la décision finale.",
+    "host_must_confirm": "Le host doit confirmer ton arrivée"
   },
   "chat": {
     "title": "Messages",
@@ -182,7 +204,8 @@
     "send_first": "Envoie le premier message",
     "delete_msg": "Supprimer ce message ?",
     "sending_photo": "Envoi photo...",
-    "group_chat": "Chat de groupe"
+    "group_chat": "Chat de groupe",
+    "host_must_enable": "Le host doit activer le group chat pour cette session."
   },
   "profile": {
     "account": "Compte",
@@ -195,9 +218,9 @@
     "location": "Localisation",
     "role": "Role",
     "morphology": "Morphologie",
-    "kinks": "Pratiques",
+    "kinks": "Kinks",
     "limits": "Limites",
-    "health": "Sante",
+    "health": "Santé",
     "photos": "Photos",
     "edit": "Modifier",
     "height": "Taille (cm)",
@@ -217,7 +240,27 @@
     "autosave_idle": "Les modifications sont sauvegardées automatiquement",
     "autosave_active": "Auto-save actif",
     "interested": "Intéressé · Entrer en contact",
-    "sending": "Envoi..."
+    "sending": "Envoi...",
+    "request_sent": "Demande envoyée",
+    "public_photos": "Photos publiques",
+    "public_photos_desc": "Visibles dans la recherche de profils et par les candidats/membres d'une session.",
+    "public_photos_rules": "Photos non-adultes uniquement. Une session publique ne donne pas accès aux photos de membres sans acceptation par l'hôte.",
+    "adult_zones": "Adulte — Zones intimes",
+    "adult_zones_desc": "Photos et vidéos par zone. Max 4 fichiers par zone.",
+    "adult_free": "Adulte — Libre",
+    "adult_free_desc": "Contenu adulte libre. Photos et vidéos mélangées.",
+    "zones_filled": "{{count}}/{{total}} zones",
+    "upload_in_progress": "Upload en cours...",
+    "media_count": "{{photos}} photo(s) · {{videos}} vidéo(s)",
+    "infos": "Infos",
+    "kinks_badge": "{count} pratique(s)",
+    "body_zones": "Zones intimes",
+    "body_zones_desc": "torse, sex, fessier...",
+    "health_badge_prep": "PrEP actif",
+    "health_badge_test": "Test il y a {months} mois",
+    "kinks_count": "{{count}} pratique(s)",
+    "health_prep": "PrEP actif",
+    "health_test": "Test il y a {{months}} mois"
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -337,7 +380,14 @@
     "no_pending": "Aucune candidature en attente",
     "no_accepted": "Aucun membre accepté",
     "no_rejected": "Aucun refus",
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "copy_grindr": "Copier message Grindr",
+    "copied": "Copié !",
+    "group_chat": "Group Chat",
+    "accepted_for": "Accepté pour \"{{title}}\"",
+    "rejected_for": "Non retenu pour \"{{title}}\"",
+    "accepted_route": "Accepté — en route",
+    "auto_accepted": "Accepté automatiquement via lien direct"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -405,7 +455,16 @@
   },
   "sessions": {
     "empty_hosted": "Aucune session. Crée ta première.",
-    "empty_applied": "Aucune candidature. Rejoins une session via un lien."
+    "empty_applied": "Aucune candidature. Rejoins une session via un lien.",
+    "title": "Sessions",
+    "my_sessions": "Mes sessions",
+    "applications": "Candidatures",
+    "new_session": "Nouvelle session",
+    "pinned": "Mes sessions actives",
+    "my_hosted": "Mes sessions (host)",
+    "nearby": "Autour de moi",
+    "no_public": "Aucune session publique pour le moment",
+    "past": "Terminées"
   },
   "addresses": {
     "empty": "Aucune adresse",
@@ -441,5 +500,17 @@
     "sending": "Envoi...",
     "send_to_all": "Envoyer a tous",
     "accept": "Accepter"
+  },
+  "status": {
+    "pending": "En attente",
+    "accepted": "Accepté",
+    "checked_in": "Check-in",
+    "rejected": "Refusé",
+    "open": "Ouvert",
+    "ended": "Terminée",
+    "closed": "Fermé",
+    "active": "Active",
+    "check_in_confirmed": "Check-in confirmé",
+    "not_retained": "Non retenu"
   }
 }

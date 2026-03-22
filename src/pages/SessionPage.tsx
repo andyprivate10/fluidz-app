@@ -2,13 +2,14 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Clock, ThumbsUp, ThumbsDown, Users, Star, Share2, MessageCircle, Check, Copy } from 'lucide-react'
+import { Clock, ThumbsUp, ThumbsDown, Users, Star, Share2, MessageCircle, Check, MapPin, Navigation, UserCheck, Settings } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { formatElapsed, formatRemaining } from '../lib/timing'
+import { getSessionCover } from '../lib/sessionCover'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { useTranslation } from 'react-i18next'
 import MapView from '../components/MapView'
@@ -21,6 +22,8 @@ type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes'
 
 const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
 const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
+const qBtn: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 16px', borderRadius: 14, border: '1px solid '+S.rule2, background: 'rgba(22,20,31,0.85)', cursor: 'pointer', minWidth: 64, whiteSpace: 'nowrap' }
+const qLabel: React.CSSProperties = { fontSize: 10, fontWeight: 600, color: S.tx2 }
 
 export default function SessionPage() {
   const { t } = useTranslation()
@@ -301,27 +304,29 @@ export default function SessionPage() {
       )}
       <EventContextNav role={eventRole} sessionTitle={session.title} />
 
-      {/* ─── HERO ─── */}
-      <div style={{ position: 'relative', minHeight: 240, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>
-        {/* Hero gradient background */}
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, ${S.bg1} 0%, ${S.bg} 100%)` }} />
-        {/* Orbs - vivid in hero */}
-        <div style={{ position: 'absolute', width: 280, height: 280, top: -100, right: -80, borderRadius: '50%', filter: 'blur(70px)', background: 'rgba(224,136,122,0.25)', animation: 'orbDrift1 8s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', width: 220, height: 220, bottom: -60, left: -50, borderRadius: '50%', filter: 'blur(60px)', background: 'rgba(144,128,186,0.20)', animation: 'orbDrift2 11s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', width: 140, height: 140, top: '40%', left: '50%', borderRadius: '50%', filter: 'blur(50px)', background: 'rgba(107,168,136,0.10)', animation: 'orbDrift1 14s ease-in-out infinite reverse' }} />
+      {/* ─── HERO (cover-based) ─── */}
+      <div style={{ position: 'relative', minHeight: 200, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>
+        {/* Cover gradient from tags */}
+        <div style={{ position: 'absolute', inset: 0, background: getSessionCover(session.tags).bg }} />
+        {/* Animated orb accent */}
+        <div style={{ position: 'absolute', width: 260, height: 260, top: -100, right: -80, borderRadius: '50%', filter: 'blur(70px)', background: getSessionCover(session.tags).overlay, animation: 'orbDrift1 8s ease-in-out infinite' }} />
         {/* Fade bottom */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 200, background: `linear-gradient(to top, ${S.bg} 10%, transparent)` }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: `linear-gradient(to top, ${S.bg} 5%, transparent)` }} />
 
         {/* Hero content */}
         <div style={{ position: 'relative', zIndex: 1, padding: '16px 24px 20px' }}>
-          {/* Title + badges row */}
           <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, lineHeight: 1.1 }}>{session.title}</h1>
+          
+          {/* Compact info row with icons */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10, alignItems: 'center' }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor === S.sage ? S.sagebg : statusColor === S.red ? S.redbg : S.p2, border: '1px solid ' + (statusColor === S.sage ? S.sagebd : statusColor === S.red ? S.redbd : S.pbd), padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{statusLabel}</span>
-            {members.length > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd, padding: '3px 10px', borderRadius: 50 }}><Users size={10} strokeWidth={1.5} style={{ marginRight: 3, display: 'inline' }} />{members.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>}
-            {session.max_capacity && (members.length + 1) >= session.max_capacity && <span style={{ fontSize: 10, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Complet</span>}
-            {elapsed && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, background: S.rule, padding: '3px 10px', borderRadius: 50 }}><Clock size={9} strokeWidth={1.5} style={{ marginRight: 2 }} />{elapsed}</span>}
-            {remaining && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: remaining === 'terminé' ? S.red : S.p, background: remaining === 'terminé' ? S.redbg : S.p2, padding: '3px 10px', borderRadius: 50 }}>{remaining === 'terminé' ? 'Terminé' : remaining + ' restant'}</span>}
+            <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor === S.sage ? S.sagebg : statusColor === S.red ? S.redbg : S.p2, border: '1px solid ' + (statusColor === S.sage ? S.sagebd : statusColor === S.red ? S.redbd : S.pbd), padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: 3 }}>
+              {session.status === 'open' && <span style={{ width: 5, height: 5, borderRadius: '50%', background: statusColor, animation: 'blink 2s ease-in-out infinite' }} />}
+              {statusLabel}
+            </span>
+            {members.length > 0 && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx2, display: 'flex', alignItems: 'center', gap: 3 }}><Users size={10} strokeWidth={1.5} />{members.length + 1}{session.max_capacity ? '/' + session.max_capacity : ''}</span>}
+            {session.approx_area && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={9} strokeWidth={1.5} />{session.approx_area}</span>}
+            {elapsed && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={9} strokeWidth={1.5} />{elapsed}</span>}
+            {remaining && session.status === 'open' && <span style={{ fontSize: 10, fontWeight: 600, color: S.p, display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={9} strokeWidth={1.5} />{remaining === 'terminé' ? t('session.ended') : remaining}</span>}
           </div>
 
           {/* Tags */}
@@ -378,43 +383,78 @@ export default function SessionPage() {
             </div>
           )}
           {isHost && <div style={{ marginTop: 8 }}><span style={{ fontSize: 10, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, padding: '2px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Host</span></div>}
-
-          {/* Location */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10 }}>
-            {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address ? (
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={S.sage} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  <span style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{session.exact_address}</span>
-                </div>
-                <button onClick={() => {
-                  const dirs = (session.lineup_json?.directions || []).map((d, i) => {
-                    const txt = typeof d === 'string' ? d : d.text
-                    return (i+1) + '. ' + txt
-                  }).join('\n')
-                  const full = session.exact_address + (dirs ? '\n\n' + dirs : '')
-                  copyAddress(full)
-                }} style={{ marginTop: 4, padding: '3px 10px', borderRadius: 8, fontSize: 10, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sagebd : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx3 }}>
-                  {addressCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:3}} />Copié</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />Copier adresse</>}
-                </button>
-              </div>
-            ) : session.approx_area ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span style={{ fontSize: 12, color: S.tx2 }}>{session.approx_area}</span>
-                {!isHost && (
-                  <span style={{ fontSize: 10, color: S.tx3, display: 'flex', alignItems: 'center', gap: 3, marginLeft: 4 }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    Après acceptation
-                  </span>
-                )}
-              </div>
-            ) : null}
-          </div>
         </div>
       </div>
 
-      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* ─── QUICK ACTIONS (role-based) ─── */}
+      <div style={{ padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        {/* MEMBER quick actions */}
+        {eventRole === 'member' && (
+          <>
+            {session.exact_address && (
+              <button onClick={() => window.open('https://maps.google.com/?q=' + encodeURIComponent(session.exact_address || ''), '_blank')} style={qBtn}>
+                <Navigation size={16} strokeWidth={1.5} style={{ color: S.sage }} />
+                <span style={qLabel}>Maps</span>
+              </button>
+            )}
+            {!checkInDone && session.status === 'open' && (
+              <button onClick={handleCheckIn} disabled={checkInLoading} style={{ ...qBtn, borderColor: S.sage, background: S.sagebg, opacity: checkInLoading ? 0.6 : 1 }}>
+                <UserCheck size={16} strokeWidth={1.5} style={{ color: S.sage }} />
+                <span style={{ ...qLabel, color: S.sage }}>{checkInLoading ? '...' : 'Check-in'}</span>
+              </button>
+            )}
+            <button onClick={() => navigate('/session/' + id + '/chat')} style={qBtn}>
+              <MessageCircle size={16} strokeWidth={1.5} style={{ color: S.lav }} />
+              <span style={qLabel}>Chat</span>
+            </button>
+            <button onClick={() => navigate('/session/' + id + '/dm')} style={qBtn}>
+              <MessageCircle size={16} strokeWidth={1.5} style={{ color: S.p }} />
+              <span style={qLabel}>DM Host</span>
+            </button>
+          </>
+        )}
+        {/* HOST quick actions */}
+        {eventRole === 'host' && (
+          <>
+            <button onClick={() => navigate('/session/' + id + '/host')} style={{ ...qBtn, borderColor: S.pbd, background: S.p2 }}>
+              <Users size={16} strokeWidth={1.5} style={{ color: S.p }} />
+              <span style={{ ...qLabel, color: S.p }}>{pendingCount > 0 ? t('session.candidates_count', { count: pendingCount }) : t('session.candidates')}</span>
+            </button>
+            <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/join/' + session.invite_code); showToast(t('session.link_copied'), 'success') }} style={qBtn}>
+              <Share2 size={16} strokeWidth={1.5} style={{ color: S.lav }} />
+              <span style={qLabel}>{t('session.share_link')}</span>
+            </button>
+            <button onClick={() => navigate('/session/' + id + '/edit')} style={qBtn}>
+              <Settings size={16} strokeWidth={1.5} style={{ color: S.tx3 }} />
+              <span style={qLabel}>{t('host.edit')}</span>
+            </button>
+          </>
+        )}
+        {/* CANDIDATE quick actions */}
+        {eventRole === 'candidate' && !myApp && session.status === 'open' && (
+          <>
+            <button onClick={() => navigate('/session/' + id + '/apply')} style={{ ...qBtn, borderColor: S.pbd, background: S.p2, flex: 1 }}>
+              <Star size={16} strokeWidth={1.5} style={{ color: S.p }} />
+              <span style={{ ...qLabel, color: S.p }}>{t('session.apply_cta')}</span>
+            </button>
+          </>
+        )}
+      </div>
+
+      <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+        {/* ─── ADDRESS (member only, prominent) ─── */}
+        {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address && (
+          <div style={{ ...card, borderColor: S.sagebd, background: 'rgba(74,222,128,0.06)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <MapPin size={16} strokeWidth={1.5} style={{ color: S.sage, flexShrink: 0 }} />
+              <span style={{ fontSize: 14, color: S.tx, fontWeight: 600, flex: 1 }}>{session.exact_address}</span>
+              <button onClick={() => copyAddress(session.exact_address || '')} style={{ padding: '6px 12px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (addressCopied ? S.sage : S.rule), background: addressCopied ? S.sagebg : 'transparent', color: addressCopied ? S.sage : S.tx3, whiteSpace: 'nowrap' as const }}>
+                {addressCopied ? t('session.copied') : t('session.copy')}
+              </button>
+            </div>
+          </div>
+        )}
 
         {session.description && (
           <div style={card}>
@@ -639,7 +679,7 @@ export default function SessionPage() {
                               opacity: disabled && myVote !== 'yes' ? 0.5 : 1,
                             }}
                           >
-                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsUp size={14} /> Oui</span>
+                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsUp size={14} /> {t('common.yes')}</span>
                           </button>
                           <button
                             type="button"
@@ -658,7 +698,7 @@ export default function SessionPage() {
                               opacity: disabled && myVote !== 'no' ? 0.5 : 1,
                             }}
                           >
-                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> Non</span>
+                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> {t('common.no')}</span>
                           </button>
                         </div>
                         <div style={{ fontSize: 12, color: S.tx2, textAlign: 'right' }}>
@@ -670,7 +710,7 @@ export default function SessionPage() {
               </div>
             )}
             <p style={{ fontSize: 11, color: S.tx2, marginTop: 8 }}>
-              Vote consultatif : visible par tous les membres. Le host tranche la décision finale.
+              {t('session.vote_info')}
             </p>
           </div>
         ) : (
@@ -679,21 +719,12 @@ export default function SessionPage() {
           </div>
         )}
 
-        {myApp?.status === 'accepted' && !checkInDone && (
-          <button
-            onClick={handleCheckIn}
-            disabled={checkInLoading}
-            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,'+S.sage+','+S.emerald+')', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
-          >
-            {checkInLoading ? t('session.checking_in') : t('session.check_in')}
-          </button>
-        )}
-
+        {/* Check-in status cards (awaiting / confirmed) */}
         {checkInDone && myApp?.status !== 'checked_in' && (
           <div style={{ ...card, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
             <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
             <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>{t('session.awaiting_confirmation')}</div>
-            <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>Le host doit confirmer ton arrivée</p>
+            <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>{t('session.host_must_confirm')}</p>
           </div>
         )}
 
@@ -723,7 +754,7 @@ export default function SessionPage() {
                 }}
                 style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.rule, background: copied ? S.sagebg : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
               >
-                {copied ? 'Message copié !' : 'Copier message pour Grindr / WhatsApp'}
+                {copied ? t('session.msg_copied') : t('session.copy_share_msg')}
               </button>
               {typeof navigator !== 'undefined' && navigator.share && (
                 <button
@@ -770,22 +801,6 @@ export default function SessionPage() {
                 )
               })}
             </div>
-          </div>
-        )}
-
-        {isHost && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              {pendingCount > 0 ? `Gérer (${pendingCount} en attente)` : 'Gérer la session'}
-            </button>
-            {session.invite_code && (
-              <button onClick={() => {
-                const url = window.location.origin + '/join/' + session.invite_code
-                copyMessage(url)
-              }} style={{ width: '100%', padding: 14, background: copied ? S.sagebg : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                {copied ? 'Lien copie !' : 'Partager le lien'}
-              </button>
-            )}
           </div>
         )}
 
@@ -882,7 +897,7 @@ export default function SessionPage() {
       {/* Review CTA for ended sessions */}
       {session.status === 'ended' && myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
         <div style={{ padding: '0 16px 16px' }}>
-          <div style={{ background: S.bg1, border: '1px solid '+S.amberbd, borderRadius: 16, padding: 20, textAlign: 'center' }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.amberbd, borderRadius: 16, padding: 20, textAlign: 'center' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>Comment c'était ?</p>
             <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 14px' }}>Ton avis anonyme aide la communauté</p>
             <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: S.p, border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px '+S.pbd }}>
@@ -896,15 +911,15 @@ export default function SessionPage() {
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, '+S.bg+' 60%, transparent)', zIndex: 50 }}>
           {showPostulerSuccess ? (
             <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
-              Candidature envoyée
+              {t('session.applied')}
             </button>
           ) : session.max_capacity && (members.length + 1) >= session.max_capacity ? (
             <button disabled style={{ width: '100%', padding: 16, background: S.redbg, border: '1px solid ' + S.redbd, borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>
-              Session complète
+              {t('session.full')}
             </button>
           ) : (
             <button onClick={() => currentUser ? navigate('/session/' + id + '/apply') : (session.invite_code ? navigate('/join/' + session.invite_code) : navigate('/me'))} className='btn-shimmer' style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', position: 'relative' as const, overflow: 'hidden', boxShadow: '0 4px 20px ' + S.pbd }}>
-              Postuler à cette session
+              {t('session.apply_cta')}
             </button>
           )}
         </div>

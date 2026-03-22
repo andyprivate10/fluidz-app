@@ -36,7 +36,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
   }
   if (sent) return (
     <button onClick={() => nav('/dm/' + targetUserId)} style={{ width: '100%', padding: '14px', borderRadius: 14, background: S.sagebg, border: '1px solid '+S.sagebd, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-      <span style={{ fontSize: 14, fontWeight: 700, color: S.sage }}>Demande envoyée</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: S.sage }}>{t('profile.request_sent')}</span>
       <span style={{ fontSize: 13, fontWeight: 600, color: S.blue }}>→ DM</span>
     </button>
   )

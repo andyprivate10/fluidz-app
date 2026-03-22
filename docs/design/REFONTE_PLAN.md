@@ -625,3 +625,192 @@ Ouvre un **drawer latéral** avec :
 3. **Inviter comme membre direct** : lien d'invitation directe (bypass candidature, rejoint en tant que membre)
 4. **Inviter depuis le Naughty Book** : sélectionner des profils de mes contacts → notification in-app
 5. **Inviter un groupe** : sélectionner un groupe du Naughty Book → notification à tous les membres
+
+### B13 — Profils connectés (Couple, Trio, Polyamour)
+**Concept** : Un compte unifié entre plusieurs personnes qui interagit comme un profil solo.
+
+**Types de profils connectés**
+- Couple (2 personnes)
+- Trio (3 personnes)
+- Polyamour (N personnes, flexible)
+- Chaque membre a son propre compte individuel + lien vers le profil joint
+
+**Fonctionnalités**
+- Créer un profil joint : un membre invite les autres (même mécanique Apply to DM)
+- Le profil joint a sa propre galerie, bio, rôles, kinks (combinés ou distincts)
+- Apparaît dans la galerie des profils avec un badge "Couple" / "Trio" / "Poly"
+- Peut candidater à une session en tant que profil joint
+- Peut créer/host une session en tant que profil joint
+- Se propage dans les filtres (galerie: filtrer par solo/couple/trio/poly)
+- Chaque membre peut poster/agir au nom du profil joint
+
+**Use cases**
+- Échangisme / swinging : un couple cherche un autre couple ou un solo
+- Trio établi qui recrute pour une soirée
+- Couple qui host une session ensemble
+
+**DB** : table `joint_profiles` (id, type, members[], display_name, profile_json, created_at)
++ table `joint_profile_members` (joint_profile_id, user_id, role, joined_at)
+
+### B14 — Types de profil à l'inscription + expérience adaptée
+**Concept** : À l'inscription, le user choisit son "contexte" qui adapte toute l'expérience.
+
+**Types possibles**
+- Homme gay / bi / queer
+- Homme trans
+- Femme hétérosexuelle
+- Femme bi / queer
+- Femme trans
+- Non-binaire
+- Couple (H/H, H/F, F/F, mixte)
+
+**Adaptation de l'expérience**
+- Galerie filtrée par défaut selon le type (femme hétéro ne voit pas sessions gay-only)
+- Tags de session : "Gay", "Mixed", "Straight", "Open to all"
+- Filtres profil adaptés (morphologie, rôles différents selon contexte)
+- Kinks/pratiques adaptés au contexte
+- Le host peut définir "qui est bienvenu" sur sa session
+- Matching intent adapté au type de profil
+
+**UX**
+- Onboarding : écran de choix du type (illustrations, pas de texte lourd)
+- Stocké dans profile_json.identity_type
+- Modifiable dans Settings
+- Pas de restriction hard — juste du filtrage intelligent par défaut
+
+### B15 — Invitations groupe (même mécanique que sessions)
+**Concept** : Réutiliser le flow candidature/invitation des sessions pour les groupes.
+
+**Inviter à rejoindre un groupe**
+- Lien d'invitation directe (membre immédiat)
+- Lien de candidature (Apply to join + validation admin groupe)
+- Invite depuis le Naughty Book (sélection de contacts)
+- Invite depuis un profil (bouton "Inviter dans un groupe")
+
+### B16 — Fin de session → Création groupe
+**Concept** : À la fin d'une session, le host peut créer un groupe avec les participants.
+
+**Flow**
+1. Session terminée → notification host "Créer un groupe ?"
+2. Host voit la liste des participants avec toggle sélection/désélection
+3. Peut nommer le groupe, ajouter une description
+4. Bouton "Créer le groupe"
+5. Option : ajouter à un groupe existant (sélection parmi ses groupes)
+6. Tous les membres sélectionnés reçoivent une notification
+7. Le groupe apparaît dans le Naughty Book de chaque membre
+
+**Options avancées**
+- Ajouter des profils hors-session au groupe
+- Fusionner avec un groupe existant
+- Le host peut désigner des co-admins du groupe
+
+### B13 — Profils connectés (Couple, Trio, Polyamour)
+**Concept** : Un compte unifié multi-personnes qui interagit comme un profil solo.
+
+**Types de profils connectés**
+- Couple (2 personnes)
+- Trio (3 personnes)
+- Polyamour (N personnes, open)
+- Custom (label libre)
+
+**Mécanique**
+- Chaque personne a son profil individuel
+- Un "joint profile" est créé en liant 2+ profils individuels
+- Le joint profile a : son nom, ses photos, sa bio commune, ses préférences combinées
+- Le joint profile peut : candidater à une session, créer une session, apparaître dans la galerie
+- Filtres galerie : Solo / Couple / Trio / Groupe
+- Dans le Naughty Book, un joint profile apparaît comme une seule entrée
+
+**Use cases**
+- Échangisme / swinging : un couple cherche un autre couple
+- Trio cherche un 4ème
+- Couple cherche un solo pour plan à 3
+
+**Invitation à rejoindre un joint profile**
+- Même mécanique que les sessions : lien d'invitation directe ou Apply to join
+- Chaque membre peut quitter le joint profile à tout moment
+
+### B14 — Types de profil à l'inscription + Adaptation de l'expérience
+**Concept** : À l'inscription, choisir son type de profil pour adapter l'expérience.
+
+**Types de profil**
+- Homme gay / bi
+- Homme hétéro
+- Femme hétéro
+- Femme bi / lesbienne
+- Trans (MtF, FtM)
+- Non-binaire
+- Custom
+
+**Adaptation de l'expérience**
+- Filtrage automatique : une femme hétéro ne voit pas les sessions host gay par défaut
+- Galerie filtrée : profils compatibles en priorité
+- Tags et catégories adaptés au contexte
+- Kinks/pratiques adaptés (la checklist change selon le type)
+- Sections profil adaptées
+
+**Règles**
+- Le type est modifiable à tout moment
+- Pas de restriction hard : un user peut toujours voir tous les profils s'il le souhaite (toggle "voir tout")
+- Le type influence le tri/ranking, pas le blocage
+
+### B15 — Invitations groupes (même mécanique que sessions)
+**Concept** : Réutiliser la mécanique candidature/invitation des sessions pour les groupes.
+
+**Types d'invitation**
+- Invitation directe → le profil rejoint immédiatement
+- Candidature → le créateur du groupe accepte/refuse
+- Lien fixe du groupe (regénérable)
+- Lien temporaire (10min, consultation)
+
+**Flow**
+- Créateur du groupe invite depuis : Naughty Book, galerie profils, lien partagé
+- Le candidat voit : nom du groupe, description, membres actuels
+- Le créateur voit la candidature et accepte/refuse
+
+### B16 — Fin de session → Création de groupe
+**Concept** : L'hôte peut créer un groupe à partir des participants d'une session terminée.
+
+**Flow**
+1. Session terminée → l'hôte voit un CTA "Créer un groupe"
+2. Liste des participants avec checkbox (présélectionnés = checked-in)
+3. L'hôte peut décocher des profils
+4. Nom du groupe suggéré (nom de la session)
+5. Option : "Ajouter à un groupe existant" au lieu de créer un nouveau
+6. Le groupe est créé, les membres sont notifiés
+
+**Options supplémentaires**
+- Proposer de noter/review les participants après la session
+- Ajouter des profils qui n'étaient pas dans la session
+- Fusionner avec un groupe existant du Naughty Book
+
+### B17 — SessionsPage: sessions publiques + pinned
+**Concept** : Le tab Sessions montre les sessions publiques autour de moi + mes sessions pinned.
+
+**Layout**
+1. **Pinned section** (en haut, sage border)
+   - Mes sessions où je suis host
+   - Sessions où je suis inscrit (accepted/checked_in)
+   - Sessions où je suis candidat (pending)
+2. **Sessions publiques** (en dessous)
+   - Sessions ouvertes proches de moi
+   - Tri par distance/date
+   - Même cards que ExplorePage sessions
+
+### B18 — Templates session sauvegardables Custom
+**Concept** : Je peux créer et sauvegarder mes propres templates de session.
+
+**Mécanique**
+- Template = preset de tous les paramètres : titre, description, tags, rôles recherchés, max capacity, timing, adresse
+- Sauvegarde depuis n'importe quelle session créée
+- Mes templates apparaissent en premier dans la grille
+- Editable / supprimable depuis Settings
+
+### B19 — Publier dans l'app / Garder Secret
+**Concept** : À la création de session, choix visible en évidence.
+
+**Options**
+- "Publier dans l'app" → apparaît dans Sessions publiques + Explore
+- "Garder Secret" → invisible dans les résultats, accessible uniquement via lien
+- Toggle bien en évidence, pas un checkbox perdu
+- Par défaut : Garder Secret (pour garder le côté privé)
