@@ -9,6 +9,7 @@ export type AdminConfigItem = {
   category: string | null
   sort_order: number
   active: boolean
+  meta?: Record<string, unknown> | null
 }
 
 const FALLBACK_MORPHOLOGIES: AdminConfigItem[] = [
@@ -28,6 +29,7 @@ export function useAdminConfig() {
   const [morphologies, setMorphologies] = useState<AdminConfigItem[]>(FALLBACK_MORPHOLOGIES)
   const [roles, setRoles] = useState<AdminConfigItem[]>(FALLBACK_ROLES)
   const [sessionTags, setSessionTags] = useState<AdminConfigItem[]>([])
+  const [sessionTemplates, setSessionTemplates] = useState<AdminConfigItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -46,13 +48,15 @@ export function useAdminConfig() {
         const r = byType('role')
         const k = byType('kink')
         const s = byType('session_tag')
+        const t = byType('session_template')
         if (m.length > 0) setMorphologies(m)
         if (r.length > 0) setRoles(r)
         if (k.length > 0) setKinks(k)
         if (s.length > 0) setSessionTags(s)
+        if (t.length > 0) setSessionTemplates(t)
         setLoading(false)
       })
   }, [])
 
-  return { kinks, morphologies, roles, sessionTags, loading }
+  return { kinks, morphologies, roles, sessionTags, sessionTemplates, loading }
 }

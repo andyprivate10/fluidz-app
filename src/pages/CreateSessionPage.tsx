@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {Moon, Pill, Headphones, Sparkles, ArrowLeft, Clock, Zap, Users} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import {ArrowLeft, Clock, Zap, Users, Sparkles} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -10,18 +9,8 @@ import { useTranslation } from 'react-i18next'
 
 const S = colors
 
-const TEMPLATES: { id: string; label: string; icon: LucideIcon; tags: string[]; desc: string }[] = [
-  { id:'darkroom', label:'Dark Room', icon:Moon, tags:['Dark Room'], desc:'Ambiance sombre, discret' },
-  { id:'chemical', label:'Chemical', icon:Pill, tags:['Chemical'], desc:'Plan chem, entre adultes consentants' },
-  { id:'techno', label:'Techno', icon:Headphones, tags:['Techno'], desc:'Après club, énergie haute' },
-  { id:'custom', label:'Custom', icon:Sparkles, tags:[], desc:'Crée ton propre vibe' },
-]
-
-const QUICK_TEMPLATES: { label: string; icon: LucideIcon; title: string; tags: string[]; description: string; roles: Record<string, number> }[] = [
-  { label: 'Dark Room', icon: Moon, title: 'Dark Room ce soir 🌙', tags: ['Dark Room', 'Top', 'Bottom'], description: 'Soirée dark room privée. Respect et discrétion.', roles: { Top: 2, Bottom: 2 } },
-  { label: 'Chemical', icon: Pill, title: 'Plan chem ce soir 💊', tags: ['Chemical'], description: 'Plan chem entre adultes consentants. Safe space.', roles: { Top: 1, Bottom: 2, Versa: 1 } },
-  { label: 'Techno', icon: Headphones, title: 'After techno 🎧', tags: ['Techno', 'Musclés'], description: 'Décompression post-club. Énergie haute.', roles: {} },
-]
+// Templates are now loaded dynamically from admin_config via useAdminConfig()
+// The "custom" option is rendered inline below
 
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
@@ -31,7 +20,7 @@ const inp: React.CSSProperties = {
 
 export default function CreateSessionPage() {
   const { t } = useTranslation()
-  const { sessionTags, roles } = useAdminConfig()
+  const { sessionTags, roles, sessionTemplates } = useAdminConfig()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
@@ -60,15 +49,16 @@ export default function CreateSessionPage() {
   const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
 
   useEffect(() => {
-    if (tplParam) {
-      const qt = QUICK_TEMPLATES.find(t => t.label.toLowerCase().replace(' ', '') === tplParam)
-      if (qt) {
-        setTitle(qt.title); setDescription(qt.description); setSelectedTags(qt.tags)
-        setRolesWanted(qt.roles); setDirections([{ text: '' }])
-        setTemplate(tplParam as any); setStep('details')
+    if (tplParam && sessionTemplates.length > 0) {
+      const tpl = sessionTemplates.find(t => t.slug === tplParam || t.slug === tplParam.replace(/-/g, '_'))
+      if (tpl) {
+        const meta = tpl.meta as any
+        setTitle(tpl.label); setDescription(meta?.description || ''); setSelectedTags(meta?.tags || [])
+        setRolesWanted({}); setDirections([{ text: '' }])
+        setTemplate(tpl.slug); setStep('details')
       }
     }
-  }, [tplParam])
+  }, [tplParam, sessionTemplates])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -84,10 +74,14 @@ export default function CreateSessionPage() {
     })
   }, [])
 
-  function pickTemplate(t: typeof TEMPLATES[0]) {
-    setTemplate(t.id)
-    setSelectedTags(t.tags)
-    if (t.id !== 'custom') setTitle(t.label)
+  function pickTemplate(tpl: { slug: string; label: string; meta?: Record<string, unknown> | null }) {
+    const meta = tpl.meta as any
+    setTemplate(tpl.slug)
+    setSelectedTags(meta?.tags || [])
+    if (tpl.slug !== 'custom') {
+      setTitle(tpl.label)
+      setDescription(meta?.description || '')
+    }
     setStep('details')
   }
 
@@ -258,30 +252,42 @@ export default function CreateSessionPage() {
         <div style={{padding:'20px 20px'}}>
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.choose_template')}</h2>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 16px'}}>{t('session.template_help')}</p>
-          <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
-            {QUICK_TEMPLATES.map(qt => (
-              <button key={qt.label} type="button" onClick={() => { setTitle(qt.title); setDescription(qt.description); setSelectedTags(qt.tags); setRolesWanted(qt.roles); setDirections([{ text: '' }]); setTemplate(qt.label.toLowerCase().replace(' ','') as any); setStep('details') }} style={{
-                padding:'12px 16px',borderRadius:14,fontSize:14,fontWeight:600,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,cursor:'pointer',display:'flex',alignItems:'center',gap:8,
-              }}>
-                <span><qt.icon size={16} /></span>
-                <span>{qt.label}</span>
-              </button>
-            ))}
-          </div>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
-            {TEMPLATES.map(t => (
-              <div key={t.id} onClick={() => pickTemplate(t)} style={{
-                background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16,
-                padding:'16px',cursor:'pointer',display:'flex',alignItems:'center',gap:14,
-                transition:'all 0.2s',
-              }}>
-                <span><t.icon size={28} style={{color:S.p}} /></span>
-                <div>
-                  <p style={{margin:'0 0 2px',fontSize:15,fontWeight:700,color:S.tx}}>{t.label}</p>
-                  <p style={{margin:0,fontSize:12,color:S.tx3}}>{t.desc}</p>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+            {sessionTemplates.map(tpl => {
+              const meta = tpl.meta as any
+              const coverUrl = meta?.cover_url
+              const color = meta?.color || S.p
+              return (
+                <div key={tpl.slug} onClick={() => pickTemplate(tpl)} style={{
+                  borderRadius:14,overflow:'hidden',cursor:'pointer',
+                  border:'1px solid '+S.rule2,background:S.bg1,
+                  transition:'transform 0.15s',position:'relative' as const,
+                }}>
+                  <div style={{width:'100%',height:100,background:coverUrl ? `url(${coverUrl}) center/cover no-repeat` : color,position:'relative' as const}}>
+                    <div style={{position:'absolute',inset:0,background:'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 60%)'}} />
+                  </div>
+                  <div style={{padding:'10px 12px'}}>
+                    <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.tx}}>{tpl.label}</p>
+                    <p style={{margin:0,fontSize:11,color:S.tx3,lineHeight:1.3,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{meta?.description || ''}</p>
+                  </div>
                 </div>
+              )
+            })}
+            {/* Custom option */}
+            <div onClick={() => pickTemplate({ slug: 'custom', label: 'Custom', meta: { tags: [], description: '' } })} style={{
+              borderRadius:14,overflow:'hidden',cursor:'pointer',
+              border:'1px solid '+S.rule2,background:S.bg1,
+              transition:'transform 0.15s',position:'relative' as const,
+              display:'flex',flexDirection:'column',
+            }}>
+              <div style={{width:'100%',height:100,background:S.bg2,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <Sparkles size={32} style={{color:S.p,opacity:0.7}} />
               </div>
-            ))}
+              <div style={{padding:'10px 12px'}}>
+                <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.tx}}>Custom</p>
+                <p style={{margin:0,fontSize:11,color:S.tx3}}>Crée ton propre vibe</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
