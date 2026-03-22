@@ -783,3 +783,34 @@ Ouvre un **drawer latéral** avec :
 - Proposer de noter/review les participants après la session
 - Ajouter des profils qui n'étaient pas dans la session
 - Fusionner avec un groupe existant du Naughty Book
+
+### B17 — SessionsPage: sessions publiques + pinned
+**Concept** : Le tab Sessions montre les sessions publiques autour de moi + mes sessions pinned.
+
+**Layout**
+1. **Pinned section** (en haut, sage border)
+   - Mes sessions où je suis host
+   - Sessions où je suis inscrit (accepted/checked_in)
+   - Sessions où je suis candidat (pending)
+2. **Sessions publiques** (en dessous)
+   - Sessions ouvertes proches de moi
+   - Tri par distance/date
+   - Même cards que ExplorePage sessions
+
+### B18 — Templates session sauvegardables Custom
+**Concept** : Je peux créer et sauvegarder mes propres templates de session.
+
+**Mécanique**
+- Template = preset de tous les paramètres : titre, description, tags, rôles recherchés, max capacity, timing, adresse
+- Sauvegarde depuis n'importe quelle session créée
+- Mes templates apparaissent en premier dans la grille
+- Editable / supprimable depuis Settings
+
+### B19 — Publier dans l'app / Garder Secret
+**Concept** : À la création de session, choix visible en évidence.
+
+**Options**
+- "Publier dans l'app" → apparaît dans Sessions publiques + Explore
+- "Garder Secret" → invisible dans les résultats, accessible uniquement via lien
+- Toggle bien en évidence, pas un checkbox perdu
+- Par défaut : Garder Secret (pour garder le côté privé)

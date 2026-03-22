@@ -228,7 +228,7 @@ export default function HomePage() {
             </button>
 
             <div style={{ display: 'flex', gap: 8 }}>
-              {['Dark Room', 'Chemical', 'Techno'].map(tpl => (
+              {['Custom', 'Dark Room', 'Techno'].map(tpl => (
                 <button key={tpl} onClick={() => navigate('/session/create?tpl=' + tpl.toLowerCase().replace(' ', ''))}
                   style={{
                     flex: 1, padding: '10px 6px', borderRadius: R.chip, ...typeStyle('meta'),

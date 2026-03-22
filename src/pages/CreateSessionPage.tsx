@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {ArrowLeft, Clock, Zap, Sparkles, Copy} from 'lucide-react'
+import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -183,6 +183,36 @@ export default function CreateSessionPage() {
         <div style={{position:'relative',zIndex:1,padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
+
+          {/* ─── VISIBILITY: Publier / Garder Secret ─── */}
+          <div style={{marginBottom:20}}>
+            <p style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 10px'}}>Visibilité</p>
+            <div style={{display:'flex',gap:8}}>
+              <button onClick={async () => { setIsPublic(true); await supabase.from('sessions').update({ is_public: true }).eq('id', createdSession.id) }} style={{
+                flex:1,padding:'16px 12px',borderRadius:16,cursor:'pointer',textAlign:'center',
+                background: isPublic ? 'linear-gradient(135deg, '+S.sage+', '+S.emerald+')' : 'rgba(22,20,31,0.85)',
+                border: '1px solid '+(isPublic ? S.sage : S.rule2),
+                boxShadow: isPublic ? '0 4px 20px rgba(74,222,128,0.2)' : 'none',
+              }}>
+                <Eye size={20} strokeWidth={1.5} style={{color: isPublic ? '#fff' : S.tx3, margin:'0 auto 6px', display:'block'}} />
+                <p style={{fontSize:14,fontWeight:700,color: isPublic ? '#fff' : S.tx2,margin:0}}>{t('session.publish_in_app')}</p>
+                <p style={{fontSize:11,color: isPublic ? 'rgba(255,255,255,0.7)' : S.tx3,margin:'4px 0 0'}}>{t('session.publish_in_app_desc')}</p>
+              </button>
+              <button onClick={async () => { setIsPublic(false); await supabase.from('sessions').update({ is_public: false }).eq('id', createdSession.id) }} style={{
+                flex:1,padding:'16px 12px',borderRadius:16,cursor:'pointer',textAlign:'center',
+                background: !isPublic ? 'rgba(22,20,31,0.85)' : 'rgba(22,20,31,0.85)',
+                border: '1px solid '+(!isPublic ? S.pbd : S.rule2),
+                boxShadow: !isPublic ? '0 4px 20px '+S.pbd : 'none',
+              }}>
+                <EyeOff size={20} strokeWidth={1.5} style={{color: !isPublic ? S.p : S.tx3, margin:'0 auto 6px', display:'block'}} />
+                <p style={{fontSize:14,fontWeight:700,color: !isPublic ? S.p : S.tx2,margin:0}}>{t('session.keep_secret')}</p>
+                <p style={{fontSize:11,color: !isPublic ? S.tx2 : S.tx3,margin:'4px 0 0'}}>{t('session.keep_secret_desc')}</p>
+              </button>
+            </div>
+          </div>
+
+          {/* ─── INVITER ─── */}
+          <p style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 10px'}}>{t('session.invite_options')}</p>
 
           {/* Message preview + copy */}
           <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:16,marginBottom:16}}>
@@ -477,19 +507,6 @@ export default function CreateSessionPage() {
             ))}
             <button type="button" onClick={()=>setDirections([...directions,{text:''}])} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
               {t('session.add_direction')}
-            </button>
-          </div>
-          {/* Public toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('session.publish_label')}</p>
-              <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>{t('session.publish_help')}</p>
-            </div>
-            <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
-              width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',
-              background: isPublic ? S.sage : S.rule, transition: 'background 0.2s',
-            }}>
-              <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: isPublic ? 21 : 3, transition: 'left 0.2s' }} />
             </button>
           </div>
 

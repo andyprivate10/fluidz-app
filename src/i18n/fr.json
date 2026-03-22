@@ -172,7 +172,12 @@
     "apply_cta": "Postuler à cette session",
     "copy_share_msg": "Copier message pour Grindr / WhatsApp",
     "msg_copied": "Message copié !",
-    "custom_desc": "Crée ton propre vibe"
+    "custom_desc": "Crée ton propre vibe",
+    "publish_in_app": "Publier dans l'app",
+    "publish_in_app_desc": "Visible dans les résultats de recherche",
+    "keep_secret": "Garder secret",
+    "keep_secret_desc": "Invisible, accessible uniquement par lien",
+    "invite_options": "Inviter et partager"
   },
   "chat": {
     "title": "Messages",
@@ -430,7 +435,12 @@
     "title": "Sessions",
     "my_sessions": "Mes sessions",
     "applications": "Candidatures",
-    "new_session": "Nouvelle session"
+    "new_session": "Nouvelle session",
+    "pinned": "Mes sessions actives",
+    "my_hosted": "Mes sessions (host)",
+    "nearby": "Autour de moi",
+    "no_public": "Aucune session publique pour le moment",
+    "past": "Terminées"
   },
   "addresses": {
     "empty": "Aucune adresse",
