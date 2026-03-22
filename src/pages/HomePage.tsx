@@ -5,6 +5,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
+import { getSessionCover } from '../lib/sessionCover'
 import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -128,7 +129,9 @@ export default function HomePage() {
 
         {/* Host active session */}
         {latestHost && (
-          <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, border: `1px solid ${S.pbd}`, cursor: 'pointer' }}>
+          <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, background: getSessionCover(latestHost.tags).bg, border: `1px solid ${S.pbd}`, cursor: 'pointer', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
+            <div style={{ position: 'relative', zIndex: 1 }}>
             <p style={{ ...typeStyle('micro'), color: S.p, margin: '0 0 8px' }}>{t('home.your_session')}</p>
             <p style={{ ...typeStyle('section'), color: S.tx, margin: 0 }}>{latestHost.title}</p>
             {latestHost.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '4px 0 0' }}>{latestHost.approx_area}</p>}
@@ -141,6 +144,7 @@ export default function HomePage() {
             {hostPendingCount > 0 && (
               <p style={{ ...typeStyle('label'), color: S.p, margin: '8px 0 0' }}>{hostPendingCount} candidature{hostPendingCount > 1 ? 's' : ''} en attente</p>
             )}
+            </div>
           </div>
         )}
 

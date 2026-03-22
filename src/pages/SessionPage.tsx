@@ -398,9 +398,9 @@ export default function SessionPage() {
               </button>
             )}
             {!checkInDone && session.status === 'open' && (
-              <button onClick={handleCheckIn} style={{ ...qBtn, borderColor: S.sage, background: S.sagebg }}>
+              <button onClick={handleCheckIn} disabled={checkInLoading} style={{ ...qBtn, borderColor: S.sage, background: S.sagebg, opacity: checkInLoading ? 0.6 : 1 }}>
                 <UserCheck size={16} strokeWidth={1.5} style={{ color: S.sage }} />
-                <span style={{ ...qLabel, color: S.sage }}>Check-in</span>
+                <span style={{ ...qLabel, color: S.sage }}>{checkInLoading ? '...' : 'Check-in'}</span>
               </button>
             )}
             <button onClick={() => navigate('/session/' + id + '/chat')} style={qBtn}>
@@ -719,16 +719,7 @@ export default function SessionPage() {
           </div>
         )}
 
-        {myApp?.status === 'accepted' && !checkInDone && (
-          <button
-            onClick={handleCheckIn}
-            disabled={checkInLoading}
-            style={{ width: '100%', padding: 16, background: 'linear-gradient(135deg,'+S.sage+','+S.emerald+')', border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
-          >
-            {checkInLoading ? t('session.checking_in') : t('session.check_in')}
-          </button>
-        )}
-
+        {/* Check-in status cards (awaiting / confirmed) */}
         {checkInDone && myApp?.status !== 'checked_in' && (
           <div style={{ ...card, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
             <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
@@ -810,22 +801,6 @@ export default function SessionPage() {
                 )
               })}
             </div>
-          </div>
-        )}
-
-        {isHost && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => navigate('/session/' + id + '/host')} style={{ width: '100%', padding: 14, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, color: S.tx, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              {pendingCount > 0 ? t('session.manage_pending', { count: pendingCount }) : t('session.manage')}
-            </button>
-            {session.invite_code && (
-              <button onClick={() => {
-                const url = window.location.origin + '/join/' + session.invite_code
-                copyMessage(url)
-              }} style={{ width: '100%', padding: 14, background: copied ? S.sagebg : S.bg1, border: '1px solid ' + (copied ? S.sage : S.p), borderRadius: 12, color: copied ? S.sage : S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                {copied ? t('session.link_copied') : t('session.share_link')}
-              </button>
-            )}
           </div>
         )}
 
