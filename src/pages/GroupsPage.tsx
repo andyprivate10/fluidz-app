@@ -206,7 +206,7 @@ export default function GroupsPage() {
       {showCreate && (
         <div style={{ position:'fixed', inset:0, zIndex:100, display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
           <div onClick={() => setShowCreate(false)} style={{ flex:1, background:'rgba(0,0,0,0.6)' }} />
-          <div style={{ background:S.bg1, borderRadius:'24px 24px 0 0', padding:'20px 20px 40px', maxHeight:'80vh', overflowY:'auto' }}>
+          <div style={{ background:'rgba(22,20,31,0.95)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:'24px 24px 0 0', padding:'20px 20px 40px', maxHeight:'80vh', overflowY:'auto' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
               <h2 style={{ fontSize:18, fontWeight:800, color:S.tx, margin:0 }}>{editGroup ? t('groups.edit') : t('groups.new_group')}</h2>
               <button onClick={() => setShowCreate(false)} style={{ background:'none', border:'none', color:S.tx3, cursor:'pointer' }}><X size={20} /></button>
