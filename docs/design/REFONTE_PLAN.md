@@ -571,3 +571,57 @@ Ouvre un **drawer latéral** avec :
 
 **Avertissement adresse**
 - Le message "L'adresse exacte est révélée uniquement aux membres acceptés" doit être placé JUSTE AU-DESSUS du champ de saisie de l'adresse exacte (pas ailleurs)
+
+### B11 — Écran de partage post-création session
+**Concept** : Après création d'une session, le dernier écran propose le partage.
+
+**UX Flow**
+1. Session créée → écran "Session créée !" 
+2. Message pré-formaté affiché en preview (texte du partage Grindr/WhatsApp)
+3. Bouton "Copier le message" (clipboard)
+4. En dessous, boutons natifs :
+   - Envoyer sur WhatsApp (ouvre WhatsApp avec le message pré-rempli)
+   - Envoyer sur Instagram (ouvre IG DM)
+   - Partager via... (navigator.share natif du téléphone)
+5. En dessous : **Options d'invitation** (voir B12)
+
+### B12 — Options d'invitation à une session
+**5 méthodes d'invitation** affichées dans l'écran de partage et sur la page host :
+
+1. **Inviter à candidater — Lien fixe** (régénérable)
+   - Lien permanent de la session (/join/CODE)
+   - Le host peut régénérer le code à tout moment
+   - Le candidat voit la session publique + peut postuler
+
+2. **Inviter à candidater — Lien temporaire 10min** (régénérable)
+   - Lien qui expire après 10 minutes de consultation
+   - Pour partager de manière contrôlée (ex: profil Grindr)
+   - Après expiration, le lien redirige vers "Lien expiré"
+
+3. **Inviter un membre directement — Lien d'invitation membre**
+   - Bypass la candidature : le destinataire rejoint directement comme membre
+   - Le host contrôle qui reçoit ce lien (confiance élevée)
+   - Le membre accepté automatiquement, reçoit l'adresse
+
+4. **Inviter depuis le Naughty Book**
+   - Sélectionner des contacts depuis son Book
+   - Notification in-app envoyée au contact avec le lien
+   - Le contact peut accepter/refuser depuis la notification
+
+5. **Inviter un groupe entier**
+   - Sélectionner un groupe du Naughty Book
+   - Notification envoyée à tous les membres du groupe
+   - Chaque membre peut accepter/refuser individuellement
+
+### B11 — Écran de partage session + Options d'invitation
+**Dernier écran après création de session**
+- Affiche le message pré-formaté pour Grindr/WhatsApp avec bouton "Copier"
+- En dessous : boutons d'action directe : "Envoyer sur WhatsApp", "Envoyer sur Instagram", options de partage système du téléphone
+- Le même écran est accessible depuis la SessionPage (tab Partager)
+
+**5 options d'invitation distinctes :**
+1. **Inviter à candidater — lien fixe** : lien permanent de la session, régénérable
+2. **Inviter à candidater — lien 10min** : lien de consultation temporaire (expire après 10min), régénérable
+3. **Inviter comme membre direct** : lien d'invitation directe (bypass candidature, rejoint en tant que membre)
+4. **Inviter depuis le Naughty Book** : sélectionner des profils de mes contacts → notification in-app
+5. **Inviter un groupe** : sélectionner un groupe du Naughty Book → notification à tous les membres
