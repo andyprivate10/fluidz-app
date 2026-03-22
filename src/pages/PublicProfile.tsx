@@ -235,6 +235,40 @@ export default function PublicProfile() {
           </div>
         )}
 
+        {/* Zones intimes */}
+        {p.body_part_photos && Object.keys(p.body_part_photos).length > 0 && (() => {
+          const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
+          const zones = Object.entries(p.body_part_photos as Record<string, string | string[]>).filter(([, val]) => {
+            const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
+            return urls.length > 0
+          })
+          return zones.length > 0 ? (
+            <div style={card}>
+              <div style={sLabel(S.p)}>Zones intimes</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                {zones.map(([part, val]) => {
+                  const urls = Array.isArray(val) ? val : [val as string]
+                  return (
+                    <div key={part} style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid ' + S.rule2 }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.04em', padding: '6px 8px 4px', margin: 0 }}>{labelMap[part] || part}</p>
+                      <div style={{ display: 'grid', gridTemplateColumns: urls.length > 1 ? '1fr 1fr' : '1fr', gap: 2, padding: '0 2px 2px' }}>
+                        {urls.map((url, i) => {
+                          const isVid = typeof url === 'string' && url.match(/\.(mp4|mov|webm|avi)/i)
+                          return isVid ? (
+                            <video key={i} src={url} controls style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
+                          ) : (
+                            <img key={i} src={url as string} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ) : null
+        })()}
+
         {kinks.length > 0 && <div style={card}><div style={sLabel(S.p)}>Pratiques · {kinks.length}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}</div></div>}
 
         {(p.health?.prep_status || p.health?.dernier_test || p.prep) && (

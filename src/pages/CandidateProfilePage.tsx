@@ -289,13 +289,27 @@ export default function CandidateProfilePage() {
             {pj.body_part_photos && Object.keys(pj.body_part_photos).length > 0 && (
               <div style={card}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.body_parts')}</p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-                  {Object.entries(pj.body_part_photos as Record<string, string>).map(([part, url]) => (
-                    <div key={part} style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', aspectRatio: '1' }}>
-                      <img src={url} alt={part} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <span style={{ position: 'absolute', bottom: 4, left: 0, right: 0, textAlign: 'center', fontSize: 9, fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{part}</span>
-                    </div>
-                  ))}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  {Object.entries(pj.body_part_photos as Record<string, string | string[]>).map(([part, val]) => {
+                    const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
+                    if (urls.length === 0) return null
+                    const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
+                    return (
+                      <div key={part} style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid ' + S.rule2, background: 'rgba(22,20,31,0.85)' }}>
+                        <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.04em', padding: '8px 10px 4px', margin: 0 }}>{labelMap[part] || part}</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: urls.length > 1 ? '1fr 1fr' : '1fr', gap: 2, padding: '0 2px 2px' }}>
+                          {urls.map((url, i) => {
+                            const isVideo = url.match(/\.(mp4|mov|webm|avi)/i)
+                            return isVideo ? (
+                              <video key={i} src={url} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 10 }} />
+                            ) : (
+                              <img key={i} src={url} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 10 }} />
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
