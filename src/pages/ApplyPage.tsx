@@ -335,7 +335,7 @@ export default function ApplyPage() {
       )}
 
       {(profile || guestMode) && (
-        <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:S.bg1,border:'1px solid '+S.rule}}>
+        <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>{t('session.profile_preview')}</div>
           {guestMode ? (
             <input value={guestDisplayName} onChange={e=>setGuestDisplayName(e.target.value)} placeholder="Ton pseudo *" style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:10,padding:'10px 14px',border:'1px solid '+S.rule,fontSize:14,marginBottom:8,boxSizing:'border-box'}} />
@@ -585,7 +585,7 @@ export default function ApplyPage() {
           })()}
 
           {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>{t('session.pseudo_required')}</p>}
-          <div style={{marginTop:12,padding:'10px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
+          <div style={{marginTop:12,padding:'10px 14px',background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:12,border:'1px solid '+S.rule2}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
           </div>
           <button onClick={() => setStep('note')} disabled={capacityFull || isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:capacityFull||isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:capacityFull||isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
@@ -604,7 +604,7 @@ export default function ApplyPage() {
             <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           </div>
           {/* Visual preview */}
-          <div style={{padding:'14px',background:S.bg1,borderRadius:14,border:'1px solid '+S.rule,marginBottom:12}}>
+          <div style={{padding:'14px',background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:14,border:'1px solid '+S.rule2,marginBottom:12}}>
             <p style={{fontSize:11,fontWeight:700,color:S.p,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>{t('session.what_host_sees')}</p>
             <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:10}}>
               {profile?.profile_json?.avatar_url ? (

@@ -349,7 +349,7 @@ export default function ExplorePage() {
               <div
                 key={p.id}
                 onClick={() => navigate('/profile/' + p.id)}
-                style={{ background: S.bg1, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule }}
+                style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule2 }}
               >
                 {p.avatar_url ? (
                   <img src={p.avatar_url} alt="" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />

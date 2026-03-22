@@ -442,7 +442,7 @@ export default function CreateSessionPage() {
           <button onClick={saveAddress} disabled={savingAddress || (!approxArea && !exactAddress)} style={{padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:'transparent',color:S.p,cursor:savingAddress||(!approxArea&&!exactAddress)?'not-allowed':'pointer',opacity:savingAddress||(!approxArea&&!exactAddress)?0.6:1}}>
             {savingAddress ? t('common.saving') : t('session.save_address')}
           </button>
-          <div style={{padding:'12px 14px',background:S.bg1,borderRadius:12,border:'1px solid '+S.rule}}>
+          <div style={{padding:'12px 14px',background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:12,border:'1px solid '+S.rule2}}>
             <p style={{fontSize:12,color:S.tx3,margin:0}}>{t('session.address_privacy_note')}</p>
           </div>
           {error && <p style={{color:S.p,fontSize:13,margin:'0 0 4px',padding:'10px 14px',background:S.p3,borderRadius:10}}>{error}</p>}

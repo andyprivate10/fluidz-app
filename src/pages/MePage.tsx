@@ -49,7 +49,7 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
 function Section({ title, badge, children, color }: { title:string; badge?:string; children:React.ReactNode; color?:string }) {
   const c = color || S.tx3
   return (
-    <div style={{ background:S.bg1, borderRadius:20, padding:'16px', border:`1px solid ${S.rule}`, marginBottom:12 }}>
+    <div style={{ background:'rgba(22,20,31,0.85)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', borderRadius:20, padding:'16px', border:`1px solid ${S.rule2}`, marginBottom:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
         <span style={{ fontSize:10, fontWeight:700, color:c, textTransform:'uppercase', letterSpacing:'0.08em' }}>
           {title}
