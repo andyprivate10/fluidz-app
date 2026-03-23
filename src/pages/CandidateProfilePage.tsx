@@ -130,6 +130,9 @@ export default function CandidateProfilePage() {
   const age = pj.age || snapshot.age || ''
   const location = pj.location || snapshot.location || ''
   const bio = pj.bio || snapshot.bio || ''
+  const homeCountry = pj.home_country || snapshot.home_country || ''
+  const homeCity = pj.home_city || snapshot.home_city || ''
+  const languages: string[] = Array.isArray(pj.languages) ? pj.languages : Array.isArray(snapshot.languages) ? snapshot.languages : []
   const height = pj.height || snapshot.height || ''
   const weight = pj.weight || snapshot.weight || ''
   const morphology = pj.morphology || snapshot.morphology || ''
@@ -233,6 +236,13 @@ export default function CandidateProfilePage() {
             </div>
             {role && (
               <span style={{ display: 'inline-block', marginTop: 6, padding: '3px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: '#fff', background: S.grad }}>{role}</span>
+            )}
+            {(homeCity || languages.length > 0) && (
+              <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                {homeCity && <span style={{ fontSize: 10, fontWeight: 600, color: S.lav, background: S.lavbg, padding: '2px 8px', borderRadius: 99, border: '1px solid ' + S.lavbd }}>{homeCity}{homeCountry ? ', ' + homeCountry : ''}</span>}
+                {languages.slice(0, 3).map(l => <span key={l} style={{ fontSize: 9, color: S.tx4, padding: '2px 6px', borderRadius: 99, background: S.bg2, border: '1px solid ' + S.rule }}>{l}</span>)}
+                {languages.length > 3 && <span style={{ fontSize: 9, color: S.tx4 }}>+{languages.length - 3}</span>}
+              </div>
             )}
           </div>
         </div>

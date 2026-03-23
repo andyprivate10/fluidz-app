@@ -185,7 +185,7 @@ export default function GhostSetupPage() {
 
         {step === 'done' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16, textAlign: 'center' }}>
-            <div style={{ background: S.bg1, border: '1px solid ' + S.sagebd, borderRadius: 20, padding: 24 }}>
+            <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid ' + S.sagebd, borderRadius: 20, padding: 24 }}>
               <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 16 }}>{t('ghost.title')}</div>
 
               <div style={{ marginBottom: 16 }}>

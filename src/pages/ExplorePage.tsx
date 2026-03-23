@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -23,6 +23,10 @@ type NearbyProfile = {
   morphology?: string
   distance?: number // km
   lastSeen?: string
+  home_country?: string
+  home_city?: string
+  languages?: string[]
+  prep?: string
 }
 
 // ROLE_FILTERS built dynamically from admin_config in component
@@ -56,6 +60,7 @@ export default function ExplorePage() {
   const [searchText, setSearchText] = useState('')
   const [myViewCount, setMyViewCount] = useState(0)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
+  const [myHomeCountry, setMyHomeCountry] = useState<string | null>(null)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -67,7 +72,7 @@ export default function ExplorePage() {
       supabase.from('notifications').select('*', { count: 'exact', head: true })
         .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
       // Load current visibility setting
-      supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng').eq('id', user.id).maybeSingle().then(async (res) => {
+      supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng, profile_json').eq('id', user.id).maybeSingle().then(async (res) => {
         // Also load profile view count
         const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
         const { count } = await supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', user.id).eq('type', 'profile_view').gte('created_at', weekAgo)
@@ -77,6 +82,8 @@ export default function ExplorePage() {
         if (data) {
           setVisible(!!data.location_visible)
           if (data.approx_lat && data.approx_lng) { setMyLat(data.approx_lat); setMyLng(data.approx_lng) }
+          const pj = (data as any).profile_json || {}
+          if (pj.home_country) setMyHomeCountry(pj.home_country)
         }
       })
     })
@@ -177,6 +184,10 @@ export default function ExplorePage() {
         morphology: pj.morphology,
         distance: dist ? Math.round(dist * 10) / 10 : undefined,
         lastSeen: p.location_updated_at,
+        home_country: pj.home_country,
+        home_city: pj.home_city,
+        languages: Array.isArray(pj.languages) ? pj.languages : undefined,
+        prep: pj.health?.prep_status || pj.prep,
       }
     })
     mapped.sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
@@ -338,12 +349,21 @@ export default function ExplorePage() {
                     <span style={{ fontSize: 12, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{p.display_name}</span>
                     {p.age && <span style={{ fontSize: 10, color: S.tx3 }}>{p.age}</span>}
                   </div>
-                  {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2, flexWrap: 'wrap' }}>
+                    {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
+                    {p.prep === 'Actif' && <Shield size={9} strokeWidth={2} style={{ color: S.sage }} />}
+                    {myHomeCountry && p.home_country && p.home_country !== myHomeCountry && (
+                      <span style={{ fontSize: 8, fontWeight: 700, color: S.lav, background: S.lavbg, padding: '1px 5px', borderRadius: 99, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 2 }}>
+                        <Globe size={7} strokeWidth={2} />Visitor
+                      </span>
+                    )}
+                  </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                     {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 1800000 && (
                       <span style={{ width: 6, height: 6, borderRadius: '50%', background: S.sage, display: 'inline-block' }} title="En ligne" />
                     )}
                     {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
+                    {p.home_city && <span style={{ fontSize: 8, color: S.tx4 }}>{p.home_city}</span>}
                     <VibeScoreBadge userId={p.id} size="sm" />
                   </div>
                 </div>
