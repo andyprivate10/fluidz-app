@@ -84,7 +84,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <p style={{ fontSize: 13, fontWeight: 700, color: S.tx, margin: '0 0 4px' }}>{t(`landing.feat_${key}`)}</p>
-                <p style={{ fontSize: 11, color: S.tx3, lineHeight: 1.5, margin: 0 }}>{t(`landing.feat_${key}_desc`)}</p>
+                <p style={{ fontSize: 11, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{t(`landing.feat_${key}_desc`)}</p>
               </div>
             </div>
           ))}
@@ -114,7 +114,7 @@ export default function LandingPage() {
             </div>
             <div>
               <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: '0 0 4px' }}>{t(`landing.step_${step}`)}</p>
-              <p style={{ fontSize: 12, color: S.tx3, lineHeight: 1.5, margin: 0 }}>{t(`landing.step_${step}_desc`)}</p>
+              <p style={{ fontSize: 12, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{t(`landing.step_${step}_desc`)}</p>
             </div>
           </div>
         ))}
@@ -125,7 +125,7 @@ export default function LandingPage() {
         <p style={{ fontSize: 20, fontWeight: 800, color: S.tx, margin: '0 0 8px', fontFamily: "'Bricolage Grotesque', sans-serif" }}>
           {t('landing.bottom_cta')}
         </p>
-        <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 24px' }}>
+        <p style={{ fontSize: 13, color: S.tx2, margin: '0 0 24px' }}>
           {t('landing.bottom_desc')}
         </p>
         <button onClick={() => navigate('/login')} className="btn-shimmer" style={{
