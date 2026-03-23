@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import ProfileAdultMedia from '../components/profile/ProfileAdultMedia'
 import LinkedProfiles from '../components/LinkedProfiles'
+import PlatformProfiles from '../components/profile/LinkedProfiles'
+import type { LinkedProfile as PlatformProfile } from '../components/profile/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
 
 const PREP_OPTIONS = ['Actif','Inactif','Non']
@@ -112,6 +114,7 @@ export default function MePage() {
   const [seroStatus, setSeroStatus] = useState('')
   const [limits, setLimits] = useState('')
   const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
+  const [platformProfiles, setPlatformProfiles] = useState<PlatformProfile[]>([])
   const [avatarUrl, setAvatarUrl] = useState('')
   const [photosProfil, setPhotosProfil] = useState<string[]>([])
   const [photosIntime, setPhotosIntime] = useState<string[]>([])
@@ -218,6 +221,7 @@ export default function MePage() {
       setSeroStatus(h.sero_status || '')
       setLimits(p.limits || '')
       setLinkedProfiles(Array.isArray(p.linked_profiles) ? p.linked_profiles : [])
+      setPlatformProfiles(Array.isArray(p.platform_profiles) ? p.platform_profiles : [])
       setBodyPartPhotos(() => {
         const raw = p.body_part_photos || {}
         const keyMap: Record<string, string> = { torse: 'torso', bite: 'sex', cul: 'butt', pieds: 'feet' }
@@ -251,7 +255,7 @@ export default function MePage() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linked_profiles: linkedProfiles,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -268,7 +272,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linkedProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -663,6 +667,11 @@ export default function MePage() {
           <Section title={t('profile.linked_profiles')} color={S.p}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.linked_desc')}</p>
             <LinkedProfiles userId={user.id} linkedProfiles={linkedProfiles} onChange={setLinkedProfiles} />
+          </Section>
+
+          <Section title={t('profile.platform_profiles')} color={S.p}>
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.platform_desc')}</p>
+            <PlatformProfiles userId={user.id} linkedProfiles={platformProfiles} onChange={setPlatformProfiles} />
           </Section>
 
           {/* Auto-save status */}

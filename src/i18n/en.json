@@ -356,7 +356,12 @@
     "linked_with": "Linked with",
     "search_to_link": "Search a profile to link...",
     "unlink": "Unlink",
-    "linked_label": "In {{type}} with"
+    "linked_label": "In {{type}} with",
+    "platform_profiles": "Platform Profiles",
+    "platform_desc": "Link your other platform profiles so people can find you.",
+    "linked_add": "Add a profile",
+    "linked_choose_platform": "-- Choose platform --",
+    "linked_handle_placeholder": "Username or handle"
   },
   "review": {
     "title": "How was it?",

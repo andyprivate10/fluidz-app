@@ -11,6 +11,7 @@ import OrbLayer from '../components/OrbLayer'
 import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Send } from 'lucide-react'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
+import PlatformProfiles from '../components/profile/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
@@ -213,6 +214,11 @@ export default function PublicProfile() {
         {onlineLabel && !isOnline && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx3, background: S.bg2 }}>{onlineLabel}</span>}
         {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}><Shield size={10} strokeWidth={2} style={{display:'inline',marginRight:2}} />PrEP</span>}
       </div>
+      {Array.isArray(p.linked_profiles) && p.linked_profiles.length > 0 && (
+        <div style={{ padding: '4px 20px 0' }}>
+          <LinkedProfiles userId={userId!} linkedProfiles={p.linked_profiles} onChange={() => {}} readOnly />
+        </div>
+      )}
 
       {/* Languages */}
       {Array.isArray(p.languages) && p.languages.length > 0 && (
@@ -223,10 +229,10 @@ export default function PublicProfile() {
         </div>
       )}
 
-      {/* Linked profiles */}
-      {Array.isArray(p.linked_profiles) && p.linked_profiles.length > 0 && (
-        <div style={{ padding: '10px 20px 0' }}>
-          <LinkedProfiles userId={userId!} linkedProfiles={p.linked_profiles} onChange={() => {}} readOnly />
+      {/* Platform profiles */}
+      {Array.isArray(p.platform_profiles) && p.platform_profiles.length > 0 && (
+        <div style={{ padding: '4px 20px 0' }}>
+          <PlatformProfiles userId={userId!} linkedProfiles={p.platform_profiles} onChange={() => {}} readOnly />
         </div>
       )}
 

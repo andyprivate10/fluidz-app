@@ -356,7 +356,12 @@
     "linked_with": "Lié avec",
     "search_to_link": "Chercher un profil à lier...",
     "unlink": "Délier",
-    "linked_label": "En {{type}} avec"
+    "linked_label": "En {{type}} avec",
+    "platform_profiles": "Profils plateformes",
+    "platform_desc": "Lie tes profils sur d'autres plateformes pour qu'on te retrouve.",
+    "linked_add": "Ajouter un profil",
+    "linked_choose_platform": "-- Choisir la plateforme --",
+    "linked_handle_placeholder": "Pseudo ou identifiant"
   },
   "review": {
     "title": "Comment c'etait ?",
