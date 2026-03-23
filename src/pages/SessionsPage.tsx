@@ -97,7 +97,9 @@ export default function SessionsPage() {
   }
 
   const appCard = (app: AppSession, icon: React.ReactNode, badgeColor: string, badgeText: string) => (
-    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={card}>
+    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={{ ...card, background: getSessionCover(app.tags).bg, overflow: 'hidden', position: 'relative' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
+      <div style={{ position: 'relative', zIndex: 1 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <p style={{ ...typeStyle('section'), color: S.tx, margin: 0, flex: 1 }}>{app.title}</p>
         <span style={{
@@ -109,6 +111,7 @@ export default function SessionsPage() {
         </span>
       </div>
       {app.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '5px 0 0' }}>{app.approx_area}</p>}
+      </div>
     </div>
   )
 

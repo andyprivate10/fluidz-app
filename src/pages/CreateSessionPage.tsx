@@ -141,7 +141,13 @@ export default function CreateSessionPage() {
   function copyShareMessage(app: 'grindr'|'whatsapp'|'telegram') {
     if (!createdSession) return
     const url = typeof window !== 'undefined' ? window.location.origin + '/join/' + createdSession.invite_code : ''
-    const text = '🔥 ' + createdSession.title + ' – ' + createdSession.approx_area + ' – Postule: ' + url
+    const title = createdSession.title
+    const area = createdSession.approx_area
+    const text = app === 'grindr'
+      ? title + (area ? ' – ' + area : '') + '\nPostule ici: ' + url
+      : app === 'whatsapp'
+      ? '🔥 ' + title + (area ? ' – ' + area : '') + '\n\nRejoins: ' + url
+      : '🔥 ' + title + (area ? ' – ' + area : '') + '\n\n' + url
     navigator.clipboard.writeText(text).then(() => {
       setCopyFeedback(app)
       setTimeout(() => setCopyFeedback(null), 2000)
@@ -252,13 +258,20 @@ export default function CreateSessionPage() {
 
           {/* Platform copy buttons */}
           <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:16}}>
-            {(['grindr','whatsapp','telegram'] as const).map(app => (
+            {([
+              { app: 'grindr' as const, label: 'Grindr', color: '#FCC70A', bg: 'rgba(252,199,10,0.08)', border: 'rgba(252,199,10,0.25)' },
+              { app: 'whatsapp' as const, label: 'WhatsApp', color: '#25D366', bg: 'rgba(37,211,102,0.08)', border: 'rgba(37,211,102,0.25)' },
+              { app: 'telegram' as const, label: 'Telegram', color: '#26A5E4', bg: 'rgba(38,165,228,0.08)', border: 'rgba(38,165,228,0.25)' },
+            ]).map(({ app, label, color, bg, border }) => (
               <button key={app} onClick={() => copyShareMessage(app)} style={{
-                padding:'12px 16px',borderRadius:14,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,
-                background: copyFeedback === app ? S.p2 : 'rgba(22,20,31,0.85)', color: copyFeedback === app ? S.p : S.tx2,
-                cursor:'pointer',textAlign:'left',
+                padding:'14px 16px',borderRadius:14,fontSize:13,fontWeight:700,
+                border:'1px solid '+(copyFeedback === app ? S.sage : border),
+                background: copyFeedback === app ? S.sagebg : bg,
+                color: copyFeedback === app ? S.sage : color,
+                cursor:'pointer',textAlign:'left',display:'flex',alignItems:'center',gap:10,
               }}>
-                {copyFeedback === app ? t('session.copied') : (app === 'grindr' ? t('session.copy_grindr') : app === 'whatsapp' ? t('session.copy_whatsapp') : t('session.copy_telegram'))}
+                <div style={{ width:8, height:8, borderRadius:'50%', background: color, flexShrink:0 }} />
+                {copyFeedback === app ? t('session.copied') : t('session.copy_for', { app: label })}
               </button>
             ))}
           </div>

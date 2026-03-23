@@ -183,7 +183,8 @@
     "vote_info": "Vote consultatif : visible par tous les membres. Le host tranche la décision finale.",
     "host_must_confirm": "Le host doit confirmer ton arrivée",
     "copy": "Copier",
-    "check_in_action": "Check-in"
+    "check_in_action": "Check-in",
+    "copy_for": "Copier pour {{app}}"
   },
   "chat": {
     "title": "Messages",
