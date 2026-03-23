@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
 import EmojiBar from '../components/EmojiBar'
+import ChatMessageMenu from '../components/ChatMessageMenu'
 
 type Message = {
   id: string
@@ -47,6 +48,7 @@ export default function DMPage() {
   const [peerRole, setPeerRole] = useState<string>('')
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
+  const [menuMsg, setMenuMsg] = useState<Message | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [displayName, setDisplayName] = useState<string>('')
@@ -482,15 +484,7 @@ export default function DMPage() {
                   boxShadow: isMine ? '0 2px 8px rgba(224,136,122,0.2)' : 'none',
                   overflow: 'hidden',
                 }}
-                onContextMenu={(e) => {
-                  if (message.sender_id !== currentUser?.id) return
-                  e.preventDefault()
-                  if (window.confirm(t('chat.delete_msg'))) {
-                    supabase.from('messages').delete().eq('id', message.id).then(() => {
-                      setMessages(prev => prev.filter(m => m.id !== message.id))
-                    })
-                  }
-                }}
+                onContextMenu={(e) => { e.preventDefault(); setMenuMsg(message) }}
                 >
                   {message.has_media && message.media_urls?.map((url: string, mi: number) => {
                     const isAudio = url.endsWith('.webm') || url.includes('audio')
@@ -590,6 +584,7 @@ export default function DMPage() {
         </button>
       </div>
       {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
+      {menuMsg && <ChatMessageMenu message={menuMsg} isOwn={menuMsg.sender_id === currentUser?.id} onCopy={() => showToast(t('chat.copied'), 'success')} onReply={() => setReplyTo({ id: menuMsg.id, text: menuMsg.text, sender_name: menuMsg.sender_name })} onDelete={menuMsg.sender_id === currentUser?.id ? () => { supabase.from('messages').delete().eq('id', menuMsg.id); setMessages(prev => prev.filter(m => m.id !== menuMsg.id)) } : undefined} onClose={() => setMenuMsg(null)} labels={{ copy: t('chat.copy_text'), reply: t('chat.reply'), delete: t('chat.delete_msg') }} />}
     </div>
   )
 }
