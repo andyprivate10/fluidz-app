@@ -227,7 +227,8 @@
     "template_saved": "Template sauvegardé !",
     "saved_template": "Ton template",
     "capacity_progress": "Places",
-    "capacity_full": "Complet"
+    "capacity_full": "Complet",
+    "qr_hint": "Scanne ce QR code pour rejoindre"
   },
   "chat": {
     "title": "Messages",

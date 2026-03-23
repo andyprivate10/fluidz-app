@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { sendPushToUser } from '../lib/pushSender'
 import HostCandidateCard from '../components/host/HostCandidateCard'
+import { QRCodeSVG } from 'qrcode.react'
 
 const S = colors
 
@@ -442,6 +443,13 @@ export default function HostDashboard() {
             >
               {t('host.copy_direct_link')}
             </button>
+            {/* QR Code */}
+            <div style={{marginTop:12,textAlign:'center',padding:16,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule}}>
+              <div style={{background:'#fff',borderRadius:10,padding:12,display:'inline-block'}}>
+                <QRCodeSVG value={window.location.origin + '/join/' + sess.invite_code} size={120} level="M" fgColor="#0C0A14" bgColor="#ffffff" />
+              </div>
+              <p style={{fontSize:10,color:S.tx4,margin:'8px 0 0'}}>{t('session.qr_hint')}</p>
+            </div>
           </>
         )}
         {/* Roles summary */}

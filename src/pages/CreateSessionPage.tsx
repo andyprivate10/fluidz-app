@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff, Bookmark, Check} from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -258,6 +259,15 @@ export default function CreateSessionPage() {
             }}>
               <Copy size={14} strokeWidth={1.5} /> {copyFeedback==='message' ? t('session.copied') : t('session.share_link')}
             </button>
+          </div>
+
+          {/* QR Code */}
+          <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:20,marginBottom:16,textAlign:'center'}}>
+            <p style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase' as const,letterSpacing:'0.08em',margin:'0 0 12px'}}>QR Code</p>
+            <div style={{background:'#fff',borderRadius:12,padding:16,display:'inline-block'}}>
+              <QRCodeSVG value={shareUrl} size={160} level="M" fgColor="#0C0A14" bgColor="#ffffff" />
+            </div>
+            <p style={{fontSize:11,color:S.tx3,margin:'10px 0 0'}}>{t('session.qr_hint')}</p>
           </div>
 
           {/* Share buttons */}
