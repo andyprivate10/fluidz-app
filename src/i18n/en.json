@@ -65,7 +65,8 @@
     "full_session": "Full",
     "apply_button": "Apply",
     "visibility_on": "You are visible in the gallery",
-    "visibility_off": "You are hidden"
+    "visibility_off": "You are hidden",
+    "online": "Online"
   },
   "session": {
     "live": "Live",
@@ -221,7 +222,9 @@
     "add_to_book": "Add to contacts?",
     "save_as_template": "Save as template",
     "template_saved": "Template saved!",
-    "saved_template": "Your template"
+    "saved_template": "Your template",
+    "capacity_progress": "Spots",
+    "capacity_full": "Full"
   },
   "chat": {
     "title": "Messages",

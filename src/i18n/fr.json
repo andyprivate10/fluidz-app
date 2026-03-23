@@ -65,7 +65,8 @@
     "full_session": "Complet",
     "apply_button": "Postuler",
     "visibility_on": "Tu es visible dans la galerie",
-    "visibility_off": "Tu es masque"
+    "visibility_off": "Tu es masque",
+    "online": "En ligne"
   },
   "session": {
     "live": "Live",
@@ -221,7 +222,9 @@
     "add_to_book": "Ajouter au carnet ?",
     "save_as_template": "Sauvegarder comme template",
     "template_saved": "Template sauvegardé !",
-    "saved_template": "Ton template"
+    "saved_template": "Ton template",
+    "capacity_progress": "Places",
+    "capacity_full": "Complet"
   },
   "chat": {
     "title": "Messages",

@@ -333,6 +333,26 @@ export default function SessionPage() {
 
       <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
+        {/* ─── CAPACITY PROGRESS ─── */}
+        {session.max_capacity && session.max_capacity > 0 && (() => {
+          const current = members.length + 1 // +1 for host
+          const max = session.max_capacity!
+          const pct = Math.min((current / max) * 100, 100)
+          const full = current >= max
+          const color = full ? S.red : pct > 75 ? S.orange : S.sage
+          return (
+            <div style={{ ...glassCard, padding: '12px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{full ? t('session.capacity_full') : t('session.capacity_progress')}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, color }}>{current}/{max}</span>
+              </div>
+              <div style={{ width: '100%', height: 6, borderRadius: 3, background: S.bg2, overflow: 'hidden' }}>
+                <div style={{ width: `${pct}%`, height: '100%', borderRadius: 3, background: color, transition: 'width 0.4s ease' }} />
+              </div>
+            </div>
+          )
+        })()}
+
         {/* ─── ADDRESS (member only, prominent) ─── */}
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address && (
           <div style={{ ...glassCard, borderColor: S.sagebd, background: 'rgba(74,222,128,0.06)' }}>

@@ -362,9 +362,14 @@ export default function ExplorePage() {
                     )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                    {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 1800000 && (
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: S.sage, display: 'inline-block' }} title="En ligne" />
-                    )}
+                    {p.lastSeen && (() => {
+                      const ago = Date.now() - new Date(p.lastSeen).getTime()
+                      const isOnline = ago < 900000 // 15 min
+                      const isRecent = ago < 3600000 // 1h
+                      if (isOnline) return <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 9, color: S.sage, fontWeight: 600 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: S.sage }} />{t('explore.online')}</span>
+                      if (isRecent) return <span style={{ fontSize: 9, color: S.tx4 }}>{Math.round(ago / 60000)}min</span>
+                      return null
+                    })()}
                     {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
                     {p.home_city && <span style={{ fontSize: 8, color: S.tx4 }}>{p.home_city}</span>}
                     <VibeScoreBadge userId={p.id} size="sm" />
