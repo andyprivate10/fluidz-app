@@ -342,7 +342,13 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "this_week": "This week",
-    "older": "Older"
+    "older": "Older",
+    "apply_body": "For \"{{title}}\"",
+    "invite_title": "You're invited!",
+    "invite_body": "{{name}} invites you to \"{{title}}\"",
+    "review_title": "How was \"{{title}}\"?",
+    "review_body": "Leave an anonymous review to help the community",
+    "group_invite_body": "{{host}} invites you via the group \"{{group}}\""
   },
   "auth": {
     "email_invalid": "Invalid email",
@@ -522,7 +528,16 @@
     "back_to_session": "Back to session",
     "copy_label": "Copy",
     "share_label": "Share",
-    "view_arrow": "View →"
+    "view_arrow": "View →",
+    "session_fallback": "Session",
+    "a_host": "A host",
+    "someone": "Someone",
+    "your_session": "your session",
+    "a_session": "a session",
+    "searching_dots": "Searching...",
+    "recover": "Recover",
+    "my_profile_short": "My profile",
+    "join_us": "Join us!"
   },
   "drawer": {
     "my_space": "My space",
@@ -596,5 +611,17 @@
     "active": "Active",
     "check_in_confirmed": "Check-in confirmed",
     "not_retained": "Not retained"
+  },
+  "share": {
+    "apply_here": "Apply here",
+    "join_here": "Join",
+    "searching": "Looking for",
+    "already_here": "already here",
+    "my_profile": "My Fluidz profile",
+    "session_fluidz": "Fluidz Session"
+  },
+  "errors": {
+    "upload_error": "Upload error",
+    "error_prefix": "Error"
   }
 }

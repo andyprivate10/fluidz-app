@@ -56,7 +56,7 @@ export default function GhostSetupPage() {
           display_name: displayName.trim(),
           profile_json: {},
         }).select('id, session_code').single()
-        if (e2) { showToast('Erreur: ' + e2.message, 'error'); setLoading(false); return }
+        if (e2) { showToast(t('errors.error_prefix') + ': ' + e2.message, 'error'); setLoading(false); return }
         setGhostCode(d2.session_code)
         setGhostId(d2.id)
       } else {

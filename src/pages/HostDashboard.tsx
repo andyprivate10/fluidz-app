@@ -239,8 +239,8 @@ export default function HostDashboard() {
         user_id: p.applicant_id,
         session_id: id,
         type: 'review_request',
-        title: `⭐ Comment c'était "${sess.title}" ?`,
-        body: 'Laisse un avis anonyme pour aider la communauté',
+        title: '⭐ ' + t('notifications.review_title', { title: sess.title }),
+        body: t('notifications.review_body'),
         href: `/session/${id}/review`,
       }))
       try { await supabase.from('notifications').insert(notifs) } catch (_) {}
@@ -286,7 +286,7 @@ export default function HostDashboard() {
       session_id: id,
       type: 'group_invite',
       title: `Tu es invité à "${sess.title}"`,
-      body: `${hostDisplayName || 'Un host'} t'invite via le groupe "${group.name}"`,
+      body: t('notifications.group_invite_body', { host: hostDisplayName || t('common.a_host'), group: group.name }),
       href: `/session/${id}`,
     }))
     await supabase.from('notifications').insert(notifs)
@@ -391,10 +391,10 @@ export default function HostDashboard() {
                   const url = window.location.origin + '/join/' + sess.invite_code
                   const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
                   const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0
-                    ? ' – Recherche : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
+                    ? ' – ' + t('share.searching') + ' : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
                     : ''
-                  const membersText = counts.accepted > 0 ? ` – ${counts.accepted} déjà là` : ''
-                  const text = '🔥 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – Postule : ' + url
+                  const membersText = counts.accepted > 0 ? ` – ${counts.accepted} ` + t('share.already_here') : ''
+                  const text = '🔥 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – ' + t('share.apply_here') + ' : ' + url
                   copyGrindr(text)
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sagebg : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
@@ -408,7 +408,7 @@ export default function HostDashboard() {
                   const rolesLine = rolesWanted && Object.keys(rolesWanted).length > 0
                     ? t('session.searching_roles', { roles: Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ') })
                     : ''
-                  const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '📍 ' + sess.approx_area : '', counts.accepted > 0 ? `👥 ${counts.accepted} membres` : '', '', 'Postule ici : ' + url].filter(Boolean)
+                  const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '📍 ' + sess.approx_area : '', counts.accepted > 0 ? `👥 ${counts.accepted} membres` : '', '', t('share.apply_here') + ' : ' + url].filter(Boolean)
                   copyMessageText(lines.join('\n'))
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
@@ -421,9 +421,9 @@ export default function HostDashboard() {
               <button onClick={() => {
                 const url = window.location.origin + '/join/' + sess.invite_code
                 const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
-                const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0 ? '\nRecherche : ' + Object.entries(rolesWanted).map(([r, c]) => c + ' ' + r).join(', ') : ''
-                const text = '🔥 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n👥 ' + counts.accepted + ' déjà là' : '') + '\nPostule ici !'
-                navigator.share({ title: sess.title || 'Session Fluidz', text, url }).catch(() => {})
+                const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0 ? '\n' + t('share.searching') + ' : ' + Object.entries(rolesWanted).map(([r, c]) => c + ' ' + r).join(', ') : ''
+                const text = '🔥 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n👥 ' + counts.accepted + ' ' + t('share.already_here') : '') + '\n' + t('share.apply_here') + ' !'
+                navigator.share({ title: sess.title || t('share.session_fluidz'), text, url }).catch(() => {})
               }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:'transparent',color:S.sage,cursor:'pointer'}}>
                 {t('host.share_via')}
               </button>

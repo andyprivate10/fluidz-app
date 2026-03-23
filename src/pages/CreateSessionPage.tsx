@@ -144,9 +144,9 @@ export default function CreateSessionPage() {
     const title = createdSession.title
     const area = createdSession.approx_area
     const text = app === 'grindr'
-      ? title + (area ? ' – ' + area : '') + '\nPostule ici: ' + url
+      ? title + (area ? ' – ' + area : '') + '\n' + t('share.apply_here') + ': ' + url
       : app === 'whatsapp'
-      ? '🔥 ' + title + (area ? ' – ' + area : '') + '\n\nRejoins: ' + url
+      ? '🔥 ' + title + (area ? ' – ' + area : '') + '\n\n' + t('share.join_here') + ': ' + url
       : '🔥 ' + title + (area ? ' – ' + area : '') + '\n\n' + url
     navigator.clipboard.writeText(text).then(() => {
       setCopyFeedback(app)
@@ -457,7 +457,7 @@ export default function CreateSessionPage() {
             </div>
             {Object.keys(rolesWanted).length > 0 && (
               <p style={{fontSize:11,color:S.tx3,margin:'6px 0 0'}}>
-                Recherche : {Object.entries(rolesWanted).map(([r,c]) => `${c} ${r}${Number(c)>1?'s':''}`).join(', ')}
+                {t('share.searching')} : {Object.entries(rolesWanted).map(([r,c]) => `${c} ${r}${Number(c)>1?'s':''}`).join(', ')}
               </p>
             )}
           </div>

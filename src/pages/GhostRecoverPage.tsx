@@ -74,7 +74,7 @@ export default function GhostRecoverPage() {
     })
 
     if (error) {
-      showToast('Erreur: ' + error.message, 'error')
+      showToast(t('errors.error_prefix') + ': ' + error.message, 'error')
       setConverting(false)
       return
     }
@@ -147,7 +147,7 @@ export default function GhostRecoverPage() {
               disabled={loading || code.length !== 6 || pin.length !== 4}
               style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || code.length !== 6 || pin.length !== 4 ? 0.7 : 1 }}
             >
-              {loading ? 'Recherche...' : 'Récupérer'}
+              {loading ? t('common.searching_dots') : t('common.recover')}
             </button>
             <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
           </div>

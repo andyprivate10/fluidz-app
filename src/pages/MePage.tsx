@@ -389,7 +389,7 @@ export default function MePage() {
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
             <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>
-              {displayName || 'Mon profil'}
+              {displayName || t('common.my_profile_short')}
             </h1>
             <p style={{ fontSize:12, color:S.tx3, marginTop:3 }}>{user.email}</p>
           </div>
@@ -424,7 +424,7 @@ export default function MePage() {
               <button onClick={() => {
                 const url = window.location.origin + '/profile/' + user.id
                 if (navigator.share) {
-                  navigator.share({ title: displayName || 'Mon profil Fluidz', url }).catch(() => {})
+                  navigator.share({ title: displayName || t('share.my_profile'), url }).catch(() => {})
                 } else {
                   navigator.clipboard.writeText(url)
                 }

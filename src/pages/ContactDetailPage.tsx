@@ -116,8 +116,8 @@ export default function ContactDetailPage() {
       user_id: contactUserId,
       session_id: sessionId,
       type: 'session_invite',
-      title: 'Tu es invité !',
-      body: (profile?.display_name || 'Quelqu\'un') + ' t\'invite à "' + (sess?.title || 'une session') + '"',
+      title: t('notifications.invite_title'),
+      body: t('notifications.invite_body', { name: profile?.display_name || t('common.someone'), title: sess?.title || t('common.a_session') }),
       href: '/session/' + sessionId,
     })
     showToast('Invitation envoyée !', 'success')

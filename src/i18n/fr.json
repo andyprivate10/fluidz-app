@@ -342,7 +342,13 @@
     "today": "Aujourd'hui",
     "yesterday": "Hier",
     "this_week": "Cette semaine",
-    "older": "Plus ancien"
+    "older": "Plus ancien",
+    "apply_body": "Pour \"{{title}}\"",
+    "invite_title": "Tu es invité !",
+    "invite_body": "{{name}} t'invite à \"{{title}}\"",
+    "review_title": "Comment c'était \"{{title}}\" ?",
+    "review_body": "Laisse un avis anonyme pour aider la communauté",
+    "group_invite_body": "{{host}} t'invite via le groupe \"{{group}}\""
   },
   "auth": {
     "email_invalid": "Email invalide",
@@ -522,7 +528,16 @@
     "back_to_session": "Retour à la session",
     "copy_label": "Copier",
     "share_label": "Partager",
-    "view_arrow": "Voir →"
+    "view_arrow": "Voir →",
+    "session_fallback": "Session",
+    "a_host": "Un host",
+    "someone": "Quelqu'un",
+    "your_session": "ta session",
+    "a_session": "une session",
+    "searching_dots": "Recherche...",
+    "recover": "Récupérer",
+    "my_profile_short": "Mon profil",
+    "join_us": "Rejoins-nous !"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -596,5 +611,17 @@
     "active": "Active",
     "check_in_confirmed": "Check-in confirmé",
     "not_retained": "Non retenu"
+  },
+  "share": {
+    "apply_here": "Postule ici",
+    "join_here": "Rejoins",
+    "searching": "Recherche",
+    "already_here": "déjà là",
+    "my_profile": "Mon profil Fluidz",
+    "session_fluidz": "Session Fluidz"
+  },
+  "errors": {
+    "upload_error": "Erreur upload",
+    "error_prefix": "Erreur"
   }
 }

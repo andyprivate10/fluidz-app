@@ -124,10 +124,10 @@ export default function AddressesPage() {
       const compressed = await compressImage(file)
       const path = `${userId}/addr_step_${Date.now()}.jpg`
       const { error } = await supabase.storage.from('avatars').upload(path, compressed, { upsert: false })
-      if (error) { showToast('Erreur upload', 'error'); setUploading(null); return }
+      if (error) { showToast(t('errors.upload_error'), 'error'); setUploading(null); return }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       setDirections(prev => prev.map((d, i) => i === stepIndex ? { ...d, photo_url: publicUrl } : d))
-    } catch { showToast('Erreur upload', 'error') }
+    } catch { showToast(t('errors.upload_error'), 'error') }
     setUploading(null)
   }
 

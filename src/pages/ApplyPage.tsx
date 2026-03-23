@@ -288,7 +288,7 @@ export default function ApplyPage() {
           session_id: id,
           type: 'new_application',
           title: name + ' a postulé',
-          body: 'Pour "' + (sess.title || 'ta session') + '"',
+          body: t('notifications.apply_body', { title: sess.title || t('common.your_session') }),
           href: '/session/' + id + '/host',
         })
         sendPushToUser(sess.host_id, name + ' a postulé', 'Pour "' + (sess.title || 'ta session') + '"', '/session/' + id + '/host')

@@ -474,7 +474,7 @@ export default function SessionPage() {
                 <button
                   onClick={() => {
                     const url = window.location.origin + '/join/' + session.invite_code
-                    navigator.share({ title: session.title, text: '🔥 ' + session.title + ' – Rejoins-nous !', url }).catch(() => {})
+                    navigator.share({ title: session.title, text: '🔥 ' + session.title + ' – ' + t('common.join_us'), url }).catch(() => {})
                   }}
                   style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.sage, background: 'transparent', color: S.sage, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
                 >
