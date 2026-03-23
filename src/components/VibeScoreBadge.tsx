@@ -3,6 +3,7 @@ import { Zap } from 'lucide-react'
 import { calculateVibeScore, vibeScoreBadge } from '../lib/vibeScore'
 import type { VibeScoreData } from '../lib/vibeScore'
 import { colors } from '../brand'
+import { useTranslation } from 'react-i18next'
 const S = colors
 
 /**
@@ -40,6 +41,7 @@ export function VibeScoreBadge({ userId, size = 'sm' }: { userId: string; size?:
  * Usage: <VibeScoreCard userId="xxx" />
  */
 export function VibeScoreCard({ userId }: { userId: string }) {
+  const { t } = useTranslation()
   const [data, setData] = useState<VibeScoreData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -53,12 +55,12 @@ export function VibeScoreCard({ userId }: { userId: string }) {
 
   const badge = vibeScoreBadge(data.score)
   const bars = [
-    { label: 'Reviews', value: data.breakdown.reviews, max: 30, color: S.sage },
-    { label: 'Participation', value: data.breakdown.participation, max: 20, color: S.p },
-    { label: 'Fiabilité', value: data.breakdown.noReports, max: 15, color: S.blue },
+    { label: t('vibe.reviews'), value: data.breakdown.reviews, max: 30, color: S.sage },
+    { label: t('vibe.participation'), value: data.breakdown.participation, max: 20, color: S.p },
+    { label: t('vibe.reliability'), value: data.breakdown.noReports, max: 15, color: S.blue },
     { label: 'Check-in', value: data.breakdown.checkInRate, max: 15, color: S.p },
-    { label: 'Profil', value: data.breakdown.profileComplete, max: 10, color: S.tx2 },
-    { label: 'Ancienneté', value: data.breakdown.seniority, max: 10, color: S.tx2 },
+    { label: t('vibe.profile_label'), value: data.breakdown.profileComplete, max: 10, color: S.tx2 },
+    { label: t('vibe.seniority'), value: data.breakdown.seniority, max: 10, color: S.tx2 },
   ]
 
   return (

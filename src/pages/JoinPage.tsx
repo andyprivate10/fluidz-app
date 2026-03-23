@@ -159,8 +159,8 @@ export default function JoinPage() {
   }
 
   const statusLabels: Record<string, { text: string; color: string }> = {
-    pending: { text: 'Candidature en attente...', color: S.orange },
-    accepted: { text: 'Tu es accepté !', color: S.sage },
+    pending: { text: t('join.status_pending'), color: S.orange },
+    accepted: { text: t('join.status_accepted'), color: S.sage },
     checked_in: { text: 'check_in_confirmed', color: S.sage },
     rejected: { text: t('status.not_retained'), color: S.red },
   }

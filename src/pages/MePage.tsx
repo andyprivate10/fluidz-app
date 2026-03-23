@@ -236,7 +236,7 @@ export default function MePage() {
       email,
       options: { emailRedirectTo: window.location.origin + '/me' }
     })
-    setMsg(error ? error.message : 'Lien envoyé ! Vérifie ta boîte mail.')
+    setMsg(error ? error.message : t('auth.magic_link_sent'))
     setLoading(false)
   }
 
@@ -452,13 +452,13 @@ export default function MePage() {
           {/* Profile completeness */}
           {(() => {
             const checks = [
-              { label: 'Pseudo', done: !!displayName && displayName !== 'Anonymous' },
-              { label: 'Photo', done: !!avatarUrl },
+              { label: t('profile.step_pseudo'), done: !!displayName && displayName !== 'Anonymous' },
+              { label: t('profile.step_photo'), done: !!avatarUrl },
               { label: 'Âge', done: !!age },
-              { label: 'Rôle', done: !!role },
-              { label: 'Bio', done: !!bio },
-              { label: 'Physique', done: !!height || !!weight || !!morphology },
-              { label: 'Pratiques', done: kinks.length > 0 },
+              { label: t('profile.step_role'), done: !!role },
+              { label: t('profile.step_bio'), done: !!bio },
+              { label: t('profile.step_physique'), done: !!height || !!weight || !!morphology },
+              { label: t('profile.step_pratiques'), done: kinks.length > 0 },
             ]
             const done = checks.filter(c => c.done).length
             const pct = Math.round((done / checks.length) * 100)

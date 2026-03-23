@@ -11,12 +11,6 @@ import { useTranslation } from 'react-i18next'
 
 const S = colors
 
-const RELATIONS = [
-  { level: 'connaissance', label: 'Connaissance', icon: '○', color: S.tx3 },
-  { level: 'close', label: 'Close', icon: '◉', color: S.sage },
-  { level: 'favori', label: 'Favori', icon: '★', color: S.p },
-] as const
-
 type Interaction = {
   id: string
   type: string
@@ -24,16 +18,23 @@ type Interaction = {
   created_at: string
 }
 
-const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }> = {
-  co_event: { icon: '◎', label: 'Même event', color: S.p },
-  dm: { icon: '↗', label: 'DM envoyé', color: S.blue },
-  added_contact: { icon: '+', label: 'Ajouté au carnet', color: S.sage },
-  relation_change: { icon: '⟳', label: 'Relation modifiée', color: S.orange },
-  voted: { icon: '▣', label: 'Vote', color: S.tx3 },
-}
-
 export default function ContactDetailPage() {
   const { t } = useTranslation()
+
+  const RELATIONS = [
+    { level: 'connaissance', label: t('contacts.connaissance'), icon: '○', color: S.tx3 },
+    { level: 'close', label: t('contacts.close'), icon: '◉', color: S.sage },
+    { level: 'favori', label: t('contacts.favori'), icon: '★', color: S.p },
+  ] as const
+
+  const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }> = {
+    co_event: { icon: '◎', label: t('interactions.co_event'), color: S.p },
+    dm: { icon: '↗', label: 'DM', color: S.blue },
+    added_contact: { icon: '+', label: t('interactions.added_contact'), color: S.sage },
+    relation_change: { icon: '⟳', label: t('interactions.relation_change'), color: S.orange },
+    voted: { icon: '▣', label: t('interactions.vote_label'), color: S.tx3 },
+  }
+
   const { contactUserId } = useParams<{ contactUserId: string }>()
   const navigate = useNavigate()
   const [profile, setProfile] = useState<{ display_name: string; profile_json: Record<string, unknown> } | null>(null)
@@ -125,7 +126,7 @@ export default function ContactDetailPage() {
   }
 
   async function removeContact() {
-    if (!contact || !window.confirm('Retirer du carnet ?')) return
+    if (!contact || !window.confirm(t('host.confirm_remove_contact'))) return
     await supabase.from('contacts').delete().eq('id', contact.id)
     navigate('/contacts')
   }

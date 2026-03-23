@@ -26,14 +26,15 @@ type Contact = {
   last_event?: string
 }
 
-const RELATION_STYLES = {
-  connaissance: { label: 'Connaissance', color: S.tx3, icon: '○' },
-  close: { label: 'Close', color: S.sage, icon: '◉' },
-  favori: { label: 'Favori', color: S.p, icon: '★' },
-}
-
 export default function ContactsPage() {
   const { t } = useTranslation()
+
+  const RELATION_STYLES = {
+    connaissance: { label: t('contacts.connaissance'), color: S.tx3, icon: '○' },
+    close: { label: t('contacts.close'), color: S.sage, icon: '◉' },
+    favori: { label: t('contacts.favori'), color: S.p, icon: '★' },
+  }
+
   const navigate = useNavigate()
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)

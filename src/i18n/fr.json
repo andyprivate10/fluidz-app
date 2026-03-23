@@ -306,7 +306,13 @@
     "placeholder_country": "France",
     "placeholder_city": "Paris",
     "placeholder_height": "175",
-    "placeholder_weight": "70"
+    "placeholder_weight": "70",
+    "step_pseudo": "Pseudo",
+    "step_photo": "Photo",
+    "step_role": "Rôle",
+    "step_bio": "Bio",
+    "step_physique": "Physique",
+    "step_pratiques": "Pratiques"
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -331,7 +337,9 @@
     "rating_3": "Bien",
     "rating_4": "Tres bien",
     "rating_5": "Incroyable !",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "respectful": "Respectueux",
+    "welcoming": "Accueillant"
   },
   "notifications": {
     "title": "Notifications",
@@ -370,7 +378,8 @@
     "check_email_instructions": "Ouvre {{email}} et clique sur le lien pour te connecter.",
     "resend_cooldown": "Renvoyer dans {{seconds}}s",
     "resend_link": "Renvoyer le lien",
-    "check_spam": "Verifie tes spams si tu ne trouves pas l'email"
+    "check_spam": "Verifie tes spams si tu ne trouves pas l'email",
+    "magic_link_sent": "Lien envoyé ! Vérifie ta boîte mail."
   },
   "onboarding": {
     "step_label": "Etape {{step}}/3",
@@ -469,7 +478,10 @@
     "nudge_body_suffix": "— tu arrives bientôt ?",
     "nudge_sent": "Relance envoyée",
     "nudge_btn": "Relancer",
-    "close_confirm": "Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées."
+    "close_confirm": "Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées.",
+    "confirm_refuse": "Refuser {{name}} ?",
+    "confirm_delete_address": "Supprimer cette adresse ?",
+    "confirm_remove_contact": "Retirer du carnet ?"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -489,7 +501,9 @@
     "send_dm": "Envoyer un DM",
     "dm_sent": "DM envoyé",
     "add_to_book": "Ajouter au carnet",
-    "no_interactions": "Aucune interaction enregistrée"
+    "no_interactions": "Aucune interaction enregistrée",
+    "connaissance": "Connaissance",
+    "favori": "Favori"
   },
   "settings": {
     "push_active": "Push actives",
@@ -585,7 +599,10 @@
     "message_placeholder": "Un message pour le host...",
     "years_old": "{{age}} ans",
     "missing_label": "Manque : {{missing}}. Complète-le pour plus de chances !",
-    "toast_sent": "Candidature envoyée !"
+    "toast_sent": "Candidature envoyée !",
+    "all_enabled": "Tout activé",
+    "partial": "Partiel",
+    "disabled_state": "Désactivé"
   },
   "ghost_setup": {
     "creating": "Creation...",
@@ -677,5 +694,28 @@
   "push": {
     "applied": "{{name}} a postulé",
     "applied_body": "Pour \"{{title}}\""
+  },
+  "join": {
+    "status_pending": "Candidature en attente...",
+    "status_accepted": "Tu es accepté !"
+  },
+  "vibe": {
+    "reviews": "Reviews",
+    "participation": "Participation",
+    "reliability": "Fiabilité",
+    "profile_label": "Profil",
+    "seniority": "Ancienneté"
+  },
+  "zones": {
+    "torso": "Torse",
+    "sex": "Sex",
+    "butt": "Fessier",
+    "feet": "Pieds"
+  },
+  "interactions": {
+    "co_event": "Même event",
+    "added_contact": "Ajouté au carnet",
+    "relation_change": "Relation modifiée",
+    "vote_label": "Vote"
   }
 }

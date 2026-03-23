@@ -7,12 +7,7 @@ import { colors } from '../../brand'
 
 const S = colors
 
-const BODY_ZONES = [
-  { id: 'torso', label: 'Torse' },
-  { id: 'sex', label: 'Sex' },
-  { id: 'butt', label: 'Fessier' },
-  { id: 'feet', label: 'Pieds' },
-] as const
+// BODY_ZONES defined inside component to access t()
 
 // Zone icons inline (avoid importing from MePage)
 import { User as UserIcon, Flame, Circle, Footprints } from 'lucide-react'
@@ -46,6 +41,12 @@ type Props = {
 
 export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartPhotos, photosIntime, videosIntime, removePhotoIntime, removeVideoIntime, uploadMedia, mediaUploading }: Props) {
   const { t } = useTranslation()
+  const BODY_ZONES = [
+    { id: 'torso', label: t('zones.torso') },
+    { id: 'sex', label: t('zones.sex') },
+    { id: 'butt', label: t('zones.butt') },
+    { id: 'feet', label: t('zones.feet') },
+  ]
 
   return (
     <>

@@ -12,12 +12,14 @@ import { sendPushToUser } from '../lib/pushSender'
 
 const S = colors
 
-const BODY_ZONES = [
-  { id: 'torso', label: 'Torse' },
-  { id: 'sex', label: 'Sex' },
-  { id: 'butt', label: 'Fessier' },
-  { id: 'feet', label: 'Pieds' },
-]
+function getBodyZones(t: (k: string) => string) {
+  return [
+    { id: 'torso', label: t('zones.torso') },
+    { id: 'sex', label: t('zones.sex') },
+    { id: 'butt', label: t('zones.butt') },
+    { id: 'feet', label: t('zones.feet') },
+  ]
+}
 
 type Section = { id: string; label: string; icon: typeof Camera; desc: string }
 
@@ -46,6 +48,7 @@ const GUEST_SESSION_KEY = 'guest_session_id'
 export default function ApplyPage() {
   const { t } = useTranslation()
   const { BLOC_PROFIL, BLOC_ADULTE, SECTION_OCCASION, ALL_SECTIONS } = getSections(t)
+  const BODY_ZONES = getBodyZones(t)
   const { roles } = useAdminConfig()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -478,7 +481,7 @@ export default function ApplyPage() {
                 }}>
                   <span style={{fontSize:13,fontWeight:700,color: someOn ? color : S.tx3}}>{label}</span>
                   <span style={{fontSize:11,fontWeight:600,color: someOn ? color : S.tx4}}>
-                    {allOn ? 'Tout activé' : someOn ? 'Partiel' : 'Désactivé'}
+                    {allOn ? t('apply.all_enabled') : someOn ? t('apply.partial') : t('apply.disabled_state')}
                   </span>
                 </button>
               )

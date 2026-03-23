@@ -107,7 +107,7 @@ export default function AddressesPage() {
   }
 
   async function deleteAddress(addrId: string) {
-    if (!userId || !window.confirm('Supprimer cette adresse ?')) return
+    if (!userId || !window.confirm(t('host.confirm_delete_address'))) return
     const { data } = await supabase.from('user_profiles').select('profile_json').eq('id', userId).maybeSingle()
     const pj = (data?.profile_json || {}) as Record<string, unknown>
     const existing = Array.isArray(pj.saved_addresses) ? pj.saved_addresses as SavedAddress[] : []

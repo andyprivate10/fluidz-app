@@ -9,14 +9,15 @@ const S = colors
 
 type RelationLevel = 'connaissance' | 'close' | 'favori'
 
-const RELATIONS: { level: RelationLevel; label: string; icon: typeof UserPlus; color: string }[] = [
-  { level: 'connaissance', label: 'Connaissance', icon: UserPlus, color: S.tx3 },
-  { level: 'close', label: 'Close', icon: Heart, color: S.sage },
-  { level: 'favori', label: 'Favori', icon: Star, color: S.p },
-]
-
 export default function AddContactButton({ targetUserId }: { targetUserId: string }) {
   const { t } = useTranslation()
+
+  const RELATIONS: { level: RelationLevel; label: string; icon: typeof UserPlus; color: string }[] = [
+    { level: 'connaissance', label: t('contacts.connaissance'), icon: UserPlus, color: S.tx3 },
+    { level: 'close', label: t('contacts.close'), icon: Heart, color: S.sage },
+    { level: 'favori', label: t('contacts.favori'), icon: Star, color: S.p },
+  ]
+
   const [currentRelation, setCurrentRelation] = useState<RelationLevel | null>(null)
   const [loading, setLoading] = useState(true)
   const [showSelector, setShowSelector] = useState(false)

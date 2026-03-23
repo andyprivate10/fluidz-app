@@ -306,7 +306,13 @@
     "placeholder_country": "France",
     "placeholder_city": "Paris",
     "placeholder_height": "175",
-    "placeholder_weight": "70"
+    "placeholder_weight": "70",
+    "step_pseudo": "Nickname",
+    "step_photo": "Photo",
+    "step_role": "Role",
+    "step_bio": "Bio",
+    "step_physique": "Physical",
+    "step_pratiques": "Practices"
   },
   "review": {
     "title": "How was it?",
@@ -331,7 +337,9 @@
     "rating_3": "Good",
     "rating_4": "Great",
     "rating_5": "Amazing!",
-    "send": "Send"
+    "send": "Send",
+    "respectful": "Respectful",
+    "welcoming": "Welcoming"
   },
   "notifications": {
     "title": "Notifications",
@@ -370,7 +378,8 @@
     "check_email_instructions": "Open {{email}} and click the link to log in.",
     "resend_cooldown": "Resend in {{seconds}}s",
     "resend_link": "Resend link",
-    "check_spam": "Check your spam if you can't find the email"
+    "check_spam": "Check your spam if you can't find the email",
+    "magic_link_sent": "Link sent! Check your inbox."
   },
   "onboarding": {
     "step_label": "Step {{step}}/3",
@@ -469,7 +478,10 @@
     "nudge_body_suffix": "— arriving soon?",
     "nudge_sent": "Nudge sent",
     "nudge_btn": "Nudge",
-    "close_confirm": "Permanently close this session?\n\nPhotos/videos shared in DMs will be deleted."
+    "close_confirm": "Permanently close this session?\n\nPhotos/videos shared in DMs will be deleted.",
+    "confirm_refuse": "Refuse {{name}}?",
+    "confirm_delete_address": "Delete this address?",
+    "confirm_remove_contact": "Remove from contacts?"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -489,7 +501,9 @@
     "send_dm": "Send a DM",
     "dm_sent": "DM sent",
     "add_to_book": "Add to contacts",
-    "no_interactions": "No interactions recorded"
+    "no_interactions": "No interactions recorded",
+    "connaissance": "Acquaintance",
+    "favori": "Favorite"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -585,7 +599,10 @@
     "message_placeholder": "A message for the host...",
     "years_old": "{{age}} y/o",
     "missing_label": "Missing: {{missing}}. Complete it for better chances!",
-    "toast_sent": "Application sent!"
+    "toast_sent": "Application sent!",
+    "all_enabled": "All enabled",
+    "partial": "Partial",
+    "disabled_state": "Disabled"
   },
   "ghost_setup": {
     "creating": "Creating...",
@@ -677,5 +694,28 @@
   "push": {
     "applied": "{{name}} applied",
     "applied_body": "For \"{{title}}\""
+  },
+  "join": {
+    "status_pending": "Application pending...",
+    "status_accepted": "You are accepted!"
+  },
+  "vibe": {
+    "reviews": "Reviews",
+    "participation": "Participation",
+    "reliability": "Reliability",
+    "profile_label": "Profile",
+    "seniority": "Seniority"
+  },
+  "zones": {
+    "torso": "Torso",
+    "sex": "Sex",
+    "butt": "Butt",
+    "feet": "Feet"
+  },
+  "interactions": {
+    "co_event": "Same event",
+    "added_contact": "Added to contacts",
+    "relation_change": "Relation changed",
+    "vote_label": "Vote"
   }
 }
