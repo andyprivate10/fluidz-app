@@ -1,5 +1,5 @@
 import { BrowserRouter, useLocation, useRoutes } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -86,6 +86,8 @@ const LazyFallback = () => (
 function AnimatedRoutes() {
   const location = useLocation()
   const element = useRoutes(routes)
+  // Scroll to top on route change
+  useEffect(() => { window.scrollTo(0, 0) }, [location.pathname])
   return (
     <AnimatePresence mode="wait">
       <motion.div

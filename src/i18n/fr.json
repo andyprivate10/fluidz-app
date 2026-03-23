@@ -385,7 +385,19 @@
     "videos_count": "Vidéos · {{count}}",
     "pratiques_count": "Pratiques · {{count}}",
     "step_age": "Âge",
-    "completion_label": "Profil {{pct}}% complet"
+    "completion_label": "Profil {{pct}}% complet",
+    "block_user": "Bloquer",
+    "report_user": "Signaler",
+    "block_confirm": "Bloquer cet utilisateur ? Il ne pourra plus voir ton profil ni te contacter.",
+    "blocked_toast": "Utilisateur bloqué",
+    "report_confirm": "Signaler cet utilisateur pour comportement inapproprié ?",
+    "reported_toast": "Signalement envoyé",
+    "unblock": "Débloquer",
+    "unblocked_toast": "Utilisateur débloqué",
+    "mute_conversation": "Couper les notifications",
+    "unmute_conversation": "Réactiver les notifications",
+    "muted_toast": "Notifications coupées",
+    "unmuted_toast": "Notifications réactivées"
   },
   "review": {
     "title": "Comment c'etait ?",

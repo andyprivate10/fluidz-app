@@ -7,8 +7,9 @@ import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors, glassCard } from '../brand'
+import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Send } from 'lucide-react'
+import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Send, Ban, Flag } from 'lucide-react'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -318,6 +319,29 @@ export default function PublicProfile() {
         {allVideos.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.lav)}>{t('profile.videos_label')} · {allVideos.length}</div><div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>{allVideos.map((url: string, i: number) => <div key={i} style={{ flexShrink: 0 }}><video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} /></div>)}</div></div>}
 
         <InviteToSessionButton targetUserId={userId!} />
+
+        {/* Block / Report */}
+        <div style={{ display: 'flex', gap: 8, marginTop: 16, paddingBottom: 20 }}>
+          <button onClick={async () => {
+            if (!window.confirm(t('profile.block_confirm'))) return
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
+            showToast(t('profile.blocked_toast'), 'success')
+            navigate(-1)
+          }} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.redbd, background: 'transparent', color: S.red, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Ban size={13} strokeWidth={1.5} /> {t('profile.block_user')}
+          </button>
+          <button onClick={async () => {
+            if (!window.confirm(t('profile.report_confirm'))) return
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            await supabase.from('notifications').insert({ user_id: user.id, type: 'report', title: 'Report: ' + displayName, body: 'User ' + userId + ' reported', href: '/profile/' + userId })
+            showToast(t('profile.reported_toast'), 'info')
+          }} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Flag size={13} strokeWidth={1.5} /> {t('profile.report_user')}
+          </button>
+        </div>
       </div>
 
       {showStory && profile && <ProfileStory profile={{ display_name: displayName, profile_json: p }} onClose={() => setShowStory(false)} />}

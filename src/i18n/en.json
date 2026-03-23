@@ -385,7 +385,19 @@
     "videos_count": "Videos · {{count}}",
     "pratiques_count": "Practices · {{count}}",
     "step_age": "Age",
-    "completion_label": "Profile {{pct}}% complete"
+    "completion_label": "Profile {{pct}}% complete",
+    "block_user": "Block",
+    "report_user": "Report",
+    "block_confirm": "Block this user? They won't be able to see your profile or contact you.",
+    "blocked_toast": "User blocked",
+    "report_confirm": "Report this user for inappropriate behavior?",
+    "reported_toast": "Report sent",
+    "unblock": "Unblock",
+    "unblocked_toast": "User unblocked",
+    "mute_conversation": "Mute notifications",
+    "unmute_conversation": "Unmute notifications",
+    "muted_toast": "Notifications muted",
+    "unmuted_toast": "Notifications unmuted"
   },
   "review": {
     "title": "How was it?",
