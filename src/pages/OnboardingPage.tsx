@@ -117,7 +117,7 @@ export default function OnboardingPage() {
           <span style={{ fontSize: 12, color: S.tx3, fontWeight: 600 }}>{t('onboarding.step_label', { step })}</span>
           <span style={{ fontSize: 11, color: completenessColor, fontWeight: 600 }}>{completenessLabel}</span>
         </div>
-        <div style={{ background: S.bg2, borderRadius: 6, height: 6, overflow: 'hidden' }}>
+        <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 6, height: 6, overflow: 'hidden' }}>
           <div style={{ width: `${progress}%`, background: S.grad, height: '100%', borderRadius: 6, transition: 'width 0.4s ease' }} />
         </div>
       </div>
