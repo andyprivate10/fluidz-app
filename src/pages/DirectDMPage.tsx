@@ -268,7 +268,12 @@ export default function DirectDMPage() {
                 <span style={{ color: S.tx }}>{msg.text}</span>
               )}
               <div style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start', alignItems: 'center', gap: 4, marginTop: 2, padding: msg.has_media ? '0 8px 4px' : 0 }}>
-                <span style={{ fontSize: 10, color: S.tx4 }}>{formatMessageTime(msg.created_at)}</span>
+                <span style={{ fontSize: 10, color: S.tx4 }}>{formatMessageTime(msg.created_at)}{isMe(msg.sender_id) && (() => {
+                  const peerMsgs = messages.filter(m => !isMe(m.sender_id))
+                  const lastPeerTime = peerMsgs.length > 0 ? new Date(peerMsgs[peerMsgs.length - 1].created_at).getTime() : 0
+                  const isSeen = lastPeerTime > new Date(msg.created_at).getTime()
+                  return <span style={{ color: isSeen ? '#7DD3FC' : S.tx4, marginLeft: 3 }}>{isSeen ? '✓✓' : '✓'}</span>
+                })()}</span>
               </div>
             </div>
           </div>

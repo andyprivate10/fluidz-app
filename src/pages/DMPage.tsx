@@ -500,8 +500,20 @@ export default function DMPage() {
                     ) : <span>{message.text}</span>
                   )}
                 </div>
-                <span style={{ color: S.tx3, fontSize: 10, marginTop: 2 }}>
+                <span style={{ color: isMine ? S.tx3 : S.tx3, fontSize: 10, marginTop: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
                   {formatMessageTime(message.created_at)}
+                  {isMine && (() => {
+                    // Implicit read receipt: peer sent a message after this one → seen
+                    const peerMsgs = messages.filter(m => m.sender_id !== currentUser?.id)
+                    const lastPeerTime = peerMsgs.length > 0 ? new Date(peerMsgs[peerMsgs.length - 1].created_at).getTime() : 0
+                    const msgTime = new Date(message.created_at).getTime()
+                    const isSeen = lastPeerTime > msgTime
+                    return (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 2, color: isSeen ? '#7DD3FC' : S.tx4 }}>
+                        {isSeen ? '✓✓' : '✓'}
+                      </span>
+                    )
+                  })()}
                 </span>
               </div>
             )
