@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Clock, Share2, MessageCircle, Check, MapPin, Users } from 'lucide-react'
+import { Clock, Share2, MessageCircle, Check, MapPin, Users, Send } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors, glassCard } from '../brand'
@@ -13,6 +13,7 @@ import SessionHero from '../components/session/SessionHero'
 import SessionQuickActions from '../components/session/SessionQuickActions'
 import SessionLineup from '../components/session/SessionLineup'
 import SessionVotes from '../components/session/SessionVotes'
+import ShareToContact from '../components/ShareToContact'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { useTranslation } from 'react-i18next'
 import MapView from '../components/MapView'
@@ -46,6 +47,7 @@ export default function SessionPage() {
   const { copied: addressCopied, copy: copyAddress } = useCopyFeedback()
   const [pendingCount, setPendingCount] = useState(0)
   const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
+  const [showShareSheet, setShowShareSheet] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [pendingApps, setPendingApps] = useState<PendingApplication[]>([])
@@ -481,6 +483,14 @@ export default function SessionPage() {
                   <Share2 size={13} strokeWidth={1.5} style={{marginRight:4}} /> {t('session.share')}
                 </button>
               )}
+              {currentUser && (
+                <button
+                  onClick={() => setShowShareSheet(true)}
+                  style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.lavbd, background: 'transparent', color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
+                >
+                  <Send size={13} strokeWidth={1.5} /> {t('share.recommend_session')}
+                </button>
+              )}
               </>
             )}
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
@@ -675,6 +685,14 @@ export default function SessionPage() {
           )}
         </div>
       )}
+      <ShareToContact
+        open={showShareSheet}
+        onClose={() => setShowShareSheet(false)}
+        shareType="session"
+        shareId={id || ''}
+        shareTitle={session.title}
+        shareSubtitle={session.approx_area}
+      />
     </div>
   )
 }

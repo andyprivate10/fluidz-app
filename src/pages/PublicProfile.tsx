@@ -8,7 +8,8 @@ import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield } from 'lucide-react'
+import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Send } from 'lucide-react'
+import ShareToContact from '../components/ShareToContact'
 import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
@@ -114,6 +115,7 @@ export default function PublicProfile() {
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showStory, setShowStory] = useState(false)
+  const [showShareSheet, setShowShareSheet] = useState(false)
   const [myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
   const [allowed, setAllowed] = useState<boolean>(false)
   const [photoIdx, setPhotoIdx] = useState(0)
@@ -229,6 +231,9 @@ export default function PublicProfile() {
           <Create1to1Button targetUserId={userId!} targetName={displayName} />
         </div>
         <div style={{ marginTop: 8 }}><AddContactButton targetUserId={userId!} /></div>
+        <button onClick={() => setShowShareSheet(true)} style={{ marginTop: 8, width: '100%', padding: 10, borderRadius: 12, border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)'), background: 'transparent', color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Send size={13} strokeWidth={1.5} /> {t('share.recommend_profile')}
+        </button>
       </div>
 
       {/* ═══ CARDS ═══ */}
@@ -298,6 +303,13 @@ export default function PublicProfile() {
       </div>
 
       {showStory && profile && <ProfileStory profile={{ display_name: displayName, profile_json: p }} onClose={() => setShowStory(false)} />}
+      <ShareToContact
+        open={showShareSheet}
+        onClose={() => setShowShareSheet(false)}
+        shareType="profile"
+        shareId={userId || ''}
+        shareTitle={displayName}
+      />
     </div>
   )
 }

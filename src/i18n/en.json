@@ -678,7 +678,16 @@
     "searching": "Looking for",
     "already_here": "already here",
     "my_profile": "My Fluidz profile",
-    "session_fluidz": "Fluidz Session"
+    "session_fluidz": "Fluidz Session",
+    "recommend": "Recommend",
+    "search_contacts": "Search a contact...",
+    "no_contacts": "No contacts",
+    "notif_title": "{{name}} — recommended for you",
+    "sent_count": "Sent to {{count}} contact(s)",
+    "sent": "Sent!",
+    "send_to": "Send to {{count}} contact(s)",
+    "recommend_session": "Recommend this session",
+    "recommend_profile": "Recommend this profile"
   },
   "errors": {
     "upload_error": "Upload error",

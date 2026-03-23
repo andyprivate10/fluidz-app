@@ -678,7 +678,16 @@
     "searching": "Recherche",
     "already_here": "déjà là",
     "my_profile": "Mon profil Fluidz",
-    "session_fluidz": "Session Fluidz"
+    "session_fluidz": "Session Fluidz",
+    "recommend": "Recommander",
+    "search_contacts": "Chercher un contact...",
+    "no_contacts": "Aucun contact",
+    "notif_title": "{{name}} — recommandé pour toi",
+    "sent_count": "Envoyé à {{count}} contact(s)",
+    "sent": "Envoyé !",
+    "send_to": "Envoyer à {{count}} contact(s)",
+    "recommend_session": "Recommander cette session",
+    "recommend_profile": "Recommander ce profil"
   },
   "errors": {
     "upload_error": "Erreur upload",
