@@ -104,8 +104,18 @@ export default function CandidateProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-        <div style={{ width: 32, height: 32, border: '3px solid ' + S.p, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ minHeight: '100vh', background: S.bg, maxWidth: 480, margin: '0 auto', padding: '40px 20px' }}>
+        <OrbLayer />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 20 }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ width: '60%', height: 18, borderRadius: 8, background: S.bg2, marginBottom: 8, animation: 'pulse 1.5s ease-in-out infinite' }} />
+              <div style={{ width: '35%', height: 12, borderRadius: 8, background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite' }} />
+            </div>
+          </div>
+          {[1,2,3].map(i => <div key={i} style={{ background: 'rgba(22,20,31,0.85)', borderRadius: 20, border: '1px solid '+S.rule2, height: 72, marginBottom: 12, animation: 'pulse 1.5s ease-in-out infinite' }} />)}
+        </div>
       </div>
     )
   }

@@ -138,7 +138,7 @@ export default function HomePage() {
               {latestHost.tags?.slice(0, 3).map(t => <span key={t} style={chip}>{t}</span>)}
             </div>
             {hostPendingCount > 0 && (
-              <p style={{ ...typeStyle('label'), color: S.p, margin: '8px 0 0' }}>{hostPendingCount} candidature{hostPendingCount > 1 ? 's' : ''} en attente</p>
+              <p style={{ ...typeStyle('label'), color: S.p, margin: '8px 0 0' }}>{t('home.pending_count', { count: hostPendingCount })}</p>
             )}
             </div>
           </div>

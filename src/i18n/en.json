@@ -615,7 +615,8 @@
     "my_hosted": "My sessions (host)",
     "nearby": "Nearby",
     "no_public": "No public sessions at the moment",
-    "past": "Past sessions"
+    "past": "Past sessions",
+    "review_session": "Leave a review"
   },
   "addresses": {
     "empty": "No addresses",

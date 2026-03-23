@@ -89,6 +89,9 @@ export default function SessionsPage() {
           </div>
         )}
         <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '8px 0 0' }}>{sessionTiming(sess)}</p>
+        {isEnded && (
+          <p style={{ ...typeStyle('meta'), color: S.p, fontWeight: 600, margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>{t('sessions.review_session')} →</p>
+        )}
         </div>
       </div>
     )

@@ -615,7 +615,8 @@
     "my_hosted": "Mes sessions (host)",
     "nearby": "Autour de moi",
     "no_public": "Aucune session publique pour le moment",
-    "past": "Terminées"
+    "past": "Terminées",
+    "review_session": "Laisser un avis"
   },
   "addresses": {
     "empty": "Aucune adresse",
