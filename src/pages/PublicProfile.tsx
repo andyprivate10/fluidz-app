@@ -205,9 +205,19 @@ export default function PublicProfile() {
       <div style={{ padding: '12px 20px 0', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {p.role && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 13, fontWeight: 700, color: '#fff', background: `linear-gradient(135deg, ${S.p}, #c06868)` }}>{p.role}</span>}
         {p.morphology && <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{p.morphology}</span>}
+        {p.home_country && p.home_city && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.lav, background: S.lavbg, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 3 }}><MapPin size={10} strokeWidth={1.5} />{p.home_city}, {p.home_country}</span>}
         {onlineLabel && !isOnline && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx3, background: S.bg2 }}>{onlineLabel}</span>}
         {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}><Shield size={10} strokeWidth={2} style={{display:'inline',marginRight:2}} />PrEP</span>}
       </div>
+
+      {/* Languages */}
+      {Array.isArray(p.languages) && p.languages.length > 0 && (
+        <div style={{ padding: '8px 20px 0', display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          {p.languages.map((lang: string) => (
+            <span key={lang} style={{ fontSize: 10, fontWeight: 600, color: S.tx3, padding: '3px 8px', borderRadius: 99, background: S.bg2, border: '1px solid ' + S.rule }}>{lang}</span>
+          ))}
+        </div>
+      )}
 
       {/* ═══ ACTIONS ═══ */}
       <div style={{ padding: '16px 20px 0' }}>

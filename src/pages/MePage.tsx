@@ -110,6 +110,9 @@ export default function MePage() {
   const [age, setAge] = useState('')
   const [bio, setBio] = useState('')
   const [location, setLocation] = useState('')
+  const [homeCountry, setHomeCountry] = useState('')
+  const [homeCity, setHomeCity] = useState('')
+  const [languages, setLanguages] = useState<string[]>([])
   const [role, setRole] = useState('')
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
@@ -207,6 +210,9 @@ export default function MePage() {
       setAge(p.age || '')
       setBio(p.bio || '')
       setLocation(p.location || '')
+      setHomeCountry(p.home_country || '')
+      setHomeCity(p.home_city || '')
+      setLanguages(Array.isArray(p.languages) ? p.languages : [])
       setRole(p.role || '')
       setHeight(p.height || '')
       setWeight(p.weight || '')
@@ -253,7 +259,7 @@ export default function MePage() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, role, height, weight, morphology, kinks, prep, limits,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, height, weight, morphology, kinks, prep, limits,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -270,7 +276,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, role, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -532,8 +538,31 @@ export default function MePage() {
                 <input value={age} onChange={e => setAge(e.target.value)} placeholder="Age" type="number" style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Localisation</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.location')}</label>
                 <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Paris 11e, Bastille..." style={inputStyle} />
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                <div>
+                  <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.home_country')}</label>
+                  <input value={homeCountry} onChange={e => setHomeCountry(e.target.value)} placeholder="France" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.home_city')}</label>
+                  <input value={homeCity} onChange={e => setHomeCity(e.target.value)} placeholder="Paris" style={inputStyle} />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.languages')}</label>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
+                  {['Français','English','Español','Deutsch','Português','Italiano','العربية','Nederlands','Русский','中文','日本語','한국어'].map(lang => (
+                    <button key={lang} type="button" onClick={() => setLanguages(prev => prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang])} style={{
+                      padding:'5px 10px', borderRadius:99, fontSize:11, fontWeight:600, cursor:'pointer',
+                      border:'1px solid '+(languages.includes(lang) ? S.pbd : S.rule),
+                      background: languages.includes(lang) ? S.p2 : 'transparent',
+                      color: languages.includes(lang) ? S.p : S.tx3,
+                    }}>{lang}</button>
+                  ))}
+                </div>
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Taille (cm)</label>

@@ -72,7 +72,7 @@ export default function LoginPage() {
         {step === 'email' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {/* Magic link card */}
-            <div style={{ background: S.bg1, borderRadius: R.card, padding: 24, border: `1px solid ${S.rule}` }}>
+            <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: R.card, padding: 24, border: `1px solid ${S.rule2}`, boxShadow: '0 2px 16px rgba(0,0,0,0.2)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
                 <Mail size={16} strokeWidth={1.5} style={{ color: S.p }} />
                 <span style={{ ...typeStyle('label'), color: S.tx }}>{t('auth.email_login')}</span>

@@ -176,7 +176,7 @@ export default function GhostRecoverPage() {
                 <Mail size={16} /> Sauvegarder en vrai compte
               </button>
             ) : (
-              <div style={{ background: S.bg1, borderRadius: 16, padding: 16, border: '1px solid ' + S.sagebd }}>
+              <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 16, border: '1px solid ' + S.sagebd }}>
                 <p style={{ fontSize: 12, color: S.sage, fontWeight: 700, margin: '0 0 10px' }}>Convertir en compte permanent</p>
                 <input
                   value={convertEmail}

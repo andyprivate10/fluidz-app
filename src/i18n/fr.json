@@ -262,7 +262,11 @@
     "health_badge_test": "Test il y a {{months}} mois",
     "kinks_count": "{{count}} pratique(s)",
     "health_prep": "PrEP actif",
-    "health_test": "Test il y a {{months}} mois"
+    "health_test": "Test il y a {{months}} mois",
+    "home_country": "Pays",
+    "home_city": "Ville",
+    "languages": "Langues parlées",
+    "visitor_tag": "Visitor"
   },
   "review": {
     "title": "Comment c'etait ?",
