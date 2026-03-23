@@ -207,7 +207,7 @@ export default function GhostRecoverPage() {
               onClick={() => navigate('/ghost/setup' + (sessionId ? '?session_id=' + sessionId : inviteCode ? '?invite_code=' + inviteCode : ''))}
               style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 12, cursor: 'pointer', textDecoration: 'underline' }}
             >
-              Pas encore de profil ghost ? → Créer un profil
+              {t('ghost.no_profile_yet')} → {t('ghost.create_profile')}
             </button>
           </div>
         )}

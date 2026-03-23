@@ -445,7 +445,7 @@ export default function DMPage() {
             <div style={{ alignSelf: 'flex-start' }}><SkeletonLine width={240} height={44} style={{ borderRadius: 16 }} /></div>
           </div>
         ) : loadError ? (
-          <p style={{ color: S.red, margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>Impossible de charger les données. Réessaie.</p>
+          <p style={{ color: S.red, margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>{t('chat.load_error')}</p>
         ) : messages.length === 0 ? (
           <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
             {t('chat.send_first')}
@@ -512,7 +512,7 @@ export default function DMPage() {
       {typingUsers.length > 0 && (
         <div style={{ padding: '4px 24px', flexShrink: 0 }}>
           <span style={{ fontSize: 11, color: S.tx3, fontStyle: 'italic' }}>
-            {typingUsers.join(', ')} ecrit...
+            {t('chat.typing', { users: typingUsers.join(', ') })}
           </span>
         </div>
       )}

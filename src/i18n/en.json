@@ -209,7 +209,8 @@
     "vote_needs_3": "Voting available from 3 members",
     "phone_never_asked": "Your phone number will never be asked.",
     "checkin_sent_waiting": "Check-in sent — waiting for host confirmation",
-    "review_anonymous_help": "Your anonymous review helps the community"
+    "review_anonymous_help": "Your anonymous review helps the community",
+    "member_count": "{{count}} members"
   },
   "chat": {
     "title": "Messages",
@@ -220,7 +221,7 @@
     "no_messages": "No messages yet",
     "no_messages_desc": "Join a session or explore profiles",
     "explore": "Explore",
-    "typing": "{{name}} is typing...",
+    "typing": "{{users}} typing...",
     "send": "Your message...",
     "photo": "Photo",
     "video": "Video",
@@ -233,7 +234,9 @@
     "delete_msg": "Delete this message?",
     "sending_photo": "Sending photo...",
     "group_chat": "Group chat",
-    "host_must_enable": "The host must enable group chat for this session."
+    "host_must_enable": "The host must enable group chat for this session.",
+    "load_error": "Failed to load data. Try again.",
+    "group_disabled": "Group chat is disabled. Click \"ON\" to enable it for members."
   },
   "profile": {
     "account": "Account",
@@ -418,7 +421,9 @@
     "hours_left": "{{hours}}h remaining",
     "expires_soon": "Expires soon",
     "your_pseudo": "Your nickname",
-    "your_recovery_code": "Your recovery code"
+    "your_recovery_code": "Your recovery code",
+    "no_profile_yet": "No ghost profile yet?",
+    "create_profile": "Create a profile"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -503,7 +508,8 @@
     "add_to_book": "Add to contacts",
     "no_interactions": "No interactions recorded",
     "connaissance": "Acquaintance",
-    "favori": "Favorite"
+    "favori": "Favorite",
+    "save_btn": "Save"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -555,7 +561,8 @@
     "my_profile_short": "My profile",
     "join_us": "Join us!",
     "me": "Me",
-    "all": "All"
+    "all": "All",
+    "load_error": "Failed to load data. Try again."
   },
   "drawer": {
     "my_space": "My space",
@@ -586,7 +593,8 @@
   "addresses": {
     "empty": "No addresses",
     "edit": "Edit",
-    "new_address": "New address"
+    "new_address": "New address",
+    "save_hint": "Save your addresses to reuse them"
   },
   "apply": {
     "sending": "Sending...",
@@ -698,7 +706,8 @@
   },
   "join": {
     "status_pending": "Application pending...",
-    "status_accepted": "You are accepted!"
+    "status_accepted": "You are accepted!",
+    "joining": "Joining the session..."
   },
   "vibe": {
     "reviews": "Reviews",
@@ -718,5 +727,16 @@
     "added_contact": "Added to contacts",
     "relation_change": "Relation changed",
     "vote_label": "Vote"
+  },
+  "candidate": {
+    "not_found": "Application not found",
+    "sections_shared_date": "{{count}} section{{plural}} shared — Application received on {{date}}"
+  },
+  "edit": {
+    "saving": "Saving...",
+    "save_changes": "Save changes"
+  },
+  "safety": {
+    "tip": "Safety reminder: Share your location with a trusted friend. You can leave at any time, no questions asked. If there is a problem, contact the host via this DM."
   }
 }

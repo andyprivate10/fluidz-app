@@ -359,7 +359,7 @@ export default function GroupChatPage() {
       {isHost && !session.group_chat_enabled && (
         <div style={{ padding:'10px 16px', background:S.p3, borderBottom:'1px solid '+S.pbd }}>
           <p style={{ margin:0, fontSize:12, color:S.p }}>
-            Le group chat est désactivé. Clique "ON" pour l'activer pour les membres.
+            {t('chat.group_disabled')}
           </p>
         </div>
       )}

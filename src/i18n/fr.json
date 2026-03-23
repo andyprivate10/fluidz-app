@@ -209,7 +209,8 @@
     "vote_needs_3": "Vote disponible dès 3 membres",
     "phone_never_asked": "Ton numéro ne sera jamais demandé.",
     "checkin_sent_waiting": "Check-in envoyé — en attente de confirmation du host",
-    "review_anonymous_help": "Ton avis anonyme aide la communauté"
+    "review_anonymous_help": "Ton avis anonyme aide la communauté",
+    "member_count": "{{count}} membres"
   },
   "chat": {
     "title": "Messages",
@@ -220,7 +221,7 @@
     "no_messages": "Pas encore de messages",
     "no_messages_desc": "Rejoins une session ou explore les profils",
     "explore": "Explorer",
-    "typing": "{{name}} ecrit...",
+    "typing": "{{users}} écrit...",
     "send": "Ton message...",
     "photo": "Photo",
     "video": "Video",
@@ -233,7 +234,9 @@
     "delete_msg": "Supprimer ce message ?",
     "sending_photo": "Envoi photo...",
     "group_chat": "Chat de groupe",
-    "host_must_enable": "Le host doit activer le group chat pour cette session."
+    "host_must_enable": "Le host doit activer le group chat pour cette session.",
+    "load_error": "Impossible de charger les données. Réessaie.",
+    "group_disabled": "Le group chat est désactivé. Clique \"ON\" pour l'activer pour les membres."
   },
   "profile": {
     "account": "Compte",
@@ -418,7 +421,9 @@
     "hours_left": "{{hours}}h restantes",
     "expires_soon": "Expire bientot",
     "your_pseudo": "Ton pseudo",
-    "your_recovery_code": "Ton code de récupération"
+    "your_recovery_code": "Ton code de récupération",
+    "no_profile_yet": "Pas encore de profil ghost ?",
+    "create_profile": "Créer un profil"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -503,7 +508,8 @@
     "add_to_book": "Ajouter au carnet",
     "no_interactions": "Aucune interaction enregistrée",
     "connaissance": "Connaissance",
-    "favori": "Favori"
+    "favori": "Favori",
+    "save_btn": "Sauvegarder"
   },
   "settings": {
     "push_active": "Push actives",
@@ -555,7 +561,8 @@
     "my_profile_short": "Mon profil",
     "join_us": "Rejoins-nous !",
     "me": "Moi",
-    "all": "Tous"
+    "all": "Tous",
+    "load_error": "Impossible de charger les données. Réessaie."
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -586,7 +593,8 @@
   "addresses": {
     "empty": "Aucune adresse",
     "edit": "Modifier",
-    "new_address": "Nouvelle adresse"
+    "new_address": "Nouvelle adresse",
+    "save_hint": "Sauvegarde tes adresses pour les réutiliser"
   },
   "apply": {
     "sending": "Envoi...",
@@ -698,7 +706,8 @@
   },
   "join": {
     "status_pending": "Candidature en attente...",
-    "status_accepted": "Tu es accepté !"
+    "status_accepted": "Tu es accepté !",
+    "joining": "Rejoindre la session..."
   },
   "vibe": {
     "reviews": "Reviews",
@@ -718,5 +727,16 @@
     "added_contact": "Ajouté au carnet",
     "relation_change": "Relation modifiée",
     "vote_label": "Vote"
+  },
+  "candidate": {
+    "not_found": "Candidature introuvable",
+    "sections_shared_date": "{{count}} section{{plural}} partagée{{plural}} — Candidature reçue le {{date}}"
+  },
+  "edit": {
+    "saving": "Enregistrement...",
+    "save_changes": "Enregistrer les modifications"
+  },
+  "safety": {
+    "tip": "Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM."
   }
 }

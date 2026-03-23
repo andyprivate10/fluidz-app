@@ -147,7 +147,7 @@ export default function JoinPage() {
   if (isDirect && directJoining) return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, maxWidth: 480, margin: '0 auto' }}>
       <div style={{ width: 28, height: 28, borderRadius: '50%', border: '3px solid '+S.pbd, borderTopColor: S.p, animation: 'spin 0.8s linear infinite', marginBottom: 16 }} />
-      <p style={{ color: S.tx2, fontSize: 15, fontWeight: 600 }}>Rejoindre la session...</p>
+      <p style={{ color: S.tx2, fontSize: 15, fontWeight: 600 }}>{t('join.joining')}</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )

@@ -91,7 +91,7 @@ export default function CandidateProfilePage() {
           await supabase.from('messages').insert({
             session_id: sessionId,
             sender_id: user.id,
-            text: 'Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM.',
+            text: t('safety.tip'),
             sender_name: SYSTEM_SENDER,
           })
         }
@@ -113,7 +113,7 @@ export default function CandidateProfilePage() {
   if (!app) {
     return (
       <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: S.tx3 }}>Candidature introuvable</p>
+        <p style={{ color: S.tx3 }}>{t('candidate.not_found')}</p>
         <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
       </div>
     )
@@ -406,7 +406,7 @@ export default function CandidateProfilePage() {
         {/* Shared sections info */}
         {shared.length > 0 && (
           <p style={{ fontSize: 11, color: S.tx4, margin: '8px 0 0', textAlign: 'center' }}>
-            {shared.length} section{shared.length > 1 ? 's' : ''} partagee{shared.length > 1 ? 's' : ''} -- Candidature recue le {new Date(app.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+            {t('candidate.sections_shared_date', { count: shared.length, plural: shared.length > 1 ? 's' : '', date: new Date(app.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) })}
           </p>
         )}
       </div>

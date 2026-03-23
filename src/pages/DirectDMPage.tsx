@@ -279,7 +279,7 @@ export default function DirectDMPage() {
       {/* Typing indicator */}
       {typingUsers.length > 0 && (
         <div style={{ padding: '4px 16px', flexShrink: 0 }}>
-          <span style={{ fontSize: 11, color: S.tx3, fontStyle: 'italic' }}>{typingUsers.join(', ')} ecrit...</span>
+          <span style={{ fontSize: 11, color: S.tx3, fontStyle: 'italic' }}>{typingUsers.join(', ')} {t('chat.typing', { users: typingUsers.join(', ') })}</span>
         </div>
       )}
 

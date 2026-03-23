@@ -317,7 +317,7 @@ export default function ApplyPage() {
   )
   if (loadError) return (
     <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
-      <p style={{color:S.red,textAlign:'center'}}>Impossible de charger les données. Réessaie.</p>
+      <p style={{color:S.red,textAlign:'center'}}>{t('common.load_error')}</p>
     </div>
   )
   return (

@@ -133,7 +133,7 @@ export default function HomePage() {
             {latestHost.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '4px 0 0' }}>{latestHost.approx_area}</p>}
             <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, flexWrap: 'wrap' }}>
               {latestHost.member_count && latestHost.member_count > 1 && (
-                <span style={{ ...typeStyle('meta'), color: S.sage, fontWeight: 600 }}>{latestHost.member_count} membres</span>
+                <span style={{ ...typeStyle('meta'), color: S.sage, fontWeight: 600 }}>{t('session.member_count', { count: latestHost.member_count })}</span>
               )}
               {latestHost.tags?.slice(0, 3).map(t => <span key={t} style={chip}>{t}</span>)}
             </div>

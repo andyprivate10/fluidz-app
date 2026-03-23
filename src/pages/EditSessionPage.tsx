@@ -211,7 +211,7 @@ export default function EditSessionPage() {
           color:'#fff', fontSize:16, fontWeight:700, cursor: saving ? 'not-allowed' : 'pointer',
           boxShadow:'0 4px 20px '+S.pbd, opacity: saving ? 0.7 : 1, marginTop:8,
         }}>
-          {saving ? 'Enregistrement...' : 'Enregistrer les modifications'}
+          {saving ? t('edit.saving') : t('edit.save_changes')}
         </button>
       </div>
     </div>
