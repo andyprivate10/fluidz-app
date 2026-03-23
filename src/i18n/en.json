@@ -40,7 +40,9 @@
     "ghost_mode": "Ghost Mode (24h, no account)",
     "members": "{{count}} members",
     "pending_count": "{{count}} pending application(s)",
-    "my_profile": "My profile"
+    "my_profile": "My profile",
+    "complete_profile": "Complete your profile",
+    "complete_profile_desc": "Better chances of being accepted"
   },
   "explore": {
     "title": "Around me",
@@ -362,7 +364,17 @@
     "platform_desc": "Link your other platform profiles so people can find you.",
     "linked_add": "Add a profile",
     "linked_choose_platform": "-- Choose platform --",
-    "linked_handle_placeholder": "Username or handle"
+    "linked_handle_placeholder": "Username or handle",
+    "section_bio": "Bio",
+    "section_physique": "Physical",
+    "section_zones": "Intimate zones",
+    "section_pratiques": "Practices",
+    "section_sante": "Health",
+    "section_limits": "Hard limits",
+    "videos_count": "Videos · {{count}}",
+    "pratiques_count": "Practices · {{count}}",
+    "step_age": "Age",
+    "completion_label": "Profile {{pct}}% complete"
   },
   "review": {
     "title": "How was it?",

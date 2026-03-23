@@ -40,7 +40,9 @@
     "ghost_mode": "Mode Ghost (24h, sans compte)",
     "members": "{{count}} membres",
     "pending_count": "{{count}} candidature(s) en attente",
-    "my_profile": "Mon profil"
+    "my_profile": "Mon profil",
+    "complete_profile": "Complète ton profil",
+    "complete_profile_desc": "Plus de chances d'être accepté"
   },
   "explore": {
     "title": "Autour de moi",
@@ -362,7 +364,17 @@
     "platform_desc": "Lie tes profils sur d'autres plateformes pour qu'on te retrouve.",
     "linked_add": "Ajouter un profil",
     "linked_choose_platform": "-- Choisir la plateforme --",
-    "linked_handle_placeholder": "Pseudo ou identifiant"
+    "linked_handle_placeholder": "Pseudo ou identifiant",
+    "section_bio": "Bio",
+    "section_physique": "Physique",
+    "section_zones": "Zones intimes",
+    "section_pratiques": "Pratiques",
+    "section_sante": "Santé",
+    "section_limits": "Hard limits",
+    "videos_count": "Vidéos · {{count}}",
+    "pratiques_count": "Pratiques · {{count}}",
+    "step_age": "Âge",
+    "completion_label": "Profil {{pct}}% complet"
   },
   "review": {
     "title": "Comment c'etait ?",

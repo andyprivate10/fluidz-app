@@ -463,7 +463,7 @@ export default function MePage() {
             const checks = [
               { label: t('profile.step_pseudo'), done: !!displayName && displayName !== 'Anonymous' },
               { label: t('profile.step_photo'), done: !!avatarUrl },
-              { label: 'Âge', done: !!age },
+              { label: t('profile.step_age'), done: !!age },
               { label: t('profile.step_role'), done: !!role },
               { label: t('profile.step_bio'), done: !!bio },
               { label: t('profile.step_physique'), done: !!height || !!weight || !!morphology },
@@ -474,7 +474,7 @@ export default function MePage() {
             return (
               <div style={{ marginBottom: 16, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 14, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2 }}>Profil {pct}% complet</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2 }}>{t('profile.completion_label', { pct })}</span>
                   <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
                 </div>
                 <div style={{ background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>

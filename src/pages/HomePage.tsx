@@ -24,6 +24,7 @@ export default function HomePage() {
   const [inviteCode, setInviteCode] = useState('')
   const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string }[]>([])
   const [hostPendingCount, setHostPendingCount] = useState(0)
+  const [profilePct, setProfilePct] = useState(100)
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -39,6 +40,8 @@ export default function HomePage() {
     if (profData?.display_name) {
       setDisplayName(profData.display_name)
       const pj = (profData.profile_json || {}) as Record<string, unknown>
+      const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!((pj as any).kinks && (pj as any).kinks.length > 0), !!profData.display_name && profData.display_name !== 'Anonymous']
+      setProfilePct(Math.round((checks.filter(Boolean).length / checks.length) * 100))
       const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
       if (isNewUser) {
         navigate('/onboarding'); return
@@ -123,6 +126,23 @@ export default function HomePage() {
       {/* ─── Content ─────────────────────────────────── */}
       <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 96 }}>
 
+        {/* Profile completion nudge */}
+        {profilePct < 100 && userId && (
+          <div onClick={() => navigate('/me')} style={{ ...card, cursor: 'pointer', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ position: 'relative', width: 36, height: 36, flexShrink: 0 }}>
+              <svg width="36" height="36" viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)' }}>
+                <circle cx="18" cy="18" r="15" fill="none" stroke={S.bg2} strokeWidth="3" />
+                <circle cx="18" cy="18" r="15" fill="none" stroke={profilePct >= 70 ? S.sage : S.p} strokeWidth="3" strokeDasharray={`${(profilePct / 100) * 94.2} 94.2`} strokeLinecap="round" />
+              </svg>
+              <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, color: profilePct >= 70 ? S.sage : S.p }}>{profilePct}</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{t('home.complete_profile')}</p>
+              <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '2px 0 0' }}>{t('home.complete_profile_desc')}</p>
+            </div>
+            <ArrowRight size={16} style={{ color: S.tx3, flexShrink: 0 }} />
+          </div>
+        )}
         {/* Host active session */}
         {latestHost && (
           <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, background: getSessionCover(latestHost.tags).bg, border: `1px solid ${S.pbd}`, cursor: 'pointer', overflow: 'hidden', position: 'relative' }}>
