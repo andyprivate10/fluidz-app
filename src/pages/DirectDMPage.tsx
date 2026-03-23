@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ArrowLeft, Send, Camera } from 'lucide-react'
+import { ArrowLeft, Send, Camera, Smile } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -10,6 +10,7 @@ import { DM_DIRECT_TITLE } from '../lib/constants'
 import { useTypingIndicator } from '../hooks/useTypingIndicator'
 import { useTranslation } from 'react-i18next'
 import { sendPushToUser } from '../lib/pushSender'
+import EmojiBar from '../components/EmojiBar'
 
 const S = colors
 
@@ -39,6 +40,7 @@ export default function DirectDMPage() {
   const [peerProfile, setPeerProfile] = useState<{ name: string; avatar?: string; role?: string } | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
+  const [showEmojiBar, setShowEmojiBar] = useState(false)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [recording, setRecording] = useState(false)
@@ -288,8 +290,14 @@ export default function DirectDMPage() {
         </div>
       )}
 
+      {/* Emoji bar */}
+      {showEmojiBar && (
+        <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
+          <EmojiBar onSelect={e => { setNewMessage(prev => prev + e); setShowEmojiBar(false) }} />
+        </div>
+      )}
       {/* Input */}
-      <div style={{ background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 12, borderTop: '1px solid ' + S.rule, display: 'flex', gap: 8, flexShrink: 0 }}>
+      <div style={{ background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 12, borderTop: showEmojiBar ? 'none' : '1px solid ' + S.rule, display: 'flex', gap: 8, flexShrink: 0 }}>
         <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
           <Camera size={16} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} />
@@ -298,6 +306,9 @@ export default function DirectDMPage() {
           {recording ? '■' : '●'}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
+        <button type="button" onClick={() => setShowEmojiBar(!showEmojiBar)} style={{ width: 40, height: 40, borderRadius: 12, background: showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+          <Smile size={16} style={{ color: showEmojiBar ? S.p : S.tx3 }} />
+        </button>
         <input
           type="text" value={newMessage} onChange={e => { setNewMessage(e.target.value); sendTyping() }}
           onKeyDown={e => { if (e.key === 'Enter') { stopTyping(); handleSend() } }}

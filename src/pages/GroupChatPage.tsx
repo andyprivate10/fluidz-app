@@ -3,7 +3,7 @@ import { SkeletonChatPage } from '../components/Skeleton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Users, Shield, Camera } from 'lucide-react'
+import { ArrowLeft, Send, Users, Shield, Camera, Smile } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -12,6 +12,7 @@ import { formatMessageTime } from '../lib/timing'
 import { SYSTEM_SENDER } from '../lib/constants'
 import { useTranslation } from 'react-i18next'
 import { notifyUser } from '../lib/feedback'
+import EmojiBar from '../components/EmojiBar'
 
 type Message = {
   id: string
@@ -39,6 +40,7 @@ export default function GroupChatPage() {
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
+  const [showEmojiBar, setShowEmojiBar] = useState(false)
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -427,10 +429,16 @@ export default function GroupChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Emoji bar */}
+      {canChat && showEmojiBar && (
+        <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
+          <EmojiBar onSelect={e => { setNewMessage(prev => prev + e); setShowEmojiBar(false) }} />
+        </div>
+      )}
       {/* Input */}
       {canChat && (session.group_chat_enabled || isHost) && (
         <div style={{
-          padding:'10px 16px', borderTop:'1px solid '+S.rule, background:'rgba(5,4,10,0.92)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
+          padding:'10px 16px', borderTop: showEmojiBar ? 'none' : '1px solid '+S.rule, background:'rgba(5,4,10,0.92)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
           paddingBottom:'calc(10px + env(safe-area-inset-bottom, 0px))',
           display:'flex', gap:8, alignItems:'center',
         }}>
@@ -442,6 +450,9 @@ export default function GroupChatPage() {
             {recording ? '■' : '●'}
           </button>
           <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
+          <button type="button" onClick={() => setShowEmojiBar(!showEmojiBar)} style={{ width:38, height:38, borderRadius:10, background: showEmojiBar ? S.p3 : S.bg2, border:'1px solid '+(showEmojiBar ? S.pbd : S.rule), display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flexShrink:0 }}>
+            <Smile size={16} style={{ color: showEmojiBar ? S.p : S.tx3 }} />
+          </button>
           <input
             ref={inputRef}
             value={newMessage}
