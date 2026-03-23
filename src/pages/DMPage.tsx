@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
-import { Camera, ArrowLeft, Copy, Map, MapPin, Smile } from 'lucide-react'
+import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { sendPushToUser } from '../lib/pushSender'
@@ -46,6 +46,7 @@ export default function DMPage() {
   const [peerAvatar, setPeerAvatar] = useState<string>('')
   const [peerRole, setPeerRole] = useState<string>('')
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
+  const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [displayName, setDisplayName] = useState<string>('')
@@ -313,11 +314,13 @@ export default function DMPage() {
   async function handleSend() {
     if (!newMessage.trim() || !id || !currentUser) return
     const text = newMessage.trim()
+    const fullText = replyTo ? '> ' + replyTo.text.slice(0, 80) + '\n\n' + text : text
     setNewMessage('')
+    setReplyTo(null)
     await supabase.from('messages').insert({
       session_id: id,
       sender_id: currentUser.id,
-      text,
+      text: fullText,
       sender_name: displayName || currentUser.email || '',
       room_type: 'dm',
       dm_peer_id: peerId || undefined,
@@ -460,7 +463,7 @@ export default function DMPage() {
           messages.map((message) => {
             const isMine = message.sender_id === currentUser?.id
             return (
-              <div key={message.id} style={{
+              <div key={message.id} onDoubleClick={() => setReplyTo({ id: message.id, text: message.text, sender_name: message.sender_name })} style={{
                 display: 'flex', flexDirection: 'column',
                 alignItems: isMine ? 'flex-end' : 'flex-start',
                 padding: '0 24px',
@@ -536,6 +539,8 @@ export default function DMPage() {
       )}
 
       {/* Input bar */}
+      {/* Reply quote bar */}
+      {replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{replyTo.text}</p></div><button onClick={() => setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
       {/* Emoji bar */}
       {showEmojiBar && (
         <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
