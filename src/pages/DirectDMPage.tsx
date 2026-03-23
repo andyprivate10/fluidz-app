@@ -11,6 +11,8 @@ import { useTypingIndicator } from '../hooks/useTypingIndicator'
 import { useTranslation } from 'react-i18next'
 import { sendPushToUser } from '../lib/pushSender'
 import EmojiBar from '../components/EmojiBar'
+import { notifyUser } from '../lib/feedback'
+import ImageLightbox from '../components/ImageLightbox'
 
 const S = colors
 
@@ -42,6 +44,7 @@ export default function DirectDMPage() {
   const [newMessage, setNewMessage] = useState('')
   const [showEmojiBar, setShowEmojiBar] = useState(false)
   const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
+  const [chatLightbox, setChatLightbox] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [recording, setRecording] = useState(false)
@@ -110,6 +113,7 @@ export default function DirectDMPage() {
         const msg = payload.new as Message & { room_type?: string }
         if (msg.room_type !== 'dm') return
         setMessages(prev => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
+        if (msg.sender_id !== currentUser?.id) notifyUser('message')
       })
       .subscribe()
 
@@ -267,7 +271,7 @@ export default function DirectDMPage() {
                 const isVideo = /\.(mp4|mov)$/i.test(url) || url.includes('video')
                 if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
                 if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 10 }} />
-                return <img key={mi} src={url} alt="" loading="lazy" style={{ width: '100%', maxWidth: 240, borderRadius: 10 }} />
+                return <img key={mi} src={url} alt="" loading="lazy" onClick={() => setChatLightbox(url)} style={{ width: '100%', maxWidth: 240, borderRadius: 10, cursor: 'zoom-in' }} />
               })}
               {msg.text && msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && (
                 <span style={{ color: S.tx }}>{msg.text}</span>
@@ -323,6 +327,7 @@ export default function DirectDMPage() {
           <Send size={16} style={{ color: newMessage.trim() ? '#fff' : S.tx4 }} />
         </button>
       </div>
+      {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
     </div>
   )
 }

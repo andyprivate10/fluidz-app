@@ -286,7 +286,7 @@ export default function ApplyPage() {
     if (id) {
       const { data: sess } = await supabase.from('sessions').select('host_id, title').eq('id', id).maybeSingle()
       if (sess?.host_id && user) {
-        const name = profile?.display_name || user.email || 'Quelqu\'un'
+        const name = profile?.display_name || user.email || t('common.someone')
         await supabase.from('notifications').insert({
           user_id: sess.host_id,
           session_id: id,

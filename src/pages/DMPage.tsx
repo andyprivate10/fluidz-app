@@ -327,7 +327,7 @@ export default function DMPage() {
     })
     // Notify the peer about new DM (debounced: only if no recent notif)
     if (peerId && session) {
-      const senderLabel = displayName || 'Quelqu\'un'
+      const senderLabel = displayName || t('common.someone')
       await supabase.from('notifications').insert({
         user_id: peerId,
         session_id: id,

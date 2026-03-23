@@ -201,7 +201,7 @@ export default function GroupChatPage() {
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       await supabase.from('messages').insert({
         session_id: id, sender_id: currentUser.id, text: label,
-        sender_name: displayName || 'Anonyme', room_type: 'group',
+        sender_name: displayName || t('common.anonymous_fallback'), room_type: 'group',
         has_media: true, media_urls: [publicUrl],
       })
     } catch {}
@@ -225,7 +225,7 @@ export default function GroupChatPage() {
         const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
         if (error) { setUploading(false); return }
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '🎤 Audio', sender_name: displayName || 'Anonyme', room_type: 'group', has_media: true, media_urls: [publicUrl] })
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '🎤 Audio', sender_name: displayName || t('common.anonymous_fallback'), room_type: 'group', has_media: true, media_urls: [publicUrl] })
         setUploading(false)
       }
       mr.start()
@@ -248,7 +248,7 @@ export default function GroupChatPage() {
       session_id: id,
       sender_id: currentUser.id,
       text: fullText,
-      sender_name: displayName || 'Anonyme',
+      sender_name: displayName || t('common.anonymous_fallback'),
       room_type: 'group',
     })
     if (error) {
@@ -395,7 +395,7 @@ export default function GroupChatPage() {
           }
 
           return (
-            <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name || 'Anonyme' })} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
+            <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name || t('common.anonymous_fallback') })} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
               {showName && (
                 <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.pbd }}>{msg.sender_name}</button>
               )}

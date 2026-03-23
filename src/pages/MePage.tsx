@@ -267,7 +267,7 @@ export default function MePage() {
     }
     await supabase.from('user_profiles').upsert({
       id: user.id,
-      display_name: displayName || 'Anonyme',
+      display_name: displayName || t('common.anonymous_fallback'),
       profile_json
     })
     setAutoSaveStatus('saved')

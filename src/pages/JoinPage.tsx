@@ -122,7 +122,7 @@ export default function JoinPage() {
     })
     // Notify host
     if (session.host_id) {
-      const name = userProfile?.display_name || user.email || 'Quelqu\'un'
+      const name = userProfile?.display_name || user.email || t('common.someone')
       await supabase.from('notifications').insert({
         user_id: session.host_id,
         session_id: session.id,

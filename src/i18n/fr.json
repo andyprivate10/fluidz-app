@@ -635,7 +635,8 @@
     "all": "Tous",
     "load_error": "Impossible de charger les données. Réessaie.",
     "uploading": "Upload...",
-    "photo": "Photo"
+    "photo": "Photo",
+    "anonymous_fallback": "Anonyme"
   },
   "drawer": {
     "my_space": "Mon espace",

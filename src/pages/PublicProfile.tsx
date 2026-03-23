@@ -29,7 +29,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
     setSending(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setSending(false); return }
-    const name = (myProfile as any)?.display_name || user.email || 'Quelqu\'un'
+    const name = (myProfile as any)?.display_name || user.email || t('common.someone')
     const role = (myProfile as any)?.role || ''
     await supabase.from('notifications').insert({ user_id: targetUserId, type: 'contact_request', title: name + ' s\'intéresse à toi', body: role ? role + ' · Veut en voir plus' : 'Veut entrer en contact', href: '/profile/' + user.id })
     await supabase.from('contacts').upsert({ user_id: user.id, contact_user_id: targetUserId, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
@@ -52,6 +52,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
 }
 
 function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; targetName: string }) {
+  const { t } = useTranslation()
   const nav = useNavigate()
   const [creating, setCreating] = useState(false)
   async function create() {
@@ -59,7 +60,7 @@ function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setCreating(false); return }
     const { data: myProf } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
-    const myName = myProf?.display_name || 'Quelqu\'un'
+    const myName = myProf?.display_name || t('common.someone')
     const code = Math.random().toString(36).slice(2, 8)
     const { data: sess, error } = await supabase.from('sessions').insert({ host_id: user.id, title: myName + ' & ' + targetName, description: 'Session privée 1-to-1', status: 'open', tags: [], invite_code: code, group_chat_enabled: false }).select('id').single()
     if (error || !sess) { setCreating(false); return }

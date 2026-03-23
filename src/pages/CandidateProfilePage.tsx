@@ -137,7 +137,7 @@ export default function CandidateProfilePage() {
   const snapshot = eps.profile_snapshot || {}
   const shared = eps.shared_sections || []
 
-  const displayName = profile?.display_name || snapshot.display_name || 'Anonyme'
+  const displayName = profile?.display_name || snapshot.display_name || t('common.anonymous_fallback')
   const role = eps.role || pj.role || snapshot.role || ''
   const orientation = pj.orientation || snapshot.orientation || ''
   const age = pj.age || snapshot.age || ''
