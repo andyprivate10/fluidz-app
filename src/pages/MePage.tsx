@@ -515,15 +515,15 @@ export default function MePage() {
           <Section title={t('profile.infos')} color={S.lav}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_pseudo')}</label>
                 <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder={t('profile.placeholder_pseudo')} style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Bio</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_bio')}</label>
                 <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder={t('profile.placeholder_bio')} rows={3} style={{ ...inputStyle, resize:'none', lineHeight:1.5 }} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Age</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_age')}</label>
                 <input value={age} onChange={e => setAge(e.target.value)} placeholder={t('profile.placeholder_age')} type="number" style={inputStyle} />
               </div>
               <div>
@@ -554,24 +554,24 @@ export default function MePage() {
                 </div>
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Taille (cm)</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_height')}</label>
                 <input value={height} onChange={e => setHeight(e.target.value)} placeholder={t('profile.placeholder_height')} type="number" style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Poids (kg)</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_weight')}</label>
                 <input value={weight} onChange={e => setWeight(e.target.value)} placeholder={t('profile.placeholder_weight')} type="number" style={inputStyle} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Morphologie</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_morphology')}</label>
                 <select value={morphology} onChange={e => setMorphology(e.target.value)} style={inputStyle}>
-                  <option value="">-- Choisir --</option>
+                  <option value="">{t('profile.label_choose')}</option>
                   {morphologies.map(m => (
                     <option key={m.label} value={m.label}>{m.label}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Role</label>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_role')}</label>
                 <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                   {roles.map(r => (
                     <Chip key={r.label} label={r.label} active={role===r.label} onClick={() => setRole(role===r.label?'':r.label)} />

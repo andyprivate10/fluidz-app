@@ -318,7 +318,19 @@
     "step_physique": "Physical",
     "step_pratiques": "Practices",
     "visible_host_voters": "Visible to host and voting members",
-    "orientation": "Orientation"
+    "orientation": "Orientation",
+    "label_pseudo": "Nickname *",
+    "label_bio": "Bio",
+    "label_age": "Age",
+    "label_height": "Height (cm)",
+    "label_weight": "Weight (kg)",
+    "label_morphology": "Build",
+    "label_role": "Role",
+    "label_localisation": "Location",
+    "label_country": "Country",
+    "label_city": "City",
+    "label_languages": "Languages spoken",
+    "label_choose": "-- Choose --"
   },
   "review": {
     "title": "How was it?",
