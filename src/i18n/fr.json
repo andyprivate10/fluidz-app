@@ -408,7 +408,7 @@
     "limits": "Limites",
     "votes": "Votes",
     "confirm_checkin": "Confirmer",
-    "arrived": "Arrive",
+    "arrived": "Arrivés",
     "accepted_on_way": "Accepte — en route",
     "arrival_to_confirm": "Arrivee a confirmer",
     "end_session": "Terminer la session",
@@ -430,7 +430,17 @@
     "time_remaining": "{{time}} restant",
     "capacity_full": "Complet",
     "invite_group": "Inviter un groupe",
-    "broadcast_placeholder": "Message à envoyer à tous les membres..."
+    "broadcast_placeholder": "Message à envoyer à tous les membres...",
+    "share_via": "Partager via...",
+    "copy_direct_link": "Copier lien invite directe",
+    "copy_message": "Copier le message",
+    "roles_label": "Rôles",
+    "to_confirm": "À confirmer",
+    "en_route": "En route",
+    "total": "Total",
+    "already_in_session": "Tous les membres de ce groupe sont déjà dans la session",
+    "share_on_platforms": "Partager sur Grindr / WhatsApp",
+    "cancel_app": "Annuler"
   },
   "contacts": {
     "title": "Naughty Book",

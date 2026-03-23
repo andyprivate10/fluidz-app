@@ -430,7 +430,17 @@
     "time_remaining": "{{time}} remaining",
     "capacity_full": "Full",
     "invite_group": "Invite a group",
-    "broadcast_placeholder": "Message to send to all members..."
+    "broadcast_placeholder": "Message to send to all members...",
+    "share_via": "Share via...",
+    "copy_direct_link": "Copy direct invite link",
+    "copy_message": "Copy message",
+    "roles_label": "Roles",
+    "to_confirm": "To confirm",
+    "en_route": "On the way",
+    "total": "Total",
+    "already_in_session": "All members of this group are already in the session",
+    "share_on_platforms": "Share on Grindr / WhatsApp",
+    "cancel_app": "Cancel"
   },
   "contacts": {
     "title": "Naughty Book",

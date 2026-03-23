@@ -277,7 +277,7 @@ export default function HostDashboard() {
     const existingIds = new Set(apps.map(a => a.applicant_id))
     const newMembers = group.member_ids.filter(uid => !existingIds.has(uid) && uid !== user.id)
     if (newMembers.length === 0) {
-      showToast('Tous les membres de ce groupe sont déjà dans la session', 'info')
+      showToast(t('host.already_in_session'), 'info')
       
       return
     }
@@ -385,7 +385,7 @@ export default function HostDashboard() {
               {linkCopied ? t('session.link_copied') : t('host.share_session')}
             </button>
             <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-              <div style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>Partager sur Grindr / WhatsApp</div>
+              <div style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>{t('host.share_on_platforms')}</div>
               <button
                 onClick={() => {
                   const url = window.location.origin + '/join/' + sess.invite_code
@@ -413,7 +413,7 @@ export default function HostDashboard() {
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
               >
-                {messageCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />Copié</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />Copier le message</>}
+                {messageCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />{t('session.copied')}</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />{t('host.copy_message')}</>}
               </button>
             </div>
             {/* Native share */}
@@ -450,7 +450,7 @@ export default function HostDashboard() {
           })
           return (
             <div style={{marginTop:12,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule}}>
-              <div style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>RÔLES</div>
+              <div style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>{t('host.roles_label').toUpperCase()}</div>
               <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                 {Object.entries(wanted).map(([role, count]) => {
                   const have = currentRoles[role] || 0
@@ -476,21 +476,21 @@ export default function HostDashboard() {
           <div style={{marginTop:16,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule,display:'flex',justifyContent:'space-around',textAlign:'center'}}>
             <div>
               <div style={{fontSize:20,fontWeight:800,color:S.sage}}>{arrivedCount}</div>
-              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>Arrivés</div>
+              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.arrived')}</div>
             </div>
             {waitingCount > 0 && (
               <div>
                 <div style={{fontSize:20,fontWeight:800,color:S.orange}}>{waitingCount}</div>
-                <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>À confirmer</div>
+                <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.to_confirm')}</div>
               </div>
             )}
             <div>
               <div style={{fontSize:20,fontWeight:800,color:S.tx2}}>{totalAccepted - arrivedCount}</div>
-              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>En route</div>
+              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.en_route')}</div>
             </div>
             <div>
               <div style={{fontSize:20,fontWeight:800,color:S.p}}>{totalAccepted}</div>
-              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>Total</div>
+              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.total')}</div>
             </div>
           </div>
         )}
@@ -628,7 +628,7 @@ export default function HostDashboard() {
                       <>
                         <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orangebg,border:'1px solid '+S.orangebd}}>Arrivée à confirmer</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sagebg,cursor:'pointer'}}>
-                          {actionLoading===app.id ? '...' : <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />Confirmer</>}
+                          {actionLoading===app.id ? '...' : <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />{t('host.confirm_checkin')}</>}
                         </button>
                       </>
                     )}
@@ -650,7 +650,7 @@ export default function HostDashboard() {
                         showToast('Relance envoyée', 'success')
                       }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid '+S.amberbd,background:'transparent',cursor:'pointer'}}>Relancer</button>
                     )}
-                    <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Annuler</button>
+                    <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>{t('host.cancel_app')}</button>
                   </div>
                 )}
               </div>
