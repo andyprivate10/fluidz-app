@@ -79,7 +79,7 @@
     "pending": "En attente de reponse...",
     "check_in": "Je suis arrive ! Check-in",
     "checking_in": "Enregistrement...",
-    "how_was_it": "Comment c'etait ?",
+    "how_was_it": "Comment c'était ?",
     "leave_review": "Laisser un avis",
     "anonymous_help": "Ton avis anonyme aide la communaute",
     "share": "Partager",
@@ -211,7 +211,13 @@
     "checkin_sent_waiting": "Check-in envoyé — en attente de confirmation du host",
     "review_anonymous_help": "Ton avis anonyme aide la communauté",
     "member_count": "{{count}} membres",
-    "visibility_label": "Visibilité"
+    "visibility_label": "Visibilité",
+    "status_open": "Ouverte",
+    "status_ended": "Terminée",
+    "status_draft": "Brouillon",
+    "create_group_from_session": "Sauvegarder ce groupe",
+    "create_group_desc": "Créer un groupe avec les {{count}} membres de cette session",
+    "group_created": "Groupe créé !"
   },
   "chat": {
     "title": "Messages",

@@ -211,7 +211,13 @@
     "checkin_sent_waiting": "Check-in sent — waiting for host confirmation",
     "review_anonymous_help": "Your anonymous review helps the community",
     "member_count": "{{count}} members",
-    "visibility_label": "Visibility"
+    "visibility_label": "Visibility",
+    "status_open": "Open",
+    "status_ended": "Ended",
+    "status_draft": "Draft",
+    "create_group_from_session": "Save this group",
+    "create_group_desc": "Create a group with the {{count}} members of this session",
+    "group_created": "Group created!"
   },
   "chat": {
     "title": "Messages",

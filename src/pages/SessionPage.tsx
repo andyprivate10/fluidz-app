@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Clock, Share2, MessageCircle, Check, MapPin } from 'lucide-react'
+import { Clock, Share2, MessageCircle, Check, MapPin, Users } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors, glassCard } from '../brand'
@@ -290,7 +290,7 @@ export default function SessionPage() {
   )
   if (!session) return <div style={{ ...st, padding: 24, color: S.red }}>{t('session.not_found')}</div>
 
-  const statusLabel = session.status === 'open' ? 'Ouverte' : session.status === 'ended' ? 'Terminée' : 'Brouillon'
+  const statusLabel = session.status === 'open' ? t('session.status_open') : session.status === 'ended' ? t('session.status_ended') : t('session.status_draft')
   const statusColor = session.status === 'open' ? S.sage : session.status === 'ended' ? S.red : S.tx2
 
   return (
@@ -612,12 +612,49 @@ export default function SessionPage() {
       {session.status === 'ended' && myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
         <div style={{ padding: '0 16px 16px' }}>
           <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.amberbd, borderRadius: 16, padding: 20, textAlign: 'center' }}>
-            <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>Comment c'était ?</p>
+            <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('session.how_was_it')}</p>
             <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 14px' }}>{t('session.review_anonymous_help')}</p>
             <button onClick={() => navigate('/session/' + id + '/review')} style={{ width: '100%', padding: 14, background: S.p, border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 16px '+S.pbd }}>
-              Laisser un avis
+              {t('session.leave_review')}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* B16: Create group from ended session (host only) */}
+      {session.status === 'ended' && isHost && members.length > 0 && (
+        <div style={{ padding: '0 16px 16px' }}>
+          <button
+            onClick={async () => {
+              try {
+                const memberIds = members.map(m => m.applicant_id)
+                const { data: newGroup, error } = await supabase.from('contact_groups').insert({
+                  owner_id: currentUser!.id,
+                  name: session.title || 'Session group',
+                  description: session.approx_area || '',
+                  color: '#F9A8A8',
+                }).select('id').single()
+                if (error || !newGroup) { showToast('Error', 'error'); return }
+                await supabase.from('contact_group_members').insert(
+                  memberIds.map(uid => ({ group_id: newGroup.id, contact_user_id: uid }))
+                )
+                showToast(t('session.group_created'), 'success')
+                navigate('/groups')
+              } catch { showToast('Error', 'error') }
+            }}
+            style={{
+              width: '100%', padding: 16, borderRadius: 14, cursor: 'pointer',
+              background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid ' + S.sagebd, color: S.sage,
+              fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            <Users size={16} strokeWidth={1.5} />
+            {t('session.create_group_from_session')}
+          </button>
+          <p style={{ fontSize: 11, color: S.tx3, textAlign: 'center', margin: '6px 0 0' }}>
+            {t('session.create_group_desc', { count: members.length })}
+          </p>
         </div>
       )}
 
