@@ -21,30 +21,31 @@ const BODY_ZONES = [
 
 type Section = { id: string; label: string; icon: typeof Camera; desc: string }
 
-const BLOC_PROFIL: Section[] = [
-  {id:'photos_profil',label:'Photos profil',icon:Camera,desc:'visage, corps'},
-  {id:'basics',label:'Pseudo, âge, location',icon:User,desc:'qui tu es en bref'},
-  {id:'physique',label:'Physique',icon:Dumbbell,desc:'taille, poids, morphologie'},
-]
-
-const BLOC_ADULTE: Section[] = [
-  {id:'photos_adulte',label:'Photos & vidéos adultes',icon:Eye,desc:'contenu NSFW'},
-  {id:'body_part_photos',label:'Zones intimes',icon:Grid3X3,desc:'torse, sex, fessier...'},
-  {id:'role',label:'Rôle',icon:Drama,desc:'top, bottom, versa, side'},
-  {id:'pratiques',label:'Pratiques',icon:Flame,desc:'kinks & pratiques'},
-  {id:'limites',label:'Limites',icon:ShieldOff,desc:'hard limits, no-go'},
-  {id:'sante',label:'Santé / PrEP',icon:Heart,desc:'PrEP, dernier test'},
-]
-
-const SECTION_OCCASION: Section = {id:'occasion',label:'Note pour la session',icon:Zap,desc:'message au host, dispo...'}
-
-const ALL_SECTIONS = [...BLOC_PROFIL, ...BLOC_ADULTE, SECTION_OCCASION]
+function getSections(t: (k: string) => string) {
+  const BLOC_PROFIL: Section[] = [
+    {id:'photos_profil',label:t('sections.photos_profil'),icon:Camera,desc:t('sections.photos_profil_desc')},
+    {id:'basics',label:t('sections.basics'),icon:User,desc:t('sections.basics_desc')},
+    {id:'physique',label:t('sections.physique'),icon:Dumbbell,desc:t('sections.physique_desc')},
+  ]
+  const BLOC_ADULTE: Section[] = [
+    {id:'photos_adulte',label:t('sections.photos_adulte'),icon:Eye,desc:t('sections.photos_adulte_desc')},
+    {id:'body_part_photos',label:t('sections.body_part_photos'),icon:Grid3X3,desc:t('sections.body_part_photos_desc')},
+    {id:'role',label:t('sections.role'),icon:Drama,desc:t('sections.role_desc')},
+    {id:'pratiques',label:t('sections.pratiques'),icon:Flame,desc:t('sections.pratiques_desc')},
+    {id:'limites',label:t('sections.limites'),icon:ShieldOff,desc:t('sections.limites_desc')},
+    {id:'sante',label:t('sections.sante'),icon:Heart,desc:t('sections.sante_desc')},
+  ]
+  const SECTION_OCCASION: Section = {id:'occasion',label:t('sections.occasion'),icon:Zap,desc:t('sections.occasion_desc')}
+  const ALL_SECTIONS = [...BLOC_PROFIL, ...BLOC_ADULTE, SECTION_OCCASION]
+  return { BLOC_PROFIL, BLOC_ADULTE, SECTION_OCCASION, ALL_SECTIONS }
+}
 
 const GUEST_TOKEN_KEY = 'guest_token'
 const GUEST_SESSION_KEY = 'guest_session_id'
 
 export default function ApplyPage() {
   const { t } = useTranslation()
+  const { BLOC_PROFIL, BLOC_ADULTE, SECTION_OCCASION, ALL_SECTIONS } = getSections(t)
   const { roles } = useAdminConfig()
   const { id } = useParams()
   const navigate = useNavigate()
@@ -54,7 +55,7 @@ export default function ApplyPage() {
   const [user, setUser] = useState<any>(null)
   const [session, setSession] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
-  const [enabled, setEnabled] = useState<string[]>(ALL_SECTIONS.map(s => s.id))
+  const [enabled, setEnabled] = useState<string[]>(() => [...BLOC_PROFIL, ...BLOC_ADULTE, SECTION_OCCASION].map(s => s.id))
   const [selectedPhotosProfil, setSelectedPhotosProfil] = useState<string[]>([])
   const [selectedPhotosAdulte, setSelectedPhotosAdulte] = useState<string[]>([])
   const [selectedVideosAdulte, setSelectedVideosAdulte] = useState<string[]>([])
@@ -287,14 +288,14 @@ export default function ApplyPage() {
           user_id: sess.host_id,
           session_id: id,
           type: 'new_application',
-          title: name + ' a postulé',
+          title: t('notifications.applied_title', { name }),
           body: t('notifications.apply_body', { title: sess.title || t('common.your_session') }),
           href: '/session/' + id + '/host',
         })
-        sendPushToUser(sess.host_id, name + ' a postulé', 'Pour "' + (sess.title || 'ta session') + '"', '/session/' + id + '/host')
+        sendPushToUser(sess.host_id, t('notifications.applied_title', { name }), t('push.applied_body', { title: sess.title || 'Session' }), '/session/' + id + '/host')
       }
     }
-    showToast('Candidature envoyée !', 'success')
+    showToast(t('apply.toast_sent'), 'success')
     navigate('/session/' + id)
   }
 
@@ -395,7 +396,7 @@ export default function ApplyPage() {
                 <span style={{ fontSize: 14, color: S.orange }}>!</span>
                 <div>
                   <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: S.p }}>{t('session.profile_incomplete')}</p>
-                  <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx2 }}>Manque : {missing.join(', ')}. Complète-le pour plus de chances !</p>
+                  <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx2 }}>{t('apply.missing_label', { missing: missing.join(', ') })}</p>
                 </div>
               </button>
             )
@@ -421,7 +422,7 @@ export default function ApplyPage() {
             function getPreview(secId: string) {
               if (guestMode || !pj) return ''
               switch (secId) {
-                case 'basics': return [pj.age ? pj.age + ' ans' : '', pj.location].filter(Boolean).join(' · ')
+                case 'basics': return [pj.age ? t('apply.years_old', { age: pj.age }) : '', pj.location].filter(Boolean).join(' · ')
                 case 'role': return pj.role || selectedRole || ''
                 case 'physique': return [pj.height ? pj.height + 'cm' : '', pj.weight ? pj.weight + 'kg' : '', pj.morphology].filter(Boolean).join(' · ')
                 case 'pratiques': return Array.isArray(pj.kinks) && pj.kinks.length > 0 ? pj.kinks.slice(0, 3).join(', ') + (pj.kinks.length > 3 ? ' +' + (pj.kinks.length - 3) : '') : ''
@@ -571,7 +572,7 @@ export default function ApplyPage() {
                 </div>
 
                 {/* BLOC ADULTE */}
-                {renderBlocToggle('Adulte', BLOC_ADULTE, S.p)}
+                {renderBlocToggle(t('apply.adult_label'), BLOC_ADULTE, S.p)}
                 <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
                   {BLOC_ADULTE.map(sec => (
                     <div key={sec.id}>
@@ -590,7 +591,7 @@ export default function ApplyPage() {
 
           {invalidPseudo && <p style={{fontSize:13,color:S.red,marginTop:8,marginBottom:0}}>{t('session.pseudo_required')}</p>}
           <div style={{marginTop:12,padding:'10px 14px',background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:12,border:'1px solid '+S.rule2}}>
-            <p style={{fontSize:12,color:S.tx3,margin:0}}><span style={{color:S.p,fontWeight:700}}>{enabled.length}/{ALL_SECTIONS.length}</span> sections partagées</p>
+            <p style={{fontSize:12,color:S.tx3,margin:0}}>{t('apply.sections_shared', { count: enabled.length, total: ALL_SECTIONS.length })}</p>
           </div>
           <button onClick={() => setStep('note')} disabled={capacityFull || isRateLimited || invalidPseudo || (guestMode && guestDisplayName.trim().length < 2)} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:capacityFull||isRateLimited||invalidPseudo?'not-allowed':'pointer',opacity:capacityFull||isRateLimited||invalidPseudo?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
             {capacityFull ? t('session.full') : t('session.continue_button')}
@@ -601,11 +602,11 @@ export default function ApplyPage() {
       {step === 'note' && (
         <div style={{padding:'16px 20px'}}>
           <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.for_this_session')}</h2>
-          <p style={{fontSize:13,color:S.tx3,margin:'0 0 8px'}}>Un mot pour le host ? Dispo, ambiance...</p>
-          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder='Dispo à partir de 22h30...' rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
+          <p style={{fontSize:13,color:S.tx3,margin:'0 0 8px'}}>{t('apply.note_hint')}</p>
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={t('apply.note_placeholder')} rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
           <div style={{marginBottom:12}}>
             <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>{t('session.message_to_host')}</p>
-            <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder='Un message pour le host...' rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
+            <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder={t('apply.message_placeholder')} rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
           </div>
           {/* Visual preview */}
           <div style={{padding:'14px',background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:14,border:'1px solid '+S.rule2,marginBottom:12}}>
@@ -620,7 +621,7 @@ export default function ApplyPage() {
                 <p style={{margin:0,fontSize:14,fontWeight:700,color:S.tx}}>{guestMode ? guestDisplayName || t('common.guest') : profile?.display_name || t('common.anonymous')}</p>
                 <div style={{display:'flex',gap:6,marginTop:2}}>
                   {selectedRole && <span style={{fontSize:11,color:S.p,fontWeight:600}}>{selectedRole}</span>}
-                  {profile?.profile_json?.age && enabled.includes('basics') && <span style={{fontSize:11,color:S.tx3}}>{profile.profile_json.age} ans</span>}
+                  {profile?.profile_json?.age && enabled.includes('basics') && <span style={{fontSize:11,color:S.tx3}}>{t('apply.years_old', { age: profile.profile_json.age })}</span>}
                 </div>
               </div>
             </div>

@@ -348,7 +348,8 @@
     "invite_body": "{{name}} t'invite à \"{{title}}\"",
     "review_title": "Comment c'était \"{{title}}\" ?",
     "review_body": "Laisse un avis anonyme pour aider la communauté",
-    "group_invite_body": "{{host}} t'invite via le groupe \"{{group}}\""
+    "group_invite_body": "{{host}} t'invite via le groupe \"{{group}}\"",
+    "applied_title": "{{name}} a postulé"
   },
   "auth": {
     "email_invalid": "Email invalide",
@@ -467,7 +468,8 @@
     "nudge_title": "On t'attend !",
     "nudge_body_suffix": "— tu arrives bientôt ?",
     "nudge_sent": "Relance envoyée",
-    "nudge_btn": "Relancer"
+    "nudge_btn": "Relancer",
+    "close_confirm": "Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées."
   },
   "contacts": {
     "title": "Naughty Book",
@@ -537,7 +539,9 @@
     "searching_dots": "Recherche...",
     "recover": "Récupérer",
     "my_profile_short": "Mon profil",
-    "join_us": "Rejoins-nous !"
+    "join_us": "Rejoins-nous !",
+    "me": "Moi",
+    "all": "Tous"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -573,7 +577,15 @@
   "apply": {
     "sending": "Envoi...",
     "rate_limited": "Attends quelques minutes",
-    "submit": "Envoyer ma candidature"
+    "submit": "Envoyer ma candidature",
+    "adult_label": "Adulte",
+    "sections_shared": "{{count}}/{{total}} sections partagées",
+    "note_hint": "Un mot pour le host ? Dispo, ambiance...",
+    "note_placeholder": "Dispo à partir de 22h30...",
+    "message_placeholder": "Un message pour le host...",
+    "years_old": "{{age}} ans",
+    "missing_label": "Manque : {{missing}}. Complète-le pour plus de chances !",
+    "toast_sent": "Candidature envoyée !"
   },
   "ghost_setup": {
     "creating": "Creation...",
@@ -639,5 +651,31 @@
     "group_name": "Ex: Les Habituels, Top Squad...",
     "optional": "Optionnel",
     "limits_placeholder": "Hard limits, no-go..."
+  },
+  "sections": {
+    "photos_profil": "Photos profil",
+    "photos_profil_desc": "visage, corps",
+    "basics": "Pseudo, âge, location",
+    "basics_desc": "qui tu es en bref",
+    "physique": "Physique",
+    "physique_desc": "taille, poids, morphologie",
+    "photos_adulte": "Photos & vidéos adultes",
+    "photos_adulte_desc": "contenu NSFW",
+    "body_part_photos": "Zones intimes",
+    "body_part_photos_desc": "torse, sex, fessier...",
+    "role": "Rôle",
+    "role_desc": "top, bottom, versa, side",
+    "pratiques": "Pratiques",
+    "pratiques_desc": "kinks & pratiques",
+    "limites": "Limites",
+    "limites_desc": "hard limits, no-go",
+    "sante": "Santé / PrEP",
+    "sante_desc": "PrEP, dernier test",
+    "occasion": "Note pour la session",
+    "occasion_desc": "message au host, dispo..."
+  },
+  "push": {
+    "applied": "{{name}} a postulé",
+    "applied_body": "Pour \"{{title}}\""
   }
 }

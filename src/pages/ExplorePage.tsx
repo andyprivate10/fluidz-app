@@ -46,14 +46,14 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
 export default function ExplorePage() {
   const { t } = useTranslation()
   const { roles: roleOptions } = useAdminConfig()
-  const roleFilters = ['Tous', ...roleOptions.map(r => r.label)]
+  const roleFilters = [t('common.all'), ...roleOptions.map(r => r.label)]
   const navigate = useNavigate()
   const [profiles, setProfiles] = useState<NearbyProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [myLat, setMyLat] = useState<number | null>(null)
   const [myLng, setMyLng] = useState<number | null>(null)
   const [visible, setVisible] = useState(false)
-  const [roleFilter, setRoleFilter] = useState('Tous')
+  const [roleFilter, setRoleFilter] = useState(t('common.all'))
   const [userId, setUserId] = useState<string | null>(null)
   const [geoError, setGeoError] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
@@ -204,7 +204,7 @@ export default function ExplorePage() {
   }
 
   const filtered = profiles.filter(p => {
-    if (roleFilter !== 'Tous' && p.role !== roleFilter) return false
+    if (roleFilter !== t('common.all') && p.role !== roleFilter) return false
     if (searchText && !p.display_name.toLowerCase().includes(searchText.toLowerCase())) return false
     return true
   })

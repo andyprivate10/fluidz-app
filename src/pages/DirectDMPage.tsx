@@ -74,7 +74,7 @@ export default function DirectDMPage() {
 
     // Load my display name
     const { data: me } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
-    setDisplayName(me?.display_name || user.email || 'Moi')
+    setDisplayName(me?.display_name || user.email || t('common.me'))
 
     // Ensure a "direct DM session" exists (upsert to avoid race condition)
     const sid = directDmSessionId(user.id, peerId!)

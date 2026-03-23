@@ -348,7 +348,8 @@
     "invite_body": "{{name}} invites you to \"{{title}}\"",
     "review_title": "How was \"{{title}}\"?",
     "review_body": "Leave an anonymous review to help the community",
-    "group_invite_body": "{{host}} invites you via the group \"{{group}}\""
+    "group_invite_body": "{{host}} invites you via the group \"{{group}}\"",
+    "applied_title": "{{name}} applied"
   },
   "auth": {
     "email_invalid": "Invalid email",
@@ -467,7 +468,8 @@
     "nudge_title": "We're waiting!",
     "nudge_body_suffix": "— arriving soon?",
     "nudge_sent": "Nudge sent",
-    "nudge_btn": "Nudge"
+    "nudge_btn": "Nudge",
+    "close_confirm": "Permanently close this session?\n\nPhotos/videos shared in DMs will be deleted."
   },
   "contacts": {
     "title": "Naughty Book",
@@ -537,7 +539,9 @@
     "searching_dots": "Searching...",
     "recover": "Recover",
     "my_profile_short": "My profile",
-    "join_us": "Join us!"
+    "join_us": "Join us!",
+    "me": "Me",
+    "all": "All"
   },
   "drawer": {
     "my_space": "My space",
@@ -573,7 +577,15 @@
   "apply": {
     "sending": "Sending...",
     "rate_limited": "Wait a few minutes",
-    "submit": "Send my application"
+    "submit": "Send my application",
+    "adult_label": "Adult",
+    "sections_shared": "{{count}}/{{total}} sections shared",
+    "note_hint": "A word for the host? Availability, vibe...",
+    "note_placeholder": "Available from 10:30 PM...",
+    "message_placeholder": "A message for the host...",
+    "years_old": "{{age}} y/o",
+    "missing_label": "Missing: {{missing}}. Complete it for better chances!",
+    "toast_sent": "Application sent!"
   },
   "ghost_setup": {
     "creating": "Creating...",
@@ -639,5 +651,31 @@
     "group_name": "E.g.: The Regulars, Top Squad...",
     "optional": "Optional",
     "limits_placeholder": "Hard limits, no-go..."
+  },
+  "sections": {
+    "photos_profil": "Profile photos",
+    "photos_profil_desc": "face, body",
+    "basics": "Nickname, age, location",
+    "basics_desc": "who you are in brief",
+    "physique": "Physical",
+    "physique_desc": "height, weight, build",
+    "photos_adulte": "Adult photos & videos",
+    "photos_adulte_desc": "NSFW content",
+    "body_part_photos": "Intimate zones",
+    "body_part_photos_desc": "torso, sex, butt...",
+    "role": "Role",
+    "role_desc": "top, bottom, versa, side",
+    "pratiques": "Practices",
+    "pratiques_desc": "kinks & practices",
+    "limites": "Limits",
+    "limites_desc": "hard limits, no-go",
+    "sante": "Health / PrEP",
+    "sante_desc": "PrEP, last test",
+    "occasion": "Session note",
+    "occasion_desc": "message to host, availability..."
+  },
+  "push": {
+    "applied": "{{name}} applied",
+    "applied_body": "For \"{{title}}\""
   }
 }

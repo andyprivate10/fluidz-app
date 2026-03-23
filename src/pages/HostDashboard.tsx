@@ -217,7 +217,7 @@ export default function HostDashboard() {
   }
 
   async function closeSession() {
-    const destroyMedia = window.confirm('Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées.')
+    const destroyMedia = window.confirm(t('host.close_confirm'))
     if (!destroyMedia && !window.confirm(t('host.close_without_delete'))) return
     
     await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
