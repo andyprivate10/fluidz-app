@@ -12,6 +12,7 @@ import EventContextNav from '../components/EventContextNav'
 import { formatMessageTime } from '../lib/timing'
 import { useTypingIndicator } from '../hooks/useTypingIndicator'
 import { useTranslation } from 'react-i18next'
+import { notifyUser } from '../lib/feedback'
 
 type Message = {
   id: string
@@ -170,6 +171,7 @@ export default function DMPage() {
           if (!isMyMsg && !isPeerMsg && !isLegacy) return
         }
         setMessages((prev) => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
+        if (msg.sender_id !== currentUser?.id) notifyUser('message')
       })
       .subscribe()
 

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
+import { haptic } from '../lib/feedback'
+
 type ToastType = 'success' | 'error' | 'info'
 type Toast = { id: number; message: string; type: ToastType }
 
@@ -8,6 +10,8 @@ let addToastFn: ((msg: string, type: ToastType) => void) | null = null
 
 export function showToast(message: string, type: ToastType = 'info') {
   addToastFn?.(message, type)
+  if (type === 'success') haptic('light')
+  else if (type === 'error') haptic('medium')
 }
 
 export default function ToastProvider() {
