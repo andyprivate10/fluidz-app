@@ -218,7 +218,7 @@ export default function HostDashboard() {
 
   async function closeSession() {
     const destroyMedia = window.confirm('Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées.')
-    if (!destroyMedia && !window.confirm('Fermer sans supprimer les médias partagés ?')) return
+    if (!destroyMedia && !window.confirm(t('host.close_without_delete'))) return
     
     await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
     setSess((s: any) => ({...s, status: 'ended'}))
@@ -370,7 +370,7 @@ export default function HostDashboard() {
         )}
 
         <button onClick={() => navigate('/session/' + id + '/chat')} style={{marginTop:8,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:'transparent',color:S.p,cursor:'pointer',width:'100%'}}>
-          Group Chat
+          {t('session.group_chat')}
         </button>
 
         {sess?.invite_code && (
@@ -406,7 +406,7 @@ export default function HostDashboard() {
                   const url = window.location.origin + '/join/' + sess.invite_code
                   const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
                   const rolesLine = rolesWanted && Object.keys(rolesWanted).length > 0
-                    ? 'Recherche : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
+                    ? t('session.searching_roles', { roles: Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ') })
                     : ''
                   const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '📍 ' + sess.approx_area : '', counts.accepted > 0 ? `👥 ${counts.accepted} membres` : '', '', 'Postule ici : ' + url].filter(Boolean)
                   copyMessageText(lines.join('\n'))

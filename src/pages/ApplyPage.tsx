@@ -338,7 +338,7 @@ export default function ApplyPage() {
           {guestMode ? (
             <input value={guestDisplayName} onChange={e=>setGuestDisplayName(e.target.value)} placeholder="Ton pseudo *" style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:10,padding:'10px 14px',border:'1px solid '+S.rule,fontSize:14,marginBottom:8,boxSizing:'border-box'}} />
           ) : (
-            <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile?.display_name || 'Anonyme'}</div>
+            <div style={{fontSize:14,fontWeight:600,color:S.tx,marginBottom:4}}>{profile?.display_name || t('common.anonymous')}</div>
           )}
           {(selectedRole || (profile?.profile_json as any)?.role || (profile?.profile_json as any)?.bio) && !guestMode && (
             <div style={{fontSize:13,color:S.tx2,lineHeight:1.4}}>
@@ -560,7 +560,7 @@ export default function ApplyPage() {
             return (
               <>
                 {/* BLOC PROFIL */}
-                {renderBlocToggle('Profil', BLOC_PROFIL, S.sage)}
+                {renderBlocToggle(t('profile.profile_label'), BLOC_PROFIL, S.sage)}
                 <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:6,marginBottom:16}}>
                   {BLOC_PROFIL.map(sec => (
                     <div key={sec.id}>
@@ -617,7 +617,7 @@ export default function ApplyPage() {
                 <div style={{width:40,height:40,borderRadius:'50%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,color:'#fff'}}>{(profile?.display_name || '?')[0].toUpperCase()}</div>
               )}
               <div>
-                <p style={{margin:0,fontSize:14,fontWeight:700,color:S.tx}}>{guestMode ? guestDisplayName || 'Invité' : profile?.display_name || 'Anonyme'}</p>
+                <p style={{margin:0,fontSize:14,fontWeight:700,color:S.tx}}>{guestMode ? guestDisplayName || t('common.guest') : profile?.display_name || t('common.anonymous')}</p>
                 <div style={{display:'flex',gap:6,marginTop:2}}>
                   {selectedRole && <span style={{fontSize:11,color:S.p,fontWeight:600}}>{selectedRole}</span>}
                   {profile?.profile_json?.age && enabled.includes('basics') && <span style={{fontSize:11,color:S.tx3}}>{profile.profile_json.age} ans</span>}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { showToast } from './Toast'
 import { UserPlus, UserCheck, Star, Heart, Check } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { colors } from '../brand'
 
 const S = colors
@@ -15,6 +16,7 @@ const RELATIONS: { level: RelationLevel; label: string; icon: typeof UserPlus; c
 ]
 
 export default function AddContactButton({ targetUserId }: { targetUserId: string }) {
+  const { t } = useTranslation()
   const [currentRelation, setCurrentRelation] = useState<RelationLevel | null>(null)
   const [loading, setLoading] = useState(true)
   const [showSelector, setShowSelector] = useState(false)
@@ -73,7 +75,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
         }}
       >
         {currentRelation ? <UserCheck size={14} /> : <UserPlus size={14} />}
-        {currentRelation ? RELATIONS.find(r => r.level === currentRelation)?.label || 'Contact' : 'Ajouter au carnet'}
+        {currentRelation ? RELATIONS.find(r => r.level === currentRelation)?.label || 'Contact' : t('contacts.add_to_book')}
       </button>
 
       {showSelector && (

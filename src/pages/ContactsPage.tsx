@@ -66,7 +66,7 @@ export default function ContactsPage() {
     const profileMap = new Map<string, { display_name: string; avatar_url?: string; role?: string }>()
     ;(profiles || []).forEach((p: any) => {
       profileMap.set(p.id, {
-        display_name: p.display_name || 'Anonyme',
+        display_name: p.display_name || t('common.anonymous'),
         avatar_url: p.profile_json?.avatar_url,
         role: p.profile_json?.role,
       })
@@ -74,7 +74,7 @@ export default function ContactsPage() {
 
     const enriched: Contact[] = raw.map(c => ({
       ...c,
-      display_name: profileMap.get(c.contact_user_id)?.display_name || 'Anonyme',
+      display_name: profileMap.get(c.contact_user_id)?.display_name || t('common.anonymous'),
       avatar_url: profileMap.get(c.contact_user_id)?.avatar_url,
       role: profileMap.get(c.contact_user_id)?.role,
     }))

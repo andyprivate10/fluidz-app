@@ -58,7 +58,7 @@ export default function DMPage() {
   const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
     id && peerId ? `typing:dm:${id}:${[currentUser?.id, peerId].sort().join(':')}` : '',
     currentUser?.id,
-    displayName || 'Anonyme',
+    displayName || t('common.anonymous'),
   )
 
   useEffect(() => {
@@ -389,7 +389,7 @@ export default function DMPage() {
 
       {showCheckInConfirmed && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.p2, border: '1px solid '+S.amberbd, borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: S.p, fontWeight: 600, textAlign: 'center' }}>Check-in envoyé — en attente de confirmation du host</div>
+          <div style={{ fontSize: 13, color: S.p, fontWeight: 600, textAlign: 'center' }}>{t('session.checkin_sent_waiting')}</div>
         </div>
       )}
 

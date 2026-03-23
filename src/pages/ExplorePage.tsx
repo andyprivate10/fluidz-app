@@ -177,7 +177,7 @@ export default function ExplorePage() {
       const dist = p.approx_lat && p.approx_lng ? haversine(lat, lng, p.approx_lat, p.approx_lng) : undefined
       return {
         id: p.id,
-        display_name: p.display_name || 'Anonyme',
+        display_name: p.display_name || t('common.anonymous'),
         avatar_url: pj.avatar_url,
         role: pj.role,
         age: pj.age,

@@ -52,7 +52,7 @@ export default function DirectDMPage() {
   const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
     currentUser?.id && peerId ? `typing:direct:${[currentUser.id, peerId].sort().join(':')}` : '',
     currentUser?.id,
-    displayName || 'Anonyme',
+    displayName || t('common.anonymous'),
   )
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function DirectDMPage() {
     const { data: peer } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', peerId).maybeSingle()
     if (peer) {
       const pj = (peer.profile_json || {}) as Record<string, unknown>
-      setPeerProfile({ name: peer.display_name || 'Anonyme', avatar: pj.avatar_url as string, role: pj.role as string })
+      setPeerProfile({ name: peer.display_name || t('common.anonymous'), avatar: pj.avatar_url as string, role: pj.role as string })
     }
 
     // Load my display name

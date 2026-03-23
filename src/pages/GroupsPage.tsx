@@ -63,14 +63,14 @@ export default function GroupsPage() {
     if (contactIds.length > 0) {
       const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', contactIds)
       ;(profiles || []).forEach((p: any) => {
-        profileMap[p.id] = { display_name: p.display_name || 'Anonyme', avatar_url: p.profile_json?.avatar_url }
+        profileMap[p.id] = { display_name: p.display_name || t('common.anonymous'), avatar_url: p.profile_json?.avatar_url }
       })
     }
 
     setContacts((cts || []).map(c => ({
       id: c.id,
       contact_user_id: c.contact_user_id,
-      display_name: profileMap[c.contact_user_id]?.display_name || 'Anonyme',
+      display_name: profileMap[c.contact_user_id]?.display_name || t('common.anonymous'),
       avatar_url: profileMap[c.contact_user_id]?.avatar_url,
     })))
 
@@ -79,7 +79,7 @@ export default function GroupsPage() {
       member_count: (memberMap[g.id] || []).length,
       members: (memberMap[g.id] || []).map(m => ({
         contact_user_id: m.contact_user_id,
-        display_name: profileMap[m.contact_user_id]?.display_name || 'Anonyme',
+        display_name: profileMap[m.contact_user_id]?.display_name || t('common.anonymous'),
         avatar_url: profileMap[m.contact_user_id]?.avatar_url,
       })),
     })))

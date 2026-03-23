@@ -111,6 +111,7 @@ function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showStory, setShowStory] = useState(false)
@@ -146,13 +147,13 @@ export default function PublicProfile() {
   const allPhotos: string[] = [...(Array.isArray(p.photos_profil) ? p.photos_profil : []), ...(Array.isArray(p.photos_intime) ? p.photos_intime : []), ...(Array.isArray(p.photos) ? p.photos : []), ...(!Array.isArray(p.photos_profil) && !Array.isArray(p.photos) && p.avatar_url ? [p.avatar_url] : [])].filter((v, i, a) => a.indexOf(v) === i)
   const allVideos: string[] = [...(Array.isArray(p.videos_intime) ? p.videos_intime : []), ...(Array.isArray(p.videos) ? p.videos : [])]
   const hasPhotos = allPhotos.length > 0
-  const displayName = profile.display_name || 'Anonyme'
+  const displayName = profile.display_name || t('common.anonymous')
 
   let onlineLabel = ''; let isOnline = false
   if (profile.location_updated_at) {
     const mins = Math.floor((Date.now() - new Date(profile.location_updated_at).getTime()) / 60000)
     isOnline = mins < 30
-    onlineLabel = isOnline ? 'En ligne' : mins < 60 ? mins + 'min' : mins < 1440 ? Math.floor(mins / 60) + 'h' : Math.floor(mins / 1440) + 'j'
+    onlineLabel = isOnline ? t('common.online') : mins < 60 ? mins + 'min' : mins < 1440 ? Math.floor(mins / 60) + 'h' : Math.floor(mins / 1440) + 'j'
   }
 
   const kinkMap: Record<string, { bg: string; color: string; border: string }> = {

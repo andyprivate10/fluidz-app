@@ -97,7 +97,7 @@ export default function MePage() {
     if (!ep.avatar_url && gp.avatar_url) merged.avatar_url = gp.avatar_url
     await supabase.from('user_profiles').upsert({
       id: userId,
-      display_name: existing?.display_name || ghost.display_name || 'Anonyme',
+      display_name: existing?.display_name || ghost.display_name || t('common.anonymous'),
       profile_json: merged,
     })
     await supabase.from('applications').update({ applicant_id: userId }).eq('ghost_session_id', mergeId)

@@ -1,4 +1,5 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { colors } from '../brand'
 
 const S = colors
@@ -14,26 +15,27 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams<{ id: string }>()
+  const { t } = useTranslation()
 
-  const backLabel = 'Sessions'
+  const backLabel = t('nav.sessions')
   const backPath = '/sessions'
 
   // Tabs per role
   const candidateTabs = [
-    { id: 'info',  label: 'Infos',          path: `/session/${id}` },
-    { id: 'dm',    label: 'DM host',        path: `/session/${id}/dm` },
-    { id: 'apply', label: 'Ma candidature', path: `/session/${id}/apply` },
+    { id: 'info',  label: t('nav.infos'),          path: `/session/${id}` },
+    { id: 'dm',    label: t('nav.dm_host'),         path: `/session/${id}/dm` },
+    { id: 'apply', label: t('nav.my_application'),  path: `/session/${id}/apply` },
   ]
   const memberTabs = [
-    { id: 'info',  label: 'Qui est là', path: `/session/${id}` },
-    { id: 'chat',  label: 'Chat',       path: `/session/${id}/chat` },
-    { id: 'dm',    label: 'DM host',    path: `/session/${id}/dm` },
+    { id: 'info',  label: t('nav.whos_here'),  path: `/session/${id}` },
+    { id: 'chat',  label: 'Chat',              path: `/session/${id}/chat` },
+    { id: 'dm',    label: t('nav.dm_host'),    path: `/session/${id}/dm` },
   ]
   const hostTabs = [
-    { id: 'candidates', label: 'Candidats', path: `/session/${id}/host` },
-    { id: 'members',    label: 'Membres',   path: `/session/${id}` },
-    { id: 'share',      label: 'Partager',  path: `/session/${id}/host#share` },
-    { id: 'settings',   label: '···',       path: `/session/${id}/edit` },
+    { id: 'candidates', label: t('nav.candidates'), path: `/session/${id}/host` },
+    { id: 'members',    label: t('nav.members'),    path: `/session/${id}` },
+    { id: 'share',      label: t('nav.share'),      path: `/session/${id}/host#share` },
+    { id: 'settings',   label: '···',               path: `/session/${id}/edit` },
   ]
 
   const tabs = role === 'host' ? hostTabs : role === 'member' ? memberTabs : candidateTabs

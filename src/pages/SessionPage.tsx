@@ -346,7 +346,7 @@ export default function SessionPage() {
 
         {session.description && (
           <div style={card}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>DESCRIPTION</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_description')}</div>
             <div style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6 }}>{session.description}</div>
           </div>
         )}
@@ -367,7 +367,7 @@ export default function SessionPage() {
           })
           return (
             <div style={card}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>RÔLES RECHERCHÉS</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_roles_wanted')}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {Object.entries(wanted).map(([role, count]) => {
                   const have = currentRoles[role] || 0
@@ -386,7 +386,7 @@ export default function SessionPage() {
               </div>
               {missing.length > 0 && (
                 <p style={{ fontSize: 11, color: S.p, margin: '8px 0 0' }}>
-                  Recherche : {missing.map(m => `${m.need} ${m.role}${m.need > 1 ? 's' : ''}`).join(', ')}
+                  {t('session.searching_roles', { roles: missing.map(m => `${m.need} ${m.role}`).join(', ') })}
                 </p>
               )}
             </div>
@@ -395,7 +395,7 @@ export default function SessionPage() {
 
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
           <div style={card}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>ACCÈS</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_access')}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {session.lineup_json.directions.map((step, i) => {
                 const text = typeof step === 'string' ? step : step.text
@@ -416,7 +416,7 @@ export default function SessionPage() {
 
         {members.length > 0 && (
           <div style={card}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 12 }}>LINEUP · {members.length + 1}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 12 }}>{t('session.section_lineup')} · {members.length + 1}</div>
             <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {/* Host first */}
@@ -513,7 +513,7 @@ export default function SessionPage() {
                     </p>
                   )}
                   <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.p, border: 'none', cursor: 'pointer' }}>
-                    Voir le profil complet
+                    {t('session.view_full_profile')}
                   </button>
                 </div>
               </>
@@ -523,7 +523,7 @@ export default function SessionPage() {
 
         {members.length >= 3 ? (
           <div style={card}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>VOTE CONSULTATIF</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_vote')}</div>
             {pendingApps.filter(p => !currentUser || p.applicant_id !== currentUser.id).length === 0 ? (
               <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>{t('session.no_pending')}</p>
             ) : (
@@ -590,7 +590,7 @@ export default function SessionPage() {
                           </button>
                         </div>
                         <div style={{ fontSize: 12, color: S.tx2, textAlign: 'right' }}>
-                          {yesCount} oui · {noCount} non
+                          {t('session.vote_count', { yes: yesCount, no: noCount })}
                         </div>
                       </div>
                     )
@@ -603,7 +603,7 @@ export default function SessionPage() {
           </div>
         ) : (
           <div style={card}>
-            <p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>Vote disponible dès 3 membres</p>
+            <p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{t('session.vote_needs_3')}</p>
           </div>
         )}
 
@@ -659,10 +659,10 @@ export default function SessionPage() {
             )}
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button onClick={() => navigate('/session/' + id + '/chat')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid '+S.pbd, background: S.p2, color: S.p, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                <MessageCircle size={13} strokeWidth={1.5} style={{marginRight:4}} /> Group Chat
+                <MessageCircle size={13} strokeWidth={1.5} style={{marginRight:4}} /> {t('session.group_chat')}
               </button>
               <button onClick={() => navigate('/session/' + id + '/dm')} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid '+S.rule, background: S.bg1, color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                DM Host
+                {t('session.dm_host')}
               </button>
             </div>
           </div>
@@ -742,10 +742,10 @@ export default function SessionPage() {
                   />
                 )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-                  Ouvrir le DM
+                  {t('session.open_dm')}
                 </button>
                 <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.p, borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-                  Group Chat
+                  {t('session.group_chat')}
                 </button>
               </div>
             )}

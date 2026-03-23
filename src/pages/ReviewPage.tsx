@@ -68,7 +68,7 @@ export default function ReviewPage() {
         const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ids)
         setParticipants((profiles || []).map((p: any) => ({
           applicant_id: p.id,
-          display_name: p.display_name || 'Anonyme',
+          display_name: p.display_name || t('common.anonymous'),
           avatar_url: p.profile_json?.avatar_url,
           role: p.profile_json?.role,
         })))

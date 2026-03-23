@@ -32,7 +32,7 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
           {exactAddress && (
             <button onClick={() => window.open('https://maps.google.com/?q=' + encodeURIComponent(exactAddress), '_blank')} style={qBtn}>
               <Navigation size={16} strokeWidth={1.5} style={{ color: S.sage }} />
-              <span style={qLabel}>Maps</span>
+              <span style={qLabel}>{t('session.qa_maps')}</span>
             </button>
           )}
           {!checkInDone && status === 'open' && (
@@ -43,11 +43,11 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
           )}
           <button onClick={() => navigate('/session/' + sessionId + '/chat')} style={qBtn}>
             <MessageCircle size={16} strokeWidth={1.5} style={{ color: S.lav }} />
-            <span style={qLabel}>Chat</span>
+            <span style={qLabel}>{t('session.qa_chat')}</span>
           </button>
           <button onClick={() => navigate('/session/' + sessionId + '/dm')} style={qBtn}>
             <MessageCircle size={16} strokeWidth={1.5} style={{ color: S.p }} />
-            <span style={qLabel}>DM Host</span>
+            <span style={qLabel}>{t('session.qa_dm_host')}</span>
           </button>
         </>
       )}

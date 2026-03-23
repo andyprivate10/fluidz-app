@@ -8,7 +8,14 @@
     "sessions": "Sessions",
     "chats": "Chats",
     "profiles": "Profiles",
-    "menu": "Menu"
+    "menu": "Menu",
+    "infos": "Info",
+    "dm_host": "DM host",
+    "my_application": "My application",
+    "whos_here": "Who's here",
+    "candidates": "Candidates",
+    "members": "Members",
+    "share": "Share"
   },
   "home": {
     "hey": "Hey {{name}}",
@@ -184,7 +191,24 @@
     "host_must_confirm": "The host must confirm your arrival",
     "copy": "Copy",
     "check_in_action": "Check-in",
-    "copy_for": "Copy for {{app}}"
+    "copy_for": "Copy for {{app}}",
+    "section_description": "Description",
+    "section_roles_wanted": "Roles wanted",
+    "section_access": "Access",
+    "section_lineup": "Lineup",
+    "section_vote": "Advisory vote",
+    "searching_roles": "Looking for: {{roles}}",
+    "view_full_profile": "View full profile",
+    "qa_maps": "Maps",
+    "qa_chat": "Chat",
+    "qa_dm_host": "DM Host",
+    "group_chat": "Group Chat",
+    "dm_host": "DM Host",
+    "open_dm": "Open DM",
+    "vote_count": "{{yes}} yes · {{no}} no",
+    "vote_needs_3": "Voting available from 3 members",
+    "phone_never_asked": "Your phone number will never be asked.",
+    "checkin_sent_waiting": "Check-in sent — waiting for host confirmation"
   },
   "chat": {
     "title": "Messages",
@@ -267,7 +291,9 @@
     "home_country": "Country",
     "home_city": "City",
     "languages": "Languages spoken",
-    "visitor_tag": "Visitor"
+    "visitor_tag": "Visitor",
+    "profile_label": "Profile",
+    "profile_score_label": "Profile"
   },
   "review": {
     "title": "How was it?",
@@ -394,7 +420,8 @@
     "accepted_for": "Accepted for \"{{title}}\"",
     "rejected_for": "Not selected for \"{{title}}\"",
     "accepted_route": "Accepted — on the way",
-    "auto_accepted": "Automatically accepted via direct link"
+    "auto_accepted": "Automatically accepted via direct link",
+    "close_without_delete": "Close without deleting shared media?"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -411,7 +438,9 @@
     "interactions": "Interactions",
     "empty_filter": "No contacts in this filter",
     "no_notes": "No notes",
-    "send_dm": "Send a DM"
+    "send_dm": "Send a DM",
+    "dm_sent": "DM sent",
+    "add_to_book": "Add to contacts"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -445,7 +474,9 @@
     "copied": "Copied!",
     "not_found": "Page not found",
     "not_found_desc": "This page does not exist",
-    "back_home": "Back to home"
+    "back_home": "Back to home",
+    "guest": "Guest",
+    "online": "Online"
   },
   "drawer": {
     "my_space": "My space",

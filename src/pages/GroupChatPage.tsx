@@ -110,7 +110,7 @@ export default function GroupChatPage() {
         const pj = p?.profile_json || {}
         return {
           applicant_id: a.applicant_id,
-          display_name: p?.display_name || 'Anonyme',
+          display_name: p?.display_name || t('common.anonymous'),
           avatar_url: pj.avatar_url,
           role: pj.role,
           status: a.status,

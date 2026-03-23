@@ -273,7 +273,7 @@ export default function JoinPage() {
                         </div>
                       )}
                       <div style={{flex:1,minWidth:0}}>
-                        <p style={{margin:0,fontSize:13,fontWeight:600,color:S.tx}}>{m.display_name || 'Anonyme'}</p>
+                        <p style={{margin:0,fontSize:13,fontWeight:600,color:S.tx}}>{m.display_name || t('common.anonymous')}</p>
                         <div style={{display:'flex',gap:4,alignItems:'center',marginTop:2,flexWrap:'wrap'}}>
                           {m.role && <span style={{fontSize:10,fontWeight:600,color:S.p,background:S.p2,padding:'1px 6px',borderRadius:99,border:'1px solid '+S.pbd}}>{m.role}</span>}
                           {m.prep === 'Actif' && <Shield size={10} strokeWidth={2} style={{color:S.sage}} />}
@@ -397,7 +397,7 @@ export default function JoinPage() {
                   }}>
                     <Ghost size={14} /> {t('home.ghost_mode')}
                   </button>
-                  <p style={{fontSize:9,color:S.tx4,textAlign:'center',margin:'8px 0 0'}}>Ton numéro ne sera jamais demandé.</p>
+                  <p style={{fontSize:9,color:S.tx4,textAlign:'center',margin:'8px 0 0'}}>{t('session.phone_never_asked')}</p>
                 </>
               ) : profileComplete ? (
                 <>
