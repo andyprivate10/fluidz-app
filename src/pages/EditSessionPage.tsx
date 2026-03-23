@@ -117,7 +117,7 @@ export default function EditSessionPage() {
         {/* Description */}
         <div>
           <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.description_label')}</label>
-          <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Session test pour dev." rows={3} style={{ ...inp, resize:'vertical' }} />
+          <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder={t('placeholders.session_desc')} rows={3} style={{ ...inp, resize:'vertical' }} />
         </div>
 
         {/* Tags */}
@@ -138,7 +138,7 @@ export default function EditSessionPage() {
         {/* Approx area */}
         <div>
           <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('session.approx_area_label')}</label>
-          <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder="Paris 4ème" style={inp} />
+          <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder={t('placeholders.approx_area')} style={inp} />
         </div>
 
         {/* Exact address */}
@@ -154,7 +154,7 @@ export default function EditSessionPage() {
             <div key={i} style={{ marginBottom:8, padding:10, background:S.bg, borderRadius:10, border:'1px solid '+S.rule }}>
               <div style={{ display:'flex', gap:8, alignItems:'center' }}>
                 <span style={{ fontSize:12, fontWeight:700, color:S.p }}>#{i+1}</span>
-                <input value={step.text} onChange={e => { const next=[...directions]; next[i]={...next[i],text:e.target.value}; setDirections(next) }} placeholder="Ex: Rentre par le parking..." style={{ ...inp, flex:1, fontSize:13 }} />
+                <input value={step.text} onChange={e => { const next=[...directions]; next[i]={...next[i],text:e.target.value}; setDirections(next) }} placeholder={t('placeholders.direction_step')} style={{ ...inp, flex:1, fontSize:13 }} />
                 {directions.length > 1 && (
                   <button type="button" onClick={() => setDirections(directions.filter((_,j)=>j!==i))} style={{ padding:'6px 10px', borderRadius:8, fontSize:11, border:'1px solid '+S.redbd, background:'transparent', color:S.red, cursor:'pointer' }}>×</button>
                 )}

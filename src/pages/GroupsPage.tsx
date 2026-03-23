@@ -215,11 +215,11 @@ export default function GroupsPage() {
             <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:4, display:'block' }}>NOM</label>
-                <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Ex: Les Habituels, Top Squad..." maxLength={40} style={inp} />
+                <input value={newName} onChange={e => setNewName(e.target.value)} placeholder={t('placeholders.group_name')} maxLength={40} style={inp} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:4, display:'block' }}>DESCRIPTION</label>
-                <input value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Optionnel" maxLength={100} style={inp} />
+                <input value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder={t('placeholders.optional')} maxLength={100} style={inp} />
               </div>
 
               {/* Color picker */}

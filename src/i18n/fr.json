@@ -623,5 +623,21 @@
   "errors": {
     "upload_error": "Erreur upload",
     "error_prefix": "Erreur"
+  },
+  "placeholders": {
+    "address_label": "Ex: Chez moi, Le studio...",
+    "address_area": "Paris 4ème, Métro Saint-Paul...",
+    "address_step": "Rentre par le parking, 2ème sous-sol...",
+    "your_pseudo_required": "Ton pseudo *",
+    "message_dots": "Message...",
+    "session_desc": "Description de la session...",
+    "approx_area": "Paris 4ème",
+    "direction_step": "Ex: Rentre par le parking...",
+    "recovery_code": "X7K9M2",
+    "ghost_pseudo": "Ex: Alex, Le Beau Gosse...",
+    "group_message": "Message au groupe...",
+    "group_name": "Ex: Les Habituels, Top Squad...",
+    "optional": "Optionnel",
+    "limits_placeholder": "Hard limits, no-go..."
   }
 }

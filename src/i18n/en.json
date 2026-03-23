@@ -623,5 +623,21 @@
   "errors": {
     "upload_error": "Upload error",
     "error_prefix": "Error"
+  },
+  "placeholders": {
+    "address_label": "E.g.: My place, The studio...",
+    "address_area": "Brooklyn, NYC...",
+    "address_step": "Enter through the parking, 2nd basement...",
+    "your_pseudo_required": "Your nickname *",
+    "message_dots": "Message...",
+    "session_desc": "Session description...",
+    "approx_area": "Brooklyn, NYC",
+    "direction_step": "E.g.: Enter through the parking...",
+    "recovery_code": "X7K9M2",
+    "ghost_pseudo": "E.g.: Alex, Mr. Handsome...",
+    "group_message": "Message to group...",
+    "group_name": "E.g.: The Regulars, Top Squad...",
+    "optional": "Optional",
+    "limits_placeholder": "Hard limits, no-go..."
   }
 }

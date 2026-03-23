@@ -132,7 +132,7 @@ export default function GhostSetupPage() {
               <input
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                placeholder="Ex: Alex, Le Beau Gosse..."
+                placeholder={t('placeholders.ghost_pseudo')}
                 maxLength={30}
                 autoFocus
                 style={inp}

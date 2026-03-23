@@ -214,11 +214,11 @@ export default function AddressesPage() {
             <div style={{ display:'flex',flexDirection:'column',gap:12 }}>
               <div>
                 <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>NOM</label>
-                <input value={label} onChange={e => setLabel(e.target.value)} placeholder="Ex: Chez moi, Le studio..." maxLength={40} style={inp} />
+                <input value={label} onChange={e => setLabel(e.target.value)} placeholder={t('placeholders.address_label')} maxLength={40} style={inp} />
               </div>
               <div>
                 <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>ZONE APPROXIMATIVE</label>
-                <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder="Paris 4ème, Métro Saint-Paul..." maxLength={60} style={inp} />
+                <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder={t('placeholders.address_area')} maxLength={60} style={inp} />
               </div>
               <div>
                 <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>ADRESSE EXACTE</label>
@@ -234,7 +234,7 @@ export default function AddressesPage() {
                       <span style={{ fontSize:12,fontWeight:700,color:S.p }}>Étape {i+1}</span>
                       {directions.length > 1 && <button onClick={() => removeStep(i)} style={{ marginLeft:'auto',background:'none',border:'none',color:S.red,cursor:'pointer',padding:2,opacity:0.6 }}><Trash2 size={12} /></button>}
                     </div>
-                    <input value={step.text} onChange={e => updateStep(i, e.target.value)} placeholder="Rentre par le parking, 2ème sous-sol..." maxLength={150} style={{ ...inp,fontSize:13 }} />
+                    <input value={step.text} onChange={e => updateStep(i, e.target.value)} placeholder={t('placeholders.address_step')} maxLength={150} style={{ ...inp,fontSize:13 }} />
                     <div style={{ display:'flex',alignItems:'center',gap:8,marginTop:6 }}>
                       {step.photo_url ? (
                         <div style={{ position:'relative' }}>

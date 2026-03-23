@@ -632,14 +632,14 @@ export default function MePage() {
             </div>
             <div>
               <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Statut sero (optionnel)</label>
-              <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder="Optionnel" style={inputStyle} />
+              <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder={t('placeholders.optional')} style={inputStyle} />
             </div>
           </Section>
 
           <Section title={t('profile.limits')} color={S.red}>
             <textarea
               value={limits} onChange={e => setLimits(e.target.value)}
-              placeholder="Hard limits, no-go..." rows={3}
+              placeholder={t('placeholders.limits_placeholder')} rows={3}
               style={{ ...inputStyle, resize:'none', lineHeight:1.5, borderColor:S.red }}
             />
             <p style={{ fontSize:11, color:S.red, marginTop:6, opacity:0.7 }}>

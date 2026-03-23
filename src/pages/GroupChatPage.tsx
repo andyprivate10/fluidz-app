@@ -445,7 +445,7 @@ export default function GroupChatPage() {
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
-            placeholder="Message au groupe..."
+            placeholder={t('placeholders.group_message')}
             style={{
               flex:1, padding:'10px 14px', borderRadius:99, border:'1px solid '+S.rule,
               background:S.bg2, color:S.tx, fontSize:14, outline:'none',

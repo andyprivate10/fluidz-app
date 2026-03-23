@@ -125,7 +125,7 @@ export default function GhostRecoverPage() {
               <input
                 value={code}
                 onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
-                placeholder="X7K9M2"
+                placeholder={t('placeholders.recovery_code')}
                 maxLength={6}
                 autoFocus
                 style={{ ...inp, fontSize: 24, fontWeight: 800, letterSpacing: '0.2em', fontFamily: 'monospace' }}
