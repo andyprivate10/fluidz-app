@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "fluidz",
-    "tagline": "Organise tes soirees privees"
+    "tagline": "Organise tes soirees privees",
+    "install": "Installer"
   },
   "nav": {
     "home": "Home",

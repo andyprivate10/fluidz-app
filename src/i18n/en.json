@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "fluidz",
-    "tagline": "Organize your private parties"
+    "tagline": "Organize your private parties",
+    "install": "Install"
   },
   "nav": {
     "home": "Home",

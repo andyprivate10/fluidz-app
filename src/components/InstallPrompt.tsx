@@ -64,7 +64,7 @@ export default function InstallPrompt() {
         padding: '8px 14px', borderRadius: 10, background: S.p, border: 'none',
         color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0,
       }}>
-        Installer
+        {t('app.install')}
       </button>
       <button onClick={dismiss} style={{ background: 'none', border: 'none', color: S.tx4, cursor: 'pointer', padding: 4, flexShrink: 0 }}>
         <X size={16} />
