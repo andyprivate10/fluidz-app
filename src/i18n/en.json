@@ -295,7 +295,9 @@
     "visitor_tag": "Visitor",
     "profile_label": "Profile",
     "profile_score_label": "Profile",
-    "your_candidate_pack": "Your Candidate Pack"
+    "your_candidate_pack": "Your Candidate Pack",
+    "members_only": "Profile restricted to logged-in members.",
+    "not_found": "Profile not found."
   },
   "review": {
     "title": "How was it?",
@@ -497,7 +499,8 @@
     "back_home": "Back to home",
     "guest": "Guest",
     "online": "Online",
-    "back_label": "Back"
+    "back_label": "Back",
+    "back_to_session": "Back to session"
   },
   "drawer": {
     "my_space": "My space",

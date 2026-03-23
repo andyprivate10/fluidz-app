@@ -178,7 +178,7 @@ export default function GhostSetupPage() {
               {loading ? t('ghost_setup.creating') : t('ghost_setup.create_ghost')}
             </button>
             <button onClick={() => setStep('name')} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <ArrowLeft size={16} strokeWidth={1.5} />Retour
+              <ArrowLeft size={16} strokeWidth={1.5} />{t('common.back_label')}
             </button>
           </div>
         )}

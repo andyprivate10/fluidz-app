@@ -19,6 +19,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      const isFr = typeof navigator !== 'undefined' && navigator.language?.startsWith('fr')
       return (
         <div
           style={{
@@ -35,7 +36,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           }}
         >
           <p style={{ color: S.red, fontSize: 16, margin: 0, textAlign: 'center' }}>
-            Quelque chose s'est mal pass&eacute;.
+            {isFr ? 'Quelque chose s\'est mal passé.' : 'Something went wrong.'}
           </p>
           <button
             type="button"
@@ -43,7 +44,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             style={{ padding: 14, borderRadius: 12 }}
             onClick={() => { this.setState({ hasError: false }); window.location.href = '/' }}
           >
-            Retour &agrave; l'accueil
+            {isFr ? 'Retour à l\'accueil' : 'Back to home'}
           </button>
         </div>
       )

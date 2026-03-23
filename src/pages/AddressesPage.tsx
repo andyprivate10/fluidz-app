@@ -140,7 +140,7 @@ export default function AddressesPage() {
   return (
     <div style={{ background:S.bg, minHeight:'100vh', position: 'relative' as const, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
       <div style={{ padding:'40px 20px 16px' }}>
-        <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
+        <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <div>
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>{t('settings.addresses')}</h1>

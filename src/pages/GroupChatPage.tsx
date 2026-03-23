@@ -278,7 +278,7 @@ export default function GroupChatPage() {
         <Shield size={32} style={{ color:S.tx3 }} />
         <p style={{ color:S.tx, fontSize:16, fontWeight:600, textAlign:'center' }}>Group chat pas encore activé</p>
         <p style={{ color:S.tx3, fontSize:13, textAlign:'center' }}>{t('chat.host_must_enable')}</p>
-        <button onClick={() => navigate('/session/' + id)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>Retour à la session</button>
+        <button onClick={() => navigate('/session/' + id)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back_to_session')}</button>
       </div>
     )
   }

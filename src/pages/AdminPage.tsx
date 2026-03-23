@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { colors, radius } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Zap, Users, Calendar, LayoutTemplate, Settings, FolderOpen, Database, BarChart3, Code } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
@@ -46,6 +47,7 @@ export const adminStyles = {
 
 export default function AdminPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [activeTab, setActiveTab] = useState<TabId>('auth')
@@ -95,7 +97,7 @@ export default function AdminPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
-              <ArrowLeft size={14} strokeWidth={1.5} /> Retour
+              <ArrowLeft size={14} strokeWidth={1.5} /> {t('common.back_label')}
             </button>
             <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: 0 }}>Admin</h1>
           </div>

@@ -295,7 +295,9 @@
     "visitor_tag": "Visitor",
     "profile_label": "Profil",
     "profile_score_label": "Profil",
-    "your_candidate_pack": "Ton Candidate Pack"
+    "your_candidate_pack": "Ton Candidate Pack",
+    "members_only": "Profil réservé aux membres connectés.",
+    "not_found": "Profil introuvable."
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -497,7 +499,8 @@
     "back_home": "Retour a l'accueil",
     "guest": "Invité",
     "online": "En ligne",
-    "back_label": "Retour"
+    "back_label": "Retour",
+    "back_to_session": "Retour à la session"
   },
   "drawer": {
     "my_space": "Mon espace",

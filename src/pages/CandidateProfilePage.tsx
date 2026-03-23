@@ -114,7 +114,7 @@ export default function CandidateProfilePage() {
     return (
       <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: S.tx3 }}>Candidature introuvable</p>
-        <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
+        <button onClick={() => navigate(-1)} style={{ marginTop: 16, color: S.p, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
       </div>
     )
   }
@@ -163,7 +163,7 @@ export default function CandidateProfilePage() {
       {/* Photo gallery */}
       {candidatePhotos.length > 0 && (
         <div style={{ padding: '40px 20px 0' }}>
-          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
           {/* Profil photos */}
           {photosProfil.length > 0 && (
             <>
@@ -212,7 +212,7 @@ export default function CandidateProfilePage() {
       {/* Header */}
       <div style={{ padding: candidatePhotos.length > 0 ? '16px 20px 20px' : '40px 20px 20px' }}>
         {candidatePhotos.length === 0 && (
-          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />Retour</button>
+          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
         )}
 
         {/* Avatar + Name */}
