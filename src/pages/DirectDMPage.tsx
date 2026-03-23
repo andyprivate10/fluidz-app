@@ -82,7 +82,7 @@ export default function DirectDMPage() {
 
     await supabase.from('sessions').upsert({
       id: sid, host_id: user.id, title: DM_DIRECT_TITLE, status: 'open',
-      description: 'Direct message', approx_area: '',
+      description: t('chat.direct_message_desc'), approx_area: '',
     }, { onConflict: 'id' })
 
     // Load messages

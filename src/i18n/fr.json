@@ -260,7 +260,8 @@
     "group_chat": "Chat de groupe",
     "host_must_enable": "Le host doit activer le group chat pour cette session.",
     "load_error": "Impossible de charger les données. Réessaie.",
-    "group_disabled": "Le group chat est désactivé. Clique \"ON\" pour l'activer pour les membres."
+    "group_disabled": "Le group chat est désactivé. Clique \"ON\" pour l'activer pour les membres.",
+    "direct_message_desc": "Message direct"
   },
   "profile": {
     "account": "Compte",
@@ -629,7 +630,9 @@
     "join_us": "Rejoins-nous !",
     "me": "Moi",
     "all": "Tous",
-    "load_error": "Impossible de charger les données. Réessaie."
+    "load_error": "Impossible de charger les données. Réessaie.",
+    "uploading": "Upload...",
+    "photo": "Photo"
   },
   "drawer": {
     "my_space": "Mon espace",

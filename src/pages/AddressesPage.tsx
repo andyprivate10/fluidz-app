@@ -243,7 +243,7 @@ export default function AddressesPage() {
                         </div>
                       ) : (
                         <label style={{ display:'flex',alignItems:'center',gap:4,padding:'6px 10px',borderRadius:8,border:'1px solid '+S.rule,background:S.bg2,color:S.tx3,fontSize:11,fontWeight:600,cursor:'pointer' }}>
-                          <Camera size={12} /> {uploading === i ? 'Upload...' : 'Photo'}
+                          <Camera size={12} /> {uploading === i ? t('common.uploading') : t('common.photo')}
                           <input type="file" accept="image/*" onChange={e => { const f = e.target.files?.[0]; if (f) uploadStepPhoto(i, f) }} style={{ display:'none' }} />
                         </label>
                       )}

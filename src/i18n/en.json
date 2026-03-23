@@ -260,7 +260,8 @@
     "group_chat": "Group chat",
     "host_must_enable": "The host must enable group chat for this session.",
     "load_error": "Failed to load data. Try again.",
-    "group_disabled": "Group chat is disabled. Click \"ON\" to enable it for members."
+    "group_disabled": "Group chat is disabled. Click \"ON\" to enable it for members.",
+    "direct_message_desc": "Direct message"
   },
   "profile": {
     "account": "Account",
@@ -629,7 +630,9 @@
     "join_us": "Join us!",
     "me": "Me",
     "all": "All",
-    "load_error": "Failed to load data. Try again."
+    "load_error": "Failed to load data. Try again.",
+    "uploading": "Uploading...",
+    "photo": "Photo"
   },
   "drawer": {
     "my_space": "My space",
