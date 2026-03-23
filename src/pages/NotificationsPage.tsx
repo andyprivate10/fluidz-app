@@ -6,6 +6,8 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import {Bell, CheckCheck, ArrowLeft} from 'lucide-react'
+import SwipeableRow from '../components/SwipeableRow'
+import { showToast } from '../components/Toast'
 import { timeAgo } from '../lib/timing'
 
 const S = colors
@@ -48,6 +50,12 @@ export default function NotificationsPage() {
     if (unread.length === 0) return
     await supabase.from('notifications').update({ read_at: new Date().toISOString() }).in('id', unread.map(n => n.id))
     setNotifs(prev => prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() })))
+  }
+
+  async function deleteNotif(id: string) {
+    await supabase.from('notifications').delete().eq('id', id)
+    setNotifs(prev => prev.filter(n => n.id !== id))
+    showToast(t('notifications.deleted'), 'info')
   }
 
   return (
@@ -102,9 +110,10 @@ export default function NotificationsPage() {
                 {showHeader && (
                   <p style={{ ...typeStyle('meta'), color: S.sage, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, margin: '18px 0 6px', padding: '0 4px' }}>{group}</p>
                 )}
+          <SwipeableRow onDelete={() => deleteNotif(n.id)}>
           <button onClick={() => handleClick(n)} style={{
             width: '100%', textAlign: 'left', padding: '14px 12px', borderRadius: R.block,
-            border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
+            border: 'none', background: S.bg, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
             borderBottom: `1px solid ${S.rule}`, position: 'relative',
             borderLeft: n.read_at ? 'none' : `3px solid ${S.p}`,
           }}>
@@ -125,6 +134,7 @@ export default function NotificationsPage() {
               </div>
             </div>
           </button>
+          </SwipeableRow>
               </div>
             )
           })
