@@ -500,7 +500,9 @@
     "guest": "Guest",
     "online": "Online",
     "back_label": "Back",
-    "back_to_session": "Back to session"
+    "back_to_session": "Back to session",
+    "copy_label": "Copy",
+    "share_label": "Share"
   },
   "drawer": {
     "my_space": "My space",

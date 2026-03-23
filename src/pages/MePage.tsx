@@ -411,8 +411,8 @@ export default function MePage() {
           <button onClick={() => navigate('/profile/' + user.id)} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.pbd, color:S.p, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
             <Eye size={14} strokeWidth={1.5} /> Voir profil
           </button>
-          <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/profile/' + user.id); showToast('Lien copié', 'success') }} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.rule, color:S.tx2, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
-            <Share2 size={14} strokeWidth={1.5} /> Partager
+          <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/profile/' + user.id); showToast(t('session.link_copied'), 'success') }} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.rule, color:S.tx2, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
+            <Share2 size={14} strokeWidth={1.5} />{t('common.share_label')}
           </button>
         </div>
       </div>
@@ -442,7 +442,7 @@ export default function MePage() {
                   navigator.clipboard.writeText(url)
                 }
               }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid '+S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                <Share2 size={13} strokeWidth={1.5} style={{marginRight:3}} /> Partager
+                <Share2 size={13} strokeWidth={1.5} style={{marginRight:3}} />{t('common.share_label')}
               </button>
             </div>
           )}

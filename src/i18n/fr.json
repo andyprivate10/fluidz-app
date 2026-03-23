@@ -500,7 +500,9 @@
     "guest": "Invité",
     "online": "En ligne",
     "back_label": "Retour",
-    "back_to_session": "Retour à la session"
+    "back_to_session": "Retour à la session",
+    "copy_label": "Copier",
+    "share_label": "Partager"
   },
   "drawer": {
     "my_space": "Mon espace",
