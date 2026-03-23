@@ -232,13 +232,18 @@ export default function HomePage() {
             </button>
 
             <div style={{ display: 'flex', gap: 8 }}>
-              {['Custom', 'Dark Room', 'Techno'].map(tpl => (
-                <button key={tpl} onClick={() => navigate('/session/create?tpl=' + tpl.toLowerCase().replace(' ', ''))}
+              {([
+                { label: 'Custom', slug: 'custom', color: S.p, bg: S.p2, border: S.pbd },
+                { label: 'Dark Room', slug: 'darkroom', color: '#E0887A', bg: 'rgba(224,136,122,0.10)', border: 'rgba(224,136,122,0.25)' },
+                { label: 'Techno', slug: 'techno', color: '#6BA888', bg: 'rgba(107,168,136,0.10)', border: 'rgba(107,168,136,0.25)' },
+              ]).map(tpl => (
+                <button key={tpl.slug} onClick={() => navigate('/session/create?tpl=' + tpl.slug)}
                   style={{
                     flex: 1, padding: '10px 6px', borderRadius: R.chip, ...typeStyle('meta'),
-                    color: S.tx3, border: `1px solid ${S.rule}`, background: S.bg1, cursor: 'pointer',
+                    color: tpl.color, border: `1px solid ${tpl.border}`, background: tpl.bg, cursor: 'pointer',
+                    fontWeight: 600,
                   }}>
-                  {tpl}
+                  {tpl.label}
                 </button>
               ))}
             </div>

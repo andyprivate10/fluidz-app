@@ -5,6 +5,7 @@ import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
+import { getSessionCover } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -341,15 +342,14 @@ export default function CreateSessionPage() {
             {sessionTemplates.filter(tpl => tpl.slug !== 'chemical').map(tpl => {
               const meta = tpl.meta as any
               const coverUrl = meta?.cover_url
-              const color = meta?.color || S.p
               return (
                 <div key={tpl.slug} onClick={() => pickTemplate(tpl)} style={{
                   borderRadius:14,overflow:'hidden',cursor:'pointer',
                   border:'1px solid '+S.rule2,background:S.bg1,
                   transition:'transform 0.15s',position:'relative' as const,
                 }}>
-                  <div style={{width:'100%',height:100,background:coverUrl ? `url(${coverUrl}) center/cover no-repeat` : color,position:'relative' as const}}>
-                    <div style={{position:'absolute',inset:0,background:'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 60%)'}} />
+                  <div style={{width:'100%',height:100,background:coverUrl ? `url(${coverUrl}) center/cover no-repeat` : getSessionCover(meta?.tags || [tpl.label]).bg,position:'relative' as const}}>
+                    <div style={{position:'absolute',inset:0,background:'linear-gradient(0deg, rgba(0,0,0,0.5) 0%, transparent 60%)'}} />
                   </div>
                   <div style={{padding:'10px 12px'}}>
                     <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.tx}}>{tpl.label}</p>

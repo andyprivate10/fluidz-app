@@ -1,7 +1,7 @@
 {
-  "name": "Fluidz — Recrute ton groupe",
+  "name": "Fluidz — Let's exchange fluidz",
   "short_name": "Fluidz",
-  "description": "Organise des plans de groupe spontanés. Partage un lien, les candidats postulent, tu choisis.",
+  "description": "Manage adult relationships. Group sessions, trust-based matching, private profiles.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
