@@ -430,7 +430,13 @@
     "rating_5": "Amazing!",
     "send": "Send",
     "respectful": "Respectful",
-    "welcoming": "Welcoming"
+    "welcoming": "Welcoming",
+    "already_reviewed": "You already reviewed",
+    "error_duplicate": "You already submitted a review",
+    "error_generic": "Error",
+    "thanks_toast": "Thanks for your review!",
+    "peer_already": "Already rated",
+    "peer_sent": "Review sent"
   },
   "notifications": {
     "title": "Notifications",
@@ -575,7 +581,10 @@
     "close_confirm": "Permanently close this session?\n\nPhotos/videos shared in DMs will be deleted.",
     "confirm_refuse": "Refuse {{name}}?",
     "confirm_delete_address": "Delete this address?",
-    "confirm_remove_contact": "Remove from contacts?"
+    "confirm_remove_contact": "Remove from contacts?",
+    "candidate_fallback": "this candidate",
+    "accepted_toast": "{{name}} accepted",
+    "rejected_toast": "{{name}} rejected"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -762,7 +771,9 @@
   },
   "errors": {
     "upload_error": "Upload error",
-    "error_prefix": "Error"
+    "error_prefix": "Error",
+    "vote_error": "Vote error",
+    "checkin_error": "Check-in error"
   },
   "placeholders": {
     "address_label": "E.g.: My place, The studio...",

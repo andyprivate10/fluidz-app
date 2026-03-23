@@ -100,15 +100,15 @@ export default function ReviewPage() {
     })
 
     if (error) {
-      if (error.code === '23505') showToast('Tu as déjà laissé un avis', 'error')
-      else showToast('Erreur: ' + error.message, 'error')
+      if (error.code === '23505') showToast(t('review.error_duplicate'), 'error')
+      else showToast(t('review.error_generic') + ': ' + error.message, 'error')
       setSubmitting(false)
       return
     }
 
     setSubmitted(true)
     setSubmitting(false)
-    showToast('Merci pour ton avis !', 'success')
+    showToast(t('review.thanks_toast'), 'success')
   }
 
   async function submitPeerReview(targetId: string) {
@@ -119,12 +119,12 @@ export default function ReviewPage() {
       rating: r, vibe_tags: peerTags[targetId] || [], is_anonymous: true,
     })
     if (error) {
-      if (error.code === '23505') showToast('Déjà noté', 'error')
-      else showToast('Erreur', 'error')
+      if (error.code === '23505') showToast(t('review.peer_already'), 'error')
+      else showToast(t('review.error_generic'), 'error')
       return
     }
     setPeerReviewedIds(prev => new Set([...prev, targetId]))
-    showToast('Avis envoye', 'success')
+    showToast(t('review.peer_sent'), 'success')
   }
 
   if (loading) return (

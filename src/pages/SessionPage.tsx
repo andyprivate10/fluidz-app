@@ -255,7 +255,7 @@ export default function SessionPage() {
         .single()
       if (error) {
         console.error('Vote error:', error)
-        showToast('Erreur vote: ' + error.message, 'error')
+        showToast(t('errors.vote_error') + ': ' + error.message, 'error')
       } else if (data) {
         setVotes(prev => {
           const others = prev.filter(v => !(v.applicant_id === applicantId && v.voter_id === currentUser.id))
@@ -276,7 +276,7 @@ export default function SessionPage() {
       .eq('session_id', id)
       .eq('applicant_id', currentUser.id)
     if (error) {
-      showToast('Erreur check-in: ' + error.message, 'error')
+      showToast(t('errors.checkin_error') + ': ' + error.message, 'error')
       console.error('Check-in error:', error)
     } else {
       setCheckInDone(true)
@@ -573,7 +573,7 @@ export default function SessionPage() {
                   />
                 )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-                  Ouvrir le DM
+                  {t('session.open_dm')}
                 </button>
               </div>
             )}

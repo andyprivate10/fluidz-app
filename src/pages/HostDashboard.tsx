@@ -14,6 +14,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { sendPushToUser } from '../lib/pushSender'
 import HostCandidateCard from '../components/host/HostCandidateCard'
 import { QRCodeSVG } from 'qrcode.react'
+import { getSessionCover } from '../lib/sessionCover'
 
 const S = colors
 
@@ -116,7 +117,7 @@ export default function HostDashboard() {
   async function decide(appId: string, status: 'accepted'|'rejected') {
     if (status === 'rejected') {
       const app = apps.find(a => a.id === appId)
-      const name = app?.user_profiles?.display_name || 'ce candidat'
+      const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
       if (!window.confirm(t('host.confirm_refuse', { name }))) return
     }
     setActionLoading(appId)
@@ -170,8 +171,8 @@ export default function HostDashboard() {
     }
     setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
     setActionLoading(null)
-    const name = app?.user_profiles?.display_name || 'Candidat'
-    showToast(status === 'accepted' ? name + ' accepté' : name + ' refusé', status === 'accepted' ? 'success' : 'info')
+    const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
+    showToast(status === 'accepted' ? t('host.accepted_toast', { name }) : t('host.rejected_toast', { name }), status === 'accepted' ? 'success' : 'info')
   }
 
   async function confirmCheckIn(appId: string) {
@@ -338,7 +339,21 @@ export default function HostDashboard() {
       <OrbLayer />
       {pullIndicator}
       <EventContextNav role="host" sessionTitle={sess?.title} />
-      <div style={{padding:'12px 20px 16px',borderBottom:'1px solid '+S.rule,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
+      {/* Header with cover image */}
+      {(() => {
+        const cover = getSessionCover(sess?.tags, sess?.cover_url)
+        return (
+      <div style={{position:'relative',borderBottom:'1px solid '+S.rule,overflow:'hidden'}}>
+        {cover.coverImage ? (
+          <>
+            <div style={{position:'absolute',inset:0,backgroundImage:`url(${cover.coverImage})`,backgroundSize:'cover',backgroundPosition:'center'}} />
+            <div style={{position:'absolute',inset:0,background:'rgba(5,4,10,0.65)'}} />
+          </>
+        ) : (
+          <div style={{position:'absolute',inset:0,background:cover.bg}} />
+        )}
+        <div style={{position:'absolute',inset:0,background:'rgba(13,12,22,0.5)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}} />
+        <div style={{position:'relative',zIndex:1,padding:'12px 20px 16px'}}>
         <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:6}}>
           <div style={{flex:1,minWidth:0}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
@@ -520,6 +535,8 @@ export default function HostDashboard() {
           ))}
         </div>
       </div>
+      </div>
+      )})()}
 
       <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
         <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>

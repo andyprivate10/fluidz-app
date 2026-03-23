@@ -430,7 +430,13 @@
     "rating_5": "Incroyable !",
     "send": "Envoyer",
     "respectful": "Respectueux",
-    "welcoming": "Accueillant"
+    "welcoming": "Accueillant",
+    "already_reviewed": "Tu as deja laisse un avis",
+    "error_duplicate": "Tu as deja laisse un avis",
+    "error_generic": "Erreur",
+    "thanks_toast": "Merci pour ton avis !",
+    "peer_already": "Deja note",
+    "peer_sent": "Avis envoye"
   },
   "notifications": {
     "title": "Notifications",
@@ -575,7 +581,10 @@
     "close_confirm": "Fermer définitivement cette session ?\n\nLes photos/vidéos partagées en DM seront supprimées.",
     "confirm_refuse": "Refuser {{name}} ?",
     "confirm_delete_address": "Supprimer cette adresse ?",
-    "confirm_remove_contact": "Retirer du carnet ?"
+    "confirm_remove_contact": "Retirer du carnet ?",
+    "candidate_fallback": "ce candidat",
+    "accepted_toast": "{{name}} accepte",
+    "rejected_toast": "{{name}} refuse"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -762,7 +771,9 @@
   },
   "errors": {
     "upload_error": "Erreur upload",
-    "error_prefix": "Erreur"
+    "error_prefix": "Erreur",
+    "vote_error": "Erreur vote",
+    "checkin_error": "Erreur check-in"
   },
   "placeholders": {
     "address_label": "Ex: Chez moi, Le studio...",
