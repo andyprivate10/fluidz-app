@@ -10,6 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
+import ProfileBadges from '../components/ProfileBadges'
 
 const S = colors
 
@@ -28,6 +29,7 @@ type NearbyProfile = {
   home_city?: string
   languages?: string[]
   prep?: string
+  created_at?: string
 }
 
 // ROLE_FILTERS built dynamically from admin_config in component
@@ -190,6 +192,7 @@ export default function ExplorePage() {
         home_city: pj.home_city,
         languages: Array.isArray(pj.languages) ? pj.languages : undefined,
         prep: pj.health?.prep_status || pj.prep,
+        created_at: p.created_at,
       }
     })
     mapped.sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
@@ -392,6 +395,7 @@ export default function ExplorePage() {
                     {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
                     {p.home_city && <span style={{ fontSize: 8, color: S.tx4 }}>{p.home_city}</span>}
                     <VibeScoreBadge userId={p.id} size="sm" />
+                    <ProfileBadges createdAt={p.created_at} lastSeen={p.lastSeen} prepStatus={p.prep} size="sm" />
                   </div>
                 </div>
               </div>
