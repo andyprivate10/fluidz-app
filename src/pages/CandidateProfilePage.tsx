@@ -293,7 +293,7 @@ export default function CandidateProfilePage() {
           {/* Physique */}
           {(height || weight || morphology) && (
             <div style={{ ...glassCard, marginBottom: 12 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>Physique</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>{t('profile.section_physique')}</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {height && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{height}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>cm</p></div>}
                 {weight && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{weight}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>kg</p></div>}
@@ -355,7 +355,7 @@ export default function CandidateProfilePage() {
               const def = { bg: S.bg2, color: S.tx2, border: S.rule }
               return (
                 <div style={{ ...glassCard, marginBottom: 12 }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.pratiques_count', { count: kinks.length })}</p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {kinks.map((k: string) => {
                       const c = kinkColors[k] || def

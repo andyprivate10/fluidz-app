@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, Flame } from 'lucide-react'
 import { colors } from '../brand'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -26,6 +27,7 @@ function buildSlides(p: ProfileData): Slide[] {
 
 export default function ProfileStory({ profile, onClose }: { profile: ProfileData; onClose: () => void }) {
   const slides = buildSlides(profile)
+  const { t } = useTranslation()
   const [cur, setCur] = useState(0)
   const [progress, setProgress] = useState(0)
   const tmr = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -93,7 +95,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
         {sl.type === 'photo' && <img src={v(d.url)} alt="" loading="lazy" style={{ maxWidth:'100%',maxHeight:'80vh',borderRadius:16,objectFit:'contain' }} />}
         {sl.type === 'stats' && (
           <div style={{ textAlign:'center',...anim }}>
-            <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>Physique</p>
+            <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>{t('profile.section_physique')}</p>
             <div style={{ display:'flex',gap:24,justifyContent:'center' }}>
               {d.height ? <div><div style={{ fontSize:40,fontWeight:800,color:S.tx }}>{v(d.height)}</div><div style={{ fontSize:14,color:S.tx3 }}>cm</div></div> : null}
               {d.weight ? <div><div style={{ fontSize:40,fontWeight:800,color:S.tx }}>{v(d.weight)}</div><div style={{ fontSize:14,color:S.tx3 }}>kg</div></div> : null}
@@ -117,7 +119,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
           }
           return (
           <div style={{ textAlign:'center',...anim }}>
-            <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>Pratiques</p>
+            <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>{t('profile.section_pratiques')}</p>
             <div style={{ display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center',maxWidth:340 }}>
               {(d.kinks as string[]).map((k: string, i: number) => {
                 const c = kinkColors[k] || S.p
