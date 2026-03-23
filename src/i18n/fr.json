@@ -261,7 +261,10 @@
     "host_must_enable": "Le host doit activer le group chat pour cette session.",
     "load_error": "Impossible de charger les données. Réessaie.",
     "group_disabled": "Le group chat est désactivé. Clique \"ON\" pour l'activer pour les membres.",
-    "direct_message_desc": "Message direct"
+    "direct_message_desc": "Message direct",
+    "send_error": "Erreur d'envoi",
+    "group_chat_on": "Group chat activé",
+    "group_chat_off": "Group chat désactivé"
   },
   "profile": {
     "account": "Compte",

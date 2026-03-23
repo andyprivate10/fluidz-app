@@ -261,7 +261,10 @@
     "host_must_enable": "The host must enable group chat for this session.",
     "load_error": "Failed to load data. Try again.",
     "group_disabled": "Group chat is disabled. Click \"ON\" to enable it for members.",
-    "direct_message_desc": "Direct message"
+    "direct_message_desc": "Direct message",
+    "send_error": "Send error",
+    "group_chat_on": "Group chat enabled",
+    "group_chat_off": "Group chat disabled"
   },
   "profile": {
     "account": "Account",

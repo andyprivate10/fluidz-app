@@ -3,7 +3,7 @@ import { SkeletonChatPage } from '../components/Skeleton'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Users, Shield, Camera, Smile } from 'lucide-react'
+import { ArrowLeft, Send, Users, Shield, Camera, Smile, X } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -41,6 +41,7 @@ export default function GroupChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [showEmojiBar, setShowEmojiBar] = useState(false)
+  const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -241,17 +242,20 @@ export default function GroupChatPage() {
   async function sendMessage() {
     if (!newMessage.trim() || !currentUser || !id || sending) return
     setSending(true)
+    const raw = newMessage.trim()
+    const fullText = replyTo ? '> ' + replyTo.text.slice(0, 80) + '\n\n' + raw : raw
     const { error } = await supabase.from('messages').insert({
       session_id: id,
       sender_id: currentUser.id,
-      text: newMessage.trim(),
+      text: fullText,
       sender_name: displayName || 'Anonyme',
       room_type: 'group',
     })
     if (error) {
-      showToast('Erreur: ' + error.message, 'error')
+      showToast(t('chat.send_error'), 'error')
     } else {
       setNewMessage('')
+      setReplyTo(null)
     }
     setSending(false)
     inputRef.current?.focus()
@@ -262,7 +266,7 @@ export default function GroupChatPage() {
     const newVal = !session.group_chat_enabled
     await supabase.from('sessions').update({ group_chat_enabled: newVal }).eq('id', id)
     setSession({ ...session, group_chat_enabled: newVal })
-    showToast(newVal ? 'Group chat activé' : 'Group chat désactivé', 'info')
+    showToast(newVal ? t('chat.group_chat_on') : t('chat.group_chat_off'), 'info')
   }
 
   if (loading) return <SkeletonChatPage />
@@ -391,7 +395,7 @@ export default function GroupChatPage() {
           }
 
           return (
-            <div key={msg.id} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
+            <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name || 'Anonyme' })} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
               {showName && (
                 <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.pbd }}>{msg.sender_name}</button>
               )}
@@ -429,6 +433,8 @@ export default function GroupChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Reply bar */}
+      {replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{replyTo.text}</p></div><button onClick={() => setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
       {/* Emoji bar */}
       {canChat && showEmojiBar && (
         <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>

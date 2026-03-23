@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { ArrowLeft, Send, Camera, Smile } from 'lucide-react'
+import { ArrowLeft, Send, Camera, Smile, X } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -41,6 +41,7 @@ export default function DirectDMPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [showEmojiBar, setShowEmojiBar] = useState(false)
+  const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
   const [sending, setSending] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [recording, setRecording] = useState(false)
@@ -123,7 +124,8 @@ export default function DirectDMPage() {
   async function handleSend() {
     if (!newMessage.trim() || !currentUser || !sessionId || sending) return
     setSending(true)
-    const msgText = newMessage.trim()
+    const raw = newMessage.trim()
+    const msgText = replyTo ? '> ' + replyTo.text.slice(0, 80) + '\n\n' + raw : raw
     await supabase.from('messages').insert({
       session_id: sessionId, sender_id: currentUser.id, text: msgText,
       sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
@@ -132,11 +134,12 @@ export default function DirectDMPage() {
     await supabase.from('notifications').insert({
       user_id: peerId, type: 'direct_dm',
       title: displayName,
-      body: msgText.length > 60 ? msgText.slice(0, 60) + '...' : msgText,
+      body: raw.length > 60 ? raw.slice(0, 60) + '...' : raw,
       href: '/dm/' + currentUser.id,
     })
-    if (peerId) sendPushToUser(peerId, displayName, msgText.length > 60 ? msgText.slice(0, 60) + '...' : msgText, '/dm/' + currentUser.id)
+    if (peerId) sendPushToUser(peerId, displayName, raw.length > 60 ? raw.slice(0, 60) + '...' : raw, '/dm/' + currentUser.id)
     setNewMessage('')
+    setReplyTo(null)
     setSending(false)
   }
 
@@ -241,7 +244,7 @@ export default function DirectDMPage() {
           </div>
         )}
         {messages.map(msg => (
-          <div key={msg.id} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
+          <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name })} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
             <div style={{
               padding: msg.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
               borderRadius: 16, background: isMe(msg.sender_id) ? 'linear-gradient(135deg, '+S.p+', '+S.pDark+')' : S.bg2,
@@ -290,6 +293,8 @@ export default function DirectDMPage() {
         </div>
       )}
 
+      {/* Reply bar */}
+      {replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{replyTo.text}</p></div><button onClick={() => setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
       {/* Emoji bar */}
       {showEmojiBar && (
         <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
