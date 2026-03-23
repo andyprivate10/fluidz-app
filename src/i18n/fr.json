@@ -496,7 +496,8 @@
     "not_found_desc": "Cette page n'existe pas",
     "back_home": "Retour a l'accueil",
     "guest": "Invité",
-    "online": "En ligne"
+    "online": "En ligne",
+    "back_label": "Retour"
   },
   "drawer": {
     "my_space": "Mon espace",

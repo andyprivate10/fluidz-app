@@ -496,7 +496,8 @@
     "not_found_desc": "This page does not exist",
     "back_home": "Back to home",
     "guest": "Guest",
-    "online": "Online"
+    "online": "Online",
+    "back_label": "Back"
   },
   "drawer": {
     "my_space": "My space",
