@@ -13,6 +13,7 @@ import { formatMessageTime } from '../lib/timing'
 import { useTypingIndicator } from '../hooks/useTypingIndicator'
 import { useTranslation } from 'react-i18next'
 import { notifyUser } from '../lib/feedback'
+import ImageLightbox from '../components/ImageLightbox'
 
 type Message = {
   id: string
@@ -31,6 +32,7 @@ export default function DMPage() {
   const { id, peerId: peerIdParam } = useParams<{ id: string; peerId?: string }>()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
+  const [chatLightbox, setChatLightbox] = useState<string | null>(null)
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
@@ -490,7 +492,7 @@ export default function DMPage() {
                     const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
                     if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
                     if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 12, display: 'block' }} />
-                    return <img key={mi} src={url} alt="" loading="lazy" style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block' }} />
+                    return <img key={mi} src={url} alt="" loading="lazy" onClick={() => setChatLightbox(url)} style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block', cursor: 'zoom-in' }} />
                   })}
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
                     message.text.includes('google.com/maps') ? (
@@ -571,6 +573,7 @@ export default function DMPage() {
           &rarr;
         </button>
       </div>
+      {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
     </div>
   )
 }

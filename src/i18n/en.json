@@ -73,7 +73,9 @@
     "explore": {
       "already_contact": "Already in contacts",
       "added_favorite": "Added to favorites"
-    }
+    },
+    "visible_toast": "You are visible in the gallery",
+    "hidden_toast": "You are hidden"
   },
   "session": {
     "live": "Live",

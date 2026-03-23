@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Heart } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -202,7 +202,7 @@ export default function ExplorePage() {
     const newVal = !visible
     await supabase.from('user_profiles').update({ location_visible: newVal }).eq('id', userId)
     setVisible(newVal)
-    showToast(newVal ? 'Tu es visible dans la galerie' : 'Tu es masqué', newVal ? 'success' : 'info')
+    showToast(newVal ? t('explore.visible_toast') : t('explore.hidden_toast'), newVal ? 'success' : 'info')
   }
 
   const filtered = profiles.filter(p => {
@@ -337,7 +337,7 @@ export default function ExplorePage() {
               <div
                 key={p.id}
                 onClick={() => navigate('/profile/' + p.id)}
-                style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule2 }}
+                style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule2, position: 'relative' }}
               >
                 {p.avatar_url ? (
                   <img src={p.avatar_url} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
@@ -346,6 +346,25 @@ export default function ExplorePage() {
                     {p.display_name[0]?.toUpperCase()}
                   </div>
                 )}
+                {/* Quick favorite button */}
+                <button onClick={async (e) => {
+                  e.stopPropagation()
+                  const { data: { user } } = await supabase.auth.getUser()
+                  if (!user) return
+                  const { data: existing } = await supabase.from('contacts').select('id').eq('owner_id', user.id).eq('contact_user_id', p.id).maybeSingle()
+                  if (existing) {
+                    showToast(t('explore.already_contact'), 'info')
+                  } else {
+                    await supabase.from('contacts').insert({ owner_id: user.id, contact_user_id: p.id, relation_level: 'favori' })
+                    showToast(t('explore.added_favorite'), 'success')
+                  }
+                }} style={{
+                  position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99,
+                  background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                  border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2,
+                }}>
+                  <Heart size={13} strokeWidth={1.5} style={{ color: 'rgba(255,255,255,0.8)' }} />
+                </button>
                 <div style={{ padding: '8px 8px 10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <span style={{ fontSize: 12, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{p.display_name}</span>

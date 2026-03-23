@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff, Bookmark, Check} from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import Confetti from '../components/Confetti'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -212,6 +213,7 @@ export default function CreateSessionPage() {
     return (
       <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,maxWidth:480,margin:'0 auto',position:'relative' as const}}>
         <OrbLayer />
+        <Confetti />
         <div style={{position:'relative',zIndex:1,padding:'40px 20px 24px'}}>
           <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
           <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
