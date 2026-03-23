@@ -421,7 +421,12 @@
     "rejected_for": "Not selected for \"{{title}}\"",
     "accepted_route": "Accepted — on the way",
     "auto_accepted": "Automatically accepted via direct link",
-    "close_without_delete": "Close without deleting shared media?"
+    "close_without_delete": "Close without deleting shared media?",
+    "time_ended": "Ended",
+    "time_remaining": "{{time}} remaining",
+    "capacity_full": "Full",
+    "invite_group": "Invite a group",
+    "broadcast_placeholder": "Message to send to all members..."
   },
   "contacts": {
     "title": "Naughty Book",

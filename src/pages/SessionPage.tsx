@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Clock, ThumbsUp, ThumbsDown, Star, Share2, MessageCircle, Check, MapPin } from 'lucide-react'
+import { Clock, Share2, MessageCircle, Check, MapPin } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
@@ -11,6 +11,8 @@ import EventContextNav from '../components/EventContextNav'
 import { formatElapsed, formatRemaining } from '../lib/timing'
 import SessionHero from '../components/session/SessionHero'
 import SessionQuickActions from '../components/session/SessionQuickActions'
+import SessionLineup from '../components/session/SessionLineup'
+import SessionVotes from '../components/session/SessionVotes'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { useTranslation } from 'react-i18next'
 import MapView from '../components/MapView'
@@ -47,7 +49,6 @@ export default function SessionPage() {
   const [showPostulerSuccess, setShowPostulerSuccess] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [sheetMember, setSheetMember] = useState<Member | null>(null)
   const [pendingApps, setPendingApps] = useState<PendingApplication[]>([])
   const [votes, setVotes] = useState<VoteRow[]>([])
   const [voteLoadingId, setVoteLoadingId] = useState<string | null>(null)
@@ -414,198 +415,24 @@ export default function SessionPage() {
           </div>
         ) : null}
 
-        {members.length > 0 && (
-          <div style={card}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 12 }}>{t('session.section_lineup')} · {members.length + 1}</div>
-            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {/* Host first */}
-                {hostProfile && (
-                  <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{ display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer', position: 'relative' }}>
-                    {hostProfile.avatar ? (
-                      <img src={hostProfile.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid '+S.p, boxSizing: 'border-box' }} />
-                    ) : (
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid '+S.p, boxSizing: 'border-box' }}>
-                        {hostProfile.name[0].toUpperCase()}
-                      </div>
-                    )}
-                    <span style={{ position: 'absolute', top: -4, right: -4 }}><Star size={10} strokeWidth={1.5} fill={S.p} color={S.p} /></span>
-                  </button>
-                )}
-                {members.slice(0, 5).map((m, i) => {
-                  const avatarUrl = memberAvatars[m.applicant_id]
-                  return (
-                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ marginLeft: i === 0 ? 0 : -8, display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid '+S.bg1, boxSizing: 'border-box' }} />
-                      ) : (
-                        <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid '+S.bg1, boxSizing: 'border-box' }}>
-                          {(memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
-                        </div>
-                      )}
-                    </button>
-                  )
-                })}
-                {members.length > 5 && (
-                  <span style={{ marginLeft: 6, fontSize: 13, fontWeight: 600, color: S.tx2 }}>+{members.length - 5}</span>
-                )}
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-                {members.slice(0, 5).map(m => {
-                  const name = memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'
-                  return (
-                    <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: S.tx2, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <Check size={10} strokeWidth={2.5} style={{ color: S.sage, display: 'inline', marginLeft: 2 }} />}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
-                  )
-                })}
-                {members.length > 5 && <span style={{ fontSize: 12, color: S.tx2 }}>+{members.length - 5}</span>}
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
-              {members.map(m => {
-                const eps = m.eps_json || {}
-                const avatarUrl = memberAvatars[m.applicant_id]
-                const role = memberRoles[m.applicant_id] || eps.role
-                const name = memberNames[m.applicant_id] || (eps as any).profile_snapshot?.display_name || eps.displayName || 'Anonyme'
-                return (
-                  <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer', width: '100%', textAlign: 'left' }}>
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-                    ) : (
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
-                        {(name || '?')[0].toUpperCase()}
-                      </div>
-                    )}
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
-                      {role && <div style={{ fontSize: 11, color: S.tx2 }}>{role}</div>}
-                    </div>
-                    {m.status === 'checked_in' && <div style={{ fontSize: 11, color: S.sage, fontWeight: 600 }}>Check-in</div>}
-                  </button>
-                )
-              })}
-            </div>
-            {sheetMember && isMobile && (
-              <>
-                <div role="presentation" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} onClick={() => setSheetMember(null)} />
-                <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, maxWidth: 480, margin: '0 auto', background: S.bg1, borderTopLeftRadius: 20, borderTopRightRadius: 20, border: '1px solid '+S.rule, padding: '20px 20px 24px', zIndex: 50 }}>
-                  <div style={{ width: 36, height: 4, borderRadius: 2, background: S.tx2, margin: '0 auto 16px' }} />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
-                    {memberAvatars[sheetMember.applicant_id] ? (
-                      <img src={memberAvatars[sheetMember.applicant_id]} alt="" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover' }} />
-                    ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: 'white' }}>
-                        {(memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
-                      </div>
-                    )}
-                    <div>
-                      <div style={{ fontSize: 18, fontWeight: 700, color: S.tx }}>{memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'}</div>
-                      {(memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role) && (
-                        <span style={{ display: 'inline-block', marginTop: 4, padding: '2px 10px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: 'white', background: S.p }}>
-                          {memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio) && (
-                    <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: '0 0 16px' }}>
-                      {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').slice(0, 120)}
-                      {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').length > 120 ? '…' : ''}
-                    </p>
-                  )}
-                  <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.p, border: 'none', cursor: 'pointer' }}>
-                    {t('session.view_full_profile')}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+        <SessionLineup
+          members={members}
+          memberAvatars={memberAvatars}
+          memberNames={memberNames}
+          memberRoles={memberRoles}
+          hostProfile={hostProfile}
+          hostId={session.host_id}
+          isMobile={isMobile}
+        />
 
-        {members.length >= 3 ? (
-          <div style={card}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_vote')}</div>
-            {pendingApps.filter(p => !currentUser || p.applicant_id !== currentUser.id).length === 0 ? (
-              <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>{t('session.no_pending')}</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {pendingApps
-                  .filter(p => !currentUser || p.applicant_id !== currentUser.id)
-                  .map(p => {
-                    const { yesCount, noCount, myVote } = getVoteStats(p.applicant_id)
-                    const disabled = !!myVote || voteLoadingId === p.applicant_id
-                    const name = p.display_name || 'Anonyme'
-                    return (
-                      <div key={p.id} style={{ padding: 10, borderRadius: 12, background: S.bg, border: '1px solid '+S.rule, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          {p.avatar_url ? (
-                            <img src={p.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-                          ) : (
-                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
-                              {name[0].toUpperCase()}
-                            </div>
-                          )}
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}</div>
-                            <div style={{ fontSize: 11, color: S.tx2 }}>{t('session.application_pending')}</div>
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: 8 }}>
-                          <button
-                            type="button"
-                            disabled={disabled}
-                            onClick={() => handleVote(p.applicant_id, 'yes')}
-                            style={{
-                              flex: 1,
-                              padding: '8px 10px',
-                              borderRadius: 999,
-                              border: '1px solid ' + (myVote === 'yes' ? S.p : S.pbd),
-                              background: myVote === 'yes' ? S.p : 'transparent',
-                              color: myVote === 'yes' ? S.bg : S.p,
-                              fontSize: 13,
-                              fontWeight: 600,
-                              cursor: disabled ? 'default' : 'pointer',
-                              opacity: disabled && myVote !== 'yes' ? 0.5 : 1,
-                            }}
-                          >
-                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsUp size={14} /> {t('common.yes')}</span>
-                          </button>
-                          <button
-                            type="button"
-                            disabled={disabled}
-                            onClick={() => handleVote(p.applicant_id, 'no')}
-                            style={{
-                              flex: 1,
-                              padding: '8px 10px',
-                              borderRadius: 999,
-                              border: '1px solid ' + (myVote === 'no' ? S.p : S.rule),
-                              background: myVote === 'no' ? S.rule : 'transparent',
-                              color: myVote === 'no' ? S.p : S.tx2,
-                              fontSize: 13,
-                              fontWeight: 600,
-                              cursor: disabled ? 'default' : 'pointer',
-                              opacity: disabled && myVote !== 'no' ? 0.5 : 1,
-                            }}
-                          >
-                            <span style={{display:'flex',alignItems:'center',gap:4,justifyContent:'center'}}><ThumbsDown size={14} /> {t('common.no')}</span>
-                          </button>
-                        </div>
-                        <div style={{ fontSize: 12, color: S.tx2, textAlign: 'right' }}>
-                          {t('session.vote_count', { yes: yesCount, no: noCount })}
-                        </div>
-                      </div>
-                    )
-                  })}
-              </div>
-            )}
-            <p style={{ fontSize: 11, color: S.tx2, marginTop: 8 }}>
-              {t('session.vote_info')}
-            </p>
-          </div>
-        ) : (
-          <div style={card}>
-            <p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{t('session.vote_needs_3')}</p>
-          </div>
-        )}
+        <SessionVotes
+          memberCount={members.length}
+          pendingApps={pendingApps}
+          currentUserId={currentUser?.id}
+          getVoteStats={getVoteStats}
+          onVote={handleVote}
+          voteLoadingId={voteLoadingId}
+        />
 
         {/* Check-in status cards (awaiting / confirmed) */}
         {checkInDone && myApp?.status !== 'checked_in' && (

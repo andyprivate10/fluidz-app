@@ -345,9 +345,9 @@ export default function HostDashboard() {
           </div>
           <div style={{display:'flex',flexDirection:'column' as const,alignItems:'flex-end',gap:6}}>
             {elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
-            {remaining && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:remaining==='terminé'?S.red:S.p,background:remaining==='terminé'?S.redbg:S.p2,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>{remaining==='terminé'?'Terminé':remaining+' restant'}</span>}
+            {remaining && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:remaining==='terminé'?S.red:S.p,background:remaining==='terminé'?S.redbg:S.p2,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>{remaining==='terminé'?t('host.time_ended'):t('host.time_remaining', { time: remaining })}</span>}
             {totalAccepted > 0 && <span style={{fontSize:11,fontWeight:700,color:S.sage,background:S.sagebg,padding:'3px 10px',borderRadius:50}}>{arrivedCount}/{totalAccepted}</span>}
-            {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?S.redbg:S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?S.redbd:S.rule)}}>{total}/{sess.max_capacity}{full?' Complet':''}</span> })()}
+            {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?S.redbg:S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?S.redbd:S.rule)}}>{total}/{sess.max_capacity}{full?' '+t('host.capacity_full'):''}</span> })()}
           </div>
         </div>
         {sess?.status !== 'ended' && (
@@ -512,7 +512,7 @@ export default function HostDashboard() {
       <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
         <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>{t('host.broadcast')}</div>
-          <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder="Message à envoyer à tous les membres..." rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
+          <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder={t('host.broadcast_placeholder')} rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
           <button onClick={sendBroadcast} disabled={broadcastSending || !broadcastText.trim()} style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'none',background:S.grad,color:'#fff',cursor: broadcastSending || !broadcastText.trim() ? 'not-allowed' : 'pointer',opacity: broadcastSending || !broadcastText.trim() ? 0.7 : 1}}>
             {broadcastSending ? t('host_actions.sending') : t('host_actions.send_to_all')}
           </button>
@@ -520,7 +520,7 @@ export default function HostDashboard() {
         {/* Group invite */}
         {myGroups.length > 0 && (
           <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-            <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>Inviter un groupe</div>
+            <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>{t('host.invite_group')}</div>
             <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
               {myGroups.map(g => (
                 <button key={g.id} onClick={() => inviteGroup(g.id)} style={{
