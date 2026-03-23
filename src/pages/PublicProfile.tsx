@@ -13,6 +13,7 @@ import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
+import ImageLightbox from '../components/ImageLightbox'
 
 const S = colors
 const sLabel = (c: string): React.CSSProperties => ({ fontSize: 10, fontWeight: 700, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 })
@@ -118,6 +119,7 @@ export default function PublicProfile() {
   const [loading, setLoading] = useState(true)
   const [showStory, setShowStory] = useState(false)
   const [showShareSheet, setShowShareSheet] = useState(false)
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null)
   const [myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
   const [allowed, setAllowed] = useState<boolean>(false)
   const [photoIdx, setPhotoIdx] = useState(0)
@@ -182,8 +184,9 @@ export default function PublicProfile() {
             {allPhotos.length > 1 && <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 4, zIndex: 3 }}>
               {allPhotos.map((_, i) => <div key={i} style={{ width: i === photoIdx ? 18 : 6, height: 6, borderRadius: 3, background: i === photoIdx ? '#fff' : 'rgba(255,255,255,0.4)', transition: 'width 0.2s' }} />)}
             </div>}
-            {photoIdx > 0 && <div onClick={() => navPhoto(-1)} style={{ position: 'absolute', left: 0, top: 0, width: '35%', height: '100%', zIndex: 2, cursor: 'pointer' }} />}
-            {photoIdx < allPhotos.length - 1 && <div onClick={() => navPhoto(1)} style={{ position: 'absolute', right: 0, top: 0, width: '35%', height: '100%', zIndex: 2, cursor: 'pointer' }} />}
+            {photoIdx > 0 && <div onClick={() => navPhoto(-1)} style={{ position: 'absolute', left: 0, top: 0, width: '25%', height: '100%', zIndex: 2, cursor: 'pointer' }} />}
+            <div onClick={() => setLightbox({ images: allPhotos, index: photoIdx })} style={{ position: 'absolute', left: '25%', top: 0, width: '50%', height: '100%', zIndex: 2, cursor: 'zoom-in' }} />
+            {photoIdx < allPhotos.length - 1 && <div onClick={() => navPhoto(1)} style={{ position: 'absolute', right: 0, top: 0, width: '25%', height: '100%', zIndex: 2, cursor: 'pointer' }} />}
           </>
         ) : (
           <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, ${S.bg1}, ${S.bg2})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -288,7 +291,7 @@ export default function PublicProfile() {
                           return isVid ? (
                             <video key={i} src={url} controls style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
                           ) : (
-                            <img key={i} src={url as string} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
+                            <img key={i} src={url as string} alt="" loading="lazy" onClick={() => setLightbox({ images: urls.map(String), index: i })} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'zoom-in' }} />
                           )
                         })}
                       </div>
@@ -324,6 +327,7 @@ export default function PublicProfile() {
         shareId={userId || ''}
         shareTitle={displayName}
       />
+      {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
     </div>
   )
 }

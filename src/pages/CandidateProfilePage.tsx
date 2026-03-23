@@ -10,6 +10,7 @@ import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { monthsAgoLabel } from '../lib/timing'
+import ImageLightbox from '../components/ImageLightbox'
 import { SYSTEM_SENDER } from '../lib/constants'
 import { useTranslation } from 'react-i18next'
 
@@ -26,6 +27,7 @@ export default function CandidateProfilePage() {
   const [actioning, setActioning] = useState(false)
   const [isHost, setIsHost] = useState(false)
   const [showStory, setShowStory] = useState(false)
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null)
 
   useEffect(() => {
     loadData()
@@ -192,7 +194,7 @@ export default function CandidateProfilePage() {
               <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosAdulte.map((url: string, i: number) => (
-                  <img key={'a' + i} src={url} alt="" loading="lazy" style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd }} />
+                  <img key={'a' + i} src={url} alt="" loading="lazy" onClick={() => setLightbox({ images: photosAdulte, index: i })} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd, cursor: 'zoom-in' }} />
                 ))}
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
@@ -207,7 +209,7 @@ export default function CandidateProfilePage() {
           {photosProfil.length === 0 && !hasAdulteMedia && candidatePhotos.length > 0 && (
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
               {candidatePhotos.map((url: string, i: number) => (
-                <img key={i} src={url} alt="" loading="lazy" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
+                <img key={i} src={url} alt="" loading="lazy" onClick={() => setLightbox({ images: candidatePhotos, index: i })} style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule, cursor: 'zoom-in' }} />
               ))}
               {candidateVideos.map((url: string, i: number) => (
                 <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
@@ -450,6 +452,7 @@ export default function CandidateProfilePage() {
       {showStory && (
         <ProfileStory profile={{ display_name: displayName, profile_json: { ...pj, ...snapshot } }} onClose={() => setShowStory(false)} />
       )}
+      {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
     </div>
   )
 }
