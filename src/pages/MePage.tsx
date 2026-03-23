@@ -101,6 +101,7 @@ export default function MePage() {
   const [homeCity, setHomeCity] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
   const [role, setRole] = useState('')
+  const [orientation, setOrientation] = useState('')
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
   const [morphology, setMorphology] = useState('')
@@ -201,6 +202,7 @@ export default function MePage() {
       setHomeCity(p.home_city || '')
       setLanguages(Array.isArray(p.languages) ? p.languages : [])
       setRole(p.role || '')
+      setOrientation(p.orientation || '')
       setHeight(p.height || '')
       setWeight(p.weight || '')
       setMorphology(p.morphology || '')
@@ -246,7 +248,7 @@ export default function MePage() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, height, weight, morphology, kinks, prep, limits,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -263,7 +265,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -576,6 +578,14 @@ export default function MePage() {
                   ))}
                 </div>
               </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.orientation')}</label>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                  {['Gay', 'Bi', 'Pan', 'Queer', 'Hétéro', 'Curieux', 'Fluid'].map(o => (
+                    <Chip key={o} label={o} active={orientation===o} onClick={() => setOrientation(orientation===o?'':o)} />
+                  ))}
+                </div>
+              </div>
             </div>
           </Section>
 
@@ -643,7 +653,7 @@ export default function MePage() {
               style={{ ...inputStyle, resize:'none', lineHeight:1.5, borderColor:S.red }}
             />
             <p style={{ fontSize:11, color:S.red, marginTop:6, opacity:0.7 }}>
-              Visible par le host et les membres votants
+              {t('profile.visible_host_voters')}
             </p>
           </Section>
 

@@ -19,6 +19,7 @@ type NearbyProfile = {
   display_name: string
   avatar_url?: string
   role?: string
+  orientation?: string
   age?: number
   morphology?: string
   distance?: number // km
@@ -180,6 +181,7 @@ export default function ExplorePage() {
         display_name: p.display_name || t('common.anonymous'),
         avatar_url: pj.avatar_url,
         role: pj.role,
+        orientation: pj.orientation,
         age: pj.age,
         morphology: pj.morphology,
         distance: dist ? Math.round(dist * 10) / 10 : undefined,
@@ -351,6 +353,7 @@ export default function ExplorePage() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2, flexWrap: 'wrap' }}>
                     {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
+                    {p.orientation && <span style={{ fontSize: 10, fontWeight: 600, color: S.lav }}>{p.orientation}</span>}
                     {p.prep === 'Actif' && <Shield size={9} strokeWidth={2} style={{ color: S.sage }} />}
                     {myHomeCountry && p.home_country && p.home_country !== myHomeCountry && (
                       <span style={{ fontSize: 8, fontWeight: 700, color: S.lav, background: S.lavbg, padding: '1px 5px', borderRadius: 99, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 2 }}>

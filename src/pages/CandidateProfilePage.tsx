@@ -127,6 +127,7 @@ export default function CandidateProfilePage() {
 
   const displayName = profile?.display_name || snapshot.display_name || 'Anonyme'
   const role = eps.role || pj.role || snapshot.role || ''
+  const orientation = pj.orientation || snapshot.orientation || ''
   const age = pj.age || snapshot.age || ''
   const location = pj.location || snapshot.location || ''
   const bio = pj.bio || snapshot.bio || ''
@@ -235,6 +236,9 @@ export default function CandidateProfilePage() {
             </div>
             {role && (
               <span style={{ display: 'inline-block', marginTop: 6, padding: '3px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: '#fff', background: S.grad }}>{role}</span>
+            )}
+            {orientation && (
+              <span style={{ display: 'inline-block', marginTop: 6, marginLeft: role ? 6 : 0, padding: '3px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.lav, background: 'rgba(184,178,204,0.12)', border: '1px solid rgba(184,178,204,0.25)' }}>{orientation}</span>
             )}
             {(homeCity || languages.length > 0) && (
               <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap', alignItems: 'center' }}>

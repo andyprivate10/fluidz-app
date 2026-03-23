@@ -285,7 +285,7 @@ export default function SessionPage() {
   if (loading) return <SkeletonSessionPage />
   if (loadError) return (
     <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <p style={{ color: S.red, textAlign: 'center' }}>Impossible de charger les données. Réessaie.</p>
+      <p style={{ color: S.red, textAlign: 'center' }}>{t('common.load_error')}</p>
     </div>
   )
   if (!session) return <div style={{ ...st, padding: 24, color: S.red }}>{t('session.not_found')}</div>

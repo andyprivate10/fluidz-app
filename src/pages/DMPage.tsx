@@ -371,7 +371,7 @@ export default function DMPage() {
       {!isHost && appStatus === 'pending' && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.orangebg, border: '1px solid '+S.orangebd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.orange, fontWeight: 600, textAlign: 'center' }}>
-            Candidature en attente...
+            {t('dm.application_pending')}
           </div>
         </div>
       )}

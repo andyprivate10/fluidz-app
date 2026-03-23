@@ -193,7 +193,7 @@ export default function CreateSessionPage() {
 
           {/* ─── VISIBILITY: Publier / Garder Secret ─── */}
           <div style={{marginBottom:20}}>
-            <p style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 10px'}}>Visibilité</p>
+            <p style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 10px'}}>{t('session.visibility_label')}</p>
             <div style={{display:'flex',gap:8}}>
               <button onClick={async () => { setIsPublic(true); await supabase.from('sessions').update({ is_public: true }).eq('id', createdSession.id) }} style={{
                 flex:1,padding:'16px 12px',borderRadius:16,cursor:'pointer',textAlign:'center',

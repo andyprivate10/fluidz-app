@@ -210,7 +210,8 @@
     "phone_never_asked": "Your phone number will never be asked.",
     "checkin_sent_waiting": "Check-in sent — waiting for host confirmation",
     "review_anonymous_help": "Your anonymous review helps the community",
-    "member_count": "{{count}} members"
+    "member_count": "{{count}} members",
+    "visibility_label": "Visibility"
   },
   "chat": {
     "title": "Messages",
@@ -315,7 +316,9 @@
     "step_role": "Role",
     "step_bio": "Bio",
     "step_physique": "Physical",
-    "step_pratiques": "Practices"
+    "step_pratiques": "Practices",
+    "visible_host_voters": "Visible to host and voting members",
+    "orientation": "Orientation"
   },
   "review": {
     "title": "How was it?",
@@ -423,7 +426,8 @@
     "your_pseudo": "Your nickname",
     "your_recovery_code": "Your recovery code",
     "no_profile_yet": "No ghost profile yet?",
-    "create_profile": "Create a profile"
+    "create_profile": "Create a profile",
+    "save_real_account": "Save as real account"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -738,5 +742,8 @@
   },
   "safety": {
     "tip": "Safety reminder: Share your location with a trusted friend. You can leave at any time, no questions asked. If there is a problem, contact the host via this DM."
+  },
+  "dm": {
+    "application_pending": "Application pending..."
   }
 }

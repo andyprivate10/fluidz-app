@@ -204,6 +204,7 @@ export default function PublicProfile() {
       {/* ═══ QUICK PILLS ═══ */}
       <div style={{ padding: '12px 20px 0', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {p.role && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 13, fontWeight: 700, color: '#fff', background: `linear-gradient(135deg, ${S.p}, #c06868)` }}>{p.role}</span>}
+        {p.orientation && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.lav, background: S.lavbg || 'rgba(184,178,204,0.12)', border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)') }}>{p.orientation}</span>}
         {p.morphology && <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{p.morphology}</span>}
         {p.home_country && p.home_city && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.lav, background: S.lavbg, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 3 }}><MapPin size={10} strokeWidth={1.5} />{p.home_city}, {p.home_country}</span>}
         {onlineLabel && !isOnline && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx3, background: S.bg2 }}>{onlineLabel}</span>}

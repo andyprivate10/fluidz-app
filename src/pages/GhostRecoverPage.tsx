@@ -173,7 +173,7 @@ export default function GhostRecoverPage() {
 
             {!showConvert ? (
               <button onClick={() => setShowConvert(true)} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.sage, border: '1px solid ' + S.sagebd, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                <Mail size={16} /> Sauvegarder en vrai compte
+                <Mail size={16} /> {t('ghost.save_real_account')}
               </button>
             ) : (
               <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 16, border: '1px solid ' + S.sagebd }}>
