@@ -217,7 +217,11 @@
     "status_draft": "Draft",
     "create_group_from_session": "Save this group",
     "create_group_desc": "Create a group with the {{count}} members of this session",
-    "group_created": "Group created!"
+    "group_created": "Group created!",
+    "add_to_book": "Add to contacts?",
+    "save_as_template": "Save as template",
+    "template_saved": "Template saved!",
+    "saved_template": "Your template"
   },
   "chat": {
     "title": "Messages",
@@ -336,7 +340,8 @@
     "label_country": "Country",
     "label_city": "City",
     "label_languages": "Languages spoken",
-    "label_choose": "-- Choose --"
+    "label_choose": "-- Choose --",
+    "videos_label": "Videos"
   },
   "review": {
     "title": "How was it?",

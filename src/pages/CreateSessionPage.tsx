@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff} from 'lucide-react'
+import { showToast } from '../components/Toast'
+import {ArrowLeft, Clock, Zap, Sparkles, Copy, Eye, EyeOff, Bookmark, Check} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -48,6 +49,8 @@ export default function CreateSessionPage() {
   const [startsAt, setStartsAt] = useState('')
   const [durationHours, setDurationHours] = useState(3)
   const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
+  const [savedTemplates, setSavedTemplates] = useState<{ slug: string; label: string; meta: Record<string, unknown> }[]>([])
+  const [templateSaved, setTemplateSaved] = useState(false)
 
   useEffect(() => {
     if (tplParam && sessionTemplates.length > 0) {
@@ -68,12 +71,33 @@ export default function CreateSessionPage() {
       if (!u) { navigate('/login?next=/session/create'); return }
       else {
         supabase.from('user_profiles').select('profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
-          const addrs = (prof?.profile_json as any)?.saved_addresses
+          const pj = prof?.profile_json as any
+          const addrs = pj?.saved_addresses
           setSavedAddresses(Array.isArray(addrs) ? addrs : [])
+          const tpls = pj?.saved_templates
+          setSavedTemplates(Array.isArray(tpls) ? tpls : [])
         })
       }
     })
   }, [])
+
+  async function saveAsTemplate() {
+    if (!user || !createdSession) return
+    const slug = 'saved_' + Date.now()
+    const tpl = {
+      slug,
+      label: createdSession.title,
+      meta: { tags: selectedTags, description, roles_wanted: rolesWanted },
+    }
+    const updated = [...savedTemplates, tpl]
+    setSavedTemplates(updated)
+    setTemplateSaved(true)
+    // Persist to profile_json
+    const { data: prof } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
+    const pj = (prof?.profile_json as any) || {}
+    await supabase.from('user_profiles').update({ profile_json: { ...pj, saved_templates: updated } }).eq('id', user.id)
+    showToast(t('session.template_saved'), 'success')
+  }
 
   function pickTemplate(tpl: { slug: string; label: string; meta?: Record<string, unknown> | null }) {
     const meta = tpl.meta as any
@@ -310,6 +334,22 @@ export default function CreateSessionPage() {
             </div>
           )}
 
+          {/* B17: Save as template */}
+          <button
+            onClick={saveAsTemplate}
+            disabled={templateSaved}
+            style={{
+              width: '100%', padding: 14, borderRadius: 14, marginBottom: 10,
+              border: '1px solid ' + (templateSaved ? S.sagebd : S.lavbd || 'rgba(184,178,204,0.25)'),
+              background: templateSaved ? S.sagebg : 'transparent',
+              color: templateSaved ? S.sage : S.lav,
+              fontSize: 14, fontWeight: 600, cursor: templateSaved ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}
+          >
+            {templateSaved ? <><Check size={14} strokeWidth={2.5} /> {t('session.template_saved')}</> : <><Bookmark size={14} strokeWidth={1.5} /> {t('session.save_as_template')}</>}
+          </button>
+
           <button onClick={() => navigate('/session/' + createdSession.id + '/host')} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
             {t('session.go_to_session')}
           </button>
@@ -352,6 +392,23 @@ export default function CreateSessionPage() {
                 <p style={{margin:0,fontSize:11,color:S.tx3}}>{t('session.custom_desc')}</p>
               </div>
             </div>
+            {/* B17: Saved templates */}
+            {savedTemplates.map(tpl => (
+              <div key={tpl.slug} onClick={() => pickTemplate(tpl)} style={{
+                borderRadius:14,overflow:'hidden',cursor:'pointer',
+                border:'1px solid '+S.lavbd,background:S.bg1,
+                transition:'transform 0.15s',position:'relative' as const,
+              }}>
+                <div style={{width:'100%',height:100,background:getSessionCover((tpl.meta as any)?.tags || [tpl.label]).bg,position:'relative' as const}}>
+                  <div style={{position:'absolute',inset:0,background:'linear-gradient(0deg, rgba(0,0,0,0.5) 0%, transparent 60%)'}} />
+                  <Bookmark size={16} strokeWidth={1.5} style={{position:'absolute',top:8,right:8,color:S.lav}} />
+                </div>
+                <div style={{padding:'10px 12px'}}>
+                  <p style={{margin:'0 0 2px',fontSize:14,fontWeight:700,color:S.lav}}>{tpl.label}</p>
+                  <p style={{margin:0,fontSize:11,color:S.tx3,lineHeight:1.3,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{(tpl.meta as any)?.description || t('session.saved_template')}</p>
+                </div>
+              </div>
+            ))}
             {sessionTemplates.filter(tpl => tpl.slug !== 'chemical').map(tpl => {
               const meta = tpl.meta as any
               const coverUrl = meta?.cover_url

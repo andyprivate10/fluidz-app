@@ -217,7 +217,11 @@
     "status_draft": "Brouillon",
     "create_group_from_session": "Sauvegarder ce groupe",
     "create_group_desc": "Créer un groupe avec les {{count}} membres de cette session",
-    "group_created": "Groupe créé !"
+    "group_created": "Groupe créé !",
+    "add_to_book": "Ajouter au carnet ?",
+    "save_as_template": "Sauvegarder comme template",
+    "template_saved": "Template sauvegardé !",
+    "saved_template": "Ton template"
   },
   "chat": {
     "title": "Messages",
@@ -336,7 +340,8 @@
     "label_country": "Pays",
     "label_city": "Ville",
     "label_languages": "Langues parlées",
-    "label_choose": "-- Choisir --"
+    "label_choose": "-- Choisir --",
+    "videos_label": "Vidéos"
   },
   "review": {
     "title": "Comment c'etait ?",
