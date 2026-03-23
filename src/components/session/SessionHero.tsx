@@ -58,7 +58,7 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
               const name = memberNames[m.applicant_id] || '?'
               const isCheckedIn = m.status === 'checked_in'
               return (
-                <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/profile/' + m.applicant_id)}>
+                <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, position: 'relative', cursor: 'pointer' }} aria-label={name} onClick={() => navigate('/profile/' + m.applicant_id)}>
                   <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, '+S.p+', '+S.lav+')' : 'linear-gradient(135deg, '+S.p+'66, '+S.lav+'44)', boxShadow: isCheckedIn ? '0 0 8px '+S.p+'44' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {avatar ? (
                       <img src={avatar} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg }} />
@@ -77,7 +77,7 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
         )}
 
         {!isHost && hostProfile && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, cursor: 'pointer' }} onClick={() => navigate('/profile/' + session.host_id)}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, cursor: 'pointer' }} aria-label={'Host: ' + hostProfile.name} onClick={() => navigate('/profile/' + session.host_id)}>
             <div style={{ width: 28, height: 28, borderRadius: '50%', padding: 1.5, background: 'linear-gradient(135deg, '+S.p+', '+S.lav+')' }}>
               {hostProfile.avatar ? (
                 <img src={hostProfile.avatar} alt="" style={{ width: 25, height: 25, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid ' + S.bg }} />
