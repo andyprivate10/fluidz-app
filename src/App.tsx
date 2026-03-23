@@ -38,9 +38,11 @@ const ChatsHubPage = lazy(() => import('./pages/ChatsHubPage'))
 const DirectDMPage = lazy(() => import('./pages/DirectDMPage'))
 const AddressesPage = lazy(() => import('./pages/AddressesPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
+const LandingPage = lazy(() => import('./pages/LandingPage'))
 
 const routes = [
   { path: '/', element: <HomePage /> },
+  { path: '/landing', element: <LandingPage /> },
   { path: '/sessions', element: <SessionsPage /> },
   { path: '/session/create', element: <CreateSessionPage /> },
   { path: '/session/:id', element: <SessionPage /> },

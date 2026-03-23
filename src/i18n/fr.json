@@ -825,5 +825,36 @@
   },
   "dm": {
     "application_pending": "Candidature en attente..."
+  },
+  "landing": {
+    "headline": "Organise ton groupe ce soir",
+    "subheadline": "Recrute, vote, coordonne. Sans WhatsApp, sans partager ton numéro.",
+    "cta_start": "Commencer",
+    "cta_login": "J'ai déjà un compte",
+    "features_label": "Pourquoi Fluidz",
+    "feat_group_sessions": "Sessions de groupe",
+    "feat_group_sessions_desc": "Crée une session, partage le lien, recrute ton groupe en minutes.",
+    "feat_privacy_first": "Vie privée",
+    "feat_privacy_first_desc": "Pas de numéro de téléphone, pas de photos visibles sans ton accord.",
+    "feat_trust_based": "Basé sur la confiance",
+    "feat_trust_based_desc": "Les membres votent. Le host décide. Tout le monde est vérifié.",
+    "feat_realtime_chat": "Chat en temps réel",
+    "feat_realtime_chat_desc": "DM privé avec le host, chat de groupe après check-in.",
+    "feat_selective_sharing": "Partage sélectif",
+    "feat_selective_sharing_desc": "Choisis exactement ce que tu montres. Section par section.",
+    "feat_instant_matching": "Matching instantané",
+    "feat_instant_matching_desc": "De Grindr à chez toi en 1h. Chaque tap compte.",
+    "how_it_works": "Comment ça marche",
+    "step_1": "Crée ta session",
+    "step_1_desc": "Titre, tags, adresse masquée. Prêt en 30 secondes.",
+    "step_2": "Partage le lien",
+    "step_2_desc": "Copie-colle sur Grindr, WhatsApp, Telegram. QR code inclus.",
+    "step_3": "Les candidats postulent",
+    "step_3_desc": "Ils choisissent ce qu'ils montrent. Les membres votent.",
+    "step_4": "Check-in et c'est parti",
+    "step_4_desc": "Adresse révélée, directions step-by-step, chat de groupe activé.",
+    "bottom_cta": "Prêt pour ce soir ?",
+    "bottom_desc": "Gratuit. Pas de pub. Pas de tracking.",
+    "footer": "Tes relations, tes règles."
   }
 }

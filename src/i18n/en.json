@@ -825,5 +825,36 @@
   },
   "dm": {
     "application_pending": "Application pending..."
+  },
+  "landing": {
+    "headline": "Organize your group tonight",
+    "subheadline": "Recruit, vote, coordinate. No WhatsApp, no phone numbers shared.",
+    "cta_start": "Get started",
+    "cta_login": "I already have an account",
+    "features_label": "Why Fluidz",
+    "feat_group_sessions": "Group sessions",
+    "feat_group_sessions_desc": "Create a session, share the link, recruit your group in minutes.",
+    "feat_privacy_first": "Privacy first",
+    "feat_privacy_first_desc": "No phone numbers, no photos visible without your consent.",
+    "feat_trust_based": "Trust-based",
+    "feat_trust_based_desc": "Members vote. Host decides. Everyone is verified.",
+    "feat_realtime_chat": "Realtime chat",
+    "feat_realtime_chat_desc": "Private DM with the host, group chat after check-in.",
+    "feat_selective_sharing": "Selective sharing",
+    "feat_selective_sharing_desc": "Choose exactly what you show. Section by section.",
+    "feat_instant_matching": "Instant matching",
+    "feat_instant_matching_desc": "From Grindr to your place in 1 hour. Every tap counts.",
+    "how_it_works": "How it works",
+    "step_1": "Create your session",
+    "step_1_desc": "Title, tags, hidden address. Ready in 30 seconds.",
+    "step_2": "Share the link",
+    "step_2_desc": "Copy-paste on Grindr, WhatsApp, Telegram. QR code included.",
+    "step_3": "Candidates apply",
+    "step_3_desc": "They choose what to show. Members vote.",
+    "step_4": "Check-in and go",
+    "step_4_desc": "Address revealed, step-by-step directions, group chat activated.",
+    "bottom_cta": "Ready for tonight?",
+    "bottom_desc": "Free. No ads. No tracking.",
+    "footer": "Your relationships, your rules."
   }
 }
