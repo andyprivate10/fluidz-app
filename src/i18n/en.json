@@ -874,5 +874,10 @@
     "bottom_cta": "Ready for tonight?",
     "bottom_desc": "Free. No ads. No tracking.",
     "footer": "Your relationships, your rules."
+  },
+  "crop": {
+    "title": "Crop photo",
+    "confirm": "Confirm",
+    "processing": "Processing…"
   }
 }

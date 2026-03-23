@@ -8,7 +8,7 @@ import Confetti from '../components/Confetti'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
-import { getSessionCover } from '../lib/sessionCover'
+import { getSessionCover, getTemplateCoverImage } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -124,6 +124,7 @@ export default function CreateSessionPage() {
     const now = new Date()
     const start = startsNow ? now : (startsAt ? new Date(startsAt) : now)
     const end = new Date(start.getTime() + durationHours * 3600000)
+    const templateCover = _template !== 'custom' ? getTemplateCoverImage(_template) : undefined
     const { data, error: err } = await supabase.from('sessions').insert({
       host_id: user.id,
       title,
@@ -137,6 +138,8 @@ export default function CreateSessionPage() {
       starts_at: start.toISOString(),
       ends_at: end.toISOString(),
       max_capacity: maxCapacity || null,
+      template_slug: _template !== 'custom' ? _template : null,
+      cover_url: templateCover || null,
       lineup_json: {
         ...(directionsFiltered.length > 0 ? { directions: directionsFiltered } : {}),
         ...(Object.keys(rolesWanted).length > 0 ? { roles_wanted: rolesWanted } : {}),

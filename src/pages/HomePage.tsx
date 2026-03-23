@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 const S = colors
 const R = radius
 
-type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number }
+type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number; cover_url?: string }
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -144,8 +144,11 @@ export default function HomePage() {
           </div>
         )}
         {/* Host active session */}
-        {latestHost && (
-          <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, background: getSessionCover(latestHost.tags).bg, border: `1px solid ${S.pbd}`, cursor: 'pointer', overflow: 'hidden', position: 'relative' }}>
+        {latestHost && (() => {
+          const cover = getSessionCover(latestHost.tags, latestHost.cover_url)
+          return (
+          <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, background: cover.bg, border: `1px solid ${S.pbd}`, cursor: 'pointer', overflow: 'hidden', position: 'relative' }}>
+            {cover.coverImage && <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
             <div style={{ position: 'relative', zIndex: 1 }}>
             <p style={{ ...typeStyle('micro'), color: S.p, margin: '0 0 8px' }}>{t('home.your_session')}</p>
@@ -162,7 +165,7 @@ export default function HomePage() {
             )}
             </div>
           </div>
-        )}
+          )})()}
 
         {/* Pending applications */}
         {pendingApps.length > 0 && (

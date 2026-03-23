@@ -14,8 +14,8 @@ import { SkeletonCard } from '../components/Skeleton'
 const S = colors
 const R = radius
 
-type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string }
-type AppSession = { session_id: string; status: string; title: string; approx_area: string; tags?: string[] }
+type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string; cover_url?: string }
+type AppSession = { session_id: string; status: string; title: string; approx_area: string; tags?: string[]; cover_url?: string }
 
 export default function SessionsPage() {
   const { t } = useTranslation()
@@ -33,11 +33,12 @@ export default function SessionsPage() {
     const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).neq('title', DM_DIRECT_TITLE).order('created_at', { ascending: false })
     setMyHosted(h || [])
 
-    const { data: apps } = await supabase.from('applications').select('session_id, status, sessions(title, approx_area, tags)').eq('applicant_id', user.id).order('created_at', { ascending: false })
+    const { data: apps } = await supabase.from('applications').select('session_id, status, sessions(title, approx_area, tags, cover_url)').eq('applicant_id', user.id).order('created_at', { ascending: false })
     const mapped = (apps || []).map((a: any) => ({
       session_id: a.session_id, status: a.status,
       title: a.sessions?.title || 'Session', approx_area: a.sessions?.approx_area || '',
       tags: a.sessions?.tags || [],
+      cover_url: a.sessions?.cover_url || undefined,
     }))
     setMyActive(mapped.filter(a => a.status === 'accepted' || a.status === 'checked_in'))
     setMyPending(mapped.filter(a => a.status === 'pending'))
@@ -58,9 +59,11 @@ export default function SessionsPage() {
   const sessionCard = (sess: Session, onClick: () => void) => {
     const isOpen = sess.status === 'open'
     const isEnded = sess.status === 'ended'
+    const cover = getSessionCover(sess.tags, sess.cover_url)
     return (
-      <div key={sess.id} onClick={onClick} style={{ ...glassCard, background: getSessionCover(sess.tags).bg, overflow: 'hidden', position: 'relative' }}>
-        {/* Glass overlay */}
+      <div key={sess.id} onClick={onClick} style={{ ...glassCard, background: cover.bg, overflow: 'hidden', position: 'relative' }}>
+        {/* Cover image or glass overlay */}
+        {cover.coverImage && <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -97,8 +100,11 @@ export default function SessionsPage() {
     )
   }
 
-  const appCard = (app: AppSession, icon: React.ReactNode, badgeColor: string, badgeText: string) => (
-    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={{ ...glassCard, background: getSessionCover(app.tags).bg, overflow: 'hidden', position: 'relative' }}>
+  const appCard = (app: AppSession, icon: React.ReactNode, badgeColor: string, badgeText: string) => {
+    const cover = getSessionCover(app.tags, app.cover_url)
+    return (
+    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={{ ...glassCard, background: cover.bg, overflow: 'hidden', position: 'relative' }}>
+      {cover.coverImage && <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
       <div style={{ position: 'relative', zIndex: 1 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -114,7 +120,7 @@ export default function SessionsPage() {
       {app.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '5px 0 0' }}>{app.approx_area}</p>}
       </div>
     </div>
-  )
+  )}
 
   const pinnedCount = myActive.length + myPending.length
   const hostedOpen = myHosted.filter(s => s.status === 'open')

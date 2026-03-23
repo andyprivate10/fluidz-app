@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next'
 import MapView from '../components/MapView'
 const S = colors
 
-type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
+type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; cover_url?: string; template_slug?: string; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number> } }
 type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }

@@ -7,7 +7,7 @@ import { getSessionCover } from '../../lib/sessionCover'
 const S = colors
 
 type Props = {
-  session: { title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string }
+  session: { title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string }
   members: { applicant_id: string; status: string }[]
   memberAvatars: Record<string, string>
   memberNames: Record<string, string>
@@ -22,16 +22,25 @@ type Props = {
 export default function SessionHero({ session, members, memberAvatars, memberNames, statusColor, statusLabel, elapsed, remaining, isHost, hostProfile }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const cover = getSessionCover(session.tags, session.cover_url)
 
   return (
     <div style={{ position: 'relative', minHeight: 200, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>
-      <div style={{ position: 'absolute', inset: 0, background: getSessionCover(session.tags).bg }} />
-      <div style={{ position: 'absolute', width: 260, height: 260, top: -100, right: -80, borderRadius: '50%', filter: 'blur(70px)', background: getSessionCover(session.tags).overlay, animation: 'orbDrift1 8s ease-in-out infinite' }} />
+      {/* Background: cover image or gradient */}
+      {cover.coverImage ? (
+        <>
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,4,10,0.55)' }} />
+        </>
+      ) : (
+        <div style={{ position: 'absolute', inset: 0, background: cover.bg }} />
+      )}
+      <div style={{ position: 'absolute', width: 260, height: 260, top: -100, right: -80, borderRadius: '50%', filter: 'blur(70px)', background: cover.overlay, animation: 'orbDrift1 8s ease-in-out infinite' }} />
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: `linear-gradient(to top, ${S.bg} 5%, transparent)` }} />
 
       <div style={{ position: 'relative', zIndex: 1, padding: '16px 24px 20px' }}>
         <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, lineHeight: 1.1 }}>{session.title}</h1>
-        
+
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10, alignItems: 'center' }}>
           <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor === S.sage ? S.sagebg : statusColor === S.red ? S.redbg : S.p2, border: '1px solid ' + (statusColor === S.sage ? S.sagebd : statusColor === S.red ? S.redbd : S.pbd), padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: 3 }}>
             {session.status === 'open' && <span style={{ width: 5, height: 5, borderRadius: '50%', background: statusColor, animation: 'blink 2s ease-in-out infinite' }} />}
