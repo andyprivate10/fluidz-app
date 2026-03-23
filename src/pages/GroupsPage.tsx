@@ -123,7 +123,7 @@ export default function GroupsPage() {
   }
 
   async function deleteGroup(groupId: string) {
-    if (!window.confirm('Supprimer ce groupe ?')) return
+    if (!window.confirm(t('groups.confirm_delete'))) return
     await supabase.from('contact_group_members').delete().eq('group_id', groupId)
     await supabase.from('contact_groups').delete().eq('id', groupId)
     setGroups(prev => prev.filter(g => g.id !== groupId))

@@ -617,7 +617,8 @@
     "update": "Update",
     "create_group": "Create group",
     "edit": "Edit",
-    "new_group": "New group"
+    "new_group": "New group",
+    "confirm_delete": "Delete this group?"
   },
   "me": {
     "sending": "Sending...",
