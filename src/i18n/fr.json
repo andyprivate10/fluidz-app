@@ -69,7 +69,11 @@
     "apply_button": "Postuler",
     "visibility_on": "Tu es visible dans la galerie",
     "visibility_off": "Tu es masque",
-    "online": "En ligne"
+    "online": "En ligne",
+    "explore": {
+      "already_contact": "Déjà dans tes contacts",
+      "added_favorite": "Ajouté aux favoris"
+    }
   },
   "session": {
     "live": "Live",
