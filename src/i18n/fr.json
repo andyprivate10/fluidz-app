@@ -344,7 +344,19 @@
     "label_city": "Ville",
     "label_languages": "Langues parlées",
     "label_choose": "-- Choisir --",
-    "videos_label": "Vidéos"
+    "videos_label": "Vidéos",
+    "prep_active_badge": "PrEP actif",
+    "linked_profiles": "Profils liés",
+    "linked_desc": "Couple, trio, polyamour...",
+    "link_type_couple": "Couple",
+    "link_type_trio": "Trio",
+    "link_type_group": "Groupe",
+    "link_type_poly": "Polyamour",
+    "add_linked_profile": "Ajouter un profil lié",
+    "linked_with": "Lié avec",
+    "search_to_link": "Chercher un profil à lier...",
+    "unlink": "Délier",
+    "linked_label": "En {{type}} avec"
   },
   "review": {
     "title": "Comment c'etait ?",

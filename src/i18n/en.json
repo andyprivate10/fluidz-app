@@ -344,7 +344,19 @@
     "label_city": "City",
     "label_languages": "Languages spoken",
     "label_choose": "-- Choose --",
-    "videos_label": "Videos"
+    "videos_label": "Videos",
+    "prep_active_badge": "PrEP active",
+    "linked_profiles": "Linked profiles",
+    "linked_desc": "Couple, trio, polyamory...",
+    "link_type_couple": "Couple",
+    "link_type_trio": "Trio",
+    "link_type_group": "Group",
+    "link_type_poly": "Polyamory",
+    "add_linked_profile": "Add a linked profile",
+    "linked_with": "Linked with",
+    "search_to_link": "Search a profile to link...",
+    "unlink": "Unlink",
+    "linked_label": "In {{type}} with"
   },
   "review": {
     "title": "How was it?",

@@ -11,6 +11,7 @@ import { Eye, Share2, Heart, Check, Mail } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import ProfileAdultMedia from '../components/profile/ProfileAdultMedia'
+import LinkedProfiles from '../components/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
 
 const PREP_OPTIONS = ['Actif','Inactif','Non']
@@ -110,6 +111,7 @@ export default function MePage() {
   const [dernierTest, setDernierTest] = useState('')
   const [seroStatus, setSeroStatus] = useState('')
   const [limits, setLimits] = useState('')
+  const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
   const [avatarUrl, setAvatarUrl] = useState('')
   const [photosProfil, setPhotosProfil] = useState<string[]>([])
   const [photosIntime, setPhotosIntime] = useState<string[]>([])
@@ -215,6 +217,7 @@ export default function MePage() {
       setDernierTest(h.dernier_test || '')
       setSeroStatus(h.sero_status || '')
       setLimits(p.limits || '')
+      setLinkedProfiles(Array.isArray(p.linked_profiles) ? p.linked_profiles : [])
       setBodyPartPhotos(() => {
         const raw = p.body_part_photos || {}
         const keyMap: Record<string, string> = { torse: 'torso', bite: 'sex', cul: 'butt', pieds: 'feet' }
@@ -248,7 +251,7 @@ export default function MePage() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linked_profiles: linkedProfiles,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -265,7 +268,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linkedProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -628,7 +631,7 @@ export default function MePage() {
 
           <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>PrEP actif</span>}
+              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>{t('profile.prep_active_badge')}</span>}
               {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
@@ -655,6 +658,11 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.red, marginTop:6, opacity:0.7 }}>
               {t('profile.visible_host_voters')}
             </p>
+          </Section>
+
+          <Section title={t('profile.linked_profiles')} color={S.p}>
+            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.linked_desc')}</p>
+            <LinkedProfiles userId={user.id} linkedProfiles={linkedProfiles} onChange={setLinkedProfiles} />
           </Section>
 
           {/* Auto-save status */}

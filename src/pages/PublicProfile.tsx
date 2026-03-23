@@ -10,6 +10,7 @@ import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Send } from 'lucide-react'
 import ShareToContact from '../components/ShareToContact'
+import LinkedProfiles from '../components/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
@@ -222,6 +223,13 @@ export default function PublicProfile() {
         </div>
       )}
 
+      {/* Linked profiles */}
+      {Array.isArray(p.linked_profiles) && p.linked_profiles.length > 0 && (
+        <div style={{ padding: '10px 20px 0' }}>
+          <LinkedProfiles userId={userId!} linkedProfiles={p.linked_profiles} onChange={() => {}} readOnly />
+        </div>
+      )}
+
       {/* ═══ ACTIONS ═══ */}
       <div style={{ padding: '16px 20px 0' }}>
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
@@ -290,7 +298,7 @@ export default function PublicProfile() {
 
         {(p.health?.prep_status || p.health?.dernier_test || p.prep) && (
           <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.sage)}>Santé</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '5px 14px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={12} strokeWidth={2} /> PrEP Actif</span>}
+            {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '5px 14px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={12} strokeWidth={2} />{t('profile.prep_active_badge')}</span>}
             {p.health?.dernier_test && <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '5px 14px', borderRadius: 99, background: S.bluebg, border: '1px solid ' + S.bluebd }}>Testé il y a {monthsAgoCount(p.health.dernier_test)} mois</span>}
           </div></div>
         )}
