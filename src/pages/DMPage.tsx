@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
-import { Camera, ArrowLeft, Copy, Map, MapPin } from 'lucide-react'
+import { Camera, ArrowLeft, Copy, Map, MapPin, Smile } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { sendPushToUser } from '../lib/pushSender'
@@ -14,6 +14,7 @@ import { useTypingIndicator } from '../hooks/useTypingIndicator'
 import { useTranslation } from 'react-i18next'
 import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
+import EmojiBar from '../components/EmojiBar'
 
 type Message = {
   id: string
@@ -33,6 +34,7 @@ export default function DMPage() {
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [chatLightbox, setChatLightbox] = useState<string | null>(null)
+  const [showEmojiBar, setShowEmojiBar] = useState(false)
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
@@ -534,8 +536,14 @@ export default function DMPage() {
       )}
 
       {/* Input bar */}
+      {/* Emoji bar */}
+      {showEmojiBar && (
+        <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
+          <EmojiBar onSelect={e => { setNewMessage(prev => prev + e); setShowEmojiBar(false) }} />
+        </div>
+      )}
       <div style={{
-        background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: '1px solid '+S.rule,
+        background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: showEmojiBar ? 'none' : '1px solid '+S.rule,
         display: 'flex', gap: 8, flexShrink: 0,
       }}>
         <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
@@ -547,6 +555,9 @@ export default function DMPage() {
         </button>
         <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? S.sagebg : S.bg2, color: sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>
           {sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
+        </button>
+        <button type="button" onClick={() => setShowEmojiBar(!showEmojiBar)} style={{ width: 44, height: 44, borderRadius: 12, background: showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+          <Smile size={18} style={{ color: showEmojiBar ? S.p : S.tx3 }} />
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input
