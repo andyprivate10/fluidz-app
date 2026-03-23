@@ -357,7 +357,7 @@ export default function MePage() {
         <input
           type="email" value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder="ton@email.com"
+          placeholder={t('profile.placeholder_email')}
           style={{ ...inputStyle, maxWidth:360, marginBottom:12 }}
           onKeyDown={e => e.key === 'Enter' && sendMagicLink()}
         />
@@ -445,7 +445,7 @@ export default function MePage() {
           {contactRequests > 0 && (
             <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: S.p2, border: '1px solid ' + S.pbd, borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: S.p, fontWeight: 600, display:'flex', alignItems:'center', gap:4 }}><Heart size={13} strokeWidth={1.5} /> {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
-              <span style={{ fontSize: 11, color: S.tx2 }}>Voir →</span>
+              <span style={{ fontSize: 11, color: S.tx2 }}>{t('common.view_arrow')}</span>
             </button>
           )}
 
@@ -514,28 +514,28 @@ export default function MePage() {
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Pseudo *</label>
-                <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Ton pseudo" style={inputStyle} />
+                <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder={t('profile.placeholder_pseudo')} style={inputStyle} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Bio</label>
-                <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Bio courte..." rows={3} style={{ ...inputStyle, resize:'none', lineHeight:1.5 }} />
+                <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder={t('profile.placeholder_bio')} rows={3} style={{ ...inputStyle, resize:'none', lineHeight:1.5 }} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Age</label>
-                <input value={age} onChange={e => setAge(e.target.value)} placeholder="Age" type="number" style={inputStyle} />
+                <input value={age} onChange={e => setAge(e.target.value)} placeholder={t('profile.placeholder_age')} type="number" style={inputStyle} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.location')}</label>
-                <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Paris 11e, Bastille..." style={inputStyle} />
+                <input value={location} onChange={e => setLocation(e.target.value)} placeholder={t('profile.placeholder_location')} style={inputStyle} />
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
                 <div>
                   <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.home_country')}</label>
-                  <input value={homeCountry} onChange={e => setHomeCountry(e.target.value)} placeholder="France" style={inputStyle} />
+                  <input value={homeCountry} onChange={e => setHomeCountry(e.target.value)} placeholder={t('profile.placeholder_country')} style={inputStyle} />
                 </div>
                 <div>
                   <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.home_city')}</label>
-                  <input value={homeCity} onChange={e => setHomeCity(e.target.value)} placeholder="Paris" style={inputStyle} />
+                  <input value={homeCity} onChange={e => setHomeCity(e.target.value)} placeholder={t('profile.placeholder_city')} style={inputStyle} />
                 </div>
               </div>
               <div>
@@ -553,11 +553,11 @@ export default function MePage() {
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Taille (cm)</label>
-                <input value={height} onChange={e => setHeight(e.target.value)} placeholder="175" type="number" style={inputStyle} />
+                <input value={height} onChange={e => setHeight(e.target.value)} placeholder={t('profile.placeholder_height')} type="number" style={inputStyle} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Poids (kg)</label>
-                <input value={weight} onChange={e => setWeight(e.target.value)} placeholder="70" type="number" style={inputStyle} />
+                <input value={weight} onChange={e => setWeight(e.target.value)} placeholder={t('profile.placeholder_weight')} type="number" style={inputStyle} />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Morphologie</label>

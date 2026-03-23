@@ -297,7 +297,16 @@
     "profile_score_label": "Profile",
     "your_candidate_pack": "Your Candidate Pack",
     "members_only": "Profile restricted to logged-in members.",
-    "not_found": "Profile not found."
+    "not_found": "Profile not found.",
+    "placeholder_email": "your@email.com",
+    "placeholder_pseudo": "Your nickname",
+    "placeholder_bio": "Short bio...",
+    "placeholder_age": "Age",
+    "placeholder_location": "Brooklyn, NYC...",
+    "placeholder_country": "France",
+    "placeholder_city": "Paris",
+    "placeholder_height": "175",
+    "placeholder_weight": "70"
   },
   "review": {
     "title": "How was it?",
@@ -442,7 +451,17 @@
     "total": "Total",
     "already_in_session": "All members of this group are already in the session",
     "share_on_platforms": "Share on Grindr / WhatsApp",
-    "cancel_app": "Cancel"
+    "cancel_app": "Cancel",
+    "view_profile": "View profile",
+    "session_note": "Note for this session",
+    "limits_label": "Limits",
+    "votes_label": "Votes:",
+    "refuse": "Refuse",
+    "arrived_badge": "Arrived",
+    "nudge_title": "We're waiting!",
+    "nudge_body_suffix": "— arriving soon?",
+    "nudge_sent": "Nudge sent",
+    "nudge_btn": "Nudge"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -502,7 +521,8 @@
     "back_label": "Back",
     "back_to_session": "Back to session",
     "copy_label": "Copy",
-    "share_label": "Share"
+    "share_label": "Share",
+    "view_arrow": "View →"
   },
   "drawer": {
     "my_space": "My space",

@@ -560,7 +560,7 @@ export default function HostDashboard() {
                     {displayRole && <span style={{fontSize:12,fontWeight:600,padding:'2px 10px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.pbd}}>{displayRole}</span>}
                     {!isGhost && <VibeScoreBadge userId={app.applicant_id} />}
                   </div>
-                  <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>Voir profil</button>
+                  <button onClick={() => navigate('/session/'+id+'/candidate/'+app.applicant_id)} style={{padding:'6px 12px',borderRadius:10,fontSize:12,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>{t('host.view_profile')}</button>
                 </div>
 
                 {(pj.age || snapshot?.age) && <p style={{fontSize:13,color:S.tx3,margin:'0 0 4px'}}>{(pj.age || snapshot.age)} ans{pj.location || snapshot?.location ? ' · ' + (pj.location || snapshot.location) : ''}</p>}
@@ -577,21 +577,21 @@ export default function HostDashboard() {
 
                 {app.eps_json?.message && (
                   <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.bluebd,marginBottom:8}}>
-                    <p style={{fontSize:11,color:S.blue,fontWeight:700,margin:'0 0 2px'}}>Message au host</p>
+                    <p style={{fontSize:11,color:S.blue,fontWeight:700,margin:'0 0 2px'}}>{t('host.message_to_host')}</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0,lineHeight:1.4}}>{app.eps_json.message}</p>
                   </div>
                 )}
 
                 {app.eps_json?.occasion_note && (
                   <div style={{padding:'10px 12px',background:S.bg2,borderRadius:10,border:'1px solid '+S.pbd,marginBottom:8}}>
-                    <p style={{fontSize:11,color:S.p,fontWeight:700,margin:'0 0 2px'}}>Note pour cette session</p>
+                    <p style={{fontSize:11,color:S.p,fontWeight:700,margin:'0 0 2px'}}>{t('host.session_note')}</p>
                     <p style={{fontSize:13,color:S.tx2,margin:0}}>{app.eps_json.occasion_note}</p>
                   </div>
                 )}
 
                 {(pj.limits || (isGhost && snapshot?.limits)) && (
                   <div style={{padding:'8px 12px',background:S.redbg,borderRadius:10,border:'1px solid '+S.redbd,marginBottom:8}}>
-                    <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>Limites</p>
+                    <p style={{fontSize:11,color:S.red,fontWeight:700,margin:'0 0 2px'}}>{t('host.limits_label')}</p>
                     <p style={{fontSize:12,color:S.tx3,margin:0}}>{pj.limits || snapshot?.limits}</p>
                   </div>
                 )}
@@ -605,7 +605,7 @@ export default function HostDashboard() {
                       if (yes + no === 0) return null
                       return (
                         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'6px 10px',background:S.bg2,borderRadius:10,border:'1px solid '+S.rule}}>
-                          <span style={{fontSize:12,color:S.tx3}}>Votes :</span>
+                          <span style={{fontSize:12,color:S.tx3}}>{t('host.votes_label')}</span>
                           <span style={{fontSize:13,fontWeight:700,color:S.sage,display:'flex',alignItems:'center',gap:4}}><ThumbsUp size={14} /> {yes}</span>
                           <span style={{fontSize:13,fontWeight:700,color:S.red,display:'flex',alignItems:'center',gap:4}}><ThumbsDown size={14} /> {no}</span>
                         </div>
@@ -613,7 +613,7 @@ export default function HostDashboard() {
                     })()}
                     <div style={{display:'flex',gap:8}}>
                       <button onClick={() => decide(app.id, 'rejected')} disabled={actionLoading===app.id} style={{flex:1,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:S.red,border:'1px solid '+S.redbd,background:S.redbg,cursor:'pointer'}}>
-                        Refuser
+                        {t('host.refuse')}
                       </button>
                       <button onClick={() => decide(app.id, 'accepted')} disabled={actionLoading===app.id} className="btn-shimmer" style={{flex:2,padding:'11px',borderRadius:12,fontWeight:700,fontSize:14,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 16px '+S.pbd}}>
                         {actionLoading===app.id ? '...' : t('host_actions.accept')}
@@ -626,14 +626,14 @@ export default function HostDashboard() {
                   <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:10,alignItems:'center'}}>
                     {app.status === 'accepted' && app.checked_in === true && (
                       <>
-                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orangebg,border:'1px solid '+S.orangebd}}>Arrivée à confirmer</span>
+                        <span style={{fontSize:12,color:S.orange,fontWeight:600,padding:'4px 10px',borderRadius:99,background:S.orangebg,border:'1px solid '+S.orangebd}}>{t('host.arrival_to_confirm')}</span>
                         <button onClick={() => confirmCheckIn(app.id)} disabled={actionLoading===app.id} style={{padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,color:S.sage,border:'1px solid '+S.sage,background:S.sagebg,cursor:'pointer'}}>
                           {actionLoading===app.id ? '...' : <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />{t('host.confirm_checkin')}</>}
                         </button>
                       </>
                     )}
                     {app.status === 'checked_in' && (
-                      <span style={{fontSize:12,color:S.sage,fontWeight:600,display:'inline-flex',alignItems:'center',gap:3}}><Check size={12} strokeWidth={2.5} />Arrivé</span>
+                      <span style={{fontSize:12,color:S.sage,fontWeight:600,display:'inline-flex',alignItems:'center',gap:3}}><Check size={12} strokeWidth={2.5} />{t('host.arrived_badge')}</span>
                     )}
                     {app.status === 'accepted' && !app.checked_in && (
                       <span style={{fontSize:12,color:S.sage,fontWeight:600}}>{t('host.accepted_route')}</span>
@@ -643,12 +643,12 @@ export default function HostDashboard() {
                       <button onClick={async () => {
                         await supabase.from('notifications').insert({
                           user_id: app.applicant_id, session_id: id, type: 'nudge',
-                          title: '⏰ On t\'attend !',
-                          body: (sess?.title || 'La session') + ' — tu arrives bientôt ?',
+                          title: t('host.nudge_title'),
+                          body: (sess?.title || 'Session') + ' ' + t('host.nudge_body_suffix'),
                           href: '/session/' + id,
                         })
-                        showToast('Relance envoyée', 'success')
-                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid '+S.amberbd,background:'transparent',cursor:'pointer'}}>Relancer</button>
+                        showToast(t('host.nudge_sent'), 'success')
+                      }} style={{padding:'4px 10px',borderRadius:8,fontSize:11,color:S.p,border:'1px solid '+S.amberbd,background:'transparent',cursor:'pointer'}}>{t('host.nudge_btn')}</button>
                     )}
                     <button onClick={() => decide(app.id, 'rejected')} style={{marginLeft:'auto',padding:'4px 10px',borderRadius:8,fontSize:11,color:S.tx3,border:'1px solid '+S.rule,background:'transparent',cursor:'pointer'}}>{t('host.cancel_app')}</button>
                   </div>

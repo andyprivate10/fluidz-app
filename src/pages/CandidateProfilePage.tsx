@@ -388,7 +388,7 @@ export default function CandidateProfilePage() {
             {/* Message au host */}
             {messageText && (
               <div style={{ ...glassCard, borderColor: S.pbd }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('host.message_to_host')}</p>
                 <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
               </div>
             )}
@@ -396,7 +396,7 @@ export default function CandidateProfilePage() {
             {/* Occasion note */}
             {eps.occasion_note && eps.occasion_note !== messageText && (
               <div style={{ ...glassCard, borderColor: S.pbd }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('host.session_note')}</p>
                 <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
               </div>
             )}

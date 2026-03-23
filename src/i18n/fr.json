@@ -297,7 +297,16 @@
     "profile_score_label": "Profil",
     "your_candidate_pack": "Ton Candidate Pack",
     "members_only": "Profil réservé aux membres connectés.",
-    "not_found": "Profil introuvable."
+    "not_found": "Profil introuvable.",
+    "placeholder_email": "ton@email.com",
+    "placeholder_pseudo": "Ton pseudo",
+    "placeholder_bio": "Bio courte...",
+    "placeholder_age": "Age",
+    "placeholder_location": "Paris 11e, Bastille...",
+    "placeholder_country": "France",
+    "placeholder_city": "Paris",
+    "placeholder_height": "175",
+    "placeholder_weight": "70"
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -412,7 +421,7 @@
     "confirm_checkin": "Confirmer",
     "arrived": "Arrivés",
     "accepted_on_way": "Accepte — en route",
-    "arrival_to_confirm": "Arrivee a confirmer",
+    "arrival_to_confirm": "Arrivée à confirmer",
     "end_session": "Terminer la session",
     "broadcast": "Broadcast",
     "share_session": "Partager la session",
@@ -442,7 +451,17 @@
     "total": "Total",
     "already_in_session": "Tous les membres de ce groupe sont déjà dans la session",
     "share_on_platforms": "Partager sur Grindr / WhatsApp",
-    "cancel_app": "Annuler"
+    "cancel_app": "Annuler",
+    "view_profile": "Voir profil",
+    "session_note": "Note pour cette session",
+    "limits_label": "Limites",
+    "votes_label": "Votes :",
+    "refuse": "Refuser",
+    "arrived_badge": "Arrivé",
+    "nudge_title": "On t'attend !",
+    "nudge_body_suffix": "— tu arrives bientôt ?",
+    "nudge_sent": "Relance envoyée",
+    "nudge_btn": "Relancer"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -502,7 +521,8 @@
     "back_label": "Retour",
     "back_to_session": "Retour à la session",
     "copy_label": "Copier",
-    "share_label": "Partager"
+    "share_label": "Partager",
+    "view_arrow": "Voir →"
   },
   "drawer": {
     "my_space": "Mon espace",
