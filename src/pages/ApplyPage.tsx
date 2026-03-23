@@ -504,7 +504,7 @@ export default function ApplyPage() {
                       const on = selP.includes(url)
                       return (
                         <button key={url} type="button" onClick={() => setSelP((prev: string[]) => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
-                          <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                          <img src={url} alt="" loading="lazy" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                           {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
                         </button>
                       )
@@ -546,7 +546,7 @@ export default function ApplyPage() {
                           if (on) delete next[partId]; else next[partId] = url
                           return next
                         })} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+S.p : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
-                          <img src={url} alt={partLabel} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                          <img src={url} alt={partLabel} loading="lazy" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                           {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
                           <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.6)',fontSize:8,color:'#fff',textAlign:'center',padding:'1px 0'}}>{partLabel}</div>
                         </button>
@@ -627,7 +627,7 @@ export default function ApplyPage() {
             {selectedPhotosProfil.length > 0 && enabled.includes('photos_profil') && (
               <div style={{display:'flex',gap:6,overflowX:'auto',marginBottom:8}}>
                 {selectedPhotosProfil.slice(0,3).map((url: string, i: number) => (
-                  <img key={i} src={url} alt="" style={{width:56,height:72,borderRadius:10,objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
+                  <img key={i} src={url} alt="" loading="lazy" style={{width:56,height:72,borderRadius:10,objectFit:'cover',border:'1px solid '+S.rule,flexShrink:0}} />
                 ))}
                 {selectedPhotosProfil.length > 3 && <span style={{fontSize:11,color:S.tx4,alignSelf:'center'}}>+{selectedPhotosProfil.length-3}</span>}
               </div>

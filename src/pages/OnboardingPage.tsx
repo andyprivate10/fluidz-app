@@ -216,7 +216,7 @@ export default function OnboardingPage() {
           {/* Avatar preview */}
           <div style={{ position: 'relative', width: 140, height: 140 }}>
             {avatarUrl ? (
-              <img src={avatarUrl} alt="" style={{ width: 140, height: 140, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.p }} />
+              <img src={avatarUrl} alt="" loading="lazy" style={{ width: 140, height: 140, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.p }} />
             ) : (
               <div style={{ width: 140, height: 140, borderRadius: '50%', background: S.bg2, border: '2px dashed ' + S.rule, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Camera size={40} style={{ color: S.tx4 }} />

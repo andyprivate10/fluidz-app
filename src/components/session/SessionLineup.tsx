@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Star, Check } from 'lucide-react'
-import { colors } from '../../brand'
+import { colors, glassCard } from '../../brand'
 
 const S = colors
-const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 
 type Member = { applicant_id: string; eps_json: Record<string, any>; status: string }
 
@@ -27,7 +26,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
   if (members.length === 0) return null
 
   return (
-    <div style={card}>
+    <div style={glassCard}>
       <div style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 12 }}>{t('session.section_lineup')} · {members.length + 1}</div>
       {/* Avatar row */}
       <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
@@ -104,7 +103,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
             <div style={{ width: 36, height: 4, borderRadius: 2, background: S.tx2, margin: '0 auto 16px' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
               {memberAvatars[sheetMember.applicant_id] ? (
-                <img src={memberAvatars[sheetMember.applicant_id]} alt="" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover' }} />
+                <img src={memberAvatars[sheetMember.applicant_id]} alt="" loading="lazy" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: 56, height: 56, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: 'white' }}>
                   {(memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}

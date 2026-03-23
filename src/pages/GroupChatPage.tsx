@@ -341,7 +341,7 @@ export default function GroupChatPage() {
                 background:S.bg2, borderRadius:99, border:'none', cursor:'pointer',
               }}>
                 {m.avatar_url ? (
-                  <img src={m.avatar_url} alt="" style={{ width:18, height:18, borderRadius:'50%', objectFit:'cover' }} />
+                  <img src={m.avatar_url} alt="" loading="lazy" style={{ width:18, height:18, borderRadius:'50%', objectFit:'cover' }} />
                 ) : (
                   <div style={{ width:18, height:18, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color:'#fff' }}>
                     {m.display_name[0]?.toUpperCase()}
@@ -414,7 +414,7 @@ export default function GroupChatPage() {
                   const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
                   if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 220, height: 36 }} />
                   if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 240, borderRadius: 10, display: 'block' }} />
-                  return <img key={mi} src={url} alt="" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block' }} />
+                  return <img key={mi} src={url} alt="" loading="lazy" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block' }} />
                 })}
                 {msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && msg.text !== '🎬 Vidéo' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
                 <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatMessageTime(msg.created_at)}</p>

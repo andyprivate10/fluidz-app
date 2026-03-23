@@ -262,7 +262,7 @@ export default function DirectDMPage() {
                 const isVideo = /\.(mp4|mov)$/i.test(url) || url.includes('video')
                 if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
                 if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 10 }} />
-                return <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: 10 }} />
+                return <img key={mi} src={url} alt="" loading="lazy" style={{ width: '100%', maxWidth: 240, borderRadius: 10 }} />
               })}
               {msg.text && msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && (
                 <span style={{ color: S.tx }}>{msg.text}</span>

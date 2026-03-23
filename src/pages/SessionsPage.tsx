@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { colors, radius, typeStyle } from '../brand'
+import { colors, radius, glassCard, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { sessionTiming } from '../lib/timing'
 import { getSessionCover } from '../lib/sessionCover'
@@ -51,8 +51,6 @@ export default function SessionsPage() {
   useEffect(() => { loadData() }, [loadData])
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadData)
 
-  const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: `1px solid ${S.rule2}`, borderRadius: R.card, padding: 16, cursor: 'pointer', boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
-
   const sectionLabel = (text: string, color: string) => (
     <p style={{ fontSize: 10, fontWeight: 700, color, textTransform: 'uppercase' as const, letterSpacing: '0.08em', margin: '16px 0 6px' }}>{text}</p>
   )
@@ -61,7 +59,7 @@ export default function SessionsPage() {
     const isOpen = sess.status === 'open'
     const isEnded = sess.status === 'ended'
     return (
-      <div key={sess.id} onClick={onClick} style={{ ...card, background: getSessionCover(sess.tags).bg, overflow: 'hidden', position: 'relative' }}>
+      <div key={sess.id} onClick={onClick} style={{ ...glassCard, background: getSessionCover(sess.tags).bg, overflow: 'hidden', position: 'relative' }}>
         {/* Glass overlay */}
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
@@ -97,7 +95,7 @@ export default function SessionsPage() {
   }
 
   const appCard = (app: AppSession, icon: React.ReactNode, badgeColor: string, badgeText: string) => (
-    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={{ ...card, background: getSessionCover(app.tags).bg, overflow: 'hidden', position: 'relative' }}>
+    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={{ ...glassCard, background: getSessionCover(app.tags).bg, overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
       <div style={{ position: 'relative', zIndex: 1 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

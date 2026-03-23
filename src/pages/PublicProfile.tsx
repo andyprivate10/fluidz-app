@@ -6,13 +6,12 @@ import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
-import { colors } from '../brand'
+import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield } from 'lucide-react'
 import { monthsAgoCount } from '../lib/timing'
 
 const S = colors
-const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 20, padding: 16, border: '1px solid ' + S.rule2, marginBottom: 12, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 const sLabel = (c: string): React.CSSProperties => ({ fontSize: 10, fontWeight: 700, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 })
 
 /* ═══ Sub-components ═══ */
@@ -235,10 +234,10 @@ export default function PublicProfile() {
       <div style={{ padding: '16px 20px 0' }}>
         <div style={{ marginBottom: 12 }}><VibeScoreCard userId={userId!} /></div>
 
-        {p.bio && <div style={card}><div style={sLabel(S.p)}>Bio</div><p style={{ fontSize: 14, color: S.tx, lineHeight: 1.7, margin: 0 }}>{p.bio}</p></div>}
+        {p.bio && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>Bio</div><p style={{ fontSize: 14, color: S.tx, lineHeight: 1.7, margin: 0 }}>{p.bio}</p></div>}
 
         {(p.height || p.weight) && (
-          <div style={card}>
+          <div style={{ ...glassCard, marginBottom: 12 }}>
             <div style={sLabel(S.lav)}>Physique</div>
             <div style={{ display: 'grid', gridTemplateColumns: p.height && p.weight ? '1fr 1fr' : '1fr', gap: 10 }}>
               {p.height && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{p.height}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>cm</div></div>}
@@ -255,7 +254,7 @@ export default function PublicProfile() {
             return urls.length > 0
           })
           return zones.length > 0 ? (
-            <div style={card}>
+            <div style={{ ...glassCard, marginBottom: 12 }}>
               <div style={sLabel(S.p)}>Zones intimes</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {zones.map(([part, val]) => {
@@ -269,7 +268,7 @@ export default function PublicProfile() {
                           return isVid ? (
                             <video key={i} src={url} controls style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
                           ) : (
-                            <img key={i} src={url as string} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
+                            <img key={i} src={url as string} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
                           )
                         })}
                       </div>
@@ -281,18 +280,18 @@ export default function PublicProfile() {
           ) : null
         })()}
 
-        {kinks.length > 0 && <div style={card}><div style={sLabel(S.p)}>Pratiques · {kinks.length}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}</div></div>}
+        {kinks.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>Pratiques · {kinks.length}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}</div></div>}
 
         {(p.health?.prep_status || p.health?.dernier_test || p.prep) && (
-          <div style={card}><div style={sLabel(S.sage)}>Santé</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.sage)}>Santé</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '5px 14px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={12} strokeWidth={2} /> PrEP Actif</span>}
             {p.health?.dernier_test && <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '5px 14px', borderRadius: 99, background: S.bluebg, border: '1px solid ' + S.bluebd }}>Testé il y a {monthsAgoCount(p.health.dernier_test)} mois</span>}
           </div></div>
         )}
 
-        {p.limits && <div style={{ ...card, borderColor: S.redbd }}><div style={sLabel(S.red)}>Hard limits</div><p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p></div>}
+        {p.limits && <div style={{ ...glassCard, borderColor: S.redbd }}><div style={sLabel(S.red)}>Hard limits</div><p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p></div>}
 
-        {allVideos.length > 0 && <div style={card}><div style={sLabel(S.lav)}>Vidéos · {allVideos.length}</div><div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>{allVideos.map((url: string, i: number) => <div key={i} style={{ flexShrink: 0 }}><video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} /></div>)}</div></div>}
+        {allVideos.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.lav)}>Vidéos · {allVideos.length}</div><div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>{allVideos.map((url: string, i: number) => <div key={i} style={{ flexShrink: 0 }}><video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} /></div>)}</div></div>}
 
         <InviteToSessionButton targetUserId={userId!} />
       </div>

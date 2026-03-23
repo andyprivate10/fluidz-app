@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { ThumbsUp, ThumbsDown } from 'lucide-react'
-import { colors } from '../../brand'
+import { colors, glassCard } from '../../brand'
 
 const S = colors
-const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 
 type PendingApp = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 
@@ -20,13 +19,13 @@ export default function SessionVotes({ memberCount, pendingApps, currentUserId, 
   const { t } = useTranslation()
 
   if (memberCount < 3) {
-    return <div style={card}><p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{t('session.vote_needs_3')}</p></div>
+    return <div style={glassCard}><p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{t('session.vote_needs_3')}</p></div>
   }
 
   const visible = pendingApps.filter(p => !currentUserId || p.applicant_id !== currentUserId)
 
   return (
-    <div style={card}>
+    <div style={glassCard}>
       <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_vote')}</div>
       {visible.length === 0 ? (
         <p style={{ fontSize: 13, color: S.tx2, margin: '4px 0 0' }}>{t('session.no_pending')}</p>

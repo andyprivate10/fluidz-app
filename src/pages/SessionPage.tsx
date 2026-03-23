@@ -5,7 +5,7 @@ import { showToast } from '../components/Toast'
 import { Clock, Share2, MessageCircle, Check, MapPin } from 'lucide-react'
 import { SkeletonSessionPage } from '../components/Skeleton'
 import type { User } from '@supabase/supabase-js'
-import { colors } from '../brand'
+import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { formatElapsed, formatRemaining } from '../lib/timing'
@@ -24,7 +24,6 @@ type PendingApplication = { id: string; applicant_id: string; display_name?: str
 type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
 
 const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96,  }
-const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)' }
 
 export default function SessionPage() {
   const { t } = useTranslation()
@@ -334,7 +333,7 @@ export default function SessionPage() {
 
         {/* ─── ADDRESS (member only, prominent) ─── */}
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address && (
-          <div style={{ ...card, borderColor: S.sagebd, background: 'rgba(74,222,128,0.06)' }}>
+          <div style={{ ...glassCard, borderColor: S.sagebd, background: 'rgba(74,222,128,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <MapPin size={16} strokeWidth={1.5} style={{ color: S.sage, flexShrink: 0 }} />
               <span style={{ fontSize: 14, color: S.tx, fontWeight: 600, flex: 1 }}>{session.exact_address}</span>
@@ -346,7 +345,7 @@ export default function SessionPage() {
         )}
 
         {session.description && (
-          <div style={card}>
+          <div style={glassCard}>
             <div style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_description')}</div>
             <div style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6 }}>{session.description}</div>
           </div>
@@ -367,7 +366,7 @@ export default function SessionPage() {
             if (have < Number(count)) missing.push({ role, need: Number(count) - have })
           })
           return (
-            <div style={card}>
+            <div style={glassCard}>
               <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_roles_wanted')}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {Object.entries(wanted).map(([role, count]) => {
@@ -395,7 +394,7 @@ export default function SessionPage() {
         })()}
 
         {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
-          <div style={card}>
+          <div style={glassCard}>
             <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_access')}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {session.lineup_json.directions.map((step, i) => {
@@ -406,7 +405,7 @@ export default function SessionPage() {
                     <span style={{ fontSize: 13, fontWeight: 700, color: S.p, minWidth: 22 }}>{i + 1}.</span>
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: 14, color: S.tx2, margin: 0, lineHeight: 1.5 }}>{text}</p>
-                      {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 240, height: 140, objectFit: 'cover', borderRadius: 10, marginTop: 6, border: '1px solid '+S.rule }} />}
+                      {photo && <img src={photo} alt="" loading="lazy" style={{ width: '100%', maxWidth: 240, height: 140, objectFit: 'cover', borderRadius: 10, marginTop: 6, border: '1px solid '+S.rule }} />}
                     </div>
                   </div>
                 )
@@ -436,7 +435,7 @@ export default function SessionPage() {
 
         {/* Check-in status cards (awaiting / confirmed) */}
         {checkInDone && myApp?.status !== 'checked_in' && (
-          <div style={{ ...card, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
+          <div style={{ ...glassCard, background: S.p2, borderColor: S.p, textAlign: 'center' }}>
             <Clock size={24} style={{color:S.p,margin:'0 auto'}} />
             <div style={{ fontSize: 14, color: S.p, marginTop: 4, fontWeight: 600 }}>{t('session.awaiting_confirmation')}</div>
             <p style={{ fontSize: 12, color: S.tx2, marginTop: 6, margin: '6px 0 0' }}>{t('session.host_must_confirm')}</p>
@@ -444,7 +443,7 @@ export default function SessionPage() {
         )}
 
         {myApp?.status === 'checked_in' && (
-          <div style={{ ...card, background: S.sagebg, borderColor: S.sage, textAlign: 'center' }}>
+          <div style={{ ...glassCard, background: S.sagebg, borderColor: S.sage, textAlign: 'center' }}>
             <div style={{ fontSize: 20 }}>{t('session.welcome')}</div>
             <div style={{ fontSize: 14, color: S.sage, marginTop: 4 }}>{t('session.checkin_confirmed')}</div>
             {session.exact_address && <div style={{ fontSize: 14, color: S.tx, marginTop: 8, fontWeight: 600 }}>{session.exact_address}</div>}
@@ -497,7 +496,7 @@ export default function SessionPage() {
 
         {/* Suggest adding co-participants to Naughty Book */}
         {myApp?.status === 'checked_in' && members.length > 0 && (
-          <div style={{ ...card, borderColor: S.pbd }}>
+          <div style={{ ...glassCard, borderColor: S.pbd }}>
             <p style={{ fontSize: 12, fontWeight: 700, color: S.tx2, margin: '0 0 8px' }}>AJOUTER AU CARNET ?</p>
             <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 10px' }}>Tu peux ajouter les membres de cette session à ton Naughty Book</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -520,7 +519,7 @@ export default function SessionPage() {
         )}
 
         {myApp && (
-          <div style={{ ...card }}>
+          <div style={{ ...glassCard }}>
             {myApp.status === 'pending' && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid '+S.amberbd }}>{t('session.pending')}</span>

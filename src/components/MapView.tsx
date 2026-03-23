@@ -29,7 +29,7 @@ function createPinIcon(pin: MapPin): L.DivIcon {
   const color = pin.type === 'session' ? S.p : S.lav
   const letter = pin.label[0]?.toUpperCase() || '?'
   const avatarHtml = pin.avatar
-    ? `<img src="${pin.avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid ${color}"/>`
+    ? `<img src="${pin.avatar}" loading="lazy" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid ${color}"/>`
     : `<div style="width:30px;height:30px;border-radius:50%;background:${S.bg2};border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${color}">${letter}</div>`
   return L.divIcon({
     className: '',

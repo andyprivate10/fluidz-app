@@ -161,7 +161,7 @@ export default function EditSessionPage() {
               </div>
               {step.photo_url ? (
                 <div style={{ marginTop:6, position:'relative', display:'inline-block' }}>
-                  <img src={step.photo_url} alt="" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.rule }} />
+                  <img src={step.photo_url} alt="" loading="lazy" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.rule }} />
                   <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-4, right:-4, width:16, height:16, borderRadius:'50%', background:S.red, border:'none', color:'#fff', fontSize:10, cursor:'pointer' }}>×</button>
                 </div>
               ) : (

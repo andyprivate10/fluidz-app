@@ -427,7 +427,7 @@ export default function DMPage() {
                 return (
                   <div key={i} style={{ marginBottom: 6 }}>
                     <p style={{ fontSize: 12, color: S.tx2, margin: 0, lineHeight: 1.4 }}>{i + 1}. {text}</p>
-                    {photo && <img src={photo} alt="" style={{ width: '100%', maxWidth: 180, height: 100, objectFit: 'cover', borderRadius: 8, marginTop: 4, border: '1px solid '+S.rule }} />}
+                    {photo && <img src={photo} alt="" loading="lazy" style={{ width: '100%', maxWidth: 180, height: 100, objectFit: 'cover', borderRadius: 8, marginTop: 4, border: '1px solid '+S.rule }} />}
                   </div>
                 )
               })}
@@ -488,7 +488,7 @@ export default function DMPage() {
                     const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
                     if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
                     if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 12, display: 'block' }} />
-                    return <img key={mi} src={url} alt="" style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block' }} />
+                    return <img key={mi} src={url} alt="" loading="lazy" style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block' }} />
                   })}
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
                     message.text.includes('google.com/maps') ? (

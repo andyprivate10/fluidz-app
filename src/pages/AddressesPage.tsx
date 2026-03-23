@@ -185,7 +185,7 @@ export default function AddressesPage() {
                           <span style={{ fontSize:12,fontWeight:700,color:S.p,minWidth:20 }}>{i+1}.</span>
                           <div style={{ flex:1 }}>
                             <p style={{ fontSize:13,color:S.tx2,margin:0,lineHeight:1.4 }}>{step.text}</p>
-                            {step.photo_url && <img src={step.photo_url} alt="" style={{ width:'100%',maxWidth:200,height:120,objectFit:'cover',borderRadius:10,marginTop:4,border:'1px solid '+S.rule }} />}
+                            {step.photo_url && <img src={step.photo_url} alt="" loading="lazy" style={{ width:'100%',maxWidth:200,height:120,objectFit:'cover',borderRadius:10,marginTop:4,border:'1px solid '+S.rule }} />}
                           </div>
                         </div>
                       ))}
@@ -238,7 +238,7 @@ export default function AddressesPage() {
                     <div style={{ display:'flex',alignItems:'center',gap:8,marginTop:6 }}>
                       {step.photo_url ? (
                         <div style={{ position:'relative' }}>
-                          <img src={step.photo_url} alt="" style={{ width:60,height:60,borderRadius:8,objectFit:'cover',border:'1px solid '+S.rule }} />
+                          <img src={step.photo_url} alt="" loading="lazy" style={{ width:60,height:60,borderRadius:8,objectFit:'cover',border:'1px solid '+S.rule }} />
                           <button onClick={() => setDirections(prev => prev.map((d,j) => j === i ? { ...d, photo_url: undefined } : d))} style={{ position:'absolute',top:-4,right:-4,width:18,height:18,borderRadius:'50%',background:S.red,border:'none',color:'#fff',fontSize:10,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>×</button>
                         </div>
                       ) : (

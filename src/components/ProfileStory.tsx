@@ -82,7 +82,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
       <div style={{ flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:24 }}>
         {sl.type === 'intro' && (
           <div style={{ textAlign:'center',...anim }}>
-            {d.avatar ? <img src={v(d.avatar)} alt="" style={{ width:120,height:120,borderRadius:'50%',objectFit:'cover',border:'3px solid '+S.p,marginBottom:20 }} /> : null}
+            {d.avatar ? <img src={v(d.avatar)} alt="" loading="lazy" style={{ width:120,height:120,borderRadius:'50%',objectFit:'cover',border:'3px solid '+S.p,marginBottom:20 }} /> : null}
             <h1 style={{ fontSize:36,fontWeight:800,color:S.tx,margin:'0 0 8px' }}>{v(d.name)}</h1>
             <div style={{ display:'flex',gap:12,justifyContent:'center' }}>
               {d.age ? <span style={{ fontSize:18,color:S.tx2 }}>{v(d.age)} ans</span> : null}
@@ -90,7 +90,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
             </div>
           </div>
         )}
-        {sl.type === 'photo' && <img src={v(d.url)} alt="" style={{ maxWidth:'100%',maxHeight:'80vh',borderRadius:16,objectFit:'contain' }} />}
+        {sl.type === 'photo' && <img src={v(d.url)} alt="" loading="lazy" style={{ maxWidth:'100%',maxHeight:'80vh',borderRadius:16,objectFit:'contain' }} />}
         {sl.type === 'stats' && (
           <div style={{ textAlign:'center',...anim }}>
             <p style={{ fontSize:14,color:S.tx3,marginBottom:20,textTransform:'uppercase',letterSpacing:'0.15em',fontWeight:700 }}>Physique</p>

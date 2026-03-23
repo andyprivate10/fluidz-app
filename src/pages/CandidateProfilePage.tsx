@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { colors } from '../brand'
+import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { monthsAgoLabel } from '../lib/timing'
@@ -154,7 +154,6 @@ export default function CandidateProfilePage() {
     : (eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : []))
   const hasAdulteMedia = photosAdulte.length > 0 || videosAdulte.length > 0
 
-  const card: React.CSSProperties = { background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 20, padding: 16, marginBottom: 12 }
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', position: 'relative' }}>
@@ -182,7 +181,7 @@ export default function CandidateProfilePage() {
               <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosAdulte.map((url: string, i: number) => (
-                  <img key={'a' + i} src={url} alt="" style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd }} />
+                  <img key={'a' + i} src={url} alt="" loading="lazy" style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd }} />
                 ))}
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
@@ -197,7 +196,7 @@ export default function CandidateProfilePage() {
           {photosProfil.length === 0 && !hasAdulteMedia && candidatePhotos.length > 0 && (
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
               {candidatePhotos.map((url: string, i: number) => (
-                <img key={i} src={url} alt="" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
+                <img key={i} src={url} alt="" loading="lazy" style={{ width: candidatePhotos.length === 1 ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
               ))}
               {candidateVideos.map((url: string, i: number) => (
                 <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
@@ -219,7 +218,7 @@ export default function CandidateProfilePage() {
         {/* Avatar + Name */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {avatarUrl ? (
-            <img src={avatarUrl} alt="" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
+            <img src={avatarUrl} alt="" loading="lazy" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
             <div style={{ width: 64, height: 64, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#fff' }}>
               {displayName[0]?.toUpperCase()}
@@ -271,7 +270,7 @@ export default function CandidateProfilePage() {
 
           {/* Bio */}
           {bio && (
-            <div style={card}>
+            <div style={{ ...glassCard, marginBottom: 12 }}>
               <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.bio')}</p>
               <p style={{ fontSize: 14, color: S.tx, lineHeight: 1.5, margin: 0 }}>{bio}</p>
             </div>
@@ -279,7 +278,7 @@ export default function CandidateProfilePage() {
 
           {/* Physique */}
           {(height || weight || morphology) && (
-            <div style={card}>
+            <div style={{ ...glassCard, marginBottom: 12 }}>
               <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>Physique</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {height && <div style={{ textAlign: 'center', padding: 8, background: S.bg2, borderRadius: 10 }}><p style={{ fontSize: 18, fontWeight: 700, color: S.tx, margin: 0 }}>{height}</p><p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>cm</p></div>}
@@ -297,7 +296,7 @@ export default function CandidateProfilePage() {
 
             {/* Body part photos grid */}
             {pj.body_part_photos && Object.keys(pj.body_part_photos).length > 0 && (
-              <div style={card}>
+              <div style={{ ...glassCard, marginBottom: 12 }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.body_parts')}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   {Object.entries(pj.body_part_photos as Record<string, string | string[]>).map(([part, val]) => {
@@ -313,7 +312,7 @@ export default function CandidateProfilePage() {
                             return isVideo ? (
                               <video key={i} src={url} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 10 }} />
                             ) : (
-                              <img key={i} src={url} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 10 }} />
+                              <img key={i} src={url} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 10 }} />
                             )
                           })}
                         </div>
@@ -341,7 +340,7 @@ export default function CandidateProfilePage() {
               }
               const def = { bg: S.bg2, color: S.tx2, border: S.rule }
               return (
-                <div style={card}>
+                <div style={{ ...glassCard, marginBottom: 12 }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Pratiques ({kinks.length})</p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {kinks.map((k: string) => {
@@ -355,7 +354,7 @@ export default function CandidateProfilePage() {
 
             {/* Limites */}
             {limits && (
-              <div style={{ ...card, borderColor: S.redbd, background: S.redbg }}>
+              <div style={{ ...glassCard, borderColor: S.redbd, background: S.redbg }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('profile.limits')}</p>
                 <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{limits}</p>
               </div>
@@ -363,7 +362,7 @@ export default function CandidateProfilePage() {
 
             {/* Sante */}
             {(health.prep_status || health.dernier_test) && (
-              <div style={card}>
+              <div style={{ ...glassCard, marginBottom: 12 }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('profile.health')}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {health.prep_status === 'Actif' && (
@@ -388,7 +387,7 @@ export default function CandidateProfilePage() {
 
             {/* Message au host */}
             {messageText && (
-              <div style={{ ...card, borderColor: S.pbd }}>
+              <div style={{ ...glassCard, borderColor: S.pbd }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Message au host</p>
                 <p style={{ fontSize: 13, color: S.tx, lineHeight: 1.5, margin: 0 }}>{messageText}</p>
               </div>
@@ -396,7 +395,7 @@ export default function CandidateProfilePage() {
 
             {/* Occasion note */}
             {eps.occasion_note && eps.occasion_note !== messageText && (
-              <div style={{ ...card, borderColor: S.pbd }}>
+              <div style={{ ...glassCard, borderColor: S.pbd }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Note pour cette session</p>
                 <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
               </div>

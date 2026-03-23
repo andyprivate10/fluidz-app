@@ -501,7 +501,7 @@ export default function MePage() {
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
               {photosProfil.map((url) => (
                 <div key={url} style={{ position:'relative', width:80, height:80 }}>
-                  <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border: avatarUrl === url ? '2px solid ' + S.p : '1px solid ' + S.rule }} />
+                  <img src={url} alt="" loading="lazy" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border: avatarUrl === url ? '2px solid ' + S.p : '1px solid ' + S.rule }} />
                   {avatarUrl === url && (
                     <div style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#fff', fontWeight:700, border:'2px solid ' + S.bg1 }}>1</div>
                   )}
@@ -633,7 +633,7 @@ export default function MePage() {
                             {isVideo ? (
                               <video src={url} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                             ) : (
-                              <img src={url} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                              <img src={url} alt="" loading="lazy" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                             )}
                             <button onClick={() => setBodyPartPhotos(prev => {
                               const arr = [...(prev[zone.id] || [])]; arr.splice(i, 1)
@@ -679,7 +679,7 @@ export default function MePage() {
                     {isVideo ? (
                       <video src={url} style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
                     ) : (
-                      <img src={url} alt="" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
+                      <img src={url} alt="" loading="lazy" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border:'1px solid ' + S.pbd }} />
                     )}
                     <button onClick={() => { removePhotoIntime(url); removeVideoIntime(url) }} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
                     {isVideo && <div style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600 }}>video</div>}

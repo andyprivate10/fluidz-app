@@ -213,7 +213,7 @@ export default function JoinPage() {
             <div style={{position:'relative',zIndex:1,padding:'16px 16px 0',display:'flex',gap:6,overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none'}}>
               {lineup.filter(m => m.photos && m.photos.length > 0).flatMap(m => (m.photos || []).slice(0, 2).map((url, i) => (
                 <div key={m.applicant_id + '-' + i} onClick={() => navigate('/profile/' + m.applicant_id)} style={{flexShrink:0,cursor:'pointer'}}>
-                  <img src={url} alt="" style={{width:56,height:72,borderRadius:12,objectFit:'cover',border:'1.5px solid '+S.rule2}} />
+                  <img src={url} alt="" loading="lazy" style={{width:56,height:72,borderRadius:12,objectFit:'cover',border:'1.5px solid '+S.rule2}} />
                 </div>
               )))}
             </div>
