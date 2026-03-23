@@ -234,7 +234,10 @@
     "saved_template": "Your template",
     "capacity_progress": "Spots",
     "capacity_full": "Full",
-    "qr_hint": "Scan this QR code to join"
+    "qr_hint": "Scan this QR code to join",
+    "bookmark": "Save",
+    "bookmarked": "Saved",
+    "unbookmarked": "Removed from saved"
   },
   "chat": {
     "title": "Messages",

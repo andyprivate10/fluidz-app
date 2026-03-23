@@ -234,7 +234,10 @@
     "saved_template": "Ton template",
     "capacity_progress": "Places",
     "capacity_full": "Complet",
-    "qr_hint": "Scanne ce QR code pour rejoindre"
+    "qr_hint": "Scanne ce QR code pour rejoindre",
+    "bookmark": "Sauvegarder",
+    "bookmarked": "Sauvegardé",
+    "unbookmarked": "Retiré des favoris"
   },
   "chat": {
     "title": "Messages",
