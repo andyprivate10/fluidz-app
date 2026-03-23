@@ -128,7 +128,7 @@ export default function GhostSetupPage() {
         {step === 'name' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ton pseudo</label>
+              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('ghost.your_pseudo')}</label>
               <input
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
@@ -189,7 +189,7 @@ export default function GhostSetupPage() {
               <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 16 }}>{t('ghost.title')}</div>
 
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Ton code de récupération</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>{t('ghost.your_recovery_code')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
                   <span style={{ fontSize: 36, fontWeight: 800, color: S.p, letterSpacing: '0.15em', fontFamily: 'monospace' }}>{ghostCode}</span>
                   <button onClick={handleCopyCode} style={{ background: codeCopied ? S.sagebg : S.bg2, border: '1px solid ' + (codeCopied ? S.sage : S.rule), borderRadius: 10, padding: 8, cursor: 'pointer', color: codeCopied ? S.sage : S.tx3 }}>

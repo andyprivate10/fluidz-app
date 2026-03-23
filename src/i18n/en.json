@@ -208,7 +208,8 @@
     "vote_count": "{{yes}} yes · {{no}} no",
     "vote_needs_3": "Voting available from 3 members",
     "phone_never_asked": "Your phone number will never be asked.",
-    "checkin_sent_waiting": "Check-in sent — waiting for host confirmation"
+    "checkin_sent_waiting": "Check-in sent — waiting for host confirmation",
+    "review_anonymous_help": "Your anonymous review helps the community"
   },
   "chat": {
     "title": "Messages",
@@ -293,7 +294,8 @@
     "languages": "Languages spoken",
     "visitor_tag": "Visitor",
     "profile_label": "Profile",
-    "profile_score_label": "Profile"
+    "profile_score_label": "Profile",
+    "your_candidate_pack": "Your Candidate Pack"
   },
   "review": {
     "title": "How was it?",
@@ -387,7 +389,9 @@
     "recover_desc": "Enter your session code and PIN",
     "found": "Profile found",
     "hours_left": "{{hours}}h remaining",
-    "expires_soon": "Expires soon"
+    "expires_soon": "Expires soon",
+    "your_pseudo": "Your nickname",
+    "your_recovery_code": "Your recovery code"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -445,7 +449,8 @@
     "no_notes": "No notes",
     "send_dm": "Send a DM",
     "dm_sent": "DM sent",
-    "add_to_book": "Add to contacts"
+    "add_to_book": "Add to contacts",
+    "no_interactions": "No interactions recorded"
   },
   "settings": {
     "push_active": "Push enabled",

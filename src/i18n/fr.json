@@ -208,7 +208,8 @@
     "vote_count": "{{yes}} oui · {{no}} non",
     "vote_needs_3": "Vote disponible dès 3 membres",
     "phone_never_asked": "Ton numéro ne sera jamais demandé.",
-    "checkin_sent_waiting": "Check-in envoyé — en attente de confirmation du host"
+    "checkin_sent_waiting": "Check-in envoyé — en attente de confirmation du host",
+    "review_anonymous_help": "Ton avis anonyme aide la communauté"
   },
   "chat": {
     "title": "Messages",
@@ -293,7 +294,8 @@
     "languages": "Langues parlées",
     "visitor_tag": "Visitor",
     "profile_label": "Profil",
-    "profile_score_label": "Profil"
+    "profile_score_label": "Profil",
+    "your_candidate_pack": "Ton Candidate Pack"
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -387,7 +389,9 @@
     "recover_desc": "Entre ton code de session et ton PIN",
     "found": "Profil retrouve",
     "hours_left": "{{hours}}h restantes",
-    "expires_soon": "Expire bientot"
+    "expires_soon": "Expire bientot",
+    "your_pseudo": "Ton pseudo",
+    "your_recovery_code": "Ton code de récupération"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -445,7 +449,8 @@
     "no_notes": "Aucune note",
     "send_dm": "Envoyer un DM",
     "dm_sent": "DM envoyé",
-    "add_to_book": "Ajouter au carnet"
+    "add_to_book": "Ajouter au carnet",
+    "no_interactions": "Aucune interaction enregistrée"
   },
   "settings": {
     "push_active": "Push actives",

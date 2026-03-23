@@ -264,7 +264,7 @@ export default function ContactDetailPage() {
           <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Historique</span>
 
           {interactions.length === 0 ? (
-            <p style={{ fontSize: 13, color: S.tx4, margin: '12px 0 0' }}>Aucune interaction enregistrée</p>
+            <p style={{ fontSize: 13, color: S.tx4, margin: '12px 0 0' }}>{t('contacts.no_interactions')}</p>
           ) : (
             <div style={{ marginTop: 12, position: 'relative', paddingLeft: 20 }}>
               {/* Vertical line */}

@@ -375,7 +375,7 @@ export default function ApplyPage() {
       {step === 'pack' && (
         <div style={{padding:'8px 20px 24px'}}>
           <div style={{marginBottom:16}}>
-            <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>Ton Candidate Pack</h2>
+            <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('profile.your_candidate_pack')}</h2>
             <p style={{fontSize:13,color:S.tx3,margin:0}}>{t('session.choose_share_sections')}</p>
           </div>
           {!guestMode && profile && (() => {
