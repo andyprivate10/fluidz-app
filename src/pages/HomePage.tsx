@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { colors, radius, typeStyle } from '../brand'
+import { colors, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { getSessionCover } from '../lib/sessionCover'
@@ -78,11 +78,7 @@ export default function HomePage() {
   }
 
   // ─── Shared styles ────────────────────────────────────
-  const card: React.CSSProperties = {
-    background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
-    border: `1px solid ${S.rule2}`, borderRadius: R.card, padding: 16,
-    boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)',
-  }
+  const card = glassCard
   const chip: React.CSSProperties = {
     ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.chip,
     background: S.p3, color: S.p, border: `1px solid ${S.pbd}`,
