@@ -1,351 +1,22 @@
-import { useState, useEffect, useRef } from 'react'
-import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
+import { SkeletonChatPage } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
 import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus } from 'lucide-react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import { sendPushToUser } from '../lib/pushSender'
-import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
-import { formatMessageTime } from '../lib/timing'
-import { useTypingIndicator } from '../hooks/useTypingIndicator'
-import { useTranslation } from 'react-i18next'
-import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
 import EmojiBar from '../components/EmojiBar'
 import ChatMessageMenu from '../components/ChatMessageMenu'
-import AddressShareSheet, { encodeAddressMessage, isAddressMessage, parseAddressMessage } from '../components/AddressShareSheet'
-
-type Message = {
-  id: string
-  text: string
-  sender_id: string
-  created_at: string
-  sender_name: string
-  has_media?: boolean
-  media_urls?: string[]
-}
+import AddressShareSheet from '../components/AddressShareSheet'
+import DMMessageList from '../components/chat/DMMessageList'
+import { useDMData } from '../hooks/useDMData'
 
 const S = colors
 
 export default function DMPage() {
-  const { t } = useTranslation()
-  const { id, peerId: peerIdParam } = useParams<{ id: string; peerId?: string }>()
-  const navigate = useNavigate()
-  const [messages, setMessages] = useState<Message[]>([])
-  const [chatLightbox, setChatLightbox] = useState<string | null>(null)
-  const [showEmojiBar, setShowEmojiBar] = useState(false)
-  const [newMessage, setNewMessage] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [loadError, setLoadError] = useState(false)
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string; lineup_json?: { directions?: string[] } } | null>(null)
-  const [appStatus, setAppStatus] = useState<string | null>(null)
-  const [peerId, setPeerId] = useState<string | null>(peerIdParam || null)
-  const [peerName, setPeerName] = useState<string>('')
-  const [peerAvatar, setPeerAvatar] = useState<string>('')
-  const [peerRole, setPeerRole] = useState<string>('')
-  const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
-  const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
-  const [menuMsg, setMenuMsg] = useState<Message | null>(null)
-  const [showActions, setShowActions] = useState(false)
-  const [showAddressSheet, setShowAddressSheet] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const d = useDMData()
 
-  const [displayName, setDisplayName] = useState<string>('')
-  const [uploading, setUploading] = useState(false)
-  const [recording, setRecording] = useState(false)
-  const [sharingLocation, setSharingLocation] = useState(false)
-  const locationWatchRef = useRef<number | null>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-
-  const isHost = currentUser?.id === session?.host_id
-  const isAccepted = appStatus === 'accepted' || appStatus === 'checked_in'
-  const showCheckInBanner = !isHost && appStatus === 'accepted'
-
-  const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
-    id && peerId ? `typing:dm:${id}:${[currentUser?.id, peerId].sort().join(':')}` : '',
-    currentUser?.id,
-    displayName || t('common.anonymous'),
-  )
-
-  useEffect(() => {
-    if (!id) { setLoading(false); return }
-
-    const init = async () => {
-      setLoadError(false)
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        setCurrentUser(user ?? null)
-
-        // Fetch display name for messages
-        if (user) {
-          const { data: prof } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
-          if (prof?.display_name) setDisplayName(prof.display_name)
-        }
-
-        const { data: sess, error: sessErr } = await supabase
-          .from('sessions')
-          .select('title,exact_address,host_id,lineup_json')
-          .eq('id', id)
-          .single()
-        if (sessErr) throw sessErr
-        setSession(sess)
-
-        if (user) {
-          const { data: app } = await supabase
-            .from('applications')
-            .select('status')
-            .eq('session_id', id)
-            .eq('applicant_id', user.id)
-            .maybeSingle()
-          if (app) setAppStatus(app.status)
-        }
-
-        if (sess) {
-          let pid: string | null = peerIdParam || null
-          if (user?.id === sess.host_id) {
-            // Host: peerId must come from URL params
-            if (!pid) {
-              // Redirect to host dashboard if no peer specified
-              navigate('/session/' + id + '/host')
-              return
-            }
-          } else {
-            // Candidate: peer is always the host
-            pid = sess.host_id
-          }
-          setPeerId(pid)
-          // Fetch peer display name
-          if (pid) {
-            const { data: peerProf } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', pid).maybeSingle()
-            if (peerProf?.display_name) setPeerName(peerProf.display_name)
-            if ((peerProf as any)?.profile_json?.avatar_url) setPeerAvatar((peerProf as any).profile_json.avatar_url)
-            if ((peerProf as any)?.profile_json?.role) setPeerRole((peerProf as any).profile_json.role)
-          }
-        }
-
-        // Fetch DM messages for this peer pair
-        // Filter: messages between current user and peer (backward compat: include messages without dm_peer_id)
-        const effectivePeerId = peerIdParam || (sess?.host_id !== user?.id ? sess?.host_id : null)
-        let query = supabase
-          .from('messages')
-          .select('*')
-          .eq('session_id', id)
-          .eq('room_type', 'dm')
-          .order('created_at')
-        
-        if (effectivePeerId && user) {
-          // Only show messages in this specific DM thread
-          query = query.or(`and(sender_id.eq.${user.id},dm_peer_id.eq.${effectivePeerId}),and(sender_id.eq.${effectivePeerId},dm_peer_id.eq.${user.id}),and(sender_id.eq.${user.id},dm_peer_id.is.null),and(sender_id.eq.${effectivePeerId},dm_peer_id.is.null)`)
-        }
-
-        const { data: msgs } = await query
-        setMessages((msgs as Message[]) ?? [])
-      } catch {
-        setLoadError(true)
-      } finally {
-        setLoading(false)
-      }
-      // Mark DM notifications as read for this session
-      if (currentUser) {
-        const hrefPattern = '/session/' + id + '/dm'
-        await supabase.from('notifications')
-          .update({ read_at: new Date().toISOString() })
-          .eq('user_id', currentUser.id)
-          .like('href', hrefPattern + '%')
-          .is('read_at', null)
-      }
-    }
-    init()
-
-    const effectivePeer = peerIdParam || null
-    const channel = supabase
-      .channel('dm:' + id + ':' + (effectivePeer || 'all'))
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'messages',
-        filter: 'session_id=eq.' + id,
-      }, (payload) => {
-        const msg = payload.new as Message & { room_type?: string; dm_peer_id?: string }
-        if (msg.room_type !== 'dm') return
-        // Only show messages in this DM thread
-        if (effectivePeer && currentUser) {
-          const isMyMsg = msg.sender_id === currentUser.id && msg.dm_peer_id === effectivePeer
-          const isPeerMsg = msg.sender_id === effectivePeer && msg.dm_peer_id === currentUser.id
-          const isLegacy = !msg.dm_peer_id && (msg.sender_id === currentUser.id || msg.sender_id === effectivePeer)
-          if (!isMyMsg && !isPeerMsg && !isLegacy) return
-        }
-        setMessages((prev) => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
-        if (msg.sender_id !== currentUser?.id) notifyUser('message')
-      })
-      .subscribe()
-
-    return () => { supabase.removeChannel(channel) }
-  }, [id, peerIdParam])
-
-  async function startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mr = new MediaRecorder(stream, { mimeType: 'audio/webm' })
-      audioChunksRef.current = []
-      mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
-      mr.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop())
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-        if (blob.size < 100) return
-        setUploading(true)
-        const { data: { user: u } } = await supabase.auth.getUser()
-        if (!u) { setUploading(false); return }
-        const path = `${u.id}/audio_${Date.now()}.webm`
-        const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
-        if (error) { setUploading(false); return }
-        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-        const name = displayName || u.email || 'Moi'
-        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '🎤 Audio', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id, has_media: true, media_urls: [publicUrl] })
-        setUploading(false)
-      }
-      mr.start()
-      mediaRecorderRef.current = mr
-      setRecording(true)
-    } catch { /* mic permission denied */ }
-  }
-
-  function stopRecording() {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop()
-    }
-    setRecording(false)
-  }
-
-  async function shareLocation() {
-    if (sharingLocation) {
-      if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current)
-      locationWatchRef.current = null
-      setSharingLocation(false)
-      const { data: { user: u } } = await supabase.auth.getUser()
-      if (u) {
-        const name = displayName || u.email || 'Moi'
-        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '📍 Partage de position terminé', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id })
-      }
-      return
-    }
-    if (!navigator.geolocation) return
-    setSharingLocation(true)
-    const { data: { user: u } } = await supabase.auth.getUser()
-    if (!u) { setSharingLocation(false); return }
-    const name = displayName || u.email || 'Moi'
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords
-      const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
-      await supabase.from('messages').insert({
-        session_id: id, sender_id: u.id,
-        text: `📍 Ma position\n${mapUrl}`,
-        sender_name: name, room_type: 'dm',
-        dm_peer_id: peerIdParam || session?.host_id,
-      })
-    }, () => { setSharingLocation(false) })
-    locationWatchRef.current = navigator.geolocation.watchPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords
-        const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
-        await supabase.from('messages').insert({
-          session_id: id, sender_id: u.id,
-          text: `📍 Position mise à jour\n${mapUrl}`,
-          sender_name: name, room_type: 'dm',
-          dm_peer_id: peerIdParam || session?.host_id,
-        })
-      },
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 30000, timeout: 15000 }
-    )
-  }
-
-  useEffect(() => {
-    return () => { if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current) }
-  }, [])
-
-  // Auto-scroll to bottom when a new message is sent or received
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
-  async function handleCheckIn() {
-    if (!id || !currentUser) return
-    // Request check-in (flag only), host must confirm to change status
-    await supabase
-      .from('applications')
-      .update({ checked_in: true })
-      .eq('session_id', id)
-      .eq('applicant_id', currentUser.id)
-    setShowCheckInConfirmed(true)
-    setTimeout(() => setShowCheckInConfirmed(false), 3000)
-  }
-
-  async function handleSendPhoto(file: File) {
-    if (!id || !currentUser) return
-    setUploading(true)
-    try {
-      const isVideo = file.type.startsWith('video/')
-      let uploadFile: Blob = file
-      let ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
-      let label = isVideo ? '🎬 Vidéo' : '📷 Photo'
-
-      if (!isVideo) {
-        const { compressImage } = await import('../lib/media')
-        uploadFile = await compressImage(file)
-      }
-
-      const path = currentUser.id + '/chat_' + Date.now() + '.' + ext
-      const { error } = await supabase.storage.from('avatars').upload(path, uploadFile, {
-        contentType: isVideo ? file.type : 'image/jpeg',
-      })
-      if (error) { setUploading(false); return }
-      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-      await supabase.from('messages').insert({
-        session_id: id, sender_id: currentUser.id, text: label,
-        sender_name: displayName || currentUser.email || '',
-        room_type: 'dm', dm_peer_id: peerId || undefined,
-        has_media: true, media_urls: [publicUrl],
-      })
-    } catch { /* ignore */ }
-    setUploading(false)
-  }
-
-  async function handleSend() {
-    if (!newMessage.trim() || !id || !currentUser) return
-    const text = newMessage.trim()
-    const fullText = replyTo ? '> ' + replyTo.text.slice(0, 80) + '\n\n' + text : text
-    setNewMessage('')
-    setReplyTo(null)
-    await supabase.from('messages').insert({
-      session_id: id,
-      sender_id: currentUser.id,
-      text: fullText,
-      sender_name: displayName || currentUser.email || '',
-      room_type: 'dm',
-      dm_peer_id: peerId || undefined,
-    })
-    // Notify the peer about new DM (debounced: only if no recent notif)
-    if (peerId && session) {
-      const senderLabel = displayName || t('common.someone')
-      await supabase.from('notifications').insert({
-        user_id: peerId,
-        session_id: id,
-        type: 'new_dm',
-        title: `💬 ${senderLabel}`,
-        body: text.length > 60 ? text.slice(0, 60) + '…' : text,
-        href: `/session/${id}/dm/${currentUser.id}`,
-      })
-      sendPushToUser(peerId, senderLabel, text.length > 60 ? text.slice(0, 60) + '…' : text, `/session/${id}/dm/${currentUser.id}`)
-    }
-  }
-
-  if (loading) return <SkeletonChatPage />
+  if (d.loading) return <SkeletonChatPage />
 
   return (
     <div style={{
@@ -353,43 +24,43 @@ export default function DMPage() {
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       <OrbLayer />
-      <EventContextNav role={isHost ? 'host' : isAccepted ? 'member' : 'candidate'} sessionTitle={session?.title} />
+      <EventContextNav role={d.isHost ? 'host' : d.isAccepted ? 'member' : 'candidate'} sessionTitle={d.session?.title} />
       {/* Header */}
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => navigate('/session/'+id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}><ArrowLeft size={18} strokeWidth={1.5} /></button>
-          {peerAvatar ? (
-            <img src={peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
-          ) : peerName ? (
-            <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{peerName[0].toUpperCase()}</div>
+          <button onClick={() => d.navigate('/session/'+d.id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}><ArrowLeft size={18} strokeWidth={1.5} /></button>
+          {d.peerAvatar ? (
+            <img src={d.peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
+          ) : d.peerName ? (
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{d.peerName[0].toUpperCase()}</div>
           ) : null}
           <div>
             <h1 style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>
-              {peerName || (session?.title ?? 'DM')}
+              {d.peerName || (d.session?.title ?? 'DM')}
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              {peerRole && <span style={{ fontSize: 11, color: S.p, fontWeight: 600 }}>{peerRole}</span>}
-              {peerRole && <span style={{ fontSize: 11, color: S.tx4 }}>·</span>}
-              <span style={{ fontSize: 11, color: S.tx3 }}>{session?.title ?? ''}</span>
+              {d.peerRole && <span style={{ fontSize: 11, color: S.p, fontWeight: 600 }}>{d.peerRole}</span>}
+              {d.peerRole && <span style={{ fontSize: 11, color: S.tx4 }}>·</span>}
+              <span style={{ fontSize: 11, color: S.tx3 }}>{d.session?.title ?? ''}</span>
             </div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
-          <button onClick={() => setShowActions(v => !v)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={() => d.setShowActions(v => !v)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Plus size={16} strokeWidth={2} />
           </button>
-          {peerId && (
-            <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
-              {t('profile.see_profile')}
+          {d.peerId && (
+            <button onClick={() => d.navigate(d.isHost ? '/session/' + d.id + '/candidate/' + d.peerId : '/profile/' + d.peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
+              {d.t('profile.see_profile')}
             </button>
           )}
-          {showActions && (
+          {d.showActions && (
             <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 6, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, overflow: 'hidden', zIndex: 60, minWidth: 220, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
-              <button onClick={() => { setShowActions(false); navigate('/session/create?invite=' + peerId) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid '+S.rule, color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
-                {t('dm.create_session')}
+              <button onClick={() => { d.setShowActions(false); d.navigate('/session/create?invite=' + d.peerId) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid '+S.rule, color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {d.t('dm.create_session')}
               </button>
-              <button onClick={() => { setShowActions(false); setShowAddressSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
-                {t('dm.share_address')}
+              <button onClick={() => { d.setShowActions(false); d.setShowAddressSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {d.t('dm.share_address')}
               </button>
             </div>
           )}
@@ -397,32 +68,32 @@ export default function DMPage() {
       </header>
 
       {/* Status banner */}
-      {!isHost && appStatus === 'pending' && (
+      {!d.isHost && d.appStatus === 'pending' && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.orangebg, border: '1px solid '+S.orangebd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.orange, fontWeight: 600, textAlign: 'center' }}>
-            {t('dm.application_pending')}
+            {d.t('dm.application_pending')}
           </div>
         </div>
       )}
 
-      {showCheckInBanner && !showCheckInConfirmed && (
+      {d.showCheckInBanner && !d.showCheckInConfirmed && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.sage, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
             Tu as été accepté(e) ! Clique quand tu arrives.
           </div>
-          <button onClick={handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer' }}>
+          <button onClick={d.handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer' }}>
             Je suis là
           </button>
         </div>
       )}
 
-      {showCheckInConfirmed && (
+      {d.showCheckInConfirmed && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.p2, border: '1px solid '+S.amberbd, borderRadius: 12, flexShrink: 0 }}>
-          <div style={{ fontSize: 13, color: S.p, fontWeight: 600, textAlign: 'center' }}>{t('session.checkin_sent_waiting')}</div>
+          <div style={{ fontSize: 13, color: S.p, fontWeight: 600, textAlign: 'center' }}>{d.t('session.checkin_sent_waiting')}</div>
         </div>
       )}
 
-      {!isHost && appStatus === 'rejected' && (
+      {!d.isHost && d.appStatus === 'rejected' && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.redbg, border: '1px solid '+S.redbd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.red, fontWeight: 600, textAlign: 'center' }}>
             Candidature refusee
@@ -431,26 +102,26 @@ export default function DMPage() {
       )}
 
       {/* Address revealed */}
-      {isAccepted && session?.exact_address && (
+      {d.isAccepted && d.session?.exact_address && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: S.sage, marginBottom: 4 }}>
             Adresse revelee
           </div>
           <div style={{ fontSize: 14, color: S.tx, fontWeight: 600 }}>
-            {session.exact_address}
+            {d.session.exact_address}
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-            <button onClick={() => { navigator.clipboard.writeText(session.exact_address || ''); showToast(t('common.copied'), 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sagebd, background: 'transparent', cursor: 'pointer' }}>
-              <Copy size={11} strokeWidth={1.5} style={{marginRight:2}} />{t('common.copy_label')}
+            <button onClick={() => { navigator.clipboard.writeText(d.session!.exact_address || ''); showToast(d.t('common.copied'), 'success') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.sage, border: '1px solid ' + S.sagebd, background: 'transparent', cursor: 'pointer' }}>
+              <Copy size={11} strokeWidth={1.5} style={{marginRight:2}} />{d.t('common.copy_label')}
             </button>
-            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(session.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid '+S.bluebd, background: 'transparent', cursor: 'pointer' }}>
+            <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.session!.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid '+S.bluebd, background: 'transparent', cursor: 'pointer' }}>
               <Map size={11} strokeWidth={1.5} style={{marginRight:2}} /> Maps
             </button>
           </div>
-          {session.lineup_json?.directions && session.lineup_json.directions.length > 0 && (
+          {d.session.lineup_json?.directions && d.session.lineup_json.directions.length > 0 && (
             <div style={{ padding: '8px 16px 0' }}>
               <p style={{ fontSize: 11, fontWeight: 700, color: S.tx2, margin: '0 0 4px' }}>ACCÈS</p>
-              {session.lineup_json.directions.map((step: any, i: number) => {
+              {d.session.lineup_json.directions.map((step: any, i: number) => {
                 const text = typeof step === 'string' ? step : step.text
                 const photo = typeof step === 'string' ? undefined : step.photo_url
                 return (
@@ -465,155 +136,50 @@ export default function DMPage() {
         </div>
       )}
 
-      {/* Messages area */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, padding: '16px 0' }}>
-        {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0 24px', width: '100%', paddingTop: 20 }}>
-            <div style={{ alignSelf: 'flex-start' }}><SkeletonLine width={200} height={44} style={{ borderRadius: 16 }} /></div>
-            <div style={{ alignSelf: 'flex-end' }}><SkeletonLine width={160} height={36} style={{ borderRadius: 16 }} /></div>
-            <div style={{ alignSelf: 'flex-start' }}><SkeletonLine width={240} height={44} style={{ borderRadius: 16 }} /></div>
-          </div>
-        ) : loadError ? (
-          <p style={{ color: S.red, margin: 0, padding: '0 24px', textAlign: 'center', paddingTop: 80 }}>{t('chat.load_error')}</p>
-        ) : messages.length === 0 ? (
-          <p style={{ color: S.tx3, margin: 0, padding: '0 24px', textAlign: 'center', marginTop: 40, fontSize: 14 }}>
-            {t('chat.send_first')}
-          </p>
-        ) : (
-          messages.map((message) => {
-            const isMine = message.sender_id === currentUser?.id
-            return (
-              <div key={message.id} onDoubleClick={() => setReplyTo({ id: message.id, text: message.text, sender_name: message.sender_name })} style={{
-                display: 'flex', flexDirection: 'column',
-                alignItems: isMine ? 'flex-end' : 'flex-start',
-                padding: '0 24px',
-              }}>
-                {!isMine && (
-                  <span style={{ color: S.tx3, fontSize: 11, marginBottom: 2 }}>
-                    {message.sender_name}
-                  </span>
-                )}
-                <div style={{
-                  padding: message.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
-                  background: isMine ? 'linear-gradient(135deg, '+S.p+', '+S.pDark+')' : S.bg2,
-                  color: isMine ? 'white' : S.tx,
-                  borderRadius: isMine ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                  border: isMine ? 'none' : '1px solid ' + S.rule,
-                  boxShadow: isMine ? '0 2px 8px rgba(224,136,122,0.2)' : 'none',
-                  overflow: 'hidden',
-                }}
-                onContextMenu={(e) => { e.preventDefault(); setMenuMsg(message) }}
-                >
-                  {message.has_media && message.media_urls?.map((url: string, mi: number) => {
-                    const isAudio = url.endsWith('.webm') || url.includes('audio')
-                    const isVideo = /\.(mp4|mov|avi|mkv)$/i.test(url) || url.includes('video')
-                    if (isAudio) return <audio key={mi} controls src={url} style={{ width: '100%', maxWidth: 240, height: 36 }} />
-                    if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 12, display: 'block' }} />
-                    return <img key={mi} src={url} alt="" loading="lazy" onClick={() => setChatLightbox(url)} style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block', cursor: 'zoom-in' }} />
-                  })}
-                  {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
-                    message.text.startsWith('[INTENT_MATCH]') ? (() => {
-                      try {
-                        const data = JSON.parse(message.text.slice(14))
-                        return (
-                          <div style={{ padding: '8px 10px', background: 'rgba(74,222,128,0.08)', borderRadius: 10, border: '1px solid ' + S.sagebd }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: S.sage, marginBottom: 4 }}>{t('intents.match_title')}</div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                              {(data.intents || []).map((slug: string) => (
-                                <span key={slug} style={{ padding: '2px 8px', borderRadius: 99, fontSize: 10, fontWeight: 600, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}>{t('intents.' + slug)}</span>
-                              ))}
-                            </div>
-                          </div>
-                        )
-                      } catch { return <span>{message.text}</span> }
-                    })() :
-                    isAddressMessage(message.text) ? (() => {
-                      const addr = parseAddressMessage(message.text)
-                      if (!addr) return <span>{message.text}</span>
-                      return (
-                        <div style={{ padding: '8px 10px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                            <MapPin size={14} style={{ color: S.sage }} />
-                            <span style={{ fontSize: 12, fontWeight: 700, color: S.tx }}>{addr.label || t('address.shared_label')}</span>
-                          </div>
-                          {addr.exact_address && <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 6px' }}>{addr.exact_address}</p>}
-                          <a href={'https://maps.google.com/?q=' + encodeURIComponent(addr.exact_address || addr.approx_area)} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, fontWeight: 600, color: S.sage, textDecoration: 'none' }}>
-                            {t('address.open_maps')}
-                          </a>
-                        </div>
-                      )
-                    })() :
-                    message.text.includes('google.com/maps') ? (
-                      <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: S.sagebg, borderRadius: 8, color: S.sage, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-                        {message.text.split('\n')[0]}
-                      </a>
-                    ) : <span>{message.text}</span>
-                  )}
-                </div>
-                <span style={{ color: isMine ? S.tx3 : S.tx3, fontSize: 10, marginTop: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
-                  {formatMessageTime(message.created_at)}
-                  {isMine && (() => {
-                    // Implicit read receipt: peer sent a message after this one → seen
-                    const peerMsgs = messages.filter(m => m.sender_id !== currentUser?.id)
-                    const lastPeerTime = peerMsgs.length > 0 ? new Date(peerMsgs[peerMsgs.length - 1].created_at).getTime() : 0
-                    const msgTime = new Date(message.created_at).getTime()
-                    const isSeen = lastPeerTime > msgTime
-                    return (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 2, color: isSeen ? '#7DD3FC' : S.tx4 }}>
-                        {isSeen ? '✓✓' : '✓'}
-                      </span>
-                    )
-                  })()}
-                </span>
-              </div>
-            )
-          })
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+      <DMMessageList
+        messages={d.messages}
+        currentUser={d.currentUser}
+        loading={d.loading}
+        loadError={d.loadError}
+        messagesEndRef={d.messagesEndRef}
+        setReplyTo={d.setReplyTo}
+        setMenuMsg={d.setMenuMsg}
+        setChatLightbox={d.setChatLightbox}
+        typingUsers={d.typingUsers}
+      />
 
-      {/* Typing indicator */}
-      {typingUsers.length > 0 && (
-        <div style={{ padding: '4px 24px', flexShrink: 0 }}>
-          <span style={{ fontSize: 11, color: S.tx3, fontStyle: 'italic' }}>
-            {t('chat.typing', { users: typingUsers.join(', ') })}
-          </span>
-        </div>
-      )}
-
-      {/* Input bar */}
       {/* Reply quote bar */}
-      {replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{replyTo.text}</p></div><button onClick={() => setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
+      {d.replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{d.replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{d.replyTo.text}</p></div><button onClick={() => d.setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
       {/* Emoji bar */}
-      {showEmojiBar && (
+      {d.showEmojiBar && (
         <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
-          <EmojiBar onSelect={e => { setNewMessage(prev => prev + e); setShowEmojiBar(false) }} />
+          <EmojiBar onSelect={e => { d.setNewMessage(prev => prev + e); d.setShowEmojiBar(false) }} />
         </div>
       )}
       <div style={{
-        background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: showEmojiBar ? 'none' : '1px solid '+S.rule,
+        background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: d.showEmojiBar ? 'none' : '1px solid '+S.rule,
         display: 'flex', gap: 8, flexShrink: 0,
       }}>
-        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
+        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: d.uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: d.uploading ? 0.5 : 1 }}>
           <Camera size={18} style={{ color: S.tx3 }} />
-          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={uploading} />
+          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) d.handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={d.uploading} />
         </label>
-        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: recording ? 'pulse 1s infinite' : 'none' }}>
-          {recording ? '■' : '●'}
+        <button type="button" onClick={d.recording ? d.stopRecording : d.startRecording} disabled={d.uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: d.recording ? S.red : S.bg2, color: d.recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: d.recording ? 'pulse 1s infinite' : 'none' }}>
+          {d.recording ? '\u25A0' : '\u25CF'}
         </button>
-        <button type="button" onClick={shareLocation} style={{ padding: '10px', borderRadius: 12, background: sharingLocation ? S.sagebg : S.bg2, color: sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>
-          {sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
+        <button type="button" onClick={d.shareLocation} style={{ padding: '10px', borderRadius: 12, background: d.sharingLocation ? S.sagebg : S.bg2, color: d.sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: d.sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>
+          {d.sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
         </button>
-        <button type="button" onClick={() => setShowEmojiBar(!showEmojiBar)} style={{ width: 44, height: 44, borderRadius: 12, background: showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-          <Smile size={18} style={{ color: showEmojiBar ? S.p : S.tx3 }} />
+        <button type="button" onClick={() => d.setShowEmojiBar(!d.showEmojiBar)} style={{ width: 44, height: 44, borderRadius: 12, background: d.showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (d.showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+          <Smile size={18} style={{ color: d.showEmojiBar ? S.p : S.tx3 }} />
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <input
           type="text"
-          value={newMessage}
-          onChange={(e) => { setNewMessage(e.target.value); sendTyping() }}
-          onKeyDown={(e) => { if (e.key === 'Enter') { stopTyping(); handleSend() } }}
-          placeholder={uploading ? t('chat.sending_photo') : t('chat.send')}
+          value={d.newMessage}
+          onChange={(e) => { d.setNewMessage(e.target.value); d.sendTyping() }}
+          onKeyDown={(e) => { if (e.key === 'Enter') { d.stopTyping(); d.handleSend() } }}
+          placeholder={d.uploading ? d.t('chat.sending_photo') : d.t('chat.send')}
           style={{
             flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
             borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
@@ -622,7 +188,7 @@ export default function DMPage() {
         />
         <button
           type="button"
-          onClick={handleSend}
+          onClick={d.handleSend}
           style={{
             padding: '12px 16px', background: S.grad, color: 'white',
             border: 'none', borderRadius: 12, fontWeight: 700, cursor: 'pointer',
@@ -632,22 +198,14 @@ export default function DMPage() {
           &rarr;
         </button>
       </div>
-      {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
-      {menuMsg && <ChatMessageMenu message={menuMsg} isOwn={menuMsg.sender_id === currentUser?.id} onCopy={() => showToast(t('chat.copied'), 'success')} onReply={() => setReplyTo({ id: menuMsg.id, text: menuMsg.text, sender_name: menuMsg.sender_name })} onDelete={menuMsg.sender_id === currentUser?.id ? () => { supabase.from('messages').delete().eq('id', menuMsg.id); setMessages(prev => prev.filter(m => m.id !== menuMsg.id)) } : undefined} onClose={() => setMenuMsg(null)} labels={{ copy: t('chat.copy_text'), reply: t('chat.reply'), delete: t('chat.delete_msg') }} />}
-      {currentUser && (
+      {d.chatLightbox && <ImageLightbox images={[d.chatLightbox]} onClose={() => d.setChatLightbox(null)} />}
+      {d.menuMsg && <ChatMessageMenu message={d.menuMsg} isOwn={d.menuMsg.sender_id === d.currentUser?.id} onCopy={() => showToast(d.t('chat.copied'), 'success')} onReply={() => d.setReplyTo({ id: d.menuMsg!.id, text: d.menuMsg!.text, sender_name: d.menuMsg!.sender_name })} onDelete={d.menuMsg.sender_id === d.currentUser?.id ? () => { d.handleDeleteMessage(d.menuMsg!.id) } : undefined} onClose={() => d.setMenuMsg(null)} labels={{ copy: d.t('chat.copy_text'), reply: d.t('chat.reply'), delete: d.t('chat.delete_msg') }} />}
+      {d.currentUser && (
         <AddressShareSheet
-          open={showAddressSheet}
-          onClose={() => setShowAddressSheet(false)}
-          userId={currentUser.id}
-          onSelect={async (addr) => {
-            if (!id || !currentUser) return
-            await supabase.from('messages').insert({
-              session_id: id, sender_id: currentUser.id,
-              text: encodeAddressMessage(addr),
-              sender_name: displayName || currentUser.email || '',
-              room_type: 'dm', dm_peer_id: peerId || undefined,
-            })
-          }}
+          open={d.showAddressSheet}
+          onClose={() => d.setShowAddressSheet(false)}
+          userId={d.currentUser.id}
+          onSelect={async (addr) => { d.handleAddressShare(addr) }}
         />
       )}
     </div>
