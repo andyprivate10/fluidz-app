@@ -106,7 +106,7 @@ export default function HomePage() {
           <span style={{ ...typeStyle('micro'), color: S.tx3, display: 'block', marginBottom: 8 }}>{t('home.recent_activity')}</span>
           {recentNotifs.map(n => {
             const icon = n.type === 'new_dm' || n.type === 'new_message' || n.type === 'direct_dm' ? <MessageCircle size={14} strokeWidth={1.5} /> : n.type === 'application_accepted' || n.type === 'new_application' ? <UserPlus size={14} strokeWidth={1.5} /> : <Bell size={14} strokeWidth={1.5} />
-            const text = n.title || n.body || n.message || n.type
+            const text = n.title || n.body || n.type
             return (
               <div key={n.id} onClick={() => n.href && navigate(n.href)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', cursor: n.href ? 'pointer' : 'default', borderBottom: '1px solid ' + S.rule }}>
                 <div style={{ color: S.tx3, flexShrink: 0 }}>{icon}</div>

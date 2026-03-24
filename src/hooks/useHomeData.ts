@@ -24,7 +24,7 @@ export function useHomeData() {
   const [hostPendingCount, setHostPendingCount] = useState(0)
   const [profilePct, setProfilePct] = useState(100)
   const [recentContacts, setRecentContacts] = useState<{ id: string; name: string; avatar?: string }[]>([])
-  const [recentNotifs, setRecentNotifs] = useState<{ id: string; type: string; message?: string; title?: string; body?: string; href?: string; created_at: string }[]>([])
+  const [recentNotifs, setRecentNotifs] = useState<{ id: string; type: string; title?: string; body?: string; href?: string; created_at: string }[]>([])
   const [dismissedTips, setDismissedTips] = useState<string[]>([])
   const [showTips, setShowTips] = useState(false)
   const [sessionSuggestions, setSessionSuggestions] = useState<{ id: string; name: string; avatar?: string }[]>([])
@@ -89,7 +89,7 @@ export function useHomeData() {
     setPendingReviews((reviewQueue || []).map((r: any) => ({ session_id: r.session_id, title: r.sessions?.title || 'Session' })))
 
     // Recent notifications
-    const { data: notifs } = await supabase.from('notifications').select('id, type, message, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
+    const { data: notifs } = await supabase.from('notifications').select('id, type, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
     setRecentNotifs(notifs || [])
 
     // Tips eligibility
