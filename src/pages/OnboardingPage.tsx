@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { compressImage } from '../lib/media'
+import { compressImage, readFileAsDataUrl } from '../lib/media'
+import ImageCropModal from '../components/ImageCropModal'
 import {User as UserIcon, Camera, Sparkles, ChevronRight, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -31,6 +32,7 @@ export default function OnboardingPage() {
   const [avatarUrl, setAvatarUrl] = useState('')
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user: u } }) => {
@@ -51,21 +53,27 @@ export default function OnboardingPage() {
     })
   }, [])
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !user) return
+    e.target.value = ''
+    const dataUrl = await readFileAsDataUrl(file)
+    setCropSrc(dataUrl)
+  }
+
+  async function handleCropConfirm(croppedFile: File) {
+    setCropSrc(null)
+    if (!user) return
     setUploading(true)
     try {
-      const compressed = await compressImage(file)
-      const ext = file.name.split('.').pop() || 'jpg'
-      const path = `${user.id}/avatar_${Date.now()}.${ext}`
+      const compressed = await compressImage(croppedFile)
+      const path = `${user.id}/avatar_${Date.now()}.jpg`
       const { error } = await supabase.storage.from('avatars').upload(path, compressed, { upsert: false })
-      if (error) { showToast('Erreur upload: ' + error.message, 'error'); return }
+      if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error'); return }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       setAvatarUrl(publicUrl)
-      showToast('Photo ajoutée', 'success')
     } catch (err) {
-      showToast('Erreur: ' + String(err), 'error')
+      showToast(t('errors.error_prefix') + ': ' + String(err), 'error')
     } finally {
       setUploading(false)
     }
@@ -224,7 +232,7 @@ export default function OnboardingPage() {
             )}
             <label style={{ position: 'absolute', bottom: -4, right: -4, width: 40, height: 40, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
               <Camera size={18} style={{ color: '#fff' }} />
-              <input type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
+              <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: 'none' }} />
             </label>
           </div>
           {uploading && <p style={{ fontSize: 12, color: S.p }}>{t('onboarding.uploading')}</p>}
@@ -245,6 +253,14 @@ export default function OnboardingPage() {
         </div>
       )}
 
+      {cropSrc && (
+        <ImageCropModal
+          imageSrc={cropSrc}
+          aspect={1}
+          onConfirm={handleCropConfirm}
+          onCancel={() => setCropSrc(null)}
+        />
+      )}
     </div>
   )
 }

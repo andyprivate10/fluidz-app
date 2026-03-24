@@ -885,5 +885,10 @@
     "bottom_cta": "Prêt pour ce soir ?",
     "bottom_desc": "Gratuit. Pas de pub. Pas de tracking.",
     "footer": "Tes relations, tes règles."
+  },
+  "crop": {
+    "title": "Recadrer la photo",
+    "confirm": "Confirmer",
+    "processing": "Traitement…"
   }
 }

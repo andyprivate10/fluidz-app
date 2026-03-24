@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { compressImage } from '../lib/media'
+import { compressImage, readFileAsDataUrl } from '../lib/media'
+import ImageCropModal from '../components/ImageCropModal'
 import { VibeScoreCard } from '../components/VibeScoreBadge'
 import type { User } from '@supabase/supabase-js'
 import { colors } from '../brand'
@@ -120,6 +121,9 @@ export default function MePage() {
   const [photosIntime, setPhotosIntime] = useState<string[]>([])
   const [videosIntime, setVideosIntime] = useState<string[]>([])
   const [mediaUploading, setMediaUploading] = useState(false)
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
+  const [cropCallback, setCropCallback] = useState<((file: File) => void) | null>(null)
+  const [cropAspect, setCropAspect] = useState(1)
   const [hasGuestToken, setHasGuestToken] = useState(false)
   const profileLoaded = useRef(false)
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -510,7 +514,16 @@ export default function MePage() {
               <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.rule, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
                 <input type="file" accept="image/*" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
-                  for (const f of captured) await uploadMedia(f, 'profil', 'photo')
+                  for (const f of captured) {
+                    const dataUrl = await readFileAsDataUrl(f)
+                    setCropAspect(1)
+                    setCropSrc(dataUrl)
+                    setCropCallback(() => (croppedFile: File) => {
+                      setCropSrc(null); setCropCallback(null)
+                      uploadMedia(croppedFile, 'profil', 'photo')
+                    })
+                    break // crop one at a time
+                  }
                 }} disabled={mediaUploading} style={{ display:'none' }} />
                 <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
                 <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Photo</span>
@@ -684,6 +697,14 @@ export default function MePage() {
           </div>
         </div>
 
+      {cropSrc && cropCallback && (
+        <ImageCropModal
+          imageSrc={cropSrc}
+          aspect={cropAspect}
+          onConfirm={cropCallback}
+          onCancel={() => { setCropSrc(null); setCropCallback(null) }}
+        />
+      )}
     </div>
   )
 }

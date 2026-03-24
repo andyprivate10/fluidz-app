@@ -1,15 +1,15 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, ImagePlus } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import { compressImage } from '../../lib/media'
+import { compressImage, readFileAsDataUrl } from '../../lib/media'
 import { showToast } from '../Toast'
 import { colors } from '../../brand'
+import ImageCropModal from '../ImageCropModal'
 
 const S = colors
 
-// BODY_ZONES defined inside component to access t()
-
-// Zone icons inline (avoid importing from MePage)
+// Zone icons inline
 import { User as UserIcon, Flame, Circle, Footprints } from 'lucide-react'
 const ZONE_ICONS: Record<string, React.ReactNode> = {
   torso: <UserIcon size={18} strokeWidth={1.5} />,
@@ -41,6 +41,9 @@ type Props = {
 
 export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartPhotos, photosIntime, videosIntime, removePhotoIntime, removeVideoIntime, uploadMedia, mediaUploading }: Props) {
   const { t } = useTranslation()
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
+  const [cropCallback, setCropCallback] = useState<((file: File) => void) | null>(null)
+
   const BODY_ZONES = [
     { id: 'torso', label: t('zones.torso') },
     { id: 'sex', label: t('zones.sex') },
@@ -87,14 +90,31 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
                       <input type="file" accept="image/*,video/*" onChange={async (e) => {
                         const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
                         const isVid = f.type.startsWith('video/')
-                        const fileToUpload = isVid ? f : await compressImage(f)
-                        const ext = f.name.split('.').pop() || 'jpg'
-                        const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-                        const path = `${userId}/zone_${zone.id}_${ts}.${ext}`
-                        const { error } = await supabase.storage.from('avatars').upload(path, fileToUpload, { upsert: false })
-                        if (error) { showToast('Upload error', 'error'); return }
-                        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-                        setBodyPartPhotos(prev => ({ ...prev, [zone.id]: [...(prev[zone.id] || []), publicUrl] }))
+                        if (isVid) {
+                          // Skip crop for videos
+                          const ext = f.name.split('.').pop() || 'mp4'
+                          const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+                          const path = `${userId}/zone_${zone.id}_${ts}.${ext}`
+                          const { error } = await supabase.storage.from('avatars').upload(path, f, { upsert: false })
+                          if (error) { showToast(t('errors.upload_error'), 'error'); return }
+                          const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+                          setBodyPartPhotos(prev => ({ ...prev, [zone.id]: [...(prev[zone.id] || []), publicUrl] }))
+                        } else {
+                          // Show crop for images (4:5 portrait)
+                          const dataUrl = await readFileAsDataUrl(f)
+                          setCropSrc(dataUrl)
+                          const zoneId = zone.id
+                          setCropCallback(() => async (croppedFile: File) => {
+                            setCropSrc(null); setCropCallback(null)
+                            const compressed = await compressImage(croppedFile)
+                            const ts = Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+                            const path = `${userId}/zone_${zoneId}_${ts}.jpg`
+                            const { error } = await supabase.storage.from('avatars').upload(path, compressed, { upsert: false })
+                            if (error) { showToast(t('errors.upload_error'), 'error'); return }
+                            const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+                            setBodyPartPhotos(prev => ({ ...prev, [zoneId]: [...(prev[zoneId] || []), publicUrl] }))
+                          })
+                        }
                       }} disabled={mediaUploading} style={{ display: 'none' }} />
                       <Plus size={16} strokeWidth={1.5} style={{ color: S.p }} />
                     </label>
@@ -129,8 +149,20 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
             <input type="file" accept="image/*,video/*" multiple onChange={async (e) => {
               const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
               for (const f of captured) {
-                if (f.type.startsWith('video/')) await uploadMedia(f, 'intime', 'video')
-                else await uploadMedia(f, 'intime', 'photo')
+                if (f.type.startsWith('video/')) {
+                  await uploadMedia(f, 'intime', 'video')
+                } else {
+                  // Show crop for images (4:5 portrait)
+                  const dataUrl = await readFileAsDataUrl(f)
+                  setCropSrc(dataUrl)
+                  await new Promise<void>((resolve) => {
+                    setCropCallback(() => async (croppedFile: File) => {
+                      setCropSrc(null); setCropCallback(null)
+                      await uploadMedia(croppedFile, 'intime', 'photo')
+                      resolve()
+                    })
+                  })
+                }
               }
             }} disabled={mediaUploading} style={{ display: 'none' }} />
             <ImagePlus size={18} strokeWidth={1.5} style={{ color: S.p }} />
@@ -139,6 +171,16 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
         <p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>{t('profile.media_count', { photos: photosIntime.length, videos: videosIntime.length })}</p>
         {mediaUploading && <p style={{ fontSize: 12, color: S.p, marginTop: 8 }}>{t('profile.upload_in_progress')}</p>}
       </Section>
+
+      {/* Crop Modal */}
+      {cropSrc && cropCallback && (
+        <ImageCropModal
+          imageSrc={cropSrc}
+          aspect={4 / 5}
+          onConfirm={cropCallback}
+          onCancel={() => { setCropSrc(null); setCropCallback(null) }}
+        />
+      )}
     </>
   )
 }
