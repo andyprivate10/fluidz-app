@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart} from 'lucide-react'
 import { colors } from '../brand'
@@ -22,6 +23,7 @@ type Interaction = {
 export default function ContactDetailPage() {
   const { t } = useTranslation()
 
+  const { confirm, dialogProps } = useConfirmDialog()
   const RELATIONS = [
     { level: 'connaissance', label: t('contacts.connaissance'), icon: '○', color: S.tx3 },
     { level: 'close', label: t('contacts.close'), icon: '◉', color: S.sage },
@@ -147,7 +149,7 @@ export default function ContactDetailPage() {
   }
 
   async function removeContact() {
-    if (!contact || !window.confirm(t('host.confirm_remove_contact'))) return
+    if (!contact || !await confirm({ title: t('host.confirm_remove_contact'), danger: true })) return
     await supabase.from('contacts').delete().eq('id', contact.id)
     navigate('/contacts')
   }
@@ -400,6 +402,7 @@ export default function ContactDetailPage() {
           </button>
         )}
       </div>
+      <ConfirmDialog {...dialogProps} />
     </div>
   )
 }

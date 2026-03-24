@@ -1,4 +1,5 @@
 import LazyImage from '../components/LazyImage'
+import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -129,6 +130,7 @@ export default function PublicProfile() {
   const [photoIdx, setPhotoIdx] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
   const [myUserId, setMyUserId] = useState<string | null>(null)
+  const { confirm, dialogProps } = useConfirmDialog()
 
   useEffect(() => {
     if (!userId) { setLoading(false); return }
@@ -358,7 +360,7 @@ export default function PublicProfile() {
         {/* Block / Report */}
         <div style={{ display: 'flex', gap: 8, marginTop: 16, paddingBottom: 20 }}>
           <button onClick={async () => {
-            if (!window.confirm(t('profile.block_confirm'))) return
+            if (!await confirm({ title: t('profile.block_confirm'), danger: true })) return
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) return
             await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
@@ -368,7 +370,7 @@ export default function PublicProfile() {
             <Ban size={13} strokeWidth={1.5} /> {t('profile.block_user')}
           </button>
           <button onClick={async () => {
-            if (!window.confirm(t('profile.report_confirm'))) return
+            if (!await confirm({ title: t('profile.report_confirm') })) return
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) return
             await supabase.from('notifications').insert({ user_id: user.id, type: 'report', title: 'Report: ' + displayName, body: 'User ' + userId + ' reported', href: '/profile/' + userId })
@@ -388,6 +390,7 @@ export default function PublicProfile() {
         shareTitle={displayName}
       />
       {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
+      <ConfirmDialog {...dialogProps} />
     </div>
   )
 }

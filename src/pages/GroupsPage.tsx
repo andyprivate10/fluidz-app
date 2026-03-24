@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -32,6 +33,7 @@ export default function GroupsPage() {
   const [editGroup, setEditGroup] = useState<Group | null>(null)
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
+  const { confirm, dialogProps } = useConfirmDialog()
   const [newColor, setNewColor] = useState<string>(S.p)
   const [selectedMembers, setSelectedMembers] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
@@ -123,7 +125,7 @@ export default function GroupsPage() {
   }
 
   async function deleteGroup(groupId: string) {
-    if (!window.confirm(t('groups.confirm_delete'))) return
+    if (!await confirm({ title: t('groups.confirm_delete'), danger: true })) return
     await supabase.from('contact_group_members').delete().eq('group_id', groupId)
     await supabase.from('contact_groups').delete().eq('id', groupId)
     setGroups(prev => prev.filter(g => g.id !== groupId))
@@ -279,6 +281,7 @@ export default function GroupsPage() {
           </div>
         </div>
       )}
+      <ConfirmDialog {...dialogProps} />
     </div>
   )
 }

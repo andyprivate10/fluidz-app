@@ -1,4 +1,5 @@
 import { colors } from '../brand'
+import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { SkeletonSessionPage } from '../components/Skeleton'
@@ -147,6 +148,7 @@ export default function SessionPage() {
         shareTitle={d.session.title}
         shareSubtitle={d.session.approx_area}
       />
+      <ConfirmDialog {...d.confirmDialogProps} />
     </div>
   )
 }

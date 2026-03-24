@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { compressImage } from '../lib/media'
 import {MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
@@ -31,6 +32,7 @@ export default function AddressesPage() {
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const { confirm, dialogProps } = useConfirmDialog()
 
   // Form state
   const [label, setLabel] = useState('')
@@ -107,7 +109,7 @@ export default function AddressesPage() {
   }
 
   async function deleteAddress(addrId: string) {
-    if (!userId || !window.confirm(t('host.confirm_delete_address'))) return
+    if (!userId || !await confirm({ title: t('host.confirm_delete_address'), danger: true })) return
     const { data } = await supabase.from('user_profiles').select('profile_json').eq('id', userId).maybeSingle()
     const pj = (data?.profile_json || {}) as Record<string, unknown>
     const existing = Array.isArray(pj.saved_addresses) ? pj.saved_addresses as SavedAddress[] : []
@@ -265,6 +267,7 @@ export default function AddressesPage() {
           </div>
         </div>
       )}
+      <ConfirmDialog {...dialogProps} />
     </div>
   )
 }

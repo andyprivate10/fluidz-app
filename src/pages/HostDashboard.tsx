@@ -1,5 +1,6 @@
 import { Clock, Check, Copy } from 'lucide-react'
 import { colors } from '../brand'
+import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
 import { QRCodeSVG } from 'qrcode.react'
@@ -48,6 +49,7 @@ export default function HostDashboard() {
     pullHandlers,
     pullIndicator,
     getSessionCover,
+    confirmDialogProps,
   } = useHostDashboard()
 
   if (loading) return (
@@ -313,7 +315,7 @@ export default function HostDashboard() {
         onConfirmCheckIn={confirmCheckIn}
         onEject={ejectMember}
       />
-
+      <ConfirmDialog {...confirmDialogProps} />
     </div>
   )
 }

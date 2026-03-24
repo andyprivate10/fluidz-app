@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import { useConfirmDialog } from '../components/ConfirmDialog'
 import { formatElapsed, formatRemaining } from '../lib/timing'
 import { useCopyFeedback } from './useCopyFeedback'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +17,7 @@ export function useSessionData() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { confirm, dialogProps: confirmDialogProps } = useConfirmDialog()
   const [session, setSession] = useState<Session | null>(null)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [myApp, setMyApp] = useState<{ status: string } | null>(null)
@@ -283,7 +285,7 @@ export function useSessionData() {
   }
 
   const cancelApplication = async () => {
-    if (!window.confirm(t('session.cancel_confirm'))) return
+    if (!await confirm({ title: t('session.cancel_confirm') })) return
     await supabase.from('applications').delete().eq('session_id', id).eq('applicant_id', currentUser!.id)
     showToast(t('session.cancelled'), 'info')
     setMyApp(null)
@@ -291,7 +293,7 @@ export function useSessionData() {
   }
 
   const leaveSession = async () => {
-    if (!window.confirm(t('session.leave_confirm'))) return
+    if (!await confirm({ title: t('session.leave_confirm') })) return
     await supabase.from('applications').update({ status: 'left' }).eq('session_id', id).eq('applicant_id', currentUser!.id)
     showToast(t('session.left_session'), 'info')
     setMyApp(null)
@@ -312,5 +314,6 @@ export function useSessionData() {
     handleTouchStart, handleTouchEnd,
     getVoteStats, handleVote, handleCheckIn,
     cancelApplication, leaveSession, loadData,
+    confirmDialogProps,
   }
 }

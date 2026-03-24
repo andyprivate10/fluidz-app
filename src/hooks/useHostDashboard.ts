@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
+import { useConfirmDialog } from '../components/ConfirmDialog'
 import { useTranslation } from 'react-i18next'
 import { usePullToRefresh } from './usePullToRefresh'
 import { useCopyFeedback } from './useCopyFeedback'
@@ -14,6 +15,7 @@ export function useHostDashboard() {
   const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
+  const { confirm, dialogProps: confirmDialogProps } = useConfirmDialog()
   const [user, setUser] = useState<any>(null)
   const [sess, setSess] = useState<any>(null)
   const [apps, setApps] = useState<any[]>([])
@@ -109,7 +111,7 @@ export function useHostDashboard() {
     if (status === 'rejected') {
       const app = apps.find(a => a.id === appId)
       const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
-      if (!window.confirm(t('host.confirm_refuse', { name }))) return
+      if (!await confirm({ title: t('host.confirm_refuse', { name }), danger: true })) return
     }
     setActionLoading(appId)
     await supabase.from('applications').update({ status }).eq('id', appId)
@@ -211,8 +213,8 @@ export function useHostDashboard() {
   }
 
   async function closeSession() {
-    const destroyMedia = window.confirm(t('host.close_confirm'))
-    if (!destroyMedia && !window.confirm(t('host.close_without_delete'))) return
+    const destroyMedia = await confirm({ title: t('host.close_confirm'), danger: true })
+    if (!destroyMedia && !await confirm({ title: t('host.close_without_delete') })) return
 
     await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
     setSess((s: any) => ({...s, status: 'ended'}))
@@ -297,7 +299,7 @@ export function useHostDashboard() {
   async function ejectMember(appId: string) {
     const app = apps.find(a => a.id === appId)
     const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
-    if (!window.confirm(t('host.eject_confirm', { name }))) return
+    if (!await confirm({ title: t('host.eject_confirm', { name }), danger: true })) return
     setActionLoading(appId)
     await supabase.from('applications').update({ status: 'ejected' }).eq('id', appId)
     if (app && sess) {
@@ -366,5 +368,6 @@ export function useHostDashboard() {
     pullHandlers,
     pullIndicator,
     getSessionCover,
+    confirmDialogProps,
   }
 }
