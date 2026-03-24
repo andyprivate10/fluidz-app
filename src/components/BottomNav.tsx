@@ -77,6 +77,25 @@ export default function BottomNav() {
     })
   }, [location.pathname])
 
+  // Realtime: update badge when new notifications arrive
+  useEffect(() => {
+    const channel = supabase
+      .channel('bottomnav-notifs')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, () => {
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (!user) return
+          supabase.from('notifications').select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id).is('read_at', null)
+            .then(({ count }) => setUnreadNotifCount(count ?? 0))
+          supabase.from('notifications').select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
+            .then(({ count }) => setUnreadChatCount(count ?? 0))
+        })
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [])
+
   useEffect(() => {
     document.title = unreadNotifCount > 0 ? `(${unreadNotifCount}) Fluidz` : 'Fluidz'
   }, [unreadNotifCount])
