@@ -1049,6 +1049,12 @@
     "pacific_islander": "Insulaire du Pacifique",
     "aboriginal_torres": "Aborigène / Détroit de Torres"
   },
+  "favorites": {
+    "title": "Favoris",
+    "count": "favoris",
+    "empty": "Pas encore de favoris",
+    "empty_desc": "Ajoute des profils en favoris pour les retrouver ici"
+  },
   "intents": {
     "title": "Intentions",
     "select_hint": "Que cherches-tu avec cette personne ?",

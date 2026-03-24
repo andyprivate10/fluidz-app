@@ -1049,6 +1049,12 @@
     "pacific_islander": "Pacific Islander",
     "aboriginal_torres": "Aboriginal / Torres Strait"
   },
+  "favorites": {
+    "title": "Favorites",
+    "count": "favorites",
+    "empty": "No favorites yet",
+    "empty_desc": "Add profiles to your favorites to find them here"
+  },
   "intents": {
     "title": "Intentions",
     "select_hint": "What are you looking for with this person?",

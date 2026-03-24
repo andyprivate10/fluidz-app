@@ -38,6 +38,7 @@ const ChatsHubPage = lazy(() => import('./pages/ChatsHubPage'))
 const DirectDMPage = lazy(() => import('./pages/DirectDMPage'))
 const AddressesPage = lazy(() => import('./pages/AddressesPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 
 const routes = [
@@ -66,6 +67,7 @@ const routes = [
   { path: '/addresses', element: <AddressesPage /> },
   { path: '/contacts/:contactUserId', element: <ContactDetailPage /> },
   { path: '/groups', element: <GroupsPage /> },
+  { path: '/favorites', element: <FavoritesPage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },

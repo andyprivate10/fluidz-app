@@ -127,6 +127,8 @@ export default function PublicProfile() {
   const [myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
   const [allowed, setAllowed] = useState<boolean>(false)
   const [photoIdx, setPhotoIdx] = useState(0)
+  const [isFavorite, setIsFavorite] = useState(false)
+  const [myUserId, setMyUserId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!userId) { setLoading(false); return }
@@ -140,7 +142,11 @@ export default function PublicProfile() {
       setLoading(false)
       const { data: mp } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
       if (mp) setMyProfile({ display_name: mp.display_name, ...(mp.profile_json as Record<string,unknown> || {}) })
-      if (user?.id && userId && user.id !== userId) supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: userId, type: 'profile_view' as any, meta: {} }).then(() => {})
+      setMyUserId(user.id)
+      if (user.id !== userId) {
+        supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: userId, type: 'profile_view' as any, meta: {} }).then(() => {})
+        supabase.from('favorites').select('id').eq('user_id', user.id).eq('target_user_id', userId).maybeSingle().then(({ data }) => setIsFavorite(!!data))
+      }
     }
     run()
     return () => { c = true }
@@ -262,7 +268,23 @@ export default function PublicProfile() {
           <button onClick={() => setShowStory(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}><Play size={12} strokeWidth={2} fill={S.tx2} /> Story</button>
           <Create1to1Button targetUserId={userId!} targetName={displayName} />
         </div>
-        <div style={{ marginTop: 8 }}><AddContactButton targetUserId={userId!} /></div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
+          <div style={{ flex: 1 }}><AddContactButton targetUserId={userId!} /></div>
+          {myUserId && myUserId !== userId && (
+            <button onClick={async () => {
+              if (!myUserId) return
+              if (isFavorite) {
+                await supabase.from('favorites').delete().eq('user_id', myUserId).eq('target_user_id', userId)
+                setIsFavorite(false)
+              } else {
+                await supabase.from('favorites').upsert({ user_id: myUserId, target_user_id: userId }, { onConflict: 'user_id,target_user_id' })
+                setIsFavorite(true)
+              }
+            }} style={{ width: 40, height: 40, borderRadius: 12, border: '1px solid ' + (isFavorite ? S.pbd : S.rule), background: isFavorite ? S.p2 : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+              <Heart size={18} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
+            </button>
+          )}
+        </div>
         <button onClick={() => setShowShareSheet(true)} style={{ marginTop: 8, width: '100%', padding: 10, borderRadius: 12, border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)'), background: 'transparent', color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
           <Send size={13} strokeWidth={1.5} /> {t('share.recommend_profile')}
         </button>

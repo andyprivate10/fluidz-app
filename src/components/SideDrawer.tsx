@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../brand'
-import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X } from 'lucide-react'
+import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart } from 'lucide-react'
 
 const S = colors
 
@@ -125,6 +125,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           {menuItem(<User size={18} strokeWidth={1.5} />, t('drawer.my_profile'), '/me')}
           {menuItem(<Bell size={18} strokeWidth={1.5} />, t('drawer.notifications'), '/notifications', unreadCount)}
           {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.naughty_book'), '/contacts')}
+          {menuItem(<Heart size={18} strokeWidth={1.5} />, t('favorites.title'), '/favorites')}
 
           {/* Section: Settings */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('drawer.settings')}</p>
