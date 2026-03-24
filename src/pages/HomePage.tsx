@@ -6,8 +6,9 @@ import { colors, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { getSessionCover } from '../lib/sessionCover'
-import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost } from 'lucide-react'
+import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { timeAgo } from '../lib/timing'
 
 const S = colors
 const R = radius
@@ -26,6 +27,7 @@ export default function HomePage() {
   const [hostPendingCount, setHostPendingCount] = useState(0)
   const [profilePct, setProfilePct] = useState(100)
   const [recentContacts, setRecentContacts] = useState<{ id: string; name: string; avatar?: string }[]>([])
+  const [recentNotifs, setRecentNotifs] = useState<{ id: string; type: string; message?: string; title?: string; body?: string; href?: string; created_at: string }[]>([])
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -80,6 +82,10 @@ export default function HomePage() {
       })
       setRecentContacts(ordered)
     } else { setRecentContacts([]) }
+
+    // Recent notifications
+    const { data: notifs } = await supabase.from('notifications').select('id, type, message, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
+    setRecentNotifs(notifs || [])
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
@@ -155,6 +161,24 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ─── Mini Activity Feed ────────────────────────── */}
+      {recentNotifs.length > 0 && (
+        <div style={{ position: 'relative', zIndex: 1, padding: '0 24px 8px' }}>
+          <span style={{ ...typeStyle('micro'), color: S.tx3, display: 'block', marginBottom: 8 }}>{t('home.recent_activity')}</span>
+          {recentNotifs.map(n => {
+            const icon = n.type === 'new_dm' || n.type === 'new_message' || n.type === 'direct_dm' ? <MessageCircle size={14} strokeWidth={1.5} /> : n.type === 'application_accepted' || n.type === 'new_application' ? <UserPlus size={14} strokeWidth={1.5} /> : <Bell size={14} strokeWidth={1.5} />
+            const text = n.title || n.body || n.message || n.type
+            return (
+              <div key={n.id} onClick={() => n.href && navigate(n.href)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', cursor: n.href ? 'pointer' : 'default', borderBottom: '1px solid ' + S.rule }}>
+                <div style={{ color: S.tx3, flexShrink: 0 }}>{icon}</div>
+                <span style={{ flex: 1, fontSize: 12, color: S.tx2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{text}</span>
+                <span style={{ fontSize: 10, color: S.tx4, flexShrink: 0 }}>{timeAgo(n.created_at)}</span>
+              </div>
+            )
+          })}
         </div>
       )}
 
