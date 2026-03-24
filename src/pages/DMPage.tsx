@@ -512,6 +512,21 @@ export default function DMPage() {
                     return <img key={mi} src={url} alt="" loading="lazy" onClick={() => setChatLightbox(url)} style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block', cursor: 'zoom-in' }} />
                   })}
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
+                    message.text.startsWith('[INTENT_MATCH]') ? (() => {
+                      try {
+                        const data = JSON.parse(message.text.slice(14))
+                        return (
+                          <div style={{ padding: '8px 10px', background: 'rgba(74,222,128,0.08)', borderRadius: 10, border: '1px solid ' + S.sagebd }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: S.sage, marginBottom: 4 }}>{t('intents.match_title')}</div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                              {(data.intents || []).map((slug: string) => (
+                                <span key={slug} style={{ padding: '2px 8px', borderRadius: 99, fontSize: 10, fontWeight: 600, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}>{t('intents.' + slug)}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      } catch { return <span>{message.text}</span> }
+                    })() :
                     isAddressMessage(message.text) ? (() => {
                       const addr = parseAddressMessage(message.text)
                       if (!addr) return <span>{message.text}</span>

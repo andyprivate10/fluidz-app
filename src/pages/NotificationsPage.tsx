@@ -20,6 +20,7 @@ const TYPE_ICONS: Record<string, string> = {
   session_invite: '→', group_invite: '⊕', direct_dm: '↗',
   direct_join: '→', contact_request: '♡', check_in: '◎',
   check_in_confirmed: '◉', review_request: '★', nudge: '⏱',
+  intent_match: '💜', naughtybook_added: '♡',
 }
 
 export default function NotificationsPage() {
@@ -113,9 +114,9 @@ export default function NotificationsPage() {
           <SwipeableRow onDelete={() => deleteNotif(n.id)}>
           <button onClick={() => handleClick(n)} style={{
             width: '100%', textAlign: 'left', padding: '14px 12px', borderRadius: R.block,
-            border: 'none', background: S.bg, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
-            borderBottom: `1px solid ${S.rule}`, position: 'relative',
-            borderLeft: n.read_at ? 'none' : `3px solid ${S.p}`,
+            border: 'none', background: n.type === 'intent_match' ? 'rgba(74,222,128,0.06)' : S.bg, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
+            borderBottom: `1px solid ${n.type === 'intent_match' ? S.sagebd : S.rule}`, position: 'relative',
+            borderLeft: n.read_at ? 'none' : `3px solid ${n.type === 'intent_match' ? S.sage : S.p}`,
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
               {/* Icon */}
