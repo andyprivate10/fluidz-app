@@ -15,9 +15,21 @@ export const inp: React.CSSProperties = {
   fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' as const,
 }
 
+const DEFAULT_HOST_RULES = 'Respect mutuel obligatoire. Safe word respecté. Pas de photo/vidéo sans consentement. Le host se réserve le droit d\'éjecter tout participant.'
+
+export type StepName = 'basics' | 'rules' | 'address' | 'timing' | 'visibility'
+const STEPS: StepName[] = ['basics', 'rules', 'address', 'timing', 'visibility']
+
 export function useCreateSession() {
   const { t } = useTranslation()
-  const { sessionTags, roles, sessionTemplates } = useAdminConfig()
+  const { sessionTags, roles, sessionTemplates: rawTemplates } = useAdminConfig()
+  // Filter templates: only Custom, Dark Room, Powder Room, Techno
+  const allowedSlugs = ['dark_room', 'powder_room', 'techno']
+  const sessionTemplates = rawTemplates.filter(tpl =>
+    allowedSlugs.includes(tpl.slug) ||
+    allowedSlugs.includes(tpl.slug.replace(/-/g, '_')) ||
+    ['Dark Room', 'Powder Room', 'Techno'].includes(tpl.label)
+  )
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
@@ -31,25 +43,19 @@ export function useCreateSession() {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [step, setStep] = useState<'template'|'details'|'address'>('template')
-  const [savedAddresses, setSavedAddresses] = useState<{ id?: string; label?: string; approx_area?: string; exact_address?: string; directions?: { text: string; photo_url?: string }[] }[]>([])
+  const [step, setStep] = useState<StepName>('basics')
+  const [savedAddresses, setSavedAddresses] = useState<{ id?: string; label?: string; approx_area?: string; exact_address?: string; directions?: { text: string; photo_url?: string }[]; last_used?: string }[]>([])
   const [savingAddress, setSavingAddress] = useState(false)
   const [directions, setDirections] = useState<{ text: string; photo_url?: string }[]>([{ text: '' }])
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
-  const [createdSession, setCreatedSession] = useState<{ id: string; title: string; approx_area: string; invite_code: string } | null>(null)
   const [isPublic, setIsPublic] = useState(false)
-  const [copyFeedback, setCopyFeedback] = useState<'grindr'|'whatsapp'|'telegram'|'message'|null>(null)
-  const [groups, setGroups] = useState<{ id: string; name: string; members: string[] }[]>([])
-  const [notifiedGroups, setNotifiedGroups] = useState<Set<string>>(new Set())
   const [startsNow, setStartsNow] = useState(true)
   const [startsAt, setStartsAt] = useState('')
   const [durationHours, setDurationHours] = useState(3)
   const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
   const [savedTemplates, setSavedTemplates] = useState<{ slug: string; label: string; meta: Record<string, unknown> }[]>([])
-  const [preInviteGroup, setPreInviteGroup] = useState<{ id: string; name: string; members: string[] } | null>(null)
-  const [showGroupPicker, setShowGroupPicker] = useState(false)
-  const [allGroups, setAllGroups] = useState<{ id: string; name: string; members: string[] }[]>([])
-  const [templateSaved, setTemplateSaved] = useState(false)
+  const [hostRules, setHostRules] = useState(DEFAULT_HOST_RULES)
+  const [addressMode, setAddressMode] = useState<'last'|'list'|'new'>('last')
 
   useEffect(() => {
     if (tplParam && sessionTemplates.length > 0) {
@@ -58,7 +64,7 @@ export function useCreateSession() {
         const meta = tpl.meta as any
         setTitle(tpl.label); setDescription(meta?.description || ''); setSelectedTags(meta?.tags || [])
         setRolesWanted({}); setDirections([{ text: '' }])
-        setTemplate(tpl.slug); setStep('details')
+        setTemplate(tpl.slug); setStep('rules')
       }
     }
   }, [tplParam, sessionTemplates])
@@ -72,44 +78,40 @@ export function useCreateSession() {
         supabase.from('user_profiles').select('profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
           const pj = prof?.profile_json as any
           const addrs = pj?.saved_addresses
-          setSavedAddresses(Array.isArray(addrs) ? addrs : [])
+          const addrList = Array.isArray(addrs) ? addrs : []
+          setSavedAddresses(addrList)
+          // Pre-select last used address
+          if (addrList.length > 0) {
+            const sorted = [...addrList].sort((a: any, b: any) => {
+              const ta = a.last_used ? new Date(a.last_used).getTime() : 0
+              const tb = b.last_used ? new Date(b.last_used).getTime() : 0
+              return tb - ta
+            })
+            const lastAddr = sorted[0]
+            if (lastAddr.approx_area) setApproxArea(lastAddr.approx_area)
+            if (lastAddr.exact_address) setExactAddress(lastAddr.exact_address)
+            if (lastAddr.directions && lastAddr.directions.length > 0) {
+              setDirections(lastAddr.directions.map((d: any) => typeof d === 'string' ? { text: d } : d))
+            }
+            setAddressMode('last')
+          }
           const tpls = pj?.saved_templates
           setSavedTemplates(Array.isArray(tpls) ? tpls : [])
-        })
-        // Load user's groups for pre-invite
-        supabase.from('contact_groups').select('id, name').eq('owner_id', u.id).then(({ data: gRows }) => {
-          if (gRows && gRows.length > 0) {
-            supabase.from('contact_group_members').select('group_id, contact_user_id').in('group_id', gRows.map(g => g.id)).then(({ data: mRows }) => {
-              const groups = gRows.map(g => ({
-                id: g.id, name: g.name,
-                members: (mRows || []).filter((m: any) => m.group_id === g.id).map((m: any) => m.contact_user_id),
-              }))
-              setAllGroups(groups)
-              // Auto-select group from ?group= param
-              const groupParam = searchParams.get('group')
-              if (groupParam) {
-                const found = groups.find(g => g.id === groupParam)
-                if (found) setPreInviteGroup(found)
-              }
-            })
-          }
         })
       }
     })
   }, [])
 
   async function saveAsTemplate() {
-    if (!user || !createdSession) return
+    if (!user || !title) return
     const slug = 'saved_' + Date.now()
     const tpl = {
       slug,
-      label: createdSession.title,
-      meta: { tags: selectedTags, description, roles_wanted: rolesWanted },
+      label: title,
+      meta: { tags: selectedTags, description, roles_wanted: rolesWanted, host_rules: hostRules },
     }
     const updated = [...savedTemplates, tpl]
     setSavedTemplates(updated)
-    setTemplateSaved(true)
-    // Persist to profile_json
     const { data: prof } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
     const pj = (prof?.profile_json as any) || {}
     await supabase.from('user_profiles').update({ profile_json: { ...pj, saved_templates: updated } }).eq('id', user.id)
@@ -124,11 +126,23 @@ export function useCreateSession() {
       setTitle(tpl.label)
       setDescription(meta?.description || '')
     }
-    setStep('details')
+    if (meta?.host_rules) setHostRules(meta.host_rules)
+    setStep('rules')
   }
 
   function toggleTag(tag: string) {
     setSelectedTags(prev => prev.includes(tag) ? prev.filter(x=>x!==tag) : [...prev, tag])
+  }
+
+  function clearAddress() {
+    setApproxArea('')
+    setExactAddress('')
+    setDirections([{ text: '' }])
+  }
+
+  function switchAddressMode(mode: 'last'|'list'|'new') {
+    setAddressMode(mode)
+    if (mode === 'new') clearAddress()
   }
 
   async function create() {
@@ -158,6 +172,7 @@ export function useCreateSession() {
       lineup_json: {
         ...(directionsFiltered.length > 0 ? { directions: directionsFiltered } : {}),
         ...(Object.keys(rolesWanted).length > 0 ? { roles_wanted: rolesWanted } : {}),
+        host_rules: hostRules,
       },
     }).select().single()
     setLoading(false)
@@ -167,7 +182,21 @@ export function useCreateSession() {
       return
     }
     if (data) {
-      setCreatedSession({ id: data.id, title: data.title, approx_area: data.approx_area, invite_code: data.invite_code })
+      // Mark address as last used
+      if (approxArea || exactAddress) {
+        const { data: profRow } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
+        const pj = (profRow?.profile_json as any) || {}
+        const addrs = Array.isArray(pj.saved_addresses) ? [...pj.saved_addresses] : []
+        const existing = addrs.findIndex((a: any) => a.approx_area === approxArea && a.exact_address === exactAddress)
+        if (existing >= 0) {
+          addrs[existing] = { ...addrs[existing], last_used: new Date().toISOString() }
+        }
+        await supabase.from('user_profiles').upsert({
+          id: user.id,
+          display_name: profRow?.display_name ?? '',
+          profile_json: { ...pj, saved_addresses: addrs },
+        })
+      }
       // Auto-invite peer from DM if ?invite= param present
       if (inviteParam) {
         await supabase.from('applications').insert({
@@ -184,46 +213,9 @@ export function useCreateSession() {
           href: '/join/' + data.invite_code,
         })
       }
-      // Auto-invite pre-selected group members
-      if (preInviteGroup && preInviteGroup.members.length > 0) {
-        const apps = preInviteGroup.members.map(uid => ({
-          session_id: data.id, applicant_id: uid, status: 'accepted', eps_json: {},
-        }))
-        await supabase.from('applications').insert(apps)
-        const notifs = preInviteGroup.members.map(uid => ({
-          user_id: uid, session_id: data.id, type: 'session_invite',
-          message: t('session.invite_body'), href: '/join/' + data.invite_code,
-        }))
-        await supabase.from('notifications').insert(notifs)
-      }
-      // Load user's groups for invite
-      const { data: pData } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
-      const gIds = ((pData?.profile_json as any)?.contact_groups || []).map((g: any) => g.id)
-      if (gIds.length > 0) {
-        const { data: groupRows } = await supabase.from('contact_groups').select('id, name').in('id', gIds)
-        const { data: memberRows } = await supabase.from('contact_group_members').select('group_id, contact_user_id').in('group_id', gIds)
-        setGroups((groupRows || []).map((g: any) => ({
-          id: g.id, name: g.name,
-          members: (memberRows || []).filter((m: any) => m.group_id === g.id).map((m: any) => m.contact_user_id),
-        })))
-      }
+      // Navigate directly to host dashboard recruit tab
+      navigate(`/session/${data.id}/host?tab=recruit`)
     }
-  }
-
-  function copyShareMessage(app: 'grindr'|'whatsapp'|'telegram') {
-    if (!createdSession) return
-    const url = typeof window !== 'undefined' ? window.location.origin + '/join/' + createdSession.invite_code : ''
-    const title = createdSession.title
-    const area = createdSession.approx_area
-    const text = app === 'grindr'
-      ? title + (area ? ' – ' + area : '') + '\n' + t('share.apply_here') + ': ' + url
-      : app === 'whatsapp'
-      ? '🔥 ' + title + (area ? ' – ' + area : '') + '\n\n' + t('share.join_here') + ': ' + url
-      : '🔥 ' + title + (area ? ' – ' + area : '') + '\n\n' + url
-    navigator.clipboard.writeText(text).then(() => {
-      setCopyFeedback(app)
-      setTimeout(() => setCopyFeedback(null), 2000)
-    })
   }
 
   async function saveAddress() {
@@ -232,7 +224,7 @@ export function useCreateSession() {
     const { data: row } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
     const pj = (row?.profile_json as any) || {}
     const addrs = Array.isArray(pj.saved_addresses) ? [...pj.saved_addresses] : []
-    addrs.push({ approx_area: approxArea || undefined, exact_address: exactAddress || undefined })
+    addrs.push({ approx_area: approxArea || undefined, exact_address: exactAddress || undefined, last_used: new Date().toISOString() })
     await supabase.from('user_profiles').upsert({
       id: user.id,
       display_name: row?.display_name ?? '',
@@ -250,17 +242,13 @@ export function useCreateSession() {
     }
   }
 
-  const steps = ['template','details','address']
+  const steps = STEPS
   const stepIdx = steps.indexOf(step)
 
   return {
-    // translation
     t,
-    // admin config
     sessionTags, roles, sessionTemplates,
-    // navigation
     navigate,
-    // state
     user,
     _template,
     title, setTitle,
@@ -275,32 +263,23 @@ export function useCreateSession() {
     savingAddress,
     directions, setDirections,
     rolesWanted, setRolesWanted,
-    createdSession,
     isPublic, setIsPublic,
-    copyFeedback, setCopyFeedback,
-    groups,
-    notifiedGroups, setNotifiedGroups,
     startsNow, setStartsNow,
     startsAt, setStartsAt,
     durationHours, setDurationHours,
     maxCapacity, setMaxCapacity,
     savedTemplates,
-    preInviteGroup, setPreInviteGroup,
-    showGroupPicker, setShowGroupPicker,
-    allGroups,
-    templateSaved,
-    // derived
+    hostRules, setHostRules,
+    addressMode, switchAddressMode,
     steps,
     stepIdx,
-    // handlers
     pickTemplate,
     toggleTag,
     create,
-    copyShareMessage,
     saveAddress,
     pickSavedAddress,
     saveAsTemplate,
-    // lib re-exports needed by UI
+    clearAddress,
     getSessionCover,
   }
 }
