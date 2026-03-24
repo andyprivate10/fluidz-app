@@ -30,10 +30,11 @@ export default function ContactsPage() {
   const { t } = useTranslation()
 
   const RELATION_STYLES = {
-    connaissance: { label: t('contacts.connaissance'), color: S.tx3, icon: '○' },
-    close: { label: t('contacts.close'), color: S.sage, icon: '◉' },
-    favori: { label: t('contacts.favori'), color: S.p, icon: '★' },
+    connaissance: { label: t('contacts.connaissance'), color: S.tx3, stars: 1 },
+    close: { label: t('contacts.close'), color: S.sage, stars: 2 },
+    favori: { label: t('contacts.favori'), color: S.p, stars: 3 },
   }
+  const starIcon = (filled: boolean, color: string) => <span style={{ fontSize: 10, color: filled ? color : S.tx4 }}>★</span>
 
   const navigate = useNavigate()
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -138,7 +139,7 @@ export default function ContactsPage() {
         <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
           {(['all', 'favori', 'close', 'connaissance'] as const).map(f => {
             const active = filter === f
-            const label = f === 'all' ? `Tous (${counts.all})` : `${RELATION_STYLES[f].icon} ${RELATION_STYLES[f].label} (${counts[f]})`
+            const label = f === 'all' ? `Tous (${counts.all})` : `${'★'.repeat(RELATION_STYLES[f].stars)} ${RELATION_STYLES[f].label} (${counts[f]})`
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer',
@@ -189,28 +190,22 @@ export default function ContactsPage() {
               <div style={{ flex: 1, minWidth: 0 }} onClick={() => navigate('/contacts/' + contact.contact_user_id)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{contact.display_name}</span>
-                  <span style={{ fontSize: 10, color: rel.color, fontWeight: 600 }}>{rel.icon}</span>
+                  <span style={{ display: 'inline-flex', gap: 1 }}>{[1,2,3].map(n => starIcon(n <= rel.stars, rel.color))}</span>
                   <VibeScoreBadge userId={contact.contact_user_id} />
                 </div>
                 {contact.role && <p style={{ fontSize: 12, color: S.p, margin: '2px 0 0' }}>{contact.role}</p>}
                 {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.notes}</p>}
               </div>
 
-              {/* Relation selector */}
-              <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                {(['connaissance', 'close', 'favori'] as const).map(lvl => {
-                  const rs = RELATION_STYLES[lvl]
-                  const active = contact.relation_level === lvl
-                  return (
-                    <button key={lvl} onClick={() => updateRelation(contact.id, lvl)} title={rs.label} style={{
-                      width: 28, height: 28, borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12,
-                      background: active ? rs.color + '22' : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      opacity: active ? 1 : 0.4,
-                    }}>{rs.icon}</button>
-                  )
-                })}
-              </div>
+              {/* Star cycle */}
+              <button onClick={() => {
+                const cycle: ('connaissance' | 'close' | 'favori')[] = ['connaissance', 'close', 'favori']
+                const idx = cycle.indexOf(contact.relation_level)
+                const next = cycle[(idx + 1) % cycle.length]
+                updateRelation(contact.id, next)
+              }} style={{ padding: '4px 8px', borderRadius: 8, border: 'none', cursor: 'pointer', background: 'transparent', display: 'flex', gap: 2, flexShrink: 0 }}>
+                {[1,2,3].map(n => <span key={n} style={{ fontSize: 14, color: n <= rel.stars ? rel.color : S.tx4 }}>★</span>)}
+              </button>
             </div>
           )
         })}
