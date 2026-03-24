@@ -77,9 +77,9 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
           </div>
         ))}
       </div>
-      <button onClick={onClose} style={{ position:'absolute',top:24,right:16,zIndex:30,background:'rgba(0,0,0,0.4)',border:'none',borderRadius:'50%',padding:8,cursor:'pointer' }}><X size={20} style={{color:'#fff'}} /></button>
-      <div onClick={prev} style={{ position:'absolute',top:0,bottom:0,left:0,width:'30%',zIndex:10 }} />
-      <div onClick={next} style={{ position:'absolute',top:0,bottom:0,right:0,width:'70%',zIndex:10 }} />
+      <button aria-label="Close" onClick={onClose} style={{ position:'absolute',top:24,right:16,zIndex:30,background:'rgba(0,0,0,0.4)',border:'none',borderRadius:'50%',padding:8,cursor:'pointer' }}><X size={20} style={{color:'#fff'}} /></button>
+      <div role="button" aria-label="Previous" tabIndex={0} onClick={prev} onKeyDown={e => e.key === 'Enter' && prev()} style={{ position:'absolute',top:0,bottom:0,left:0,width:'30%',zIndex:10 }} />
+      <div role="button" aria-label="Next" tabIndex={0} onClick={next} onKeyDown={e => e.key === 'Enter' && next()} style={{ position:'absolute',top:0,bottom:0,right:0,width:'70%',zIndex:10 }} />
 
       <div style={{ flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:24 }}>
         {sl.type === 'intro' && (

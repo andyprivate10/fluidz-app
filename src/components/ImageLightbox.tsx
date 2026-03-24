@@ -40,10 +40,10 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
           {images.length > 1 ? `${index + 1} / ${images.length}` : ''}
         </span>
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => setZoomed(!zoomed)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <button aria-label={zoomed ? 'Zoom out' : 'Zoom in'} onClick={() => setZoomed(!zoomed)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             {zoomed ? <ZoomOut size={18} style={{ color: '#fff' }} /> : <ZoomIn size={18} style={{ color: '#fff' }} />}
           </button>
-          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <button aria-label="Close" onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <X size={18} style={{ color: '#fff' }} />
           </button>
         </div>
@@ -72,7 +72,7 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
       {images.length > 1 && (
         <>
           {index > 0 && (
-            <button onClick={() => setIndex(i => i - 1)} style={{
+            <button aria-label="Previous image" onClick={() => setIndex(i => i - 1)} style={{
               position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)',
               background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99,
               width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
@@ -81,7 +81,7 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
             </button>
           )}
           {index < images.length - 1 && (
-            <button onClick={() => setIndex(i => i + 1)} style={{
+            <button aria-label="Next image" onClick={() => setIndex(i => i + 1)} style={{
               position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
               background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99,
               width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',

@@ -85,7 +85,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
       <div style={{ position: 'relative', width: '100%', maxWidth: 480, maxHeight: '80vh', background: S.bg1, borderRadius: '20px 20px 0 0', overflow: 'auto', padding: '20px 16px 32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h2 style={{ fontSize: 16, fontWeight: 800, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{t('dm_request.title')}</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
+          <button aria-label="Close" onClick={onClose} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
             <X size={18} />
           </button>
         </div>

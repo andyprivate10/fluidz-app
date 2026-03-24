@@ -48,10 +48,10 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
   return (
     <div style={{ position: 'relative', zIndex: 10 }}>
       {/* Back nav */}
-      <div style={{
+      <div role="button" tabIndex={0} aria-label={backLabel} style={{
         padding: '4px 18px 8px', display: 'flex', alignItems: 'center', gap: 5,
         cursor: 'pointer',
-      }} onClick={() => navigate(backPath)}>
+      }} onClick={() => navigate(backPath)} onKeyDown={e => e.key === 'Enter' && navigate(backPath)}>
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"
           stroke={S.p} strokeWidth="2" strokeLinecap="round">
           <polyline points="9 2 4 7 9 12"/>
