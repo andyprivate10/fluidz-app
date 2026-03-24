@@ -419,7 +419,10 @@
     "mute_conversation": "Couper les notifications",
     "unmute_conversation": "Réactiver les notifications",
     "muted_toast": "Notifications coupées",
-    "unmuted_toast": "Notifications réactivées"
+    "unmuted_toast": "Notifications réactivées",
+    "add_to_naughtybook": "Ajouter au NaughtyBook",
+    "in_naughtybook": "Dans ton NaughtyBook ✓",
+    "added_to_naughtybook": "Ajouté au NaughtyBook !"
   },
   "review": {
     "title": "Comment c'etait ?",

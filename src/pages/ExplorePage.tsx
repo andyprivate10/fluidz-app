@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Heart } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, UserPlus, CheckCircle2 } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -64,11 +64,15 @@ export default function ExplorePage() {
   const [myViewCount, setMyViewCount] = useState(0)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [myHomeCountry, setMyHomeCountry] = useState<string | null>(null)
+  const [myContactIds, setMyContactIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) { navigate('/login?next=/explore'); return }
       setUserId(user.id)
+      supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).then(({ data }) => {
+        if (data) setMyContactIds(new Set(data.map((c: any) => c.contact_user_id)))
+      })
       // Unread counts for header badges
       supabase.from('notifications').select('*', { count: 'exact', head: true })
         .eq('user_id', user.id).is('read_at', null)
@@ -349,24 +353,23 @@ export default function ExplorePage() {
                     {p.display_name[0]?.toUpperCase()}
                   </div>
                 )}
-                {/* Quick favorite button */}
+                {/* Quick add to NaughtyBook */}
                 <button onClick={async (e) => {
                   e.stopPropagation()
-                  const { data: { user } } = await supabase.auth.getUser()
-                  if (!user) return
-                  const { data: existing } = await supabase.from('contacts').select('id').eq('owner_id', user.id).eq('contact_user_id', p.id).maybeSingle()
-                  if (existing) {
-                    showToast(t('explore.already_contact'), 'info')
-                  } else {
-                    await supabase.from('contacts').insert({ owner_id: user.id, contact_user_id: p.id, relation_level: 'favori' })
-                    showToast(t('explore.added_favorite'), 'success')
+                  if (!userId) return
+                  if (myContactIds.has(p.id)) {
+                    showToast(t('profile.in_naughtybook'), 'info')
+                    return
                   }
+                  await supabase.from('contacts').insert({ user_id: userId, contact_user_id: p.id, relation_level: 'connaissance' })
+                  setMyContactIds(prev => new Set([...prev, p.id]))
+                  showToast(t('profile.added_to_naughtybook'), 'success')
                 }} style={{
                   position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99,
-                  background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                  background: myContactIds.has(p.id) ? 'rgba(74,222,128,0.3)' : 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
                   border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2,
                 }}>
-                  <Heart size={13} strokeWidth={1.5} style={{ color: 'rgba(255,255,255,0.8)' }} />
+                  {myContactIds.has(p.id) ? <CheckCircle2 size={13} strokeWidth={1.5} style={{ color: S.sage }} /> : <UserPlus size={13} strokeWidth={1.5} style={{ color: 'rgba(255,255,255,0.8)' }} />}
                 </button>
                 <div style={{ padding: '8px 8px 10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

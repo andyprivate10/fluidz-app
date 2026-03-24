@@ -419,7 +419,10 @@
     "mute_conversation": "Mute notifications",
     "unmute_conversation": "Unmute notifications",
     "muted_toast": "Notifications muted",
-    "unmuted_toast": "Notifications unmuted"
+    "unmuted_toast": "Notifications unmuted",
+    "add_to_naughtybook": "Add to NaughtyBook",
+    "in_naughtybook": "In your NaughtyBook ✓",
+    "added_to_naughtybook": "Added to NaughtyBook!"
   },
   "review": {
     "title": "How was it?",
