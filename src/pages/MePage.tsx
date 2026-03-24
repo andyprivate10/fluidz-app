@@ -751,9 +751,12 @@ export default function MePage() {
                         supabase.from('applications').delete().eq('applicant_id', uid),
                         supabase.from('messages').delete().eq('sender_id', uid),
                         supabase.from('contacts').delete().or(`user_id.eq.${uid},contact_user_id.eq.${uid}`),
+                        supabase.from('favorites').delete().or(`user_id.eq.${uid},target_user_id.eq.${uid}`),
+                        supabase.from('intents').delete().or(`user_id.eq.${uid},target_user_id.eq.${uid}`),
                         supabase.from('notifications').delete().eq('user_id', uid),
                         supabase.from('votes').delete().eq('voter_id', uid),
                         supabase.from('reviews').delete().eq('reviewer_id', uid),
+                        supabase.from('review_queue').delete().eq('user_id', uid),
                         supabase.from('ghost_sessions').delete().eq('claimed_user_id', uid),
                         supabase.from('user_profiles').delete().eq('id', uid),
                       ])
