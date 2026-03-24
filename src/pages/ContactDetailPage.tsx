@@ -3,11 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft} from 'lucide-react'
+import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { timeAgo } from '../lib/timing'
 import { useTranslation } from 'react-i18next'
+import IntentSelector from '../components/IntentSelector'
 
 const S = colors
 
@@ -46,6 +47,10 @@ export default function ContactDetailPage() {
   const [activeSessions, setActiveSessions] = useState<{ id: string; title: string }[]>([])
   const [inviting, setInviting] = useState(false)
   const [notesText, setNotesText] = useState('')
+  const [myIntents, setMyIntents] = useState<string[]>([])
+  const [matchedIntents, setMatchedIntents] = useState<string[]>([])
+  const [isFavorite, setIsFavorite] = useState(false)
+  const [myUserId, setMyUserId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!contactUserId) return
@@ -55,6 +60,7 @@ export default function ContactDetailPage() {
   async function loadData() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
+    setMyUserId(user.id)
 
     const [{ data: prof }, { data: ct }, { data: interactions }] = await Promise.all([
       supabase.from('user_profiles').select('display_name, profile_json').eq('id', contactUserId).maybeSingle(),
@@ -85,6 +91,21 @@ export default function ContactDetailPage() {
     // Load my active sessions for invite
     const { data: mySessions } = await supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open')
     setActiveSessions(mySessions || [])
+
+    // Load intents
+    const { data: intentRow } = await supabase.from('intents').select('intents').eq('user_id', user.id).eq('target_user_id', contactUserId).maybeSingle()
+    setMyIntents(intentRow?.intents || [])
+
+    // Load intent matches
+    const a = user.id < contactUserId! ? user.id : contactUserId!
+    const b = user.id < contactUserId! ? contactUserId! : user.id
+    const { data: matchRow } = await supabase.from('intent_matches').select('matched_intents').eq('user_a', a).eq('user_b', b).maybeSingle()
+    setMatchedIntents(matchRow?.matched_intents || [])
+
+    // Load favorite
+    const { data: favRow } = await supabase.from('favorites').select('id').eq('user_id', user.id).eq('target_user_id', contactUserId).maybeSingle()
+    setIsFavorite(!!favRow)
+
     setLoading(false)
   }
 
@@ -172,9 +193,23 @@ export default function ContactDetailPage() {
               {pj.role ? <span style={{ fontSize: 12, color: S.p, fontWeight: 600 }}>{`${pj.role}`}</span> : null}
             </div>
           </div>
-          <button onClick={() => navigate('/profile/' + contactUserId)} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 12, color: S.tx3, border: '1px solid ' + S.rule, background: 'transparent', cursor: 'pointer' }}>
-            Profil <ChevronRight size={12} style={{ verticalAlign: 'middle' }} />
-          </button>
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <button onClick={async () => {
+              if (!myUserId) return
+              if (isFavorite) {
+                await supabase.from('favorites').delete().eq('user_id', myUserId).eq('target_user_id', contactUserId)
+                setIsFavorite(false)
+              } else {
+                await supabase.from('favorites').upsert({ user_id: myUserId, target_user_id: contactUserId }, { onConflict: 'user_id,target_user_id' })
+                setIsFavorite(true)
+              }
+            }} style={{ width: 36, height: 36, borderRadius: 10, border: '1px solid ' + (isFavorite ? S.pbd : S.rule), background: isFavorite ? S.p2 : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <Heart size={16} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
+            </button>
+            <button onClick={() => navigate('/profile/' + contactUserId)} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 12, color: S.tx3, border: '1px solid ' + S.rule, background: 'transparent', cursor: 'pointer' }}>
+              Profil <ChevronRight size={12} style={{ verticalAlign: 'middle' }} />
+            </button>
+          </div>
         </div>
 
         {/* Relation selector */}
@@ -217,6 +252,42 @@ export default function ContactDetailPage() {
               {contact?.notes || t('contacts.no_notes')}
             </p>
           )}
+        </div>
+
+        {/* Intent match card */}
+        {matchedIntents.length > 0 && (
+          <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid ' + S.sagebd, borderRadius: 16, padding: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: S.sage, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>{t('intents.match_title')}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {matchedIntents.map(slug => (
+                <span key={slug} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}>{t('intents.' + slug)}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Intentions */}
+        <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{t('intents.title')}</div>
+          <p style={{ fontSize: 11, color: S.tx4, margin: '0 0 10px' }}>{t('intents.select_hint')}</p>
+          <IntentSelector
+            selected={myIntents}
+            compact
+            onChange={async (slugs) => {
+              setMyIntents(slugs)
+              if (!myUserId) return
+              await supabase.from('intents').upsert(
+                { user_id: myUserId, target_user_id: contactUserId!, intents: slugs, updated_at: new Date().toISOString() },
+                { onConflict: 'user_id,target_user_id' }
+              )
+              showToast(t('intents.updated'), 'success')
+              // Reload matches
+              const a = myUserId < contactUserId! ? myUserId : contactUserId!
+              const b = myUserId < contactUserId! ? contactUserId! : myUserId
+              const { data: matchRow } = await supabase.from('intent_matches').select('matched_intents').eq('user_a', a).eq('user_b', b).maybeSingle()
+              setMatchedIntents(matchRow?.matched_intents || [])
+            }}
+          />
         </div>
 
         {/* Stats */}
