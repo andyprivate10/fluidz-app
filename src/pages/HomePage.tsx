@@ -34,6 +34,7 @@ export default function HomePage() {
   const [dismissedTips, setDismissedTips] = useState<string[]>([])
   const [showTips, setShowTips] = useState(false)
   const [sessionSuggestions, setSessionSuggestions] = useState<{ id: string; name: string; avatar?: string }[]>([])
+  const [pendingReviews, setPendingReviews] = useState<{ session_id: string; title: string }[]>([])
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -88,6 +89,10 @@ export default function HomePage() {
       })
       setRecentContacts(ordered)
     } else { setRecentContacts([]) }
+
+    // Pending reviews
+    const { data: reviewQueue } = await supabase.from('review_queue').select('session_id, sessions!inner(title)').eq('user_id', user.id).eq('status', 'pending').gte('expires_at', new Date().toISOString())
+    setPendingReviews((reviewQueue || []).map((r: any) => ({ session_id: r.session_id, title: r.sessions?.title || 'Session' })))
 
     // Recent notifications
     const { data: notifs } = await supabase.from('notifications').select('id, type, message, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
@@ -234,6 +239,19 @@ export default function HomePage() {
             <ArrowRight size={16} style={{ color: S.tx3, flexShrink: 0 }} />
           </div>
         )}
+        {/* Pending reviews */}
+        {pendingReviews.length > 0 && (
+          <div style={{ ...card, border: '1px solid ' + S.pbd }}>
+            <p style={{ ...typeStyle('micro'), color: S.p, margin: '0 0 8px' }}>{t('home.pending_reviews')}</p>
+            {pendingReviews.map(r => (
+              <div key={r.session_id} onClick={() => navigate('/session/' + r.session_id + '/review')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: '1px solid ' + S.rule }}>
+                <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{r.title}</p>
+                <span style={{ fontSize: 11, fontWeight: 600, color: S.p }}>{t('home.review_now')}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Contact suggestions from recent sessions */}
         {sessionSuggestions.length > 0 && (
           <div style={{ ...card, border: '1px solid ' + S.sagebd }}>

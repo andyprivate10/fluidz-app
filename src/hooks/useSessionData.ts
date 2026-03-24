@@ -84,6 +84,14 @@ export function useSessionData() {
       if (sess.status === 'open' && sess.ends_at && new Date(sess.ends_at) < new Date()) {
         await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
         sess.status = 'ended'
+        // Create review queue for all participants
+        const { data: endedApps } = await supabase.from('applications').select('applicant_id').eq('session_id', id).in('status', ['accepted', 'checked_in'])
+        if (endedApps && endedApps.length > 0) {
+          const queueEntries = [...endedApps.map(a => a.applicant_id), sess.host_id].filter(Boolean).map(uid => ({
+            user_id: uid, session_id: id, status: 'pending',
+          }))
+          await supabase.from('review_queue').upsert(queueEntries, { onConflict: 'user_id,session_id' })
+        }
       }
       setSession(sess)
 

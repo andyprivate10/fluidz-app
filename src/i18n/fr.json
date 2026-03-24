@@ -47,7 +47,9 @@
     "see_all_contacts": "Voir tout",
     "recent_activity": "ACTIVITÉ RÉCENTE",
     "add_from_session": "AJOUTER DE TA DERNIÈRE SESSION",
-    "add_from_session_desc": "Ces personnes étaient avec toi récemment"
+    "add_from_session_desc": "Ces personnes étaient avec toi récemment",
+    "pending_reviews": "AVIS EN ATTENTE",
+    "review_now": "Donner mon avis →"
   },
   "explore": {
     "title": "Autour de moi",
