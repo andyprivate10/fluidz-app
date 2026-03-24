@@ -18,9 +18,10 @@ type Props = {
   actionLoading: string | null
   onDecide: (appId: string, status: 'accepted' | 'rejected') => void
   onConfirmCheckIn: (appId: string) => void
+  onEject?: (appId: string) => void
 }
 
-export default function HostCandidateCard({ app, sessionId, sessionTitle, votes, actionLoading, onDecide, onConfirmCheckIn }: Props) {
+export default function HostCandidateCard({ app, sessionId, sessionTitle, votes, actionLoading, onDecide, onConfirmCheckIn, onEject }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
@@ -140,6 +141,9 @@ export default function HostCandidateCard({ app, sessionId, sessionTitle, votes,
                 })
                 showToast(t('host.nudge_sent'), 'success')
               }} style={{ padding: '4px 10px', borderRadius: 8, fontSize: 11, color: S.p, border: '1px solid ' + S.amberbd, background: 'transparent', cursor: 'pointer' }}>{t('host.nudge_btn')}</button>
+            )}
+            {(app.status === 'accepted' || app.status === 'checked_in') && onEject && (
+              <button onClick={() => onEject(app.id)} style={{ padding: '4px 10px', borderRadius: 8, fontSize: 11, color: S.red, border: '1px solid ' + S.redbd, background: 'transparent', cursor: 'pointer' }}>{t('host.eject')}</button>
             )}
             <button onClick={() => onDecide(app.id, 'rejected')} style={{ marginLeft: 'auto', padding: '4px 10px', borderRadius: 8, fontSize: 11, color: S.tx3, border: '1px solid ' + S.rule, background: 'transparent', cursor: 'pointer' }}>{t('host.cancel_app')}</button>
           </div>

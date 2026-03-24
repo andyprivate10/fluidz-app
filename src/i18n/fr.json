@@ -612,7 +612,11 @@
     "checkin_body_no_address": "Tu peux maintenant partager le lien d'invitation.",
     "invites_sent": "{{count}} invitation(s) envoyée(s)",
     "role_distribution": "Répartition des rôles",
-    "conversion_funnel": "Entonnoir de conversion"
+    "conversion_funnel": "Entonnoir de conversion",
+    "eject": "Éjecter",
+    "eject_confirm": "Éjecter {{name}} de cette session ?",
+    "ejected": "Membre éjecté",
+    "ejected_from": "Éjecté de \"{{title}}\""
   },
   "contacts": {
     "title": "Naughty Book",

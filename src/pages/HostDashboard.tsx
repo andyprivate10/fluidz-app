@@ -298,6 +298,24 @@ export default function HostDashboard() {
     
   }
 
+  async function ejectMember(appId: string) {
+    const app = apps.find(a => a.id === appId)
+    const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
+    if (!window.confirm(t('host.eject_confirm', { name }))) return
+    setActionLoading(appId)
+    await supabase.from('applications').update({ status: 'ejected' }).eq('id', appId)
+    if (app && sess) {
+      await supabase.from('notifications').insert({
+        user_id: app.applicant_id, session_id: id, type: 'ejected',
+        title: t('host.ejected_from', { title: sess.title }),
+        body: '', href: '/',
+      })
+    }
+    setApps(prev => prev.map(a => a.id === appId ? { ...a, status: 'ejected' } : a))
+    setActionLoading(null)
+    showToast(t('host.ejected'), 'info')
+  }
+
   const { pullHandlers, pullIndicator } = usePullToRefresh(() => load(user || undefined))
 
   const filtered = tab === 'accepted'
@@ -583,6 +601,7 @@ export default function HostDashboard() {
             actionLoading={actionLoading}
             onDecide={decide}
             onConfirmCheckIn={confirmCheckIn}
+            onEject={ejectMember}
           />
         ))}
       </div>

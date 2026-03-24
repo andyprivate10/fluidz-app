@@ -612,7 +612,11 @@
     "checkin_body_no_address": "You can now share the invite link.",
     "invites_sent": "{{count}} invite(s) sent",
     "role_distribution": "Role distribution",
-    "conversion_funnel": "Conversion funnel"
+    "conversion_funnel": "Conversion funnel",
+    "eject": "Eject",
+    "eject_confirm": "Eject {{name}} from this session?",
+    "ejected": "Member ejected",
+    "ejected_from": "Ejected from \"{{title}}\""
   },
   "contacts": {
     "title": "Naughty Book",
