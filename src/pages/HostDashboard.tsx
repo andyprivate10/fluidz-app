@@ -1,321 +1,315 @@
-import { Clock, Check, Copy } from 'lucide-react'
-import { colors } from '../brand'
+import { Clock, MessageCircle, Check } from 'lucide-react'
+import { colors, glassCard } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
-import { QRCodeSVG } from 'qrcode.react'
 import { useHostDashboard } from '../hooks/useHostDashboard'
-import HostApplicationList from '../components/session/HostApplicationList'
+import type { HostTab } from '../hooks/useHostDashboard'
+import HostActivityTab from '../components/host/HostActivityTab'
+import HostRecruitTab from '../components/host/HostRecruitTab'
+import HostCandidatesTab from '../components/host/HostCandidatesTab'
+import HostMembersTab from '../components/host/HostMembersTab'
 
 const S = colors
 
 export default function HostDashboard() {
-  const {
-    t,
-    id,
-    navigate,
-    sess,
-    apps,
-    tab,
-    setTab,
-    loading,
-    loadError,
-    actionLoading,
-    linkCopied,
-    copyLink,
-    elapsed,
-    messageCopied,
-    copyMessageText,
-    grinderCopied,
-    copyGrindr,
-    broadcastText,
-    setBroadcastText,
-    broadcastSending,
-    myGroups,
-    votes,
-    remaining,
-    filtered,
-    counts,
-    arrivedCount,
-    waitingCount,
-    totalAccepted,
-    decide,
-    confirmCheckIn,
-    toggleStatus,
-    closeSession,
-    sendBroadcast,
-    inviteGroup,
-    ejectMember,
-    pullHandlers,
-    pullIndicator,
-    getSessionCover,
-    confirmDialogProps,
-  } = useHostDashboard()
+  const h = useHostDashboard()
 
-  if (loading) return (
-    <div style={{minHeight:'100vh',background:S.bg,maxWidth:480,margin:'0 auto',padding:'80px 20px 40px'}}>
+  if (h.loading) return (
+    <div style={{ minHeight: '100vh', background: S.bg, maxWidth: 480, margin: '0 auto', padding: '80px 20px 40px' }}>
       <style>{`@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.8}}`}</style>
-      {[0,1,2].map(i => (
-        <div key={i} style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:18,padding:16,marginBottom:12,animation:'pulse 1.5s ease-in-out infinite',animationDelay:i*0.15+'s'}}>
-          <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
-            <div style={{width:40,height:40,borderRadius:'50%',background:S.bg2}} />
-            <div style={{flex:1}}>
-              <div style={{width:'60%',height:14,borderRadius:6,background:S.bg2,marginBottom:6}} />
-              <div style={{width:'35%',height:10,borderRadius:4,background:S.bg2}} />
+      {[0, 1, 2].map(i => (
+        <div key={i} style={{ ...glassCard, marginBottom: 12, animation: 'pulse 1.5s ease-in-out infinite', animationDelay: i * 0.15 + 's' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: S.bg2 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ width: '60%', height: 14, borderRadius: 6, background: S.bg2, marginBottom: 6 }} />
+              <div style={{ width: '35%', height: 10, borderRadius: 4, background: S.bg2 }} />
             </div>
           </div>
-          <div style={{width:'80%',height:10,borderRadius:4,background:S.bg2,marginBottom:8}} />
-          <div style={{width:'50%',height:10,borderRadius:4,background:S.bg2}} />
+          <div style={{ width: '80%', height: 10, borderRadius: 4, background: S.bg2, marginBottom: 8 }} />
+          <div style={{ width: '50%', height: 10, borderRadius: 4, background: S.bg2 }} />
         </div>
       ))}
     </div>
   )
-  if (loadError) return (
-    <div style={{minHeight:'100vh',background:S.bg,display:'flex',justifyContent:'center',paddingTop:80}}>
-      <p style={{color:S.red,textAlign:'center'}}>{t('common.load_error')}</p>
+
+  if (h.loadError) return (
+    <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
+      <p style={{ color: S.red, textAlign: 'center' }}>{h.t('common.load_error')}</p>
     </div>
   )
+
+  const cover = h.getSessionCover(h.sess?.tags, h.sess?.cover_url)
+  const isLive = h.sess?.status === 'open'
+  const isEnded = h.sess?.status === 'ended'
+
+  const tabs: { key: HostTab; label: string; count?: number }[] = [
+    { key: 'activite', label: h.t('host.activity_tab') },
+    { key: 'recruit', label: h.t('host.recruit_tab') },
+    { key: 'candidats', label: h.t('host.candidates_tab'), count: h.counts.pending },
+    { key: 'membres', label: h.t('host.members_tab'), count: h.counts.accepted },
+  ]
+
   return (
-    <div {...pullHandlers} style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative' as const,maxWidth:480,margin:'0 auto'}}>
+    <div {...h.pullHandlers} style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96, position: 'relative', maxWidth: 480, margin: '0 auto' }}>
       <OrbLayer />
-      {pullIndicator}
-      <EventContextNav role="host" sessionTitle={sess?.title} />
-      {/* Header with cover image */}
-      {(() => {
-        const cover = getSessionCover(sess?.tags, sess?.cover_url)
-        return (
-      <div style={{position:'relative',borderBottom:'1px solid '+S.rule,overflow:'hidden'}}>
+      {h.pullIndicator}
+      <EventContextNav role="host" sessionTitle={h.sess?.title} />
+
+      {/* === HEADER === */}
+      <div style={{ position: 'relative', overflow: 'hidden', borderBottom: '1px solid ' + S.rule }}>
         {cover.coverImage ? (
           <>
-            <div style={{position:'absolute',inset:0,backgroundImage:`url(${cover.coverImage})`,backgroundSize:'cover',backgroundPosition:'center'}} />
-            <div style={{position:'absolute',inset:0,background:'rgba(5,4,10,0.65)'}} />
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,4,10,0.65)' }} />
           </>
         ) : (
-          <div style={{position:'absolute',inset:0,background:cover.bg}} />
+          <div style={{ position: 'absolute', inset: 0, background: cover.bg }} />
         )}
-        <div style={{position:'absolute',inset:0,background:'rgba(13,12,22,0.5)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}} />
-        <div style={{position:'relative',zIndex:1,padding:'12px 20px 16px'}}>
-        <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:6}}>
-          <div style={{flex:1,minWidth:0}}>
-            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
-              <span style={{fontSize:8,fontWeight:700,textTransform:'uppercase' as const,letterSpacing:'0.06em',padding:'3px 8px',borderRadius:99,background:S.p2,color:S.p,border:'1px solid '+S.pbd}}>Host</span>
-              {sess?.status === 'open' && <span style={{fontSize:10,fontWeight:600,color:S.sage,display:'flex',alignItems:'center',gap:4}}><span style={{width:6,height:6,borderRadius:'50%',background:S.sage,animation:'blink 2s ease-in-out infinite'}} />Live</span>}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(13,12,22,0.5)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }} />
+
+        <div style={{ position: 'relative', zIndex: 1, padding: '12px 20px 16px' }}>
+          {/* Top row: badges + title + stats */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <span style={{
+                  fontSize: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                  padding: '3px 8px', borderRadius: 99, background: S.p2, color: S.p, border: '1px solid ' + S.pbd,
+                }}>Host</span>
+                {isLive && (
+                  <span style={{ fontSize: 10, fontWeight: 600, color: S.sage, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: S.sage, animation: 'blink 2s ease-in-out infinite' }} />
+                    {h.t('host.status_live')}
+                  </span>
+                )}
+                {isEnded && (
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+                    background: S.redbg, color: S.red, border: '1px solid ' + S.redbd,
+                  }}>
+                    {h.t('host.status_ended')}
+                  </span>
+                )}
+              </div>
+              <h1 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 3px', lineHeight: 1.2 }}>
+                {h.sess?.title}
+              </h1>
+              <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{h.sess?.approx_area}</p>
             </div>
-            <h1 style={{fontSize:18,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 3px',lineHeight:1.2}}>{sess?.title}</h1>
-            <p style={{fontSize:12,color:S.tx3,margin:0}}>{sess?.approx_area}</p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+              {h.elapsed && isLive && (
+                <span style={{ fontSize: 11, fontWeight: 600, color: S.tx2, background: S.bg3, padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap' }}>
+                  <Clock size={10} strokeWidth={1.5} style={{ marginRight: 2 }} />{h.elapsed}
+                </span>
+              )}
+              {h.remaining && isLive && (
+                <span style={{
+                  fontSize: 11, fontWeight: 600,
+                  color: h.remaining === 'termine' ? S.red : S.p,
+                  background: h.remaining === 'termine' ? S.redbg : S.p2,
+                  padding: '3px 10px', borderRadius: 50, whiteSpace: 'nowrap',
+                }}>
+                  {h.remaining === 'termine' ? h.t('host.time_ended') : h.t('host.time_remaining', { time: h.remaining })}
+                </span>
+              )}
+              {h.totalAccepted > 0 && (
+                <span style={{ fontSize: 11, fontWeight: 700, color: S.sage, background: S.sagebg, padding: '3px 10px', borderRadius: 50 }}>
+                  {h.arrivedCount}/{h.totalAccepted}
+                </span>
+              )}
+              {h.sess?.max_capacity && (() => {
+                const total = h.totalAccepted + 1
+                const full = total >= h.sess.max_capacity
+                return (
+                  <span style={{
+                    fontSize: 11, fontWeight: 700,
+                    color: full ? S.red : S.tx2,
+                    background: full ? S.redbg : S.bg3,
+                    padding: '3px 10px', borderRadius: 50,
+                    border: '1px solid ' + (full ? S.redbd : S.rule),
+                  }}>
+                    {total}/{h.sess.max_capacity}{full ? ' ' + h.t('host.capacity_full') : ''}
+                  </span>
+                )
+              })()}
+            </div>
           </div>
-          <div style={{display:'flex',flexDirection:'column' as const,alignItems:'flex-end',gap:6}}>
-            {elapsed && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:S.tx2,background:S.bg3,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}><Clock size={10} strokeWidth={1.5} style={{marginRight:2}} />{elapsed}</span>}
-            {remaining && sess?.status === 'open' && <span style={{fontSize:11,fontWeight:600,color:remaining==='terminé'?S.red:S.p,background:remaining==='terminé'?S.redbg:S.p2,padding:'3px 10px',borderRadius:50,whiteSpace:'nowrap'}}>{remaining==='terminé'?t('host.time_ended'):t('host.time_remaining', { time: remaining })}</span>}
-            {totalAccepted > 0 && <span style={{fontSize:11,fontWeight:700,color:S.sage,background:S.sagebg,padding:'3px 10px',borderRadius:50}}>{arrivedCount}/{totalAccepted}</span>}
-            {sess?.max_capacity && (() => { const total = totalAccepted + 1; const full = total >= sess.max_capacity; return <span style={{fontSize:11,fontWeight:700,color:full?S.red:S.tx2,background:full?S.redbg:S.bg3,padding:'3px 10px',borderRadius:50,border:'1px solid '+(full?S.redbd:S.rule)}}>{total}/{sess.max_capacity}{full?' '+t('host.capacity_full'):''}</span> })()}
-          </div>
+
+          {/* Action buttons: Edit + End */}
+          {!isEnded && (
+            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+              <button onClick={() => h.navigate('/session/' + h.id + '/edit')} style={{
+                flex: 1, padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600,
+                border: '1px solid ' + S.rule, background: S.bg2, color: S.tx2, cursor: 'pointer',
+              }}>
+                {h.t('host.edit_session')}
+              </button>
+              <button onClick={h.closeSession} style={{
+                flex: 1, padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600,
+                border: '1px solid ' + S.redbd, background: 'transparent', color: S.red, cursor: 'pointer',
+              }}>
+                {h.t('host.end_session')}
+              </button>
+            </div>
+          )}
+
+          {/* Roles summary */}
+          {h.sess?.lineup_json?.roles_wanted && Object.keys(h.sess.lineup_json.roles_wanted).length > 0 && (() => {
+            const wanted = h.sess.lineup_json.roles_wanted as Record<string, number>
+            const currentRoles: Record<string, number> = {}
+            h.apps.filter(a => a.status === 'accepted' || a.status === 'checked_in').forEach((a: any) => {
+              const r = a.eps_json?.role || a.user_profiles?.profile_json?.role
+              if (r) currentRoles[r] = (currentRoles[r] || 0) + 1
+            })
+            return (
+              <div style={{ marginTop: 12, padding: 12, borderRadius: 12, background: 'rgba(22,20,31,0.6)', border: '1px solid ' + S.rule }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {Object.entries(wanted).map(([role, count]) => {
+                    const have = currentRoles[role] || 0
+                    const filled = have >= Number(count)
+                    return (
+                      <span key={role} style={{
+                        fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 99,
+                        color: filled ? S.sage : S.p,
+                        background: filled ? S.sagebg : S.p2,
+                        border: '1px solid ' + (filled ? S.sagebd : S.pbd),
+                      }}>
+                        {have}/{count} {role}{filled ? <Check size={11} strokeWidth={2.5} style={{ display: 'inline', marginLeft: 3 }} /> : null}
+                      </span>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })()}
         </div>
-        {sess?.status !== 'ended' && (
-          <div style={{display:'flex',gap:8,marginTop:12}}>
-            <button onClick={toggleStatus} style={{
-              padding:'8px 14px',borderRadius:10,fontSize:12,fontWeight:700,cursor:'pointer',
-              border:'1px solid '+(sess?.status==='open' ? S.sagebd : S.rule),
-              background: sess?.status==='open' ? S.sagebg : S.bg2,
-              color: sess?.status==='open' ? S.sage : S.tx3,
-            }}>
-              {sess?.status==='open' ? t('status.open') : t('status.closed')}
-            </button>
-            <button onClick={() => navigate('/session/' + id + '/edit')} style={{flex:1,padding:'8px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer'}}>
-              {t('host.edit')}
-            </button>
-            <button onClick={closeSession} style={{flex:1,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.red,background:'transparent',color:S.red,cursor:'pointer'}}>
-              {t('host.end_session')}
-            </button>
-          </div>
-        )}
+      </div>
 
-        <button onClick={() => navigate('/session/' + id + '/chat')} style={{marginTop:8,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:'transparent',color:S.p,cursor:'pointer',width:'100%'}}>
-          {t('session.group_chat')}
+      {/* === GROUP CHAT BUTTON === */}
+      <div style={{ padding: '12px 20px 0' }}>
+        <button
+          onClick={() => h.navigate('/session/' + h.id + '/chat')}
+          style={{
+            width: '100%', padding: '12px 16px', borderRadius: 12,
+            fontSize: 14, fontWeight: 700,
+            border: '1px solid ' + S.pbd,
+            background: S.p2, color: S.p,
+            cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            position: 'relative',
+          }}
+        >
+          <MessageCircle size={18} strokeWidth={2} />
+          {h.t('host.group_chat_btn')}
+          {h.unreadChatCount > 0 && (
+            <span style={{
+              position: 'absolute', top: -6, right: -6,
+              minWidth: 20, height: 20, borderRadius: 10,
+              background: S.red, color: '#fff',
+              fontSize: 11, fontWeight: 800,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '0 5px',
+            }}>
+              {h.unreadChatCount > 99 ? '99+' : h.unreadChatCount}
+            </span>
+          )}
         </button>
+      </div>
 
-        {sess?.invite_code && (
-          <>
+      {/* === TABS === */}
+      <div style={{ padding: '14px 20px 0' }}>
+        <div style={{ display: 'flex', gap: 4, background: S.bg2, borderRadius: 12, padding: 3, border: '1px solid ' + S.rule }}>
+          {tabs.map(({ key, label, count }) => (
             <button
-              onClick={() => {
-                const url = window.location.origin + '/join/' + sess.invite_code
-                copyLink(url)
+              key={key}
+              onClick={() => h.setTab(key)}
+              style={{
+                flex: 1, padding: '8px 4px', borderRadius: 10, fontSize: 11, fontWeight: 700,
+                cursor: 'pointer', border: 'none', transition: 'all 0.2s ease',
+                background: h.tab === key ? 'rgba(224,136,122,0.12)' : 'transparent',
+                color: h.tab === key ? S.p : S.tx3,
+                position: 'relative',
               }}
-              style={{marginTop:12,padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:linkCopied ? S.sagebg : 'transparent',color:linkCopied ? S.sage : S.p,cursor:'pointer',width:'100%'}}
             >
-              {linkCopied ? t('session.link_copied') : t('host.share_session')}
-            </button>
-            <div style={{marginTop:12,padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-              <div style={{fontSize:10,fontWeight:700,color:S.p,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>{t('host.share_on_platforms')}</div>
-              <button
-                onClick={() => {
-                  const url = window.location.origin + '/join/' + sess.invite_code
-                  const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
-                  const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0
-                    ? ' – ' + t('share.searching') + ' : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
-                    : ''
-                  const membersText = counts.accepted > 0 ? ` – ${counts.accepted} ` + t('share.already_here') : ''
-                  const text = '\uD83D\uDD25 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – ' + t('share.apply_here') + ' : ' + url
-                  copyGrindr(text)
-                }}
-                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sagebg : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
-              >
-                {grinderCopied ? t('host.copied') : t('host.copy_grindr')}
-              </button>
-              <button
-                onClick={() => {
-                  const url = window.location.origin + '/join/' + sess.invite_code
-                  const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
-                  const rolesLine = rolesWanted && Object.keys(rolesWanted).length > 0
-                    ? t('session.searching_roles', { roles: Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ') })
-                    : ''
-                  const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '\uD83D\uDCCD ' + sess.approx_area : '', counts.accepted > 0 ? `\uD83D\uDC65 ${counts.accepted} membres` : '', '', t('share.apply_here') + ' : ' + url].filter(Boolean)
-                  copyMessageText(lines.join('\n'))
-                }}
-                style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
-              >
-                {messageCopied ? <><Check size={13} strokeWidth={2} style={{display:'inline',marginRight:2}} />{t('session.copied')}</> : <><Copy size={13} strokeWidth={1.5} style={{display:'inline',marginRight:3}} />{t('host.copy_message')}</>}
-              </button>
-            </div>
-            {/* Native share */}
-            {typeof navigator !== 'undefined' && navigator.share && sess && (
-              <button onClick={() => {
-                const url = window.location.origin + '/join/' + sess.invite_code
-                const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
-                const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0 ? '\n' + t('share.searching') + ' : ' + Object.entries(rolesWanted).map(([r, c]) => c + ' ' + r).join(', ') : ''
-                const text = '\uD83D\uDD25 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n\uD83D\uDC65 ' + counts.accepted + ' ' + t('share.already_here') : '') + '\n' + t('share.apply_here') + ' !'
-                navigator.share({ title: sess.title || t('share.session_fluidz'), text, url }).catch(() => {})
-              }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:'transparent',color:S.sage,cursor:'pointer'}}>
-                {t('host.share_via')}
-              </button>
-            )}
-            {/* Direct invite link */}
-            <button
-              onClick={() => {
-                const url = window.location.origin + '/join/' + sess.invite_code + '?direct=1'
-                copyLink(url)
-              }}
-              style={{marginTop:8,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:S.sagebg,color:S.sage,cursor:'pointer'}}
-            >
-              {t('host.copy_direct_link')}
-            </button>
-            {/* QR Code */}
-            <div style={{marginTop:12,textAlign:'center',padding:16,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule}}>
-              <div style={{background:'#fff',borderRadius:10,padding:12,display:'inline-block'}}>
-                <QRCodeSVG value={window.location.origin + '/join/' + sess.invite_code} size={120} level="M" fgColor="#0C0A14" bgColor="#ffffff" />
-              </div>
-              <p style={{fontSize:10,color:S.tx4,margin:'8px 0 0'}}>{t('session.qr_hint')}</p>
-            </div>
-          </>
-        )}
-        {/* Roles summary */}
-        {sess?.lineup_json?.roles_wanted && Object.keys(sess.lineup_json.roles_wanted).length > 0 && (() => {
-          const wanted = (sess.lineup_json as any).roles_wanted as Record<string, number>
-          const currentRoles: Record<string, number> = {}
-          apps.filter(a => a.status === 'accepted' || a.status === 'checked_in').forEach(a => {
-            const r = a.eps_json?.role || a.user_profiles?.profile_json?.role
-            if (r) currentRoles[r] = (currentRoles[r] || 0) + 1
-          })
-          return (
-            <div style={{marginTop:12,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule}}>
-              <div style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase' as const,letterSpacing:'0.08em',marginBottom:8}}>{t('host.roles_label').toUpperCase()}</div>
-              <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-                {Object.entries(wanted).map(([role, count]) => {
-                  const have = currentRoles[role] || 0
-                  const filled = have >= Number(count)
-                  return (
-                    <span key={role} style={{
-                      fontSize:12,fontWeight:600,padding:'4px 10px',borderRadius:99,
-                      color: filled ? S.sage : S.p,
-                      background: filled ? S.sagebg : S.p2,
-                      border: '1px solid '+(filled ? S.sagebd : S.pbd),
-                    }}>
-                      {have}/{count} {role}{filled ? <Check size={11} strokeWidth={2.5} style={{display:'inline',marginLeft:3}} /> : null}
-                    </span>
-                  )
-                })}
-              </div>
-            </div>
-          )
-        })()}
-
-        {/* Arrival stats */}
-        {totalAccepted > 0 && (
-          <div style={{marginTop:16,padding:14,borderRadius:12,background:S.bg2,border:'1px solid '+S.rule,display:'flex',justifyContent:'space-around',textAlign:'center'}}>
-            <div>
-              <div style={{fontSize:20,fontWeight:800,color:S.sage}}>{arrivedCount}</div>
-              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.arrived')}</div>
-            </div>
-            {waitingCount > 0 && (
-              <div>
-                <div style={{fontSize:20,fontWeight:800,color:S.orange}}>{waitingCount}</div>
-                <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.to_confirm')}</div>
-              </div>
-            )}
-            <div>
-              <div style={{fontSize:20,fontWeight:800,color:S.tx2}}>{totalAccepted - arrivedCount}</div>
-              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.en_route')}</div>
-            </div>
-            <div>
-              <div style={{fontSize:20,fontWeight:800,color:S.p}}>{totalAccepted}</div>
-              <div style={{fontSize:11,color:S.tx3,fontWeight:600}}>{t('host.total')}</div>
-            </div>
-          </div>
-        )}
-
-        {/* Stats metrics */}
-        {apps.length > 0 && (
-          <div style={{display:'flex',gap:8,marginTop:12}}>
-            <div style={{flex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:12,padding:'10px 12px',textAlign:'center'}}>
-              <div style={{fontSize:16,fontWeight:800,color:S.sage}}>{totalAccepted > 0 ? Math.round((arrivedCount / totalAccepted) * 100) : 0}%</div>
-              <div style={{fontSize:10,color:S.tx3,fontWeight:600}}>{t('host.checkin_rate')}</div>
-            </div>
-            <div style={{flex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:12,padding:'10px 12px',textAlign:'center'}}>
-              <div style={{fontSize:16,fontWeight:800,color:S.p}}>{apps.length > 0 ? Math.round((counts.accepted / apps.length) * 100) : 0}%</div>
-              <div style={{fontSize:10,color:S.tx3,fontWeight:600}}>{t('host.accept_rate')}</div>
-            </div>
-            <div style={{flex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:12,padding:'10px 12px',textAlign:'center'}}>
-              <div style={{fontSize:16,fontWeight:800,color:S.tx}}>{apps.length}</div>
-              <div style={{fontSize:10,color:S.tx3,fontWeight:600}}>{t('host.total_apps')}</div>
-            </div>
-          </div>
-        )}
-
-        <div style={{display:'flex',gap:8,marginTop:16}}>
-          {([['pending',t('host.pending'),S.orange],['accepted',t('host.accepted_tab'),S.sage],['rejected',t('host.rejected_tab'),S.red]] as const).map(([k,l,c]) => (
-            <button key={k} onClick={() => setTab(k as any)} style={{
-              flex:1,padding:'8px 4px',borderRadius:10,fontSize:12,fontWeight:600,cursor:'pointer',
-              border:'1px solid '+(tab===k ? c+'55' : S.rule),
-              background: tab===k ? c+'14' : S.bg2,
-              color: tab===k ? c : S.tx3,
-            }}>
-              {l} {counts[k as keyof typeof counts] > 0 && <span style={{fontWeight:800}}>({counts[k as keyof typeof counts]})</span>}
+              {label}
+              {count !== undefined && count > 0 && (
+                <span style={{
+                  position: 'absolute', top: -2, right: 2,
+                  minWidth: 16, height: 16, borderRadius: 8,
+                  background: h.tab === key ? S.p : S.tx3,
+                  color: S.bg,
+                  fontSize: 9, fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 3px',
+                }}>
+                  {count}
+                </span>
+              )}
             </button>
           ))}
         </div>
       </div>
-      </div>
-      )})()}
 
-      <HostApplicationList
-        apps={apps}
-        filtered={filtered}
-        tab={tab}
-        sessionId={id!}
-        sessionTitle={sess?.title}
-        votes={votes}
-        actionLoading={actionLoading}
-        broadcastText={broadcastText}
-        setBroadcastText={setBroadcastText}
-        broadcastSending={broadcastSending}
-        sendBroadcast={sendBroadcast}
-        myGroups={myGroups}
-        inviteGroup={inviteGroup}
-        onDecide={decide}
-        onConfirmCheckIn={confirmCheckIn}
-        onEject={ejectMember}
-      />
-      <ConfirmDialog {...confirmDialogProps} />
+      {/* === TAB CONTENT === */}
+      <div style={{ paddingTop: 14 }}>
+        {h.tab === 'activite' && (
+          <HostActivityTab
+            activityFeed={h.activityFeed}
+            arrivedCount={h.arrivedCount}
+            totalAccepted={h.totalAccepted}
+            apps={h.apps}
+          />
+        )}
+
+        {h.tab === 'recruit' && (
+          <HostRecruitTab
+            linkCopied={h.linkCopied}
+            copyLink={h.copyLink}
+            messageCopied={h.messageCopied}
+            copyMessageText={h.copyMessageText}
+            getPreparedMessage={h.getPreparedMessage}
+            getInviteUrl={h.getInviteUrl}
+            getDirectInviteUrl={h.getDirectInviteUrl}
+            shareSession={h.shareSession}
+            myContacts={h.myContacts}
+            myGroups={h.myGroups}
+            inviteContact={h.inviteContact}
+            inviteGroup={h.inviteGroup}
+          />
+        )}
+
+        {h.tab === 'candidats' && (
+          <HostCandidatesTab
+            candidateSubTab={h.candidateSubTab}
+            setCandidateSubTab={h.setCandidateSubTab}
+            filteredCandidates={h.filteredCandidates}
+            sessionId={h.id!}
+            sessionTitle={h.sess?.title}
+            votes={h.votes}
+            actionLoading={h.actionLoading}
+            counts={h.counts}
+            onDecide={h.decide}
+            onConfirmCheckIn={h.confirmCheckIn}
+            onEject={h.ejectMember}
+          />
+        )}
+
+        {h.tab === 'membres' && (
+          <HostMembersTab
+            members={h.members}
+            sessionId={h.id!}
+            actionLoading={h.actionLoading}
+            onEject={h.ejectMember}
+            onConfirmCheckIn={h.confirmCheckIn}
+            apps={h.apps}
+          />
+        )}
+      </div>
+
+      <ConfirmDialog {...h.confirmDialogProps} />
     </div>
   )
 }
