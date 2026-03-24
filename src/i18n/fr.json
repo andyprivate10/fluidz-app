@@ -886,6 +886,10 @@
     "bottom_desc": "Gratuit. Pas de pub. Pas de tracking.",
     "footer": "Tes relations, tes règles."
   },
+  "chats": {
+    "search_placeholder": "Rechercher une conversation…",
+    "no_results": "Aucun résultat"
+  },
   "crop": {
     "title": "Recadrer la photo",
     "confirm": "Confirmer",

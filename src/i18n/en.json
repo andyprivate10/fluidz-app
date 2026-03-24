@@ -886,6 +886,10 @@
     "bottom_desc": "Free. No ads. No tracking.",
     "footer": "Your relationships, your rules."
   },
+  "chats": {
+    "search_placeholder": "Search conversations…",
+    "no_results": "No results"
+  },
   "crop": {
     "title": "Crop photo",
     "confirm": "Confirm",

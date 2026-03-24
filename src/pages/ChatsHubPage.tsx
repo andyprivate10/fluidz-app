@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SkeletonCard } from '../components/Skeleton'
@@ -6,7 +6,7 @@ import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Users, Compass, Zap, Camera, Video } from 'lucide-react'
+import { MessageCircle, Users, Compass, Zap, Camera, Video, Search } from 'lucide-react'
 import { timeAgo } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 
@@ -25,6 +25,9 @@ export default function ChatsHubPage() {
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'all' | 'direct' | 'dm' | 'group'>('all')
+  const [searchInput, setSearchInput] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>(null)
 
   const loadThreads = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -102,7 +105,23 @@ export default function ChatsHubPage() {
 
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadThreads)
 
-  const filtered = tab === 'all' ? threads : threads.filter(t => t.type === tab || (tab === 'dm' && t.type === 'dm_session'))
+  function handleSearchInput(val: string) {
+    setSearchInput(val)
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => setSearchQuery(val.trim().toLowerCase()), 300)
+  }
+
+  const filtered = useMemo(() => {
+    let list = tab === 'all' ? threads : threads.filter(t => t.type === tab || (tab === 'dm' && t.type === 'dm_session'))
+    if (searchQuery) {
+      list = list.filter(t =>
+        (t.sessionTitle || '').toLowerCase().includes(searchQuery) ||
+        (t.peerName || '').toLowerCase().includes(searchQuery) ||
+        (t.lastMessage || '').toLowerCase().includes(searchQuery)
+      )
+    }
+    return list
+  }, [threads, tab, searchQuery])
 
   function goToThread(t: ChatThread) {
     if (t.type === 'group') navigate(`/session/${t.sessionId}/chat`)
@@ -141,10 +160,31 @@ export default function ChatsHubPage() {
         </div>
       </div>
 
+      {/* Search bar */}
+      <div style={{ position: 'relative', zIndex: 1, padding: '10px 16px 0' }}>
+        <div style={{ position: 'relative' }}>
+          <Search size={14} strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: S.tx3 }} />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={e => handleSearchInput(e.target.value)}
+            placeholder={t('chats.search_placeholder')}
+            style={{ width: '100%', padding: '10px 12px 10px 34px', borderRadius: R.chip, border: '1px solid ' + S.rule, background: S.bg2, color: S.tx, fontSize: 13, outline: 'none', boxSizing: 'border-box' }}
+          />
+        </div>
+      </div>
+
       <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '4px 16px', paddingBottom: 96 }}>
         {loading && <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}><SkeletonCard lines={2} /><SkeletonCard lines={2} /><SkeletonCard lines={2} /><SkeletonCard lines={2} /></div>}
 
-        {!loading && filtered.length === 0 && (
+        {!loading && filtered.length === 0 && searchQuery && (
+          <div style={{ textAlign: 'center', padding: '48px 16px', color: S.tx3 }}>
+            <Search size={28} style={{ color: S.tx3, marginBottom: 10 }} strokeWidth={1.5} />
+            <p style={{ ...typeStyle('section'), margin: '0 0 6px' }}>{t('chats.no_results')}</p>
+          </div>
+        )}
+
+        {!loading && filtered.length === 0 && !searchQuery && (
           <div style={{ textAlign: 'center', padding: '48px 16px', color: S.tx3 }}>
             <MessageCircle size={28} style={{ color: S.tx3, marginBottom: 10 }} strokeWidth={1.5} />
             <p style={{ ...typeStyle('section'), margin: '0 0 6px' }}>{t('chat.no_messages')}</p>
