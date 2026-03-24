@@ -33,19 +33,6 @@ async function ensureUser(email: string, displayName: string, profileJson: Recor
   return created.user.id
 }
 
-// ── Helper: relative timestamp (exported for later tasks) ──
-export function daysAgo(days: number, offsetHours = 0): string {
-  const d = new Date()
-  d.setDate(d.getDate() - days)
-  d.setHours(d.getHours() + offsetHours)
-  return d.toISOString()
-}
-
-export function hoursAgo(hours: number): string {
-  const d = new Date()
-  d.setHours(d.getHours() - hours)
-  return d.toISOString()
-}
 
 // ── User profiles ──
 const PROFILES: Record<string, { email: string; display_name: string; profile_json: Record<string, unknown> }> = {
