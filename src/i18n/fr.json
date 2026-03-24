@@ -610,7 +610,9 @@
     "accepted_body": "Tu peux maintenant accéder au DM et à l'adresse.",
     "checkin_body_address": "📍 {{address}} — Tu peux maintenant partager le lien.",
     "checkin_body_no_address": "Tu peux maintenant partager le lien d'invitation.",
-    "invites_sent": "{{count}} invitation(s) envoyée(s)"
+    "invites_sent": "{{count}} invitation(s) envoyée(s)",
+    "role_distribution": "Répartition des rôles",
+    "conversion_funnel": "Entonnoir de conversion"
   },
   "contacts": {
     "title": "Naughty Book",

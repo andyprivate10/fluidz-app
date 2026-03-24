@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { sendPushToUser } from '../lib/pushSender'
 import HostCandidateCard from '../components/host/HostCandidateCard'
+import HostSessionStats from '../components/host/HostSessionStats'
 import { QRCodeSVG } from 'qrcode.react'
 import { getSessionCover } from '../lib/sessionCover'
 
@@ -564,6 +565,8 @@ export default function HostDashboard() {
             </div>
           </div>
         )}
+        <HostSessionStats apps={apps} />
+
         {filtered.length === 0 && (
           <div style={{textAlign:'center',padding:'40px 20px',color:S.tx3,fontSize:14}}>
             {tab==='pending' ? t('host.no_pending') : tab==='accepted' ? t('host.no_accepted') : t('host.no_rejected')}
