@@ -237,7 +237,11 @@
     "qr_hint": "Scan this QR code to join",
     "bookmark": "Save",
     "bookmarked": "Saved",
-    "unbookmarked": "Removed from saved"
+    "unbookmarked": "Removed from saved",
+    "share_already_here": "already here",
+    "share_join_us": "Join us",
+    "share_looking_for": "Looking for",
+    "add_to_book_desc": "You can add the members of this session to your Naughty Book"
   },
   "chat": {
     "title": "Messages",
@@ -518,7 +522,16 @@
     "your_recovery_code": "Your recovery code",
     "no_profile_yet": "No ghost profile yet?",
     "create_profile": "Create a profile",
-    "save_real_account": "Save as real account"
+    "save_real_account": "Save as real account",
+    "already_converted": "This ghost has already been converted to an account",
+    "expired_24h": "This ghost profile has expired (24h passed)",
+    "email_sent_convert": "Email sent! Click the link to finalize",
+    "profile_preserved": "Your profile, photos and applications will be preserved",
+    "next_button": "Next →",
+    "choose_pseudo": "Choose a username",
+    "pin_label": "Secret code (4 digits)",
+    "pin_help": "To recover your profile if you close the app",
+    "have_code_recover": "I already have a code → Recover my profile"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -584,7 +597,11 @@
     "confirm_remove_contact": "Remove from contacts?",
     "candidate_fallback": "this candidate",
     "accepted_toast": "{{name}} accepted",
-    "rejected_toast": "{{name}} rejected"
+    "rejected_toast": "{{name}} rejected",
+    "accepted_body": "You can now access the DM and the address.",
+    "checkin_body_address": "📍 {{address}} — You can now share the link.",
+    "checkin_body_no_address": "You can now share the invite link.",
+    "invites_sent": "{{count}} invite(s) sent"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -728,12 +745,22 @@
     "create_group": "Create group",
     "edit": "Edit",
     "new_group": "New group",
-    "confirm_delete": "Delete this group?"
+    "confirm_delete": "Delete this group?",
+    "no_contacts_hint": "Add contacts first in the Naughty Book",
+    "members_selected": "MEMBERS ({{count}} selected)"
   },
   "me": {
     "sending": "Sending...",
     "create_account": "Create my account (magic link)",
-    "send_magic_link": "Send magic link"
+    "send_magic_link": "Send magic link",
+    "ghost_merged": "Account created! Ghost profile imported.",
+    "file_too_large": "File too large (max {{max}} MB)",
+    "photo_added": "Photo added",
+    "video_added": "Video added",
+    "guest_warning": "You have a pending application — create an account to keep it.",
+    "guest_warning_desc": "Log in with your email to recover your application.",
+    "login_prompt": "Enter your email to log in",
+    "profile_saved": "Profile saved!"
   },
   "host_actions": {
     "sending": "Sending...",

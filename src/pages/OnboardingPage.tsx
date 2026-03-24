@@ -96,7 +96,7 @@ export default function OnboardingPage() {
       },
     })
     setSaving(false)
-    showToast('Profil sauvegardé !', 'success')
+    showToast(t('me.profile_saved'), 'success')
     navigate('/')
   }
 

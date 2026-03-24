@@ -129,7 +129,7 @@ export default function HostDashboard() {
         ? t('host.accepted_for', { title: sess.title })
         : t('host.rejected_for', { title: sess.title })
       const body = status === 'accepted'
-        ? "Tu peux maintenant accéder au DM et à l'adresse."
+        ? t('host.accepted_body')
         : ''
       const href = status === 'accepted'
         ? `/session/${id}/dm/${app.applicant_id}`
@@ -187,7 +187,7 @@ export default function HostDashboard() {
         type: 'check_in_confirmed',
         message: `Check-in confirmé pour "${sess.title}" `,
         title: `Check-in confirmé pour "${sess.title}" `,
-        body: sess.exact_address ? '📍 ' + sess.exact_address + " — Tu peux maintenant partager le lien." : "Tu peux maintenant partager le lien d'invitation.",
+        body: sess.exact_address ? t('host.checkin_body_address', { address: sess.exact_address }) : t('host.checkin_body_no_address'),
         href: `/session/${id}`,
       })
       // Auto-track co_event interactions with all other checked-in members
@@ -293,7 +293,7 @@ export default function HostDashboard() {
       href: `/session/${id}`,
     }))
     await supabase.from('notifications').insert(notifs)
-    showToast(`${newMembers.length} invitation${newMembers.length > 1 ? 's' : ''} envoyée${newMembers.length > 1 ? 's' : ''}`, 'success')
+    showToast(t('host.invites_sent', { count: newMembers.length }), 'success')
     
   }
 

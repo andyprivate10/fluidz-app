@@ -140,12 +140,12 @@ export default function GhostSetupPage() {
             </div>
             <button
               onClick={() => {
-                if (!displayName.trim()) { showToast('Choisis un pseudo', 'error'); return }
+                if (!displayName.trim()) { showToast(t('ghost.choose_pseudo'), 'error'); return }
                 setStep('pin')
               }}
               style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)' }}
             >
-              Suivant →
+              {t('ghost.next_button')}
             </button>
           </div>
         )}
@@ -153,7 +153,7 @@ export default function GhostSetupPage() {
         {step === 'pin' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Code secret (4 chiffres)</label>
+              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('ghost.pin_label')}</label>
               <input
                 value={pin}
                 onChange={e => {
@@ -167,7 +167,7 @@ export default function GhostSetupPage() {
                 style={{ ...inp, fontSize: 28, fontWeight: 800, letterSpacing: '0.3em' }}
               />
               <p style={{ fontSize: 11, color: S.tx4, margin: '8px 0 0', textAlign: 'center' }}>
-                Pour retrouver ton profil si tu fermes l'app
+                {t('ghost.pin_help')}
               </p>
             </div>
             <button
@@ -227,7 +227,7 @@ export default function GhostSetupPage() {
               onClick={() => navigate('/ghost/recover')}
               style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 12, cursor: 'pointer', padding: 8 }}
             >
-              J'ai déjà un code → Récupérer mon profil
+              {t('ghost.have_code_recover')}
             </button>
           </div>
         )}
@@ -239,7 +239,7 @@ export default function GhostSetupPage() {
               onClick={() => navigate('/ghost/recover' + (sessionId ? '?session_id=' + sessionId : inviteCode ? '?invite_code=' + inviteCode : ''))}
               style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 12, cursor: 'pointer', textDecoration: 'underline' }}
             >
-              J'ai déjà un code → Récupérer mon profil
+              {t('ghost.have_code_recover')}
             </button>
           </div>
         )}

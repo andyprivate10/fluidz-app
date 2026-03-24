@@ -43,13 +43,13 @@ export default function GhostRecoverPage() {
     }
 
     if (data.claimed_user_id) {
-      showToast('Ce ghost a déjà été converti en compte', 'error')
+      showToast(t('ghost.already_converted'), 'error')
       setLoading(false)
       return
     }
 
     if (data.is_expired || new Date(data.expires_at) < new Date()) {
-      showToast('Ce profil ghost a expiré (24h dépassées)', 'error')
+      showToast(t('ghost.expired_24h'), 'error')
       setLoading(false)
       return
     }
@@ -82,7 +82,7 @@ export default function GhostRecoverPage() {
     // Store ghost ID for merge after login
     try { localStorage.setItem('ghost_merge_id', ghost.id) } catch (_) {}
 
-    showToast('Email envoyé ! Clique le lien pour finaliser', 'info')
+    showToast(t('ghost.email_sent_convert'), 'info')
     setConverting(false)
     navigate('/me?ghost_merge=' + ghost.id)
   }
@@ -193,7 +193,7 @@ export default function GhostRecoverPage() {
                   {converting ? t('ghost_recover.sending') : t('ghost_recover.send_confirmation')}
                 </button>
                 <p style={{ fontSize: 11, color: S.tx4, margin: '8px 0 0', textAlign: 'center' }}>
-                  Ton profil, tes photos et tes candidatures seront conservés
+                  {t('ghost.profile_preserved')}
                 </p>
               </div>
             )}

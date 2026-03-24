@@ -94,7 +94,7 @@ export default function MePage() {
     await supabase.from('applications').update({ applicant_id: userId }).eq('ghost_session_id', mergeId)
     await supabase.from('ghost_sessions').update({ claimed_user_id: userId }).eq('id', mergeId)
     try { localStorage.removeItem('ghost_merge_id') } catch (_e) {}
-    showToast('Compte créé ! Profil ghost importé.', 'success')
+    showToast(t('me.ghost_merged'), 'success')
   }
 
   const [displayName, setDisplayName] = useState('')
@@ -294,7 +294,7 @@ export default function MePage() {
     if (!user) return
     const maxSize = mediaType === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024
     if (file.size > maxSize) {
-      showToast(`Fichier trop gros (max ${mediaType === 'photo' ? '5' : '20'} Mo)`, 'error')
+      showToast(t('me.file_too_large', { max: mediaType === 'photo' ? '5' : '20' }), 'error')
       return
     }
     setMediaUploading(true)
@@ -309,7 +309,7 @@ export default function MePage() {
       const path = `${user.id}/${album}_${mediaType}_${ts}.${ext}`
       const { error } = await supabase.storage.from('avatars').upload(path, fileToUpload, { upsert: false })
       if (error) {
-        showToast('Erreur upload: ' + error.message, 'error')
+        showToast(t('errors.upload_error') + ': ' + error.message, 'error')
         return
       }
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
@@ -321,7 +321,7 @@ export default function MePage() {
       } else {
         setVideosIntime(prev => [...prev, publicUrl])
       }
-      showToast(mediaType === 'photo' ? 'Photo ajoutée' : 'Vidéo ajoutée', 'success')
+      showToast(mediaType === 'photo' ? t('me.photo_added') : t('me.video_added'), 'success')
     } catch (err) {
       showToast('Erreur: ' + String(err), 'error')
     } finally {
@@ -356,8 +356,8 @@ export default function MePage() {
       }}>
         {hasGuestToken && (
           <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p2, border:'1px solid '+S.pbd, maxWidth:360, width:'100%' }}>
-            <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>Vous avez une candidature en attente — créer un compte pour la conserver.</p>
-            <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>Connecte-toi avec ton email pour récupérer ta candidature.</p>
+            <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>{t('me.guest_warning')}</p>
+            <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>{t('me.guest_warning_desc')}</p>
           </div>
         )}
         <div style={{ marginBottom:32, textAlign:'center' }}>
@@ -365,7 +365,7 @@ export default function MePage() {
             WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', margin:'0 0 8px' }}>
             fluidz
           </h1>
-          <p style={{ color:S.tx3, fontSize:14 }}>Entre ton email pour te connecter</p>
+          <p style={{ color:S.tx3, fontSize:14 }}>{t('me.login_prompt')}</p>
         </div>
         <input
           type="email" value={email}

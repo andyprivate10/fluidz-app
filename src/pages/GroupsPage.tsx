@@ -240,7 +240,7 @@ export default function GroupsPage() {
                   MEMBRES ({selectedMembers.length} sélectionné{selectedMembers.length !== 1 ? 's' : ''})
                 </label>
                 {contacts.length === 0 ? (
-                  <p style={{ fontSize:12, color:S.tx4 }}>Ajoute des contacts d'abord dans le Naughty Book</p>
+                  <p style={{ fontSize:12, color:S.tx4 }}>{t('groups.no_contacts_hint')}</p>
                 ) : (
                   <div style={{ display:'flex', flexDirection:'column', gap:6, maxHeight:200, overflowY:'auto' }}>
                     {contacts.map(c => {

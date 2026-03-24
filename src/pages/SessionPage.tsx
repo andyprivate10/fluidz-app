@@ -484,8 +484,8 @@ export default function SessionPage() {
                 onClick={() => {
                   const url = window.location.origin + '/join/' + session.invite_code
                   const rolesW = session.lineup_json?.roles_wanted as Record<string,number> | undefined
-                  const rolesText = rolesW && Object.keys(rolesW).length > 0 ? ' – Recherche ' + Object.entries(rolesW).map(([r,c]) => c+' '+r).join(', ') : ''
-                  const text = '🔥 ' + session.title + (session.approx_area ? ' – ' + session.approx_area : '') + rolesText + ' – ' + (members.length+1) + ' déjà là – Rejoins-nous : ' + url
+                  const rolesText = rolesW && Object.keys(rolesW).length > 0 ? ' – ' + t('session.share_looking_for') + ' ' + Object.entries(rolesW).map(([r,c]) => c+' '+r).join(', ') : ''
+                  const text = '🔥 ' + session.title + (session.approx_area ? ' – ' + session.approx_area : '') + rolesText + ' – ' + (members.length+1) + ' ' + t('session.share_already_here') + ' – ' + t('session.share_join_us') + ' : ' + url
                   copyMessage(text)
                 }}
                 style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+S.rule, background: copied ? S.sagebg : 'transparent', color: copied ? S.sage : S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
@@ -528,7 +528,7 @@ export default function SessionPage() {
         {myApp?.status === 'checked_in' && members.length > 0 && (
           <div style={{ ...glassCard, borderColor: S.pbd }}>
             <p style={{ fontSize: 12, fontWeight: 700, color: S.tx2, margin: '0 0 8px' }}>{t('session.add_to_book')}</p>
-            <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 10px' }}>Tu peux ajouter les membres de cette session à ton Naughty Book</p>
+            <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 10px' }}>{t('session.add_to_book_desc')}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {members.filter(m => m.applicant_id !== currentUser?.id).slice(0, 6).map(m => {
                 const name = memberNames[m.applicant_id] || t('common.anonymous_fallback')

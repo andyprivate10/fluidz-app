@@ -77,7 +77,7 @@ export default function CandidateProfilePage() {
       type: decision === 'accepted' ? 'application_accepted' : 'application_rejected',
       message: title,
       title,
-      body: decision === 'accepted' ? "Tu peux maintenant accéder au DM et à l'adresse." : '',
+      body: decision === 'accepted' ? t('host.accepted_body') : '',
       href: decision === 'accepted' ? `/session/${sessionId}/dm` : `/session/${sessionId}`,
     })
 
