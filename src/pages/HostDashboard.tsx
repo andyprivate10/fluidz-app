@@ -541,6 +541,24 @@ export default function HostDashboard() {
           </div>
         )}
 
+        {/* Stats metrics */}
+        {apps.length > 0 && (
+          <div style={{display:'flex',gap:8,marginTop:12}}>
+            <div style={{flex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:12,padding:'10px 12px',textAlign:'center'}}>
+              <div style={{fontSize:16,fontWeight:800,color:S.sage}}>{totalAccepted > 0 ? Math.round((arrivedCount / totalAccepted) * 100) : 0}%</div>
+              <div style={{fontSize:10,color:S.tx3,fontWeight:600}}>{t('host.checkin_rate')}</div>
+            </div>
+            <div style={{flex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:12,padding:'10px 12px',textAlign:'center'}}>
+              <div style={{fontSize:16,fontWeight:800,color:S.p}}>{apps.length > 0 ? Math.round((counts.accepted / apps.length) * 100) : 0}%</div>
+              <div style={{fontSize:10,color:S.tx3,fontWeight:600}}>{t('host.accept_rate')}</div>
+            </div>
+            <div style={{flex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:12,padding:'10px 12px',textAlign:'center'}}>
+              <div style={{fontSize:16,fontWeight:800,color:S.tx}}>{apps.length}</div>
+              <div style={{fontSize:10,color:S.tx3,fontWeight:600}}>{t('host.total_apps')}</div>
+            </div>
+          </div>
+        )}
+
         <div style={{display:'flex',gap:8,marginTop:16}}>
           {([['pending',t('host.pending'),S.orange],['accepted',t('host.accepted_tab'),S.sage],['rejected',t('host.rejected_tab'),S.red]] as const).map(([k,l,c]) => (
             <button key={k} onClick={() => setTab(k as any)} style={{

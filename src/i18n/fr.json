@@ -645,7 +645,10 @@
     "eject": "Éjecter",
     "eject_confirm": "Éjecter {{name}} de cette session ?",
     "ejected": "Membre éjecté",
-    "ejected_from": "Éjecté de \"{{title}}\""
+    "ejected_from": "Éjecté de \"{{title}}\"",
+    "checkin_rate": "Taux check-in",
+    "accept_rate": "Taux d'acceptation",
+    "total_apps": "Candidatures"
   },
   "contacts": {
     "title": "Naughty Book",
