@@ -232,6 +232,9 @@
     "review_anonymous_help": "Ton avis anonyme aide la communauté",
     "member_count": "{{count}} membres",
     "visibility_label": "Visibilité",
+    "published": "Publiée",
+    "unpublished": "Non publiée",
+    "toggle_publish": "Publication",
     "status_open": "Ouverte",
     "status_ended": "Terminée",
     "status_draft": "Brouillon",
@@ -855,7 +858,14 @@
     "toast_sent": "Candidature envoyée !",
     "all_enabled": "Tout activé",
     "partial": "Partiel",
-    "disabled_state": "Désactivé"
+    "disabled_state": "Désactivé",
+    "preview_title": "RÉCAPITULATIF",
+    "you_share": "Tu partages :",
+    "photos_count": "{{count}} photo(s)",
+    "your_role": "ton rôle",
+    "your_kinks": "tes pratiques",
+    "modify": "Modifier",
+    "send": "Envoyer"
   },
   "ghost_setup": {
     "creating": "Creation...",
@@ -886,7 +896,14 @@
     "guest_warning": "Vous avez une candidature en attente — créer un compte pour la conserver.",
     "guest_warning_desc": "Connecte-toi avec ton email pour récupérer ta candidature.",
     "login_prompt": "Entre ton email pour te connecter",
-    "profile_saved": "Profil sauvegardé !"
+    "profile_saved": "Profil sauvegardé !",
+    "my_profile": "MON PROFIL",
+    "my_preferences": "MES PRÉFÉRENCES",
+    "preferences_desc": "Ce que tu recherches chez les autres",
+    "preferred_roles": "Rôles recherchés",
+    "age_range": "Tranche d'âge",
+    "preferred_kinks": "Pratiques recherchées",
+    "preferred_morphologies": "Morphologies recherchées"
   },
   "host_actions": {
     "sending": "Envoi...",
@@ -973,7 +990,9 @@
   "join": {
     "status_pending": "Candidature en attente...",
     "status_accepted": "Tu es accepté !",
-    "joining": "Rejoindre la session..."
+    "joining": "Rejoindre la session...",
+    "members_present": "{{count}} membres déjà présents",
+    "host_present": "Organisé par {{name}}"
   },
   "vibe": {
     "reviews": "Reviews",

@@ -19,6 +19,7 @@ interface SessionRow {
   description: string | null
   host_name: string
   app_count: number
+  is_published: boolean
 }
 
 interface ApplicationRow {
@@ -44,7 +45,7 @@ export default function AdminSessionsTab() {
 
   async function loadSessions() {
     setLoading(true)
-    const { data: sessData } = await supabase.from('sessions').select('id, title, status, host_id, created_at, starts_at, ends_at, max_capacity, tags, description').order('created_at', { ascending: false })
+    const { data: sessData } = await supabase.from('sessions').select('id, title, status, host_id, created_at, starts_at, ends_at, max_capacity, tags, description, is_published').order('created_at', { ascending: false })
 
     if (!sessData || sessData.length === 0) { setSessions([]); setLoading(false); return }
 
@@ -106,6 +107,13 @@ export default function AdminSessionsTab() {
   async function setStatus(sessionId: string, status: string) {
     await supabase.from('sessions').update({ status }).eq('id', sessionId)
     await loadSessions()
+  }
+
+  async function togglePublish(sessionId: string) {
+    const s = sessions.find(x => x.id === sessionId)
+    const newVal = s?.is_published === false ? true : false
+    await supabase.from('sessions').update({ is_published: newVal }).eq('id', sessionId)
+    setSessions(prev => prev.map(x => x.id === sessionId ? { ...x, is_published: newVal } : x))
   }
 
   async function deleteSession(sessionId: string) {
@@ -197,6 +205,17 @@ export default function AdminSessionsTab() {
                   <button onClick={() => setStatus(s.id, 'ended')} style={{ ...adminStyles.btnSecondary, fontSize: 11, padding: '6px 12px' }}>Set Ended</button>
                   <button onClick={() => deleteSession(s.id)} style={{ ...adminStyles.btnDanger, fontSize: 11, padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Trash2 size={11} strokeWidth={1.5} /> Supprimer
+                  </button>
+                </div>
+
+                {/* Published toggle */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: s.is_published !== false ? S.sage : S.tx3 }} />
+                  <span style={{ fontSize: 11, fontWeight: 600, color: s.is_published !== false ? S.sage : S.tx3, flex: 1 }}>
+                    {s.is_published !== false ? 'Published' : 'Unpublished'}
+                  </span>
+                  <button onClick={() => togglePublish(s.id)} style={{ ...adminStyles.btnSecondary, fontSize: 10, padding: '4px 10px' }}>
+                    Toggle
                   </button>
                 </div>
 

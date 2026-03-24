@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Eye, Share2, Heart, Check, Mail } from 'lucide-react'
+import { Eye, Share2 } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import ImageCropModal from '../components/ImageCropModal'
 import { VibeScoreCard } from '../components/VibeScoreBadge'
@@ -14,6 +14,9 @@ import { ETHNICITIES, ETHNICITY_REGIONS } from '../lib/ethnicityTypes'
 import { useMeData, PREP_OPTIONS, inputStyleResolved as inputStyle } from '../hooks/useMeData'
 import { monthsAgoCount } from '../lib/timing'
 import MeSettings from '../components/me/MeSettings'
+import MePreferences from '../components/me/MePreferences'
+import MeProfileCompleteness from '../components/me/MeProfileCompleteness'
+import MeLoginForm from '../components/me/MeLoginForm'
 
 const S = colors
 
@@ -74,48 +77,18 @@ export default function MePage() {
     autoSaveStatus,
     toggleKink, uploadMedia, removePhotoProfil, removePhotoIntime, removeVideoIntime, setAsAvatar,
     readFileAsDataUrl,
+    prefRoles, setPrefRoles, prefAgeMin, setPrefAgeMin,
+    prefAgeMax, setPrefAgeMax, prefKinks, setPrefKinks,
+    prefMorphologies, setPrefMorphologies,
   } = d
 
   // ── Non connecté ─────────────────────────────────────────────────────────
   if (!user) {
     return (
-      <div style={{
-        minHeight:'100vh', background:S.bg, display:'flex', flexDirection:'column',
-        alignItems:'center', justifyContent:'center', padding:'0 24px 96px',
-
-      }}>
-        {hasGuestToken && (
-          <div style={{ marginBottom:20, padding:14, borderRadius:14, background:S.p2, border:'1px solid '+S.pbd, maxWidth:360, width:'100%' }}>
-            <p style={{ margin:0, fontSize:13, color:S.tx, fontWeight:600 }}>{t('me.guest_warning')}</p>
-            <p style={{ margin:'8px 0 0', fontSize:12, color:S.tx2 }}>{t('me.guest_warning_desc')}</p>
-          </div>
-        )}
-        <div style={{ marginBottom:32, textAlign:'center' }}>
-          <h1 style={{ fontSize:32, fontWeight:800, background:S.grad,
-            WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', margin:'0 0 8px' }}>
-            fluidz
-          </h1>
-          <p style={{ color:S.tx3, fontSize:14 }}>{t('me.login_prompt')}</p>
-        </div>
-        <input
-          type="email" value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder={t('profile.placeholder_email')}
-          style={{ ...inputStyle, maxWidth:360, marginBottom:12 }}
-          onKeyDown={e => e.key === 'Enter' && sendMagicLink()}
-        />
-        <button
-          onClick={sendMagicLink} disabled={loading}
-          style={{
-            width:'100%', maxWidth:360, padding:'14px', borderRadius:14,
-            fontWeight:700, fontSize:15, color:'#fff', background:S.grad,
-            border:'none', cursor:'pointer', opacity: loading ? 0.7 : 1,
-            boxShadow:`0 4px 20px ${S.p}44`,
-          }}>
-          {loading ? t('me.sending') : hasGuestToken ? t('me.create_account') : <><Mail size={16} strokeWidth={2} style={{display:'inline',verticalAlign:'middle',marginRight:6}} />{t('me.send_magic_link')}</>}
-        </button>
-        {msg && <p style={{ marginTop:16, fontSize:13, color:S.tx2, textAlign:'center' }}>{msg}</p>}
-      </div>
+      <MeLoginForm
+        email={email} setEmail={setEmail} loading={loading} msg={msg}
+        hasGuestToken={hasGuestToken} sendMagicLink={sendMagicLink} inputStyle={inputStyle}
+      />
     )
   }
 
@@ -148,7 +121,6 @@ export default function MePage() {
       </div>
 
       {/* ── Profil ── */}
-      {/* ── Profil ── */}
       <div style={{ padding:'16px 20px' }}>
 
           {/* Vibe Score */}
@@ -158,72 +130,18 @@ export default function MePage() {
             </div>
           )}
 
-          {/* Preview button */}
-          {user && (
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <button onClick={() => navigate('/profile/' + user.id)} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.pbd, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                <Eye size={13} strokeWidth={1.5} style={{marginRight:3}} /> {t('profile.see_profile')}
-              </button>
-              <button onClick={() => {
-                const url = window.location.origin + '/profile/' + user.id
-                if (navigator.share) {
-                  navigator.share({ title: displayName || t('share.my_profile'), url }).catch(() => {})
-                } else {
-                  navigator.clipboard.writeText(url)
-                }
-              }} style={{ flex: 1, padding: '10px 14px', borderRadius: 12, background: S.bg1, border: '1px solid '+S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                <Share2 size={13} strokeWidth={1.5} style={{marginRight:3}} />{t('common.share_label')}
-              </button>
-            </div>
-          )}
 
-          {/* Profile views */}
-          {profileViews > 0 && (
-            <div style={{ marginBottom: 12, padding: '10px 14px', background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: S.tx2 }}><Eye size={12} strokeWidth={1.5} style={{marginRight:3}} /> Vu par <strong style={{ color: S.tx }}>{profileViews}</strong> personne{profileViews > 1 ? 's' : ''} cette semaine</span>
-            </div>
-          )}
+          <MeProfileCompleteness
+            displayName={displayName} avatarUrl={avatarUrl}
+            age={age} role={role} bio={bio} height={height} weight={weight}
+            morphology={morphology} kinks={kinks}
+            profileViews={profileViews} contactRequests={contactRequests}
+          />
 
-          {/* Contact requests */}
-          {contactRequests > 0 && (
-            <button onClick={() => navigate('/notifications')} style={{ width: '100%', marginBottom: 12, padding: '12px 14px', background: S.p2, border: '1px solid ' + S.pbd, borderRadius: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, color: S.p, fontWeight: 600, display:'flex', alignItems:'center', gap:4 }}><Heart size={13} strokeWidth={1.5} /> {contactRequests} personne{contactRequests > 1 ? 's' : ''} s'intéresse{contactRequests > 1 ? 'nt' : ''} à toi</span>
-              <span style={{ fontSize: 11, color: S.tx2 }}>{t('common.view_arrow')}</span>
-            </button>
-          )}
-
-          {/* Profile completeness */}
-          {(() => {
-            const checks = [
-              { label: t('profile.step_pseudo'), done: !!displayName && displayName !== 'Anonymous' },
-              { label: t('profile.step_photo'), done: !!avatarUrl },
-              { label: t('profile.step_age'), done: !!age },
-              { label: t('profile.step_role'), done: !!role },
-              { label: t('profile.step_bio'), done: !!bio },
-              { label: t('profile.step_physique'), done: !!height || !!weight || !!morphology },
-              { label: t('profile.step_pratiques'), done: kinks.length > 0 },
-            ]
-            const done = checks.filter(c => c.done).length
-            const pct = Math.round((done / checks.length) * 100)
-            return (
-              <div style={{ marginBottom: 16, background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 14, padding: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: S.tx2 }}>{t('profile.completion_label', { pct })}</span>
-                  <span style={{ fontSize: 11, color: pct === 100 ? S.sage : S.p, fontWeight: 600 }}>{done}/{checks.length}</span>
-                </div>
-                <div style={{ background: S.bg2, borderRadius: 4, height: 6, overflow: 'hidden', marginBottom: 8 }}>
-                  <div style={{ width: `${pct}%`, background: pct === 100 ? S.sage : 'linear-gradient(90deg,'+S.p+','+S.pDark+')', height: '100%', borderRadius: 4, transition: 'width 0.4s' }} />
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                  {checks.map(c => (
-                    <span key={c.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: c.done ? S.sagebg : S.bg2, color: c.done ? S.sage : S.tx3, fontWeight: 600, border: '1px solid ' + (c.done ? S.sagebd : S.rule) }}>
-                      {c.done ? <Check size={11} strokeWidth={2.5} style={{display:'inline',color:S.sage}} /> : <span style={{opacity:0.3}}>○</span>} {c.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )
-          })()}
+          {/* Profile section header — peach */}
+          <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 14, background: S.p3, border: '1px solid ' + S.pbd }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('me.my_profile')}</span>
+          </div>
 
           <Section title={t('profile.public_photos')} color={S.sage}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 4px' }}>{t('profile.public_photos_desc')}</p>
@@ -362,6 +280,18 @@ export default function MePage() {
             </div>
           </Section>
 
+          {/* Preferences section — collapsed by default */}
+          <MePreferences
+            roles={roles}
+            kinkOptions={kinkOptions}
+            morphologies={morphologies}
+            prefRoles={prefRoles} setPrefRoles={setPrefRoles}
+            prefAgeMin={prefAgeMin} setPrefAgeMin={setPrefAgeMin}
+            prefAgeMax={prefAgeMax} setPrefAgeMax={setPrefAgeMax}
+            prefKinks={prefKinks} setPrefKinks={setPrefKinks}
+            prefMorphologies={prefMorphologies} setPrefMorphologies={setPrefMorphologies}
+          />
+
           <MeSettings
             user={user}
             dmPrivacy={dmPrivacy} setDmPrivacy={setDmPrivacy}
@@ -371,15 +301,6 @@ export default function MePage() {
             deleteInput={deleteInput} setDeleteInput={setDeleteInput}
             deleting={deleting} setDeleting={setDeleting}
           />
-
-          {/* Auto-save status */}
-          <div style={{
-            textAlign:'center', padding:'12px 0', fontSize:12, fontWeight:600,
-            color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
-            transition:'color 0.3s',
-          }}>
-            {autoSaveStatus === 'saving' ? t('profile.autosave_saving') : autoSaveStatus === 'saved' ? t('profile.autosave_saved') : t('profile.autosave_idle')}
-          </div>
 
           {devMode && (
             <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>

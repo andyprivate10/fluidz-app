@@ -67,6 +67,13 @@ export function useMeData() {
   const [cropSrc, setCropSrc] = useState<string | null>(null)
   const [cropCallback, setCropCallback] = useState<((file: File) => void) | null>(null)
   const [cropAspect, setCropAspect] = useState(1)
+  // Preferences (what I search for)
+  const [prefRoles, setPrefRoles] = useState<string[]>([])
+  const [prefAgeMin, setPrefAgeMin] = useState('')
+  const [prefAgeMax, setPrefAgeMax] = useState('')
+  const [prefKinks, setPrefKinks] = useState<string[]>([])
+  const [prefMorphologies, setPrefMorphologies] = useState<string[]>([])
+
   const [hasGuestToken, setHasGuestToken] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteInput, setDeleteInput] = useState('')
@@ -196,6 +203,13 @@ export function useMeData() {
       setLimits(p.limits || '')
       setLinkedProfiles(Array.isArray(p.linked_profiles) ? p.linked_profiles : [])
       setPlatformProfiles(Array.isArray(p.platform_profiles) ? p.platform_profiles : [])
+      // Load preferences
+      const prefs = p.preferences || {}
+      setPrefRoles(Array.isArray(prefs.roles) ? prefs.roles : [])
+      setPrefAgeMin(prefs.age_min || '')
+      setPrefAgeMax(prefs.age_max || '')
+      setPrefKinks(Array.isArray(prefs.kinks) ? prefs.kinks : [])
+      setPrefMorphologies(Array.isArray(prefs.morphologies) ? prefs.morphologies : [])
       setBodyPartPhotos(() => {
         const raw = p.body_part_photos || {}
         const keyMap: Record<string, string> = { torse: 'torso', bite: 'sex', cul: 'butt', pieds: 'feet' }
@@ -236,6 +250,7 @@ export function useMeData() {
       videos: videosIntime,
       body_part_photos: bodyPartPhotos,
       health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined },
+      preferences: { roles: prefRoles, age_min: prefAgeMin || undefined, age_max: prefAgeMax || undefined, kinks: prefKinks, morphologies: prefMorphologies },
     }
     await supabase.from('user_profiles').upsert({
       id: user.id,
@@ -244,7 +259,7 @@ export function useMeData() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos, prefRoles, prefAgeMin, prefAgeMax, prefKinks, prefMorphologies])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -375,6 +390,12 @@ export function useMeData() {
     showDeleteConfirm, setShowDeleteConfirm,
     deleteInput, setDeleteInput,
     deleting, setDeleting,
+    // preferences
+    prefRoles, setPrefRoles,
+    prefAgeMin, setPrefAgeMin,
+    prefAgeMax, setPrefAgeMax,
+    prefKinks, setPrefKinks,
+    prefMorphologies, setPrefMorphologies,
     // auto-save
     autoSaveStatus,
     // handlers

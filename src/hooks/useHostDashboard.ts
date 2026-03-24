@@ -272,6 +272,12 @@ export function useHostDashboard() {
     setSess((s: any) => ({...s, status: newStatus}))
   }
 
+  async function togglePublish() {
+    const newVal = sess?.is_published === false ? true : false
+    await supabase.from('sessions').update({ is_published: newVal }).eq('id', id)
+    setSess((s: any) => ({ ...s, is_published: newVal }))
+  }
+
   async function closeSession() {
     const destroyMedia = await confirm({ title: t('host.close_confirm'), danger: true })
     if (!destroyMedia && !await confirm({ title: t('host.close_without_delete') })) return
@@ -469,6 +475,7 @@ export function useHostDashboard() {
     decide,
     confirmCheckIn,
     toggleStatus,
+    togglePublish,
     closeSession,
     sendBroadcast,
     inviteGroup,

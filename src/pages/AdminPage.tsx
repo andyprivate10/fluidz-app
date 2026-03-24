@@ -14,6 +14,7 @@ import AdminSessionsTab from '../components/admin/AdminSessionsTab'
 import AdminTemplatesTab from '../components/admin/AdminTemplatesTab'
 import AdminConfigTab from '../components/admin/AdminConfigTab'
 import AdminMediaTab from '../components/admin/AdminMediaTab'
+import AdminProfilesTab from '../components/admin/AdminProfilesTab'
 import AdminSeedTab from '../components/admin/AdminSeedTab'
 import AdminStatsTab from '../components/admin/AdminStatsTab'
 import AdminDevTab from '../components/admin/AdminDevTab'
@@ -28,6 +29,7 @@ const TABS = [
   { id: 'templates', label: 'Templates', icon: LayoutTemplate, color: S.amber },
   { id: 'config', label: 'Options', icon: Settings, color: S.blue },
   { id: 'media', label: 'Media', icon: FolderOpen, color: S.violet },
+  { id: 'profiles', label: 'Profiles', icon: Users, color: S.p },
   { id: 'seed', label: 'Seed', icon: Database, color: S.red },
   { id: 'stats', label: 'Stats', icon: BarChart3, color: S.emerald },
   { id: 'dev', label: 'Dev', icon: Code, color: S.lav },
@@ -138,6 +140,7 @@ export default function AdminPage() {
         {activeTab === 'templates' && <AdminTemplatesTab />}
         {activeTab === 'config' && <AdminConfigTab />}
         {activeTab === 'media' && <AdminMediaTab />}
+        {activeTab === 'profiles' && <AdminProfilesTab />}
         {activeTab === 'seed' && <AdminSeedTab />}
         {activeTab === 'stats' && <AdminStatsTab />}
         {activeTab === 'dev' && <AdminDevTab />}

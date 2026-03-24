@@ -138,6 +138,27 @@ export default function HostDashboard() {
             </div>
           </div>
 
+          {/* Published toggle */}
+          {!isEnded && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10 }}>
+              <span style={{
+                width: 8, height: 8, borderRadius: '50%',
+                background: h.sess?.is_published !== false ? S.sage : S.tx3,
+                flexShrink: 0,
+              }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: h.sess?.is_published !== false ? S.sage : S.tx3, flex: 1 }}>
+                {h.sess?.is_published !== false ? h.t('session.published') : h.t('session.unpublished')}
+              </span>
+              <button onClick={h.togglePublish} style={{
+                padding: '5px 12px', borderRadius: 8, fontSize: 10, fontWeight: 700,
+                border: '1px solid ' + S.rule, background: S.bg2, color: S.tx2, cursor: 'pointer',
+                textTransform: 'uppercase', letterSpacing: '0.04em',
+              }}>
+                {h.t('session.toggle_publish')}
+              </button>
+            </div>
+          )}
+
           {/* Action buttons: Edit + End */}
           {!isEnded && (
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
