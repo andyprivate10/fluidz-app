@@ -989,6 +989,26 @@
     "confirm": "Confirmer",
     "processing": "Traitement…"
   },
+  "dm_request": {
+    "title": "Demande de DM",
+    "profile_required_desc": "Profil requis pour envoyer un DM",
+    "full_access_desc": "Albums adultes requis pour envoyer un DM",
+    "your_profile": "TON PROFIL PARTAGÉ",
+    "pick_template": "MESSAGES RAPIDES",
+    "write_message": "Écris ton premier message...",
+    "send": "Envoyer la demande",
+    "sent": "Demande envoyée !",
+    "waiting": "En attente de réponse",
+    "notification_body": "veut t'envoyer un DM",
+    "review_title": "Demande de DM",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "accepted": "Demande acceptée",
+    "declined": "Demande refusée",
+    "view_profile": "Voir le profil",
+    "view_albums": "Voir les albums",
+    "declined_info": "Cette personne a décliné ta demande"
+  },
   "dm_privacy": {
     "title": "CONFIDENTIALITÉ DM",
     "open": "Ouvert",
