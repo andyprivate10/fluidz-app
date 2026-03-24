@@ -6,7 +6,7 @@ import { colors, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { getSessionCover } from '../lib/sessionCover'
-import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus } from 'lucide-react'
+import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { timeAgo } from '../lib/timing'
 
@@ -28,6 +28,8 @@ export default function HomePage() {
   const [profilePct, setProfilePct] = useState(100)
   const [recentContacts, setRecentContacts] = useState<{ id: string; name: string; avatar?: string }[]>([])
   const [recentNotifs, setRecentNotifs] = useState<{ id: string; type: string; message?: string; title?: string; body?: string; href?: string; created_at: string }[]>([])
+  const [dismissedTips, setDismissedTips] = useState<string[]>([])
+  const [showTips, setShowTips] = useState(false)
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -86,6 +88,13 @@ export default function HomePage() {
     // Recent notifications
     const { data: notifs } = await supabase.from('notifications').select('id, type, message, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
     setRecentNotifs(notifs || [])
+
+    // Tips eligibility
+    const { count: cCount } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
+    const { count: sCount } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('applicant_id', user.id).in('status', ['accepted', 'checked_in', 'pending'])
+    const pj2 = (profData?.profile_json || {}) as Record<string, unknown>
+    setDismissedTips(Array.isArray(pj2.dismissed_tips) ? pj2.dismissed_tips as string[] : [])
+    setShowTips(((cCount ?? 0) === 0 && (sCount ?? 0) === 0) || profilePct < 50)
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
@@ -202,6 +211,40 @@ export default function HomePage() {
             <ArrowRight size={16} style={{ color: S.tx3, flexShrink: 0 }} />
           </div>
         )}
+        {/* Feature discovery tips */}
+        {userId && showTips && (() => {
+          const tips = [
+            { id: 'explore', icon: <Search size={18} strokeWidth={1.5} style={{ color: S.p }} />, title: t('tips.explore_title'), desc: t('tips.explore_desc'), href: '/explore' },
+            { id: 'naughtybook', icon: <BookOpen size={18} strokeWidth={1.5} style={{ color: S.sage }} />, title: t('tips.naughtybook_title'), desc: t('tips.naughtybook_desc'), href: '/contacts' },
+            { id: 'ghost', icon: <Ghost size={18} strokeWidth={1.5} style={{ color: S.lav }} />, title: t('tips.ghost_title'), desc: t('tips.ghost_desc'), href: '/ghost/setup' },
+          ].filter(tip => !dismissedTips.includes(tip.id))
+          if (tips.length === 0) return null
+          const dismissTip = async (tipId: string) => {
+            const updated = [...dismissedTips, tipId]
+            setDismissedTips(updated)
+            if (userId) {
+              const { data: pData } = await supabase.from('user_profiles').select('profile_json').eq('id', userId).maybeSingle()
+              const pj = (pData?.profile_json || {}) as Record<string, unknown>
+              await supabase.from('user_profiles').update({ profile_json: { ...pj, dismissed_tips: updated } }).eq('id', userId)
+            }
+          }
+          return tips.map(tip => (
+            <div key={tip.id} style={{ ...card, display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
+              <div style={{ flexShrink: 0 }}>{tip.icon}</div>
+              <div style={{ flex: 1 }}>
+                <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{tip.title}</p>
+                <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '2px 0 0' }}>{tip.desc}</p>
+              </div>
+              <button onClick={() => navigate(tip.href)} style={{ padding: '6px 12px', borderRadius: 8, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+                {t('common.go')}
+              </button>
+              <button onClick={(e) => { e.stopPropagation(); dismissTip(tip.id) }} style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', color: S.tx4, cursor: 'pointer', padding: 2 }}>
+                <X size={12} />
+              </button>
+            </div>
+          ))
+        })()}
+
         {/* Host active session */}
         {latestHost && (() => {
           const cover = getSessionCover(latestHost.tags, latestHost.cover_url)

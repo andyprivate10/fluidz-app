@@ -706,7 +706,8 @@
     "load_error": "Impossible de charger les données. Réessaie.",
     "uploading": "Upload...",
     "photo": "Photo",
-    "anonymous_fallback": "Anonyme"
+    "anonymous_fallback": "Anonyme",
+    "go": "Go"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -950,6 +951,15 @@
     "title": "Recadrer la photo",
     "confirm": "Confirmer",
     "processing": "Traitement…"
+  },
+  "tips": {
+    "explore_title": "Explore les profils autour de toi",
+    "explore_desc": "Découvre qui est dans ton coin ce soir",
+    "naughtybook_title": "Ton NaughtyBook",
+    "naughtybook_desc": "Sauvegarde tes contacts favoris pour les retrouver facilement",
+    "ghost_title": "Mode Ghost",
+    "ghost_desc": "Postule anonymement pendant 24h, sans créer de compte",
+    "dismiss": "Fermer"
   },
   "address": {
     "share_title": "Partager une adresse",

@@ -701,7 +701,8 @@
     "load_error": "Failed to load data. Try again.",
     "uploading": "Uploading...",
     "photo": "Photo",
-    "anonymous_fallback": "Anonymous"
+    "anonymous_fallback": "Anonymous",
+    "go": "Go"
   },
   "drawer": {
     "my_space": "My space",
@@ -950,6 +951,15 @@
     "title": "Crop photo",
     "confirm": "Confirm",
     "processing": "Processing…"
+  },
+  "tips": {
+    "explore_title": "Explore profiles nearby",
+    "explore_desc": "See who's around tonight",
+    "naughtybook_title": "Your NaughtyBook",
+    "naughtybook_desc": "Save your favorite contacts to find them easily",
+    "ghost_title": "Ghost mode",
+    "ghost_desc": "Apply anonymously for 24h, no account needed",
+    "dismiss": "Dismiss"
   },
   "address": {
     "share_title": "Share an address",
