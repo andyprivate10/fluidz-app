@@ -16,6 +16,8 @@ import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
 import ChatMessageMenu from '../components/ChatMessageMenu'
 import AddressShareSheet, { encodeAddressMessage, isAddressMessage, parseAddressMessage } from '../components/AddressShareSheet'
+import DmRequestSheet from '../components/DmRequestSheet'
+import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 
 const S = colors
 
@@ -59,6 +61,8 @@ export default function DirectDMPage() {
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
+  const [dmBlocked, setDmBlocked] = useState<{ level: DmPrivacyLevel; status: 'need_request' | 'pending' | 'declined' } | null>(null)
+  const [showDmRequest, setShowDmRequest] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
@@ -87,6 +91,19 @@ export default function DirectDMPage() {
     // Load my display name
     const { data: me } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
     setDisplayName(me?.display_name || user.email || t('common.me'))
+
+    // Check DM privacy — bypass if already in contacts
+    const pj = (peer?.profile_json || {}) as Record<string, unknown>
+    const peerPrivacy = (pj.dm_privacy as DmPrivacyLevel) || 'open'
+    if (peerPrivacy !== 'open') {
+      const { data: isContact } = await supabase.from('contacts').select('id').eq('user_id', user.id).eq('contact_user_id', peerId).maybeSingle()
+      if (!isContact) {
+        const { data: req } = await supabase.from('dm_requests').select('status').eq('sender_id', user.id).eq('receiver_id', peerId).maybeSingle()
+        if (!req) { setDmBlocked({ level: peerPrivacy, status: 'need_request' }); setLoading(false); return }
+        if (req.status === 'pending') { setDmBlocked({ level: peerPrivacy, status: 'pending' }); setLoading(false); return }
+        if (req.status === 'declined') { setDmBlocked({ level: peerPrivacy, status: 'declined' }); setLoading(false); return }
+      }
+    }
 
     // Ensure a "direct DM session" exists (upsert to avoid race condition)
     const sid = directDmSessionId(user.id, peerId!)
@@ -221,6 +238,39 @@ export default function DirectDMPage() {
         <div style={{ alignSelf: 'flex-end', width: 160, height: 36, borderRadius: 16, background: S.bg2 }} />
         <div style={{ alignSelf: 'flex-start', width: 240, height: 40, borderRadius: 16, background: S.bg2 }} />
       </div>
+    </div>
+  )
+
+  // DM privacy gate
+  if (dmBlocked) return (
+    <div style={{ background: S.bg, minHeight: '100vh', position: 'relative', maxWidth: 480, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <OrbLayer />
+      <div style={{ fontSize: 36, marginBottom: 16 }}>🔒</div>
+      <h2 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px', fontFamily: "'Bricolage Grotesque', sans-serif", textAlign: 'center' }}>
+        {dmBlocked.status === 'pending' ? t('dm_request.waiting') : dmBlocked.status === 'declined' ? t('dm_request.declined_info') : t('dm_privacy.' + dmBlocked.level)}
+      </h2>
+      <p style={{ fontSize: 13, color: S.tx3, textAlign: 'center', margin: '0 0 20px' }}>
+        {dmBlocked.level === 'profile_required' ? t('dm_request.profile_required_desc') : t('dm_request.full_access_desc')}
+      </p>
+      {dmBlocked.status === 'need_request' && (
+        <button onClick={() => setShowDmRequest(true)} style={{ padding: '14px 28px', borderRadius: 14, background: S.p, border: 'none', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+          {t('dm_request.send')}
+        </button>
+      )}
+      <button onClick={() => navigate(-1)} style={{ marginTop: 12, padding: '10px 20px', borderRadius: 12, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+        {t('common.back_label')}
+      </button>
+      {peerId && peerProfile && (
+        <DmRequestSheet
+          open={showDmRequest}
+          onClose={() => setShowDmRequest(false)}
+          targetUserId={peerId}
+          targetName={peerProfile.name}
+          targetAvatar={peerProfile.avatar}
+          privacyLevel={dmBlocked.level}
+          onSent={() => setDmBlocked({ ...dmBlocked, status: 'pending' })}
+        />
+      )}
     </div>
   )
 
