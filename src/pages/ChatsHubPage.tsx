@@ -15,7 +15,7 @@ const R = radius
 
 type ChatThread = {
   id: string; type: 'dm_session' | 'group' | 'direct'; sessionId: string; sessionTitle: string
-  peerId?: string; peerName?: string; peerAvatar?: string
+  peerId?: string; peerName?: string; peerAvatar?: string; peerLastActive?: string
   lastMessage: string; lastMessageAt: string; lastSenderId: string; isHost: boolean; unread?: boolean
 }
 
@@ -73,10 +73,10 @@ export default function ChatsHubPage() {
     const peerIds = [...new Set([...threadMap.values()].filter(t => t.peerId).map(t => t.peerId!))]
     if (peerIds.length > 0) {
       const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', peerIds)
-      const profMap = new Map<string, { name: string; avatar?: string }>()
-      ;(profiles || []).forEach((p: any) => profMap.set(p.id, { name: p.display_name || 'Anonyme', avatar: p.profile_json?.avatar_url }))
+      const profMap = new Map<string, { name: string; avatar?: string; lastActive?: string }>()
+      ;(profiles || []).forEach((p: any) => profMap.set(p.id, { name: p.display_name || 'Anonyme', avatar: p.profile_json?.avatar_url, lastActive: p.profile_json?.last_active }))
       for (const t of threadMap.values()) {
-        if (t.peerId && profMap.has(t.peerId)) { const p = profMap.get(t.peerId)!; t.peerName = p.name; t.peerAvatar = p.avatar }
+        if (t.peerId && profMap.has(t.peerId)) { const p = profMap.get(t.peerId)!; t.peerName = p.name; t.peerAvatar = p.avatar; t.peerLastActive = p.lastActive }
       }
     }
 
@@ -202,24 +202,39 @@ export default function ChatsHubPage() {
 
         {filtered.map(thread => {
           const isUnread = !!thread.unread
+          const peerOnline = thread.peerLastActive ? (Date.now() - new Date(thread.peerLastActive).getTime()) < 300000 : false
+          const peerActiveAgo = thread.peerLastActive ? (() => {
+            const ms = Date.now() - new Date(thread.peerLastActive).getTime()
+            if (ms < 300000) return null
+            const mins = Math.floor(ms / 60000)
+            if (mins < 60) return mins + 'min'
+            const h = Math.floor(mins / 60)
+            if (h < 24) return h + 'h'
+            return null
+          })() : null
           return (
             <button key={thread.id} onClick={() => goToThread(thread)} style={{
               display: 'flex', alignItems: 'center', gap: 12, padding: '14px 4px',
               background: 'transparent', border: 'none', borderBottom: `1px solid ${S.rule}`,
               cursor: 'pointer', textAlign: 'left', width: '100%',
             }}>
-              {/* Avatar */}
-              {thread.type === 'group' ? (
-                <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.p3, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: `1px solid ${S.pbd}` }}>
-                  <Users size={18} strokeWidth={1.5} style={{ color: S.p }} />
-                </div>
-              ) : thread.peerAvatar ? (
-                <img src={thread.peerAvatar} alt="" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', flexShrink: 0, border: `1px solid ${S.rule2}` }} />
-              ) : (
-                <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', ...typeStyle('label'), color: S.tx3, flexShrink: 0 }}>
-                  {(thread.peerName || '?')[0].toUpperCase()}
-                </div>
-              )}
+              {/* Avatar with online dot */}
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                {thread.type === 'group' ? (
+                  <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.p3, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${S.pbd}` }}>
+                    <Users size={18} strokeWidth={1.5} style={{ color: S.p }} />
+                  </div>
+                ) : thread.peerAvatar ? (
+                  <img src={thread.peerAvatar} alt="" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', border: `1px solid ${S.rule2}` }} />
+                ) : (
+                  <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', ...typeStyle('label'), color: S.tx3 }}>
+                    {(thread.peerName || '?')[0].toUpperCase()}
+                  </div>
+                )}
+                {peerOnline && thread.type !== 'group' && (
+                  <div style={{ position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid ' + S.bg }} />
+                )}
+              </div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -241,6 +256,14 @@ export default function ChatsHubPage() {
                   {thread.type !== 'direct' && <>
                     <span style={{ ...typeStyle('meta'), color: S.tx3 }}>·</span>
                     <span style={{ ...typeStyle('meta'), color: S.tx3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thread.sessionTitle}</span>
+                  </>}
+                  {peerOnline && thread.type !== 'group' && <>
+                    <span style={{ ...typeStyle('meta'), color: S.tx3 }}>·</span>
+                    <span style={{ ...typeStyle('meta'), color: S.sage, fontWeight: 600 }}>{t('chats.active_now')}</span>
+                  </>}
+                  {!peerOnline && peerActiveAgo && thread.type !== 'group' && <>
+                    <span style={{ ...typeStyle('meta'), color: S.tx3 }}>·</span>
+                    <span style={{ ...typeStyle('meta'), color: S.tx3 }}>{t('chats.active_ago', { time: peerActiveAgo })}</span>
                   </>}
                 </div>
                 <p style={{ ...typeStyle('body'), color: S.tx3, margin: '3px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>

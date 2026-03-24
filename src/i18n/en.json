@@ -82,7 +82,10 @@
       "added_favorite": "Added to favorites"
     },
     "visible_toast": "You are visible in the gallery",
-    "hidden_toast": "You are hidden"
+    "hidden_toast": "You are hidden",
+    "filter_age": "Age",
+    "filter_tribes": "Types",
+    "filter_kinks": "Kinks"
   },
   "session": {
     "live": "Live",
@@ -277,7 +280,8 @@
     "step_rules": "Rules",
     "step_address": "Address",
     "step_timing": "Timing",
-    "step_visibility": "Visibility"
+    "step_visibility": "Visibility",
+    "ends_soon": "Ends in {{min}} min"
   },
   "chat": {
     "title": "Messages",
@@ -768,7 +772,9 @@
     "relation_updated": "Relation updated",
     "added_to_book": "Added to NaughtyBook!",
     "removed_from_book": "Removed from NaughtyBook",
-    "remove_from_book": "Remove from NaughtyBook"
+    "remove_from_book": "Remove from NaughtyBook",
+    "delete_confirm": "Remove this contact from your NaughtyBook?",
+    "deleted": "Contact removed"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -1093,7 +1099,9 @@
   },
   "chats": {
     "search_placeholder": "Search conversations…",
-    "no_results": "No results"
+    "no_results": "No results",
+    "active_now": "Active now",
+    "active_ago": "Active {{time}} ago"
   },
   "crop": {
     "title": "Crop photo",
