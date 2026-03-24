@@ -1,340 +1,54 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 import { Clock, Check, Copy } from 'lucide-react'
-import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
-import { formatElapsed, formatRemaining } from '../lib/timing'
-import { useCopyFeedback } from '../hooks/useCopyFeedback'
-import { SYSTEM_SENDER } from '../lib/constants'
-import { useTranslation } from 'react-i18next'
-import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { sendPushToUser } from '../lib/pushSender'
-import HostCandidateCard from '../components/host/HostCandidateCard'
-import HostSessionStats from '../components/host/HostSessionStats'
 import { QRCodeSVG } from 'qrcode.react'
-import { getSessionCover } from '../lib/sessionCover'
+import { useHostDashboard } from '../hooks/useHostDashboard'
+import HostApplicationList from '../components/session/HostApplicationList'
 
 const S = colors
 
 export default function HostDashboard() {
-  const { t } = useTranslation()
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const [user, setUser] = useState<any>(null)
-  const [sess, setSess] = useState<any>(null)
-  const [apps, setApps] = useState<any[]>([])
-  const [tab, setTab] = useState<'pending'|'accepted'|'rejected'>('pending')
-  const [loading, setLoading] = useState(true)
-  const [loadError, setLoadError] = useState(false)
-  const [actionLoading, setActionLoading] = useState<string|null>(null)
-  const { copied: linkCopied, copy: copyLink } = useCopyFeedback()
-  const [elapsed, setElapsed] = useState('')
-  const { copied: messageCopied, copy: copyMessageText } = useCopyFeedback()
-  const { copied: grinderCopied, copy: copyGrindr } = useCopyFeedback()
-  const [broadcastText, setBroadcastText] = useState('')
-  const [broadcastSending, setBroadcastSending] = useState(false)
-  const [hostDisplayName, setHostDisplayName] = useState<string>('')
-  const [myGroups, setMyGroups] = useState<{ id: string; name: string; color: string; member_ids: string[] }[]>([])
-  
-
-  const [votes, setVotes] = useState<{ applicant_id: string; vote: string }[]>([])
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      const u = data.session?.user ?? null
-      setUser(u)
-      if (u) load(u)
-      else setLoading(false)
-    })
-
-    // Realtime: auto-refresh when applications or votes change
-    const channel = supabase
-      .channel('host-dashboard-' + id)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'applications', filter: `session_id=eq.${id}` }, () => { load() })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'votes', filter: `session_id=eq.${id}` }, () => { load() })
-      .subscribe()
-
-    return () => { supabase.removeChannel(channel) }
-  }, [id])
-
-  const [remaining, setRemaining] = useState('')
-
-  // Session timer
-  useEffect(() => {
-    if (sess?.status === 'ended') return
-    const startRef = sess?.starts_at || sess?.created_at
-    if (!startRef) return
-    const update = () => {
-      setElapsed(formatElapsed(startRef))
-      if (sess?.ends_at) setRemaining(formatRemaining(sess.ends_at))
-    }
-    update()
-    const iv = setInterval(update, 60000)
-    return () => clearInterval(iv)
-  }, [sess?.starts_at, sess?.created_at, sess?.ends_at, sess?.status])
-
-  async function load(currentUser?: { id: string }) {
-    setLoading(true)
-    setLoadError(false)
-    const uid = currentUser?.id ?? user?.id
-    try {
-      const [{ data: s }, { data: a }, { data: prof }, { data: v }] = await Promise.all([
-        supabase.from('sessions').select('*').eq('id', id).maybeSingle(),
-        supabase.from('applications').select('*, user_profiles(display_name, profile_json)').eq('session_id', id).order('created_at', { ascending: false }),
-        uid ? supabase.from('user_profiles').select('display_name').eq('id', uid).maybeSingle() : Promise.resolve({ data: null }),
-        supabase.from('votes').select('applicant_id, vote').eq('session_id', id),
-      ])
-      // Security: verify current user is the host
-      if (s && uid && s.host_id !== uid) { navigate('/session/' + id); return }
-      setSess(s)
-      setApps(a || [])
-      setVotes((v as { applicant_id: string; vote: string }[]) || [])
-      if (prof?.display_name) setHostDisplayName(prof.display_name)
-
-      // Load my groups for invite
-      if (uid) {
-        const { data: grps } = await supabase.from('contact_groups').select('id, name, color').eq('owner_id', uid)
-        if (grps && grps.length > 0) {
-          const gIds = grps.map(g => g.id)
-          const { data: members } = await supabase.from('contact_group_members').select('group_id, contact_user_id').in('group_id', gIds)
-          const memberMap: Record<string, string[]> = {}
-          ;(members || []).forEach((m: any) => {
-            if (!memberMap[m.group_id]) memberMap[m.group_id] = []
-            memberMap[m.group_id].push(m.contact_user_id)
-          })
-          setMyGroups(grps.map(g => ({ ...g, member_ids: memberMap[g.id] || [] })))
-        }
-      }
-    } catch {
-      setLoadError(true)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function decide(appId: string, status: 'accepted'|'rejected') {
-    if (status === 'rejected') {
-      const app = apps.find(a => a.id === appId)
-      const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
-      if (!window.confirm(t('host.confirm_refuse', { name }))) return
-    }
-    setActionLoading(appId)
-    await supabase.from('applications').update({ status }).eq('id', appId)
-    const app = apps.find(a => a.id === appId)
-    if (app && sess) {
-      // Notification
-      const title = status === 'accepted'
-        ? t('host.accepted_for', { title: sess.title })
-        : t('host.rejected_for', { title: sess.title })
-      const body = status === 'accepted'
-        ? t('host.accepted_body')
-        : ''
-      const href = status === 'accepted'
-        ? `/session/${id}/dm/${app.applicant_id}`
-        : `/session/${id}`
-      await supabase.from('notifications').insert({
-        user_id: app.applicant_id,
-        session_id: id,
-        type: status === 'accepted' ? 'application_accepted' : 'application_rejected',
-        message: title,
-        title,
-        body,
-        href,
-      })
-      sendPushToUser(app.applicant_id, title, body, href)
-
-      // Safety tip DM on acceptance (1 per candidate)
-      if (status === 'accepted' && user) {
-        const { count } = await supabase.from('messages')
-          .select('*', { count: 'exact', head: true })
-          .eq('session_id', id)
-          .eq('sender_name', SYSTEM_SENDER)
-          .eq('dm_peer_id', app.applicant_id)
-        if (!count || count === 0) {
-          await supabase.from('messages').insert({
-            session_id: id,
-            sender_id: user.id,
-            text: t('safety.tip'),
-            sender_name: SYSTEM_SENDER,
-            room_type: 'dm',
-            dm_peer_id: app.applicant_id,
-          })
-        }
-      }
-      // Auto-add to contacts (both directions, connaissance level)
-      if (status === 'accepted' && user && app.applicant_id) {
-        await supabase.from('contacts').upsert({ user_id: user.id, contact_user_id: app.applicant_id, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
-        await supabase.from('contacts').upsert({ user_id: app.applicant_id, contact_user_id: user.id, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
-      }
-    }
-    setApps(prev => prev.map(a => a.id === appId ? {...a, status} : a))
-    setActionLoading(null)
-    const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
-    showToast(status === 'accepted' ? t('host.accepted_toast', { name }) : t('host.rejected_toast', { name }), status === 'accepted' ? 'success' : 'info')
-  }
-
-  async function confirmCheckIn(appId: string) {
-    setActionLoading(appId)
-    await supabase.from('applications').update({ checked_in: true, status: 'checked_in', checked_in_at: new Date().toISOString() }).eq('id', appId)
-    const app = apps.find(a => a.id === appId)
-    if (app && sess) {
-      // Notify the guest
-      await supabase.from('notifications').insert({
-        user_id: app.applicant_id,
-        session_id: id,
-        type: 'check_in_confirmed',
-        message: `Check-in confirmé pour "${sess.title}" `,
-        title: `Check-in confirmé pour "${sess.title}" `,
-        body: sess.exact_address ? t('host.checkin_body_address', { address: sess.exact_address }) : t('host.checkin_body_no_address'),
-        href: `/session/${id}`,
-      })
-      // Auto-track co_event interactions with all other checked-in members
-      const otherCheckedIn = apps.filter(a => a.id !== appId && a.status === 'checked_in')
-      const interactions = otherCheckedIn.map(other => ({
-        user_id: app.applicant_id,
-        target_user_id: other.applicant_id,
-        type: 'co_event',
-        meta: { session_id: id, session_title: sess.title },
-      }))
-      // Also log reverse (other → new member)
-      const reverseInteractions = otherCheckedIn.map(other => ({
-        user_id: other.applicant_id,
-        target_user_id: app.applicant_id,
-        type: 'co_event',
-        meta: { session_id: id, session_title: sess.title },
-      }))
-      if (interactions.length > 0) {
-        try { await supabase.from('interaction_log').insert([...interactions, ...reverseInteractions]) } catch (_) {}
-      }
-    }
-    setApps(prev => prev.map(a => a.id === appId ? {...a, checked_in: true, status: 'checked_in', checked_in_at: new Date().toISOString()} : a))
-    setActionLoading(null)
-  }
-
-  async function toggleStatus() {
-    const newStatus = sess.status === 'open' ? 'closed' : 'open'
-    await supabase.from('sessions').update({ status: newStatus }).eq('id', id)
-    setSess((s: any) => ({...s, status: newStatus}))
-  }
-
-  async function closeSession() {
-    const destroyMedia = window.confirm(t('host.close_confirm'))
-    if (!destroyMedia && !window.confirm(t('host.close_without_delete'))) return
-    
-    await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
-    setSess((s: any) => ({...s, status: 'ended'}))
-
-    // Mark ephemeral media as expired
-    if (destroyMedia) {
-      try {
-        await supabase.from('ephemeral_media')
-          .update({ expires_at: new Date().toISOString() })
-          .eq('context_id', id)
-      } catch (_) {}
-    }
-
-    // Send review notification to all accepted/checked_in participants
-    const participants = apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
-    if (participants.length > 0 && sess) {
-      const notifs = participants.map(p => ({
-        user_id: p.applicant_id,
-        session_id: id,
-        type: 'review_request',
-        title: '⭐ ' + t('notifications.review_title', { title: sess.title }),
-        body: t('notifications.review_body'),
-        href: `/session/${id}/review`,
-      }))
-      try { await supabase.from('notifications').insert(notifs) } catch (_) {}
-
-      // Populate review queue
-      const queueEntries = [...participants.map(p => p.applicant_id), user?.id].filter(Boolean).map(uid => ({
-        user_id: uid!, session_id: id!, status: 'pending',
-      }))
-      try { await supabase.from('review_queue').upsert(queueEntries, { onConflict: 'user_id,session_id' }) } catch (_) {}
-    }
-  }
-
-  async function sendBroadcast() {
-    const text = broadcastText.trim()
-    if (!text || !user || !id) return
-    setBroadcastSending(true)
-    // Send 1 DM per accepted/checked_in member
-    const acceptedApps = apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
-    const senderName = hostDisplayName || (user as any).email || 'Host'
-    const inserts = acceptedApps.map(a => ({
-      session_id: id,
-      sender_id: user!.id,
-      text,
-      sender_name: senderName,
-      room_type: 'dm',
-      dm_peer_id: a.applicant_id,
-    }))
-    if (inserts.length > 0) {
-      await supabase.from('messages').insert(inserts)
-    }
-    setBroadcastText('')
-    setBroadcastSending(false)
-  }
-
-  async function inviteGroup(groupId: string) {
-    const group = myGroups.find(g => g.id === groupId)
-    if (!group || !user || !id || !sess) return
-    
-    // Create notifications for each group member that isn't already in the session
-    const existingIds = new Set(apps.map(a => a.applicant_id))
-    const newMembers = group.member_ids.filter(uid => !existingIds.has(uid) && uid !== user.id)
-    if (newMembers.length === 0) {
-      showToast(t('host.already_in_session'), 'info')
-      
-      return
-    }
-    const notifs = newMembers.map(uid => ({
-      user_id: uid,
-      session_id: id,
-      type: 'group_invite',
-      title: `Tu es invité à "${sess.title}"`,
-      body: t('notifications.group_invite_body', { host: hostDisplayName || t('common.a_host'), group: group.name }),
-      href: `/session/${id}`,
-    }))
-    await supabase.from('notifications').insert(notifs)
-    showToast(t('host.invites_sent', { count: newMembers.length }), 'success')
-    
-  }
-
-  async function ejectMember(appId: string) {
-    const app = apps.find(a => a.id === appId)
-    const name = app?.user_profiles?.display_name || t('host.candidate_fallback')
-    if (!window.confirm(t('host.eject_confirm', { name }))) return
-    setActionLoading(appId)
-    await supabase.from('applications').update({ status: 'ejected' }).eq('id', appId)
-    if (app && sess) {
-      await supabase.from('notifications').insert({
-        user_id: app.applicant_id, session_id: id, type: 'ejected',
-        title: t('host.ejected_from', { title: sess.title }),
-        body: '', href: '/',
-      })
-    }
-    setApps(prev => prev.map(a => a.id === appId ? { ...a, status: 'ejected' } : a))
-    setActionLoading(null)
-    showToast(t('host.ejected'), 'info')
-  }
-
-  const { pullHandlers, pullIndicator } = usePullToRefresh(() => load(user || undefined))
-
-  const filtered = tab === 'accepted'
-    ? apps.filter(a => a.status === 'accepted' || a.status === 'checked_in')
-    : apps.filter(a => a.status === tab)
-  const counts = {
-    pending: apps.filter(a=>a.status==='pending').length,
-    accepted: apps.filter(a=>a.status==='accepted'||a.status==='checked_in').length,
-    rejected: apps.filter(a=>a.status==='rejected').length,
-  }
-  const arrivedCount = apps.filter(a => a.status === 'checked_in').length
-  const waitingCount = apps.filter(a => a.status === 'accepted' && a.checked_in).length
-  const totalAccepted = counts.accepted
+  const {
+    t,
+    id,
+    navigate,
+    sess,
+    apps,
+    tab,
+    setTab,
+    loading,
+    loadError,
+    actionLoading,
+    linkCopied,
+    copyLink,
+    elapsed,
+    messageCopied,
+    copyMessageText,
+    grinderCopied,
+    copyGrindr,
+    broadcastText,
+    setBroadcastText,
+    broadcastSending,
+    myGroups,
+    votes,
+    remaining,
+    filtered,
+    counts,
+    arrivedCount,
+    waitingCount,
+    totalAccepted,
+    decide,
+    confirmCheckIn,
+    toggleStatus,
+    closeSession,
+    sendBroadcast,
+    inviteGroup,
+    ejectMember,
+    pullHandlers,
+    pullIndicator,
+    getSessionCover,
+  } = useHostDashboard()
 
   if (loading) return (
     <div style={{minHeight:'100vh',background:S.bg,maxWidth:480,margin:'0 auto',padding:'80px 20px 40px'}}>
@@ -439,7 +153,7 @@ export default function HostDashboard() {
                     ? ' – ' + t('share.searching') + ' : ' + Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ')
                     : ''
                   const membersText = counts.accepted > 0 ? ` – ${counts.accepted} ` + t('share.already_here') : ''
-                  const text = '🔥 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – ' + t('share.apply_here') + ' : ' + url
+                  const text = '\uD83D\uDD25 ' + (sess.title || 'Plan ce soir') + ' – ' + (sess.approx_area || '') + rolesText + membersText + ' – ' + t('share.apply_here') + ' : ' + url
                   copyGrindr(text)
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:grinderCopied ? S.sagebg : 'transparent',color:grinderCopied ? S.sage : S.p,cursor:'pointer',marginBottom:8}}
@@ -453,7 +167,7 @@ export default function HostDashboard() {
                   const rolesLine = rolesWanted && Object.keys(rolesWanted).length > 0
                     ? t('session.searching_roles', { roles: Object.entries(rolesWanted).map(([r, c]) => `${c} ${r}`).join(', ') })
                     : ''
-                  const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '📍 ' + sess.approx_area : '', counts.accepted > 0 ? `👥 ${counts.accepted} membres` : '', '', t('share.apply_here') + ' : ' + url].filter(Boolean)
+                  const lines = [sess.title, sess.description || '', rolesLine, sess.approx_area ? '\uD83D\uDCCD ' + sess.approx_area : '', counts.accepted > 0 ? `\uD83D\uDC65 ${counts.accepted} membres` : '', '', t('share.apply_here') + ' : ' + url].filter(Boolean)
                   copyMessageText(lines.join('\n'))
                 }}
                 style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'1px solid '+S.p,background:messageCopied ? S.sagebg : 'transparent',color:messageCopied ? S.sage : S.p,cursor:'pointer'}}
@@ -467,7 +181,7 @@ export default function HostDashboard() {
                 const url = window.location.origin + '/join/' + sess.invite_code
                 const rolesWanted = sess.lineup_json?.roles_wanted as Record<string, number> | undefined
                 const rolesText = rolesWanted && Object.keys(rolesWanted).length > 0 ? '\n' + t('share.searching') + ' : ' + Object.entries(rolesWanted).map(([r, c]) => c + ' ' + r).join(', ') : ''
-                const text = '🔥 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n👥 ' + counts.accepted + ' ' + t('share.already_here') : '') + '\n' + t('share.apply_here') + ' !'
+                const text = '\uD83D\uDD25 ' + (sess.title || '') + (sess.approx_area ? ' – ' + sess.approx_area : '') + rolesText + (counts.accepted > 0 ? '\n\uD83D\uDC65 ' + counts.accepted + ' ' + t('share.already_here') : '') + '\n' + t('share.apply_here') + ' !'
                 navigator.share({ title: sess.title || t('share.session_fluidz'), text, url }).catch(() => {})
               }} style={{marginTop:4,width:'100%',padding:'10px 16px',borderRadius:10,fontSize:12,fontWeight:600,border:'1px solid '+S.sagebd,background:'transparent',color:S.sage,cursor:'pointer'}}>
                 {t('host.share_via')}
@@ -581,54 +295,24 @@ export default function HostDashboard() {
       </div>
       )})()}
 
-      <div style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
-        <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-          <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>{t('host.broadcast')}</div>
-          <textarea value={broadcastText} onChange={e=>setBroadcastText(e.target.value)} placeholder={t('host.broadcast_placeholder')} rows={2} style={{width:'100%',padding:10,borderRadius:8,border:'1px solid '+S.rule,background:S.bg1,color:S.tx,fontSize:13,resize:'vertical',boxSizing:'border-box',marginBottom:8}} />
-          <button onClick={sendBroadcast} disabled={broadcastSending || !broadcastText.trim()} style={{width:'100%',padding:'10px 16px',borderRadius:10,fontSize:13,fontWeight:600,border:'none',background:S.grad,color:'#fff',cursor: broadcastSending || !broadcastText.trim() ? 'not-allowed' : 'pointer',opacity: broadcastSending || !broadcastText.trim() ? 0.7 : 1}}>
-            {broadcastSending ? t('host_actions.sending') : t('host_actions.send_to_all')}
-          </button>
-        </div>
-        {/* Group invite */}
-        {myGroups.length > 0 && (
-          <div style={{padding:12,borderRadius:10,border:'1px solid '+S.rule,background:S.bg2}}>
-            <div style={{fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8}}>{t('host.invite_group')}</div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
-              {myGroups.map(g => (
-                <button key={g.id} onClick={() => inviteGroup(g.id)} style={{
-                  padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,cursor:'pointer',
-                  border:'1px solid '+g.color+'44',background:g.color+'14',color:g.color,
-                  display:'flex',alignItems:'center',gap:4,
-                }}>
-                  <div style={{width:8,height:8,borderRadius:3,background:g.color}} />
-                  {g.name} ({g.member_ids.length})
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        <HostSessionStats apps={apps} />
-
-        {filtered.length === 0 && (
-          <div style={{textAlign:'center',padding:'40px 20px',color:S.tx3,fontSize:14}}>
-            {tab==='pending' ? t('host.no_pending') : tab==='accepted' ? t('host.no_accepted') : t('host.no_rejected')}
-          </div>
-        )}
-
-        {filtered.map(app => (
-          <HostCandidateCard
-            key={app.id}
-            app={app}
-            sessionId={id!}
-            sessionTitle={sess?.title}
-            votes={votes}
-            actionLoading={actionLoading}
-            onDecide={decide}
-            onConfirmCheckIn={confirmCheckIn}
-            onEject={ejectMember}
-          />
-        ))}
-      </div>
+      <HostApplicationList
+        apps={apps}
+        filtered={filtered}
+        tab={tab}
+        sessionId={id!}
+        sessionTitle={sess?.title}
+        votes={votes}
+        actionLoading={actionLoading}
+        broadcastText={broadcastText}
+        setBroadcastText={setBroadcastText}
+        broadcastSending={broadcastSending}
+        sendBroadcast={sendBroadcast}
+        myGroups={myGroups}
+        inviteGroup={inviteGroup}
+        onDecide={decide}
+        onConfirmCheckIn={confirmCheckIn}
+        onEject={ejectMember}
+      />
 
     </div>
   )
