@@ -7,7 +7,7 @@ import OrbLayer from '../components/OrbLayer'
 import { sessionTiming } from '../lib/timing'
 import { getSessionCover } from '../lib/sessionCover'
 import { DM_DIRECT_TITLE } from '../lib/constants'
-import { Plus, Clock, CheckCircle2, Radio, MapPin, Globe } from 'lucide-react'
+import { Plus, Clock, CheckCircle2, Radio, MapPin, Globe, Zap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { SkeletonCard } from '../components/Skeleton'
 
@@ -145,6 +145,14 @@ export default function SessionsPage() {
           {t('session.new_session')}
           <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)', animation: 'shimmer 3s ease-in-out infinite' }} />
         </button>
+
+        {!loading && pinnedCount === 0 && hostedOpen.length === 0 && publicSessions.length === 0 && myHosted.filter(s => s.status !== 'open').length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
+            <Zap size={28} strokeWidth={1.5} style={{ color: S.tx3, marginBottom: 10, display: 'block', margin: '0 auto 10px' }} />
+            <p style={{ ...typeStyle('section'), margin: '0 0 6px', color: S.tx2 }}>{t('sessions.empty_hosted')}</p>
+            <p style={{ ...typeStyle('body'), color: S.tx3, margin: 0 }}>{t('sessions.empty_applied')}</p>
+          </div>
+        )}
 
         {pinnedCount > 0 && (
           <>
