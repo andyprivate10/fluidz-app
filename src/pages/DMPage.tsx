@@ -16,6 +16,7 @@ import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
 import EmojiBar from '../components/EmojiBar'
 import ChatMessageMenu from '../components/ChatMessageMenu'
+import AddressShareSheet, { encodeAddressMessage, isAddressMessage, parseAddressMessage } from '../components/AddressShareSheet'
 
 type Message = {
   id: string
@@ -50,7 +51,7 @@ export default function DMPage() {
   const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
   const [menuMsg, setMenuMsg] = useState<Message | null>(null)
   const [showActions, setShowActions] = useState(false)
-  const [_showAddressSheet, setShowAddressSheet] = useState(false)
+  const [showAddressSheet, setShowAddressSheet] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [displayName, setDisplayName] = useState<string>('')
@@ -511,9 +512,25 @@ export default function DMPage() {
                     return <img key={mi} src={url} alt="" loading="lazy" onClick={() => setChatLightbox(url)} style={{ width: '100%', maxWidth: 240, borderRadius: 12, display: 'block', cursor: 'zoom-in' }} />
                   })}
                   {message.text && message.text !== '📷 Photo' && message.text !== '🎤 Audio' && message.text !== '🎬 Vidéo' && (
+                    isAddressMessage(message.text) ? (() => {
+                      const addr = parseAddressMessage(message.text)
+                      if (!addr) return <span>{message.text}</span>
+                      return (
+                        <div style={{ padding: '8px 10px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                            <MapPin size={14} style={{ color: S.sage }} />
+                            <span style={{ fontSize: 12, fontWeight: 700, color: S.tx }}>{addr.label || t('address.shared_label')}</span>
+                          </div>
+                          {addr.exact_address && <p style={{ fontSize: 12, color: S.tx2, margin: '0 0 6px' }}>{addr.exact_address}</p>}
+                          <a href={'https://maps.google.com/?q=' + encodeURIComponent(addr.exact_address || addr.approx_area)} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, fontWeight: 600, color: S.sage, textDecoration: 'none' }}>
+                            {t('address.open_maps')}
+                          </a>
+                        </div>
+                      )
+                    })() :
                     message.text.includes('google.com/maps') ? (
                       <a href={message.text.split('\n').find((l: string) => l.includes('google.com/maps')) || '#'} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '6px 10px', background: S.sagebg, borderRadius: 8, color: S.sage, fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-                        {message.text.split('\n')[0]} 
+                        {message.text.split('\n')[0]}
                       </a>
                     ) : <span>{message.text}</span>
                   )}
@@ -602,6 +619,22 @@ export default function DMPage() {
       </div>
       {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
       {menuMsg && <ChatMessageMenu message={menuMsg} isOwn={menuMsg.sender_id === currentUser?.id} onCopy={() => showToast(t('chat.copied'), 'success')} onReply={() => setReplyTo({ id: menuMsg.id, text: menuMsg.text, sender_name: menuMsg.sender_name })} onDelete={menuMsg.sender_id === currentUser?.id ? () => { supabase.from('messages').delete().eq('id', menuMsg.id); setMessages(prev => prev.filter(m => m.id !== menuMsg.id)) } : undefined} onClose={() => setMenuMsg(null)} labels={{ copy: t('chat.copy_text'), reply: t('chat.reply'), delete: t('chat.delete_msg') }} />}
+      {currentUser && (
+        <AddressShareSheet
+          open={showAddressSheet}
+          onClose={() => setShowAddressSheet(false)}
+          userId={currentUser.id}
+          onSelect={async (addr) => {
+            if (!id || !currentUser) return
+            await supabase.from('messages').insert({
+              session_id: id, sender_id: currentUser.id,
+              text: encodeAddressMessage(addr),
+              sender_name: displayName || currentUser.email || '',
+              room_type: 'dm', dm_peer_id: peerId || undefined,
+            })
+          }}
+        />
+      )}
     </div>
   )
 }

@@ -947,5 +947,11 @@
     "title": "Crop photo",
     "confirm": "Confirm",
     "processing": "Processing…"
+  },
+  "address": {
+    "share_title": "Share an address",
+    "no_saved": "No saved addresses",
+    "open_maps": "Open in Maps",
+    "shared_label": "Shared address"
   }
 }

@@ -947,5 +947,11 @@
     "title": "Recadrer la photo",
     "confirm": "Confirmer",
     "processing": "Traitement…"
+  },
+  "address": {
+    "share_title": "Partager une adresse",
+    "no_saved": "Aucune adresse sauvegardée",
+    "open_maps": "Ouvrir dans Maps",
+    "shared_label": "Adresse partagée"
   }
 }
