@@ -18,7 +18,7 @@ type Props = {
 export default function SessionVotes({ memberCount, pendingApps, currentUserId, getVoteStats, onVote, voteLoadingId }: Props) {
   const { t } = useTranslation()
 
-  if (memberCount < 3) {
+  if (memberCount < 2) {
     return <div style={glassCard}><p style={{ fontSize: 13, color: S.tx2, margin: 0 }}>{t('session.vote_needs_3')}</p></div>
   }
 

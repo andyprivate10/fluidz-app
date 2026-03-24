@@ -216,7 +216,7 @@
     "dm_host": "DM Host",
     "open_dm": "Ouvrir le DM",
     "vote_count": "{{yes}} oui · {{no}} non",
-    "vote_needs_3": "Vote disponible dès 3 membres",
+    "vote_needs_3": "Vote débloqué quand 2+ membres ont rejoint",
     "phone_never_asked": "Ton numéro ne sera jamais demandé.",
     "checkin_sent_waiting": "Check-in envoyé — en attente de confirmation du host",
     "review_anonymous_help": "Ton avis anonyme aide la communauté",

@@ -216,7 +216,7 @@
     "dm_host": "DM Host",
     "open_dm": "Open DM",
     "vote_count": "{{yes}} yes · {{no}} no",
-    "vote_needs_3": "Voting available from 3 members",
+    "vote_needs_3": "Voting unlocks when 2+ members have joined",
     "phone_never_asked": "Your phone number will never be asked.",
     "checkin_sent_waiting": "Check-in sent — waiting for host confirmation",
     "review_anonymous_help": "Your anonymous review helps the community",
