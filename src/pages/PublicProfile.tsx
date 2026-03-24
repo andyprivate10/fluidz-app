@@ -16,6 +16,7 @@ import PlatformProfiles from '../components/profile/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
 import ImageLightbox from '../components/ImageLightbox'
 import ProfileBadges from '../components/ProfileBadges'
+import { TRIBES } from '../lib/tribeTypes'
 
 const S = colors
 const sLabel = (c: string): React.CSSProperties => ({ fontSize: 10, fontWeight: 700, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 })
@@ -215,6 +216,16 @@ export default function PublicProfile() {
       <div style={{ padding: '12px 20px 0', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {p.role && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 13, fontWeight: 700, color: '#fff', background: `linear-gradient(135deg, ${S.p}, #c06868)` }}>{p.role}</span>}
         {p.orientation && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.lav, background: S.lavbg || 'rgba(184,178,204,0.12)', border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)') }}>{p.orientation}</span>}
+        {Array.isArray(p.tribes) && p.tribes.length > 0 && p.tribes.map((slug: string) => {
+          const tr = TRIBES.find(t => t.slug === slug)
+          const color = tr?.color || S.tx2
+          return <span key={slug} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color, background: color + '18', border: '1px solid ' + color + '44' }}>{t('tribes.' + slug)}</span>
+        })}
+        {Array.isArray(p.ethnicities) && p.ethnicities.length > 0 && (
+          p.ethnicities.length >= 2
+            ? <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.lav, background: S.lavbg, border: '1px solid ' + S.lavbd }}>{t('ethnicities.mixed_label')}</span>
+            : <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{t('ethnicities.' + p.ethnicities[0])}</span>
+        )}
         <ProfileBadges createdAt={profile?.created_at} lastSeen={(p as any).last_seen} prepStatus={p.health?.prep_status || p.prep} />
         {p.morphology && <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{p.morphology}</span>}
         {p.home_country && p.home_city && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.lav, background: S.lavbg, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 3 }}><MapPin size={10} strokeWidth={1.5} />{p.home_city}, {p.home_country}</span>}
