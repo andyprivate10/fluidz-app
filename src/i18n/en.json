@@ -671,7 +671,11 @@
     "save_btn": "Save",
     "notes_label": "Private notes",
     "notes_placeholder": "Personal notes (private)...",
-    "notes_saved": "Notes saved"
+    "notes_saved": "Notes saved",
+    "relation_updated": "Relation updated",
+    "added_to_book": "Added to NaughtyBook!",
+    "removed_from_book": "Removed from NaughtyBook",
+    "remove_from_book": "Remove from NaughtyBook"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -1068,6 +1072,34 @@
     "central_asian": "Central Asian",
     "pacific_islander": "Pacific Islander",
     "aboriginal_torres": "Aboriginal / Torres Strait"
+  },
+  "groups_page": {
+    "name_required": "Give the group a name",
+    "updated": "Group updated",
+    "deleted": "Group deleted",
+    "empty": "No groups yet",
+    "empty_desc": "Create a group to invite easily"
+  },
+  "addresses_page": {
+    "deleted": "Address deleted"
+  },
+  "ghost": {
+    "code_length": "Code must be 6 characters",
+    "wrong_code": "Wrong code or PIN",
+    "session_code": "Session code",
+    "secret_code": "Secret code",
+    "continue_ghost": "Continue as ghost",
+    "convert_account": "Convert to permanent account",
+    "choose_pseudo": "Choose a username",
+    "pin_length": "Secret code must be 4 digits",
+    "session_full": "Session full"
+  },
+  "login": {
+    "error_prefix": "Error"
+  },
+  "error_boundary": {
+    "title": "Something went wrong.",
+    "back_home": "Back to home"
   },
   "naughtybook": {
     "mutual": "Mutual",

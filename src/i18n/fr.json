@@ -671,7 +671,11 @@
     "save_btn": "Sauvegarder",
     "notes_label": "Notes privées",
     "notes_placeholder": "Notes perso (privées)...",
-    "notes_saved": "Notes sauvegardées"
+    "notes_saved": "Notes sauvegardées",
+    "relation_updated": "Relation mise à jour",
+    "added_to_book": "Ajouté au carnet !",
+    "removed_from_book": "Retiré du carnet",
+    "remove_from_book": "Retirer du carnet"
   },
   "settings": {
     "push_active": "Push actives",
@@ -1068,6 +1072,34 @@
     "central_asian": "Asie centrale",
     "pacific_islander": "Insulaire du Pacifique",
     "aboriginal_torres": "Aborigène / Détroit de Torres"
+  },
+  "groups_page": {
+    "name_required": "Donne un nom au groupe",
+    "updated": "Groupe mis à jour",
+    "deleted": "Groupe supprimé",
+    "empty": "Pas encore de groupes",
+    "empty_desc": "Crée un groupe pour inviter facilement"
+  },
+  "addresses_page": {
+    "deleted": "Adresse supprimée"
+  },
+  "ghost": {
+    "code_length": "Le code fait 6 caractères",
+    "wrong_code": "Code ou PIN incorrect",
+    "session_code": "Code de session",
+    "secret_code": "Code secret",
+    "continue_ghost": "Continuer en ghost",
+    "convert_account": "Convertir en compte permanent",
+    "choose_pseudo": "Choisis un pseudo",
+    "pin_length": "Le code secret doit faire 4 chiffres",
+    "session_full": "Session complète"
+  },
+  "login": {
+    "error_prefix": "Erreur"
+  },
+  "error_boundary": {
+    "title": "Quelque chose s'est mal passé.",
+    "back_home": "Retour à l'accueil"
   },
   "naughtybook": {
     "mutual": "Mutuel",

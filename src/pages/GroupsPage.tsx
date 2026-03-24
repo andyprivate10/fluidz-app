@@ -95,7 +95,7 @@ export default function GroupsPage() {
   }
 
   async function saveGroup() {
-    if (!newName.trim()) { showToast('Donne un nom au groupe', 'error'); return }
+    if (!newName.trim()) { showToast(t('groups_page.name_required'), 'error'); return }
     setSaving(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
@@ -108,7 +108,7 @@ export default function GroupsPage() {
       if (selectedMembers.length > 0) {
         await supabase.from('contact_group_members').insert(selectedMembers.map(uid => ({ group_id: editGroup.id, contact_user_id: uid })))
       }
-      showToast('Groupe mis à jour', 'success')
+      showToast(t('groups_page.updated'), 'success')
     } else {
       // Create
       const { data: newGroup, error } = await supabase.from('contact_groups').insert({ owner_id: user.id, name: newName.trim(), description: newDesc.trim() || null, color: newColor }).select('id').single()
@@ -127,7 +127,7 @@ export default function GroupsPage() {
     await supabase.from('contact_group_members').delete().eq('group_id', groupId)
     await supabase.from('contact_groups').delete().eq('id', groupId)
     setGroups(prev => prev.filter(g => g.id !== groupId))
-    showToast('Groupe supprimé', 'info')
+    showToast(t('groups_page.deleted'), 'info')
   }
 
   function toggleMember(uid: string) {
@@ -157,8 +157,8 @@ export default function GroupsPage() {
         {!loading && groups.length === 0 && (
           <div style={{ textAlign:'center', padding:40, color:S.tx3 }}>
             <Users size={40} style={{ color:S.tx4, marginBottom:12 }} />
-            <p style={{ fontSize:15, fontWeight:600, margin:'0 0 6px' }}>Pas encore de groupes</p>
-            <p style={{ fontSize:13 }}>Crée un groupe pour inviter facilement</p>
+            <p style={{ fontSize:15, fontWeight:600, margin:'0 0 6px' }}>{t('groups_page.empty')}</p>
+            <p style={{ fontSize:13 }}>{t('groups_page.empty_desc')}</p>
           </div>
         )}
 

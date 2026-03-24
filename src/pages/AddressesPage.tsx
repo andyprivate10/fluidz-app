@@ -114,7 +114,7 @@ export default function AddressesPage() {
     const updated = existing.filter((a: any) => a.id !== addrId)
     await supabase.from('user_profiles').update({ profile_json: { ...pj, saved_addresses: updated } }).eq('id', userId)
     setAddresses(updated)
-    showToast('Adresse supprimée', 'info')
+    showToast(t('addresses_page.deleted'), 'info')
   }
 
   async function uploadStepPhoto(stepIndex: number, file: File) {

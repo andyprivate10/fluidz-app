@@ -64,7 +64,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
     }
     setCurrentRelation(level)
     setShowSelector(false)
-    showToast(currentRelation ? 'Relation mise à jour' : 'Ajouté au carnet !', 'success')
+    showToast(currentRelation ? t('contacts.relation_updated') : t('contacts.added_to_book'), 'success')
   }
 
   async function removeFromContacts() {
@@ -72,7 +72,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
     await supabase.from('contacts').delete().eq('user_id', myUserId).eq('contact_user_id', targetUserId)
     setCurrentRelation(null)
     setShowSelector(false)
-    showToast('Retiré du carnet', 'info')
+    showToast(t('contacts.removed_from_book'), 'info')
   }
 
   if (loading || !myUserId) return null
@@ -122,7 +122,7 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
               background: 'transparent', color: S.red, marginTop: 4,
               borderTop: '1px solid ' + S.rule, paddingTop: 12,
             }}>
-              <span style={{ fontSize: 13, fontWeight: 600 }}>Retirer du carnet</span>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>{t('contacts.remove_from_book')}</span>
             </button>
           )}
         </div>
