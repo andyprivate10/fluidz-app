@@ -45,7 +45,9 @@
     "complete_profile_desc": "Better chances of being accepted",
     "naughty_book": "NAUGHTY BOOK",
     "see_all_contacts": "See all",
-    "recent_activity": "RECENT ACTIVITY"
+    "recent_activity": "RECENT ACTIVITY",
+    "add_from_session": "ADD FROM YOUR LAST SESSION",
+    "add_from_session_desc": "These people were with you recently"
   },
   "explore": {
     "title": "Around me",

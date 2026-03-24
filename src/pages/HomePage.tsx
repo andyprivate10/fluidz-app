@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle, glassCard } from '../brand'
+import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
 import { DM_DIRECT_TITLE } from '../lib/constants'
 import { getSessionCover } from '../lib/sessionCover'
@@ -30,6 +31,7 @@ export default function HomePage() {
   const [recentNotifs, setRecentNotifs] = useState<{ id: string; type: string; message?: string; title?: string; body?: string; href?: string; created_at: string }[]>([])
   const [dismissedTips, setDismissedTips] = useState<string[]>([])
   const [showTips, setShowTips] = useState(false)
+  const [sessionSuggestions, setSessionSuggestions] = useState<{ id: string; name: string; avatar?: string }[]>([])
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -95,6 +97,25 @@ export default function HomePage() {
     const pj2 = (profData?.profile_json || {}) as Record<string, unknown>
     setDismissedTips(Array.isArray(pj2.dismissed_tips) ? pj2.dismissed_tips as string[] : [])
     setShowTips(((cCount ?? 0) === 0 && (sCount ?? 0) === 0) || profilePct < 50)
+
+    // Contact suggestions from recently ended sessions (within 48h)
+    const cutoff48h = new Date(Date.now() - 48 * 3600000).toISOString()
+    const { data: endedApps } = await supabase.from('applications').select('session_id, sessions!inner(status, ends_at)')
+      .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
+    const recentSessionIds = (endedApps || [])
+      .filter((a: any) => a.sessions?.status === 'ended' && a.sessions?.ends_at && a.sessions.ends_at > cutoff48h)
+      .map((a: any) => a.session_id)
+    if (recentSessionIds.length > 0) {
+      const { data: coParticipants } = await supabase.from('applications').select('applicant_id')
+        .in('session_id', recentSessionIds).in('status', ['accepted', 'checked_in']).neq('applicant_id', user.id)
+      const { data: myContacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id)
+      const contactSet = new Set((myContacts || []).map((c: any) => c.contact_user_id))
+      const suggestions = [...new Set((coParticipants || []).map((c: any) => c.applicant_id))].filter(id => !contactSet.has(id))
+      if (suggestions.length > 0) {
+        const { data: sProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', suggestions.slice(0, 6))
+        setSessionSuggestions((sProfiles || []).map((p: any) => ({ id: p.id, name: p.display_name || '?', avatar: p.profile_json?.avatar_url })))
+      }
+    }
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
@@ -211,6 +232,35 @@ export default function HomePage() {
             <ArrowRight size={16} style={{ color: S.tx3, flexShrink: 0 }} />
           </div>
         )}
+        {/* Contact suggestions from recent sessions */}
+        {sessionSuggestions.length > 0 && (
+          <div style={{ ...card, border: '1px solid ' + S.sagebd }}>
+            <p style={{ ...typeStyle('micro'), color: S.sage, margin: '0 0 4px' }}>{t('home.add_from_session')}</p>
+            <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '0 0 10px' }}>{t('home.add_from_session_desc')}</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {sessionSuggestions.map(s => (
+                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid ' + S.rule, background: S.bg2 }}>
+                  {s.avatar ? (
+                    <img src={s.avatar} alt="" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{(s.name || '?')[0].toUpperCase()}</div>
+                  )}
+                  <span style={{ fontSize: 11, color: S.tx2, fontWeight: 600 }}>{s.name}</span>
+                  <button onClick={async (e) => {
+                    e.stopPropagation()
+                    if (!userId) return
+                    await supabase.from('contacts').insert({ user_id: userId, contact_user_id: s.id, relation_level: 'connaissance' })
+                    setSessionSuggestions(prev => prev.filter(x => x.id !== s.id))
+                    showToast(t('profile.added_to_naughtybook'), 'success')
+                  }} style={{ padding: '3px 8px', borderRadius: 6, background: S.sagebg, border: '1px solid ' + S.sagebd, color: S.sage, fontSize: 10, fontWeight: 700, cursor: 'pointer' }}>
+                    +
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Feature discovery tips */}
         {userId && showTips && (() => {
           const tips = [
