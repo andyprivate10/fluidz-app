@@ -125,6 +125,9 @@ export default function MePage() {
   const [cropCallback, setCropCallback] = useState<((file: File) => void) | null>(null)
   const [cropAspect, setCropAspect] = useState(1)
   const [hasGuestToken, setHasGuestToken] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteInput, setDeleteInput] = useState('')
+  const [deleting, setDeleting] = useState(false)
   const profileLoaded = useRef(false)
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle'|'saving'|'saved'>('idle')
@@ -686,6 +689,56 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.platform_desc')}</p>
             <PlatformProfiles userId={user.id} linkedProfiles={platformProfiles} onChange={setPlatformProfiles} />
           </Section>
+
+          {/* Delete account — danger zone */}
+          <div style={{ background: S.redbg, border: '1px solid ' + S.redbd, borderRadius: 20, padding: 16, marginTop: 24 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: S.red, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 8px' }}>{t('settings.delete_account')}</p>
+            <p style={{ fontSize: 12, color: S.tx3, margin: '0 0 12px' }}>{t('settings.delete_warning')}</p>
+            {!showDeleteConfirm ? (
+              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding: '10px 16px', borderRadius: 12, border: '1px solid ' + S.red, background: 'transparent', color: S.red, fontSize: 13, fontWeight: 600, cursor: 'pointer', width: '100%' }}>
+                {t('settings.delete_account')}
+              </button>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <p style={{ fontSize: 12, color: S.red, fontWeight: 600, margin: 0 }}>{t('settings.delete_confirm')}</p>
+                <input
+                  value={deleteInput}
+                  onChange={e => setDeleteInput(e.target.value)}
+                  placeholder="DELETE"
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid ' + S.redbd, background: S.bg2, color: S.tx, fontSize: 14, fontWeight: 700, letterSpacing: '0.1em', boxSizing: 'border-box', outline: 'none' }}
+                />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => { setShowDeleteConfirm(false); setDeleteInput('') }} style={{ flex: 1, padding: 10, borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                    {t('common.cancel')}
+                  </button>
+                  <button
+                    disabled={deleteInput !== 'DELETE' || deleting}
+                    onClick={async () => {
+                      if (!user || deleteInput !== 'DELETE') return
+                      setDeleting(true)
+                      const uid = user.id
+                      await Promise.allSettled([
+                        supabase.from('applications').delete().eq('applicant_id', uid),
+                        supabase.from('messages').delete().eq('sender_id', uid),
+                        supabase.from('contacts').delete().or(`user_id.eq.${uid},contact_user_id.eq.${uid}`),
+                        supabase.from('notifications').delete().eq('user_id', uid),
+                        supabase.from('votes').delete().eq('voter_id', uid),
+                        supabase.from('reviews').delete().eq('reviewer_id', uid),
+                        supabase.from('ghost_sessions').delete().eq('claimed_user_id', uid),
+                        supabase.from('user_profiles').delete().eq('id', uid),
+                      ])
+                      showToast(t('settings.deleted_success'), 'success')
+                      await supabase.auth.signOut()
+                      navigate('/landing')
+                    }}
+                    style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: deleteInput === 'DELETE' ? S.red : S.bg3, color: '#fff', fontSize: 13, fontWeight: 700, cursor: deleteInput === 'DELETE' && !deleting ? 'pointer' : 'not-allowed', opacity: deleteInput === 'DELETE' && !deleting ? 1 : 0.5 }}
+                  >
+                    {deleting ? t('common.loading') : t('settings.delete_button')}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Auto-save status */}
           <div style={{

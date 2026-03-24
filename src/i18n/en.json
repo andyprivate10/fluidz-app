@@ -693,7 +693,12 @@
     "language": "Language",
     "admin": "Admin",
     "admin_dashboard": "Admin dashboard",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "delete_account": "Delete my account",
+    "delete_warning": "This will permanently delete your profile, photos, messages, and all associated data. This action cannot be undone.",
+    "delete_confirm": "Type DELETE to confirm",
+    "delete_button": "Delete my account permanently",
+    "deleted_success": "Account deleted"
   },
   "sessions": {
     "empty_hosted": "No sessions. Create your first one.",

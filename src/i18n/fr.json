@@ -637,7 +637,12 @@
     "logout": "Deconnexion",
     "language": "Langue",
     "french": "Francais",
-    "english": "English"
+    "english": "English",
+    "delete_account": "Supprimer mon compte",
+    "delete_warning": "Cela supprimera définitivement ton profil, tes photos, messages et toutes les données associées. Cette action est irréversible.",
+    "delete_confirm": "Tape SUPPRIMER pour confirmer",
+    "delete_button": "Supprimer mon compte définitivement",
+    "deleted_success": "Compte supprimé"
   },
   "common": {
     "loading": "Chargement...",
