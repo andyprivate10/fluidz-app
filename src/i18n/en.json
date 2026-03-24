@@ -545,7 +545,8 @@
     "review_title": "How was \"{{title}}\"?",
     "review_body": "Leave an anonymous review to help the community",
     "group_invite_body": "{{host}} invites you via the group \"{{group}}\"",
-    "applied_title": "{{name}} applied"
+    "applied_title": "{{name}} applied",
+    "deleted": "Notification deleted"
   },
   "auth": {
     "email_invalid": "Invalid email",
@@ -1313,5 +1314,15 @@
     "reuse": "Reuse",
     "empty": "No templates",
     "empty_desc": "Your past sessions will appear here as reusable templates"
+  },
+  "tooltip": {
+    "session_apply": "Your profile will be shared with the host. You choose what to show.",
+    "host_recruit": "Share the link to recruit. Candidates apply and your members vote.",
+    "host_candidates": "Accept or reject applications. Member votes are advisory.",
+    "me_dm_privacy": "Choose who can message you. NaughtyBook contacts can always write.",
+    "apply_page": "You choose exactly what the host sees. Uncheck what you don't want to share.",
+    "explore_page": "Nearby profiles. Add to favorites or send a DM.",
+    "contacts_page": "Your contact book. People you met through Fluidz.",
+    "review_page": "Your reviews are anonymous. The VibeScore helps the community."
   }
 }

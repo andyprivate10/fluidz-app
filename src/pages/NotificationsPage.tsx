@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import {Bell, CheckCheck, ArrowLeft} from 'lucide-react'
+import {Bell, CheckCheck, ArrowLeft, UserPlus, CheckCircle2, XCircle, Send, MapPin, Heart, MessageCircle, Star, BookOpen, Ban} from 'lucide-react'
 import SwipeableRow from '../components/SwipeableRow'
 import { showToast } from '../components/Toast'
 import { timeAgo } from '../lib/timing'
@@ -15,12 +15,22 @@ const R = radius
 
 type Notif = { id: string; type: string; title: string; body: string; href: string; read_at: string | null; created_at: string }
 
-const TYPE_ICONS: Record<string, string> = {
-  new_application: '→', application_accepted: '●', application_rejected: '—',
-  session_invite: '→', group_invite: '⊕', direct_dm: '↗',
-  direct_join: '→', contact_request: '♡', check_in: '◎',
-  check_in_confirmed: '◉', review_request: '★', nudge: '⏱',
-  intent_match: '💜', naughtybook_added: '♡', dm_request: '✉',
+function NotifIcon({ type }: { type: string }) {
+  const size = 14
+  const sw = 1.5
+  switch (type) {
+    case 'new_application': return <UserPlus size={size} strokeWidth={sw} />
+    case 'application_accepted': case 'accepted': return <CheckCircle2 size={size} strokeWidth={sw} />
+    case 'application_rejected': case 'rejected': return <XCircle size={size} strokeWidth={sw} />
+    case 'session_invite': case 'group_invite': case 'invite': return <Send size={size} strokeWidth={sw} />
+    case 'check_in': case 'check_in_confirmed': return <MapPin size={size} strokeWidth={sw} />
+    case 'intent_match': return <Heart size={size} strokeWidth={sw} />
+    case 'dm_request': case 'direct_dm': return <MessageCircle size={size} strokeWidth={sw} />
+    case 'review_request': case 'review': return <Star size={size} strokeWidth={sw} />
+    case 'naughtybook_added': case 'naughtybook': return <BookOpen size={size} strokeWidth={sw} />
+    case 'ejected': return <Ban size={size} strokeWidth={sw} />
+    default: return <Bell size={size} strokeWidth={sw} />
+  }
 }
 
 export default function NotificationsPage() {
@@ -126,7 +136,7 @@ export default function NotificationsPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 ...typeStyle('meta'), color: n.read_at ? S.tx3 : S.p,
               }}>
-                {TYPE_ICONS[n.type] || '•'}
+                <NotifIcon type={n.type} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ ...typeStyle('label'), color: n.read_at ? S.tx2 : S.tx, margin: 0 }}>{n.title}</p>
