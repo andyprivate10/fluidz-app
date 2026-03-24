@@ -64,11 +64,11 @@ export default function DevTestMenu() {
     // Wait for Supabase client to fully reset
     await new Promise(r => setTimeout(r, 800));
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: "testpass123" });
-    if (error) { setMsg("Erreur: " + error.message); return null; }
+    if (error) { setMsg("Error: " + error.message); return null; }
     // Verify login is the correct user
-    if (data.user?.email !== email) { setMsg("Erreur: mauvais user " + data.user?.email); return null; }
+    if (data.user?.email !== email) { setMsg("Error: wrong user " + data.user?.email); return null; }
     setUser(data.user);
-    setMsg("Connecté : " + email);
+    setMsg("Connected: " + email);
     return data.user;
   };
 
