@@ -728,7 +728,9 @@
     "uploading": "Uploading...",
     "photo": "Photo",
     "anonymous_fallback": "Anonymous",
-    "go": "Go"
+    "go": "Go",
+    "all": "All",
+    "more": "more"
   },
   "drawer": {
     "my_space": "My space",
@@ -1066,6 +1068,11 @@
     "central_asian": "Central Asian",
     "pacific_islander": "Pacific Islander",
     "aboriginal_torres": "Aboriginal / Torres Strait"
+  },
+  "naughtybook": {
+    "mutual": "Mutual",
+    "added_you_notif": "added you to their NaughtyBook",
+    "one_sided": "One-sided"
   },
   "favorites": {
     "title": "Favorites",

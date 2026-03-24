@@ -733,7 +733,9 @@
     "uploading": "Upload...",
     "photo": "Photo",
     "anonymous_fallback": "Anonyme",
-    "go": "Go"
+    "go": "Go",
+    "all": "Tous",
+    "more": "de plus"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -1066,6 +1068,11 @@
     "central_asian": "Asie centrale",
     "pacific_islander": "Insulaire du Pacifique",
     "aboriginal_torres": "Aborigène / Détroit de Torres"
+  },
+  "naughtybook": {
+    "mutual": "Mutuel",
+    "added_you_notif": "t'a ajouté à son NaughtyBook",
+    "one_sided": "Unilatéral"
   },
   "favorites": {
     "title": "Favoris",

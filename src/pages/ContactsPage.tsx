@@ -18,6 +18,7 @@ type Contact = {
   contact_user_id: string
   relation_level: 'connaissance' | 'close' | 'favori'
   notes: string | null
+  mutual?: boolean
   created_at: string
   // Joined from user_profiles
   display_name?: string
@@ -40,7 +41,7 @@ export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<'all' | 'connaissance' | 'close' | 'favori'>('all')
+  const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori'>('all')
 
   useEffect(() => {
     loadContacts()
@@ -52,7 +53,7 @@ export default function ContactsPage() {
 
     const { data: raw } = await supabase
       .from('contacts')
-      .select('id, contact_user_id, relation_level, notes, created_at')
+      .select('id, contact_user_id, relation_level, notes, mutual, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
@@ -94,11 +95,12 @@ export default function ContactsPage() {
 
 
   const filtered = contacts
-    .filter(c => filter === 'all' || c.relation_level === filter)
+    .filter(c => filter === 'all' ? true : filter === 'mutual' ? c.mutual : c.relation_level === filter)
     .filter(c => !search || (c.display_name || '').toLowerCase().includes(search.toLowerCase()))
 
   const counts = {
     all: contacts.length,
+    mutual: contacts.filter(c => c.mutual).length,
     connaissance: contacts.filter(c => c.relation_level === 'connaissance').length,
     close: contacts.filter(c => c.relation_level === 'close').length,
     favori: contacts.filter(c => c.relation_level === 'favori').length,
@@ -137,9 +139,9 @@ export default function ContactsPage() {
 
         {/* Filter tabs */}
         <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
-          {(['all', 'favori', 'close', 'connaissance'] as const).map(f => {
+          {(['all', 'mutual', 'favori', 'close', 'connaissance'] as const).map(f => {
             const active = filter === f
-            const label = f === 'all' ? `Tous (${counts.all})` : `${'★'.repeat(RELATION_STYLES[f].stars)} ${RELATION_STYLES[f].label} (${counts[f]})`
+            const label = f === 'all' ? `${t('common.all')} (${counts.all})` : f === 'mutual' ? `♡ ${t('naughtybook.mutual')} (${counts.mutual})` : `${'★'.repeat(RELATION_STYLES[f].stars)} ${RELATION_STYLES[f].label} (${counts[f]})`
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer',
@@ -191,6 +193,7 @@ export default function ContactsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{contact.display_name}</span>
                   <span style={{ display: 'inline-flex', gap: 1 }}>{[1,2,3].map(n => starIcon(n <= rel.stars, rel.color))}</span>
+                  {contact.mutual && <span style={{ fontSize: 9, fontWeight: 700, color: S.sage, background: S.sagebg, padding: '1px 6px', borderRadius: 99, border: '1px solid ' + S.sagebd }}>{t('naughtybook.mutual')}</span>}
                   <VibeScoreBadge userId={contact.contact_user_id} />
                 </div>
                 {contact.role && <p style={{ fontSize: 12, color: S.p, margin: '2px 0 0' }}>{contact.role}</p>}

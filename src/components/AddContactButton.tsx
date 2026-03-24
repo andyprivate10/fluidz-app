@@ -47,6 +47,20 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
       await supabase.from('contacts').insert({ user_id: myUserId, contact_user_id: targetUserId, relation_level: level })
       // Log interaction
       await supabase.from('interaction_log').insert({ user_id: myUserId, target_user_id: targetUserId, type: 'added_contact', meta: { level } })
+      // Check mutual: does target have me?
+      const { data: reverse } = await supabase.from('contacts').select('id').eq('user_id', targetUserId).eq('contact_user_id', myUserId).maybeSingle()
+      if (reverse) {
+        // Set mutual flag on both
+        await supabase.from('contacts').update({ mutual: true }).eq('user_id', myUserId).eq('contact_user_id', targetUserId)
+        await supabase.from('contacts').update({ mutual: true }).eq('user_id', targetUserId).eq('contact_user_id', myUserId)
+      }
+      // Notify target
+      const { data: myProf } = await supabase.from('user_profiles').select('display_name').eq('id', myUserId).maybeSingle()
+      await supabase.from('notifications').insert({
+        user_id: targetUserId, type: 'naughtybook_added',
+        title: (myProf?.display_name || t('common.someone')) + ' ' + t('naughtybook.added_you_notif'),
+        href: '/contacts/' + myUserId,
+      })
     }
     setCurrentRelation(level)
     setShowSelector(false)
