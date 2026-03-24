@@ -253,6 +253,7 @@ export function useSessionData() {
         console.error('Vote error:', error)
         showToast(t('errors.vote_error') + ': ' + error.message, 'error')
       } else if (data) {
+        if (navigator.vibrate) navigator.vibrate(30)
         setVotes(prev => {
           const others = prev.filter(v => !(v.applicant_id === applicantId && v.voter_id === currentUser.id))
           return [...others, data as VoteRow]
@@ -276,6 +277,7 @@ export function useSessionData() {
       console.error('Check-in error:', error)
     } else {
       setCheckInDone(true)
+      if (navigator.vibrate) navigator.vibrate([30, 50, 30])
     }
     setCheckInLoading(false)
   }
