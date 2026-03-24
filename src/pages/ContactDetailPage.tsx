@@ -97,7 +97,7 @@ export default function ContactDetailPage() {
     if (user) {
       await supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: contactUserId, type: 'relation_change', meta: { new_level: level } })
     }
-    showToast('Relation mise à jour', 'success')
+    showToast(t('contacts.notes_saved'), 'success')
   }
 
   async function saveNotes() {
@@ -105,7 +105,7 @@ export default function ContactDetailPage() {
     await supabase.from('contacts').update({ notes: notesText.trim() || null }).eq('id', contact.id)
     setContact({ ...contact, notes: notesText.trim() || null })
     setEditingNotes(false)
-    showToast('Notes sauvegardées', 'success')
+    showToast(t('contacts.notes_saved'), 'success')
   }
 
   async function inviteToSession(sessionId: string) {
@@ -121,7 +121,7 @@ export default function ContactDetailPage() {
       body: t('notifications.invite_body', { name: profile?.display_name || t('common.someone'), title: sess?.title || t('common.a_session') }),
       href: '/session/' + sessionId,
     })
-    showToast('Invitation envoyée !', 'success')
+    showToast(t('session.invite_sent'), 'success')
     setInviting(false)
   }
 
@@ -202,14 +202,14 @@ export default function ContactDetailPage() {
         {/* Notes */}
         <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Notes privées</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('contacts.notes_label')}</span>
             <button onClick={() => setEditingNotes(!editingNotes)} style={{ background: 'none', border: 'none', color: S.tx4, cursor: 'pointer', padding: 2 }}>
               <Edit3 size={14} />
             </button>
           </div>
           {editingNotes ? (
             <div>
-              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} placeholder="Notes perso (privées)..." maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
+              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} onBlur={saveNotes} placeholder={t('contacts.notes_placeholder')} maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
               <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.sagebg, color: S.sage, border: '1px solid ' + S.sagebd, cursor: 'pointer' }}>{t('contacts.save_btn')}</button>
             </div>
           ) : (

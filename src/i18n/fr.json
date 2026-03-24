@@ -635,7 +635,10 @@
     "no_interactions": "Aucune interaction enregistrée",
     "connaissance": "Connaissance",
     "favori": "Favori",
-    "save_btn": "Sauvegarder"
+    "save_btn": "Sauvegarder",
+    "notes_label": "Notes privées",
+    "notes_placeholder": "Notes perso (privées)...",
+    "notes_saved": "Notes sauvegardées"
   },
   "settings": {
     "push_active": "Push actives",
