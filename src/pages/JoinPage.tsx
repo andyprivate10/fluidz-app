@@ -199,7 +199,19 @@ export default function JoinPage() {
         </div>
       )}
 
-      {status === 'found' && session && (
+      {status === 'found' && session && (session.status === 'ended' || session.status === 'closed') && (
+        <div className="animate-fade-in" style={{textAlign:'center',position:'relative',zIndex:1}}>
+          <div style={{width:64,height:64,borderRadius:'50%',background:S.redbg,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
+            <Lock size={28} style={{color:S.red}} />
+          </div>
+          <p style={{color:S.tx,fontWeight:700,fontSize:20,marginBottom:4}}>{t('session.session_ended_title')}</p>
+          <p style={{color:S.tx2,fontSize:16,fontWeight:600,marginBottom:8}}>{session.title}</p>
+          <p style={{color:S.tx3,fontSize:14,marginBottom:24}}>{t('session.session_ended_desc')}</p>
+          <button onClick={()=>navigate('/explore')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>{t('session.explore_others')}</button>
+        </div>
+      )}
+
+      {status === 'found' && session && session.status !== 'ended' && session.status !== 'closed' && (
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
           {/* Cover gradient */}
           <div style={{position:'absolute',top:0,left:0,right:0,height:180,borderRadius:'24px 24px 0 0',overflow:'hidden',zIndex:0}}>

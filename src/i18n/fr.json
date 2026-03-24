@@ -247,7 +247,10 @@
     "cancelled": "Candidature annulée",
     "leave_session": "Quitter la session",
     "leave_confirm": "Quitter cette session ? Tu perdras l'accès à l'adresse et aux chats.",
-    "left_session": "Tu as quitté la session"
+    "left_session": "Tu as quitté la session",
+    "session_ended_title": "Cette session est terminée",
+    "session_ended_desc": "Cette session n'est plus active.",
+    "explore_others": "Explorer d'autres sessions"
   },
   "chat": {
     "title": "Messages",

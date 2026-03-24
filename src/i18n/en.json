@@ -247,7 +247,10 @@
     "cancelled": "Application cancelled",
     "leave_session": "Leave session",
     "leave_confirm": "Leave this session? You will lose access to the address and chats.",
-    "left_session": "You left the session"
+    "left_session": "You left the session",
+    "session_ended_title": "This session has ended",
+    "session_ended_desc": "This session is no longer active.",
+    "explore_others": "Explore other sessions"
   },
   "chat": {
     "title": "Messages",
