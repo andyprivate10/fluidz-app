@@ -20,7 +20,7 @@ const TYPE_ICONS: Record<string, string> = {
   session_invite: '→', group_invite: '⊕', direct_dm: '↗',
   direct_join: '→', contact_request: '♡', check_in: '◎',
   check_in_confirmed: '◉', review_request: '★', nudge: '⏱',
-  intent_match: '💜', naughtybook_added: '♡',
+  intent_match: '💜', naughtybook_added: '♡', dm_request: '✉',
 }
 
 export default function NotificationsPage() {
@@ -131,6 +131,35 @@ export default function NotificationsPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ ...typeStyle('label'), color: n.read_at ? S.tx2 : S.tx, margin: 0 }}>{n.title}</p>
                 {n.body && <p style={{ ...typeStyle('body'), color: S.tx3, margin: '3px 0 0' }}>{n.body}</p>}
+                {n.type === 'dm_request' && !n.read_at && (
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }} onClick={e => e.stopPropagation()}>
+                    <button onClick={async () => {
+                      const { data: { user } } = await supabase.auth.getUser()
+                      if (!user) return
+                      // Find sender from href or title
+                      const { data: req } = await supabase.from('dm_requests').select('id, sender_id, message').eq('receiver_id', user.id).eq('status', 'pending').order('created_at', { ascending: false }).limit(1).maybeSingle()
+                      if (!req) return
+                      await supabase.from('dm_requests').update({ status: 'accepted' }).eq('id', req.id)
+                      await supabase.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', n.id)
+                      await supabase.from('notifications').insert({ user_id: req.sender_id, type: 'dm_request_accepted', title: t('dm_request.accepted'), href: '/dm/' + user.id })
+                      setNotifs(prev => prev.map(x => x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x))
+                      showToast(t('dm_request.accepted'), 'success')
+                      navigate('/dm/' + req.sender_id)
+                    }} style={{ flex: 1, padding: '8px', borderRadius: 10, background: S.sagebg, border: '1px solid ' + S.sagebd, color: S.sage, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                      {t('dm_request.accept')}
+                    </button>
+                    <button onClick={async () => {
+                      const { data: { user } } = await supabase.auth.getUser()
+                      if (!user) return
+                      await supabase.from('dm_requests').update({ status: 'declined' }).eq('receiver_id', user.id).eq('status', 'pending')
+                      await supabase.from('notifications').update({ read_at: new Date().toISOString() }).eq('id', n.id)
+                      setNotifs(prev => prev.map(x => x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x))
+                      showToast(t('dm_request.declined'), 'info')
+                    }} style={{ padding: '8px 12px', borderRadius: 10, background: 'transparent', border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                      {t('dm_request.decline')}
+                    </button>
+                  </div>
+                )}
                 <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '6px 0 0', textAlign: 'right' }}>{timeAgo(n.created_at)}</p>
               </div>
             </div>
