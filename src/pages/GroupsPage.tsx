@@ -116,7 +116,7 @@ export default function GroupsPage() {
       if (selectedMembers.length > 0) {
         await supabase.from('contact_group_members').insert(selectedMembers.map(uid => ({ group_id: newGroup.id, contact_user_id: uid })))
       }
-      showToast('Groupe créé !', 'success')
+      showToast(t('common.saved') || 'Created', 'success')
     }
 
     setSaving(false); setShowCreate(false); loadAll()

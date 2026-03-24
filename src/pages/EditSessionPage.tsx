@@ -86,7 +86,7 @@ export default function EditSessionPage() {
     if (error) {
       showToast(t('errors.error_prefix') + ': ' + error.message, 'error')
     } else {
-      showToast('Session mise à jour', 'success')
+      showToast(t('common.saved') || 'Saved', 'success')
       navigate('/session/' + id + '/host')
     }
     setSaving(false)

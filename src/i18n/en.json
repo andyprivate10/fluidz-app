@@ -293,7 +293,8 @@
     "direct_message_desc": "Direct message",
     "send_error": "Send error",
     "group_chat_on": "Group chat enabled",
-    "group_chat_off": "Group chat disabled"
+    "group_chat_off": "Group chat disabled",
+    "checkin_required": "Access restricted to members after check-in"
   },
   "profile": {
     "account": "Account",
@@ -737,7 +738,8 @@
     "anonymous_fallback": "Anonymous",
     "go": "Go",
     "all": "All",
-    "more": "more"
+    "more": "more",
+    "saved": "Saved"
   },
   "drawer": {
     "my_space": "My space",

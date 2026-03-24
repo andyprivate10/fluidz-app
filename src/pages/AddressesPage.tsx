@@ -103,7 +103,7 @@ export default function AddressesPage() {
     setAddresses(updated)
     setShowForm(false)
     setSaving(false)
-    showToast(editId ? 'Adresse mise à jour' : 'Adresse sauvegardée', 'success')
+    showToast(t('common.saved') || 'Saved', 'success')
   }
 
   async function deleteAddress(addrId: string) {

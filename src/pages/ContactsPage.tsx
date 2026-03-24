@@ -90,7 +90,7 @@ export default function ContactsPage() {
   async function updateRelation(contactId: string, level: 'connaissance' | 'close' | 'favori') {
     await supabase.from('contacts').update({ relation_level: level }).eq('id', contactId)
     setContacts(prev => prev.map(c => c.id === contactId ? { ...c, relation_level: level } : c))
-    showToast('Relation mise à jour', 'success')
+    showToast(t('contacts.relation_updated'), 'success')
   }
 
 

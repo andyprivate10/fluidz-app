@@ -90,7 +90,7 @@ export default function GroupChatPage() {
         .eq('session_id', id).eq('applicant_id', user.id)
         .maybeSingle()
       if (!app || (app.status !== 'checked_in' && !(app.status === 'accepted' && app.checked_in))) {
-        showToast('Accès réservé aux membres après check-in', 'error')
+        showToast(t('chat.checkin_required'), 'error')
         navigate('/session/' + id)
         return
       }

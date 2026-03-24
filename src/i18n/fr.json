@@ -293,7 +293,8 @@
     "direct_message_desc": "Message direct",
     "send_error": "Erreur d'envoi",
     "group_chat_on": "Group chat activé",
-    "group_chat_off": "Group chat désactivé"
+    "group_chat_off": "Group chat désactivé",
+    "checkin_required": "Accès réservé aux membres après check-in"
   },
   "profile": {
     "account": "Compte",
@@ -742,7 +743,8 @@
     "anonymous_fallback": "Anonyme",
     "go": "Go",
     "all": "Tous",
-    "more": "de plus"
+    "more": "de plus",
+    "saved": "Sauvegardé"
   },
   "drawer": {
     "my_space": "Mon espace",
