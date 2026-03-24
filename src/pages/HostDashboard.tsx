@@ -248,6 +248,12 @@ export default function HostDashboard() {
         href: `/session/${id}/review`,
       }))
       try { await supabase.from('notifications').insert(notifs) } catch (_) {}
+
+      // Populate review queue
+      const queueEntries = [...participants.map(p => p.applicant_id), user?.id].filter(Boolean).map(uid => ({
+        user_id: uid!, session_id: id!, status: 'pending',
+      }))
+      try { await supabase.from('review_queue').upsert(queueEntries, { onConflict: 'user_id,session_id' }) } catch (_) {}
     }
   }
 
