@@ -59,6 +59,13 @@ export default function SessionContentCards({ session, myApp, members, memberRol
         </div>
       )}
 
+      {session.lineup_json?.host_rules && (
+        <div style={glassCard}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.host_rules_label')}</div>
+          <div style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, whiteSpace: 'pre-wrap' as const }}>{session.lineup_json.host_rules}</div>
+        </div>
+      )}
+
       {/* Rôles recherchés */}
       {session.lineup_json?.roles_wanted && Object.keys(session.lineup_json.roles_wanted).length > 0 && (() => {
         const wanted = session.lineup_json.roles_wanted as Record<string, number>

@@ -1,4 +1,4 @@
-import { colors } from '../brand'
+import { colors, radius } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
 import EventContextNav from '../components/EventContextNav'
@@ -14,6 +14,7 @@ import ShareToContact from '../components/ShareToContact'
 import { useSessionData } from '../hooks/useSessionData'
 
 const S = colors
+const R = radius
 const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96 }
 
 export default function SessionPage() {
@@ -126,15 +127,15 @@ export default function SessionPage() {
       {(!d.isHost && (d.showPostulerSuccess || (!d.myApp && d.session.status === 'open'))) && (
         <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, padding: '12px 20px 24px', background: 'linear-gradient(to top, '+S.bg+' 60%, transparent)', zIndex: 50 }}>
           {d.showPostulerSuccess ? (
-            <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 14, color: S.sage, fontSize: 16, fontWeight: 700 }}>
+            <button disabled style={{ width: '100%', padding: 16, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: R.btn, color: S.sage, fontSize: 16, fontWeight: 700 }}>
               {d.t('session.applied')}
             </button>
           ) : d.session.max_capacity && (d.members.length + 1) >= d.session.max_capacity ? (
-            <button disabled style={{ width: '100%', padding: 16, background: S.redbg, border: '1px solid ' + S.redbd, borderRadius: 14, color: S.red, fontSize: 16, fontWeight: 700 }}>
+            <button disabled style={{ width: '100%', padding: 16, background: S.redbg, border: '1px solid ' + S.redbd, borderRadius: R.btn, color: S.red, fontSize: 16, fontWeight: 700 }}>
               {d.t('session.full')}
             </button>
           ) : (
-            <button onClick={() => d.currentUser ? d.navigate('/session/' + d.id + '/apply') : (d.session!.invite_code ? d.navigate('/join/' + d.session!.invite_code) : d.navigate('/me'))} className='btn-shimmer' style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: 14, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', position: 'relative' as const, overflow: 'hidden', boxShadow: '0 4px 20px ' + S.pbd }}>
+            <button onClick={() => d.currentUser ? d.navigate('/session/' + d.id + '/apply') : (d.session!.invite_code ? d.navigate('/join/' + d.session!.invite_code) : d.navigate('/me'))} className='btn-shimmer' style={{ width: '100%', padding: 16, background: S.p, border: 'none', borderRadius: R.btn, color: 'white', fontSize: 16, fontWeight: 700, cursor: 'pointer', position: 'relative' as const, overflow: 'hidden', boxShadow: '0 4px 20px ' + S.pbd }}>
               {d.t('session.apply_cta')}
             </button>
           )}

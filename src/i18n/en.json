@@ -793,7 +793,9 @@
     "go": "Go",
     "all": "All",
     "more": "more",
-    "saved": "Saved"
+    "saved": "Saved",
+    "previous": "Previous",
+    "next": "Next"
   },
   "drawer": {
     "my_space": "My space",

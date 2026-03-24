@@ -2,6 +2,8 @@ import { colors, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
 import { useHomeData } from '../hooks/useHomeData'
+import SessionInfoCard from '../components/SessionInfoCard'
+import CyclingAvatar from '../components/CyclingAvatar'
 
 const S = colors
 const R = radius
@@ -18,7 +20,6 @@ export default function HomePage() {
     inviteCode,
     setInviteCode,
     activeApps,
-    hostPendingCount,
     profilePct,
     recentContacts,
     recentNotifs,
@@ -31,16 +32,11 @@ export default function HomePage() {
     handleJoinCode,
     handleAddSuggestion,
     dismissTip,
-    getSessionCover,
     timeAgo,
   } = useHomeData()
 
   // ─── Shared styles ────────────────────────────────────
   const card = glassCard
-  const chip: React.CSSProperties = {
-    ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.chip,
-    background: S.p3, color: S.p, border: `1px solid ${S.pbd}`,
-  }
 
   return (
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
@@ -88,11 +84,12 @@ export default function HomePage() {
           <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
             {recentContacts.map(c => (
               <div key={c.id} onClick={() => navigate('/contacts/' + c.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer', flexShrink: 0, width: 52 }}>
-                {c.avatar ? (
-                  <img src={c.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
-                ) : (
-                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff' }}>{(c.name || '?')[0].toUpperCase()}</div>
-                )}
+                <CyclingAvatar
+                  photos={c.avatar ? [c.avatar] : []}
+                  size={40}
+                  fallbackLetter={(c.name || '?')[0]}
+                  border={'1px solid ' + S.rule}
+                />
                 <span style={{ fontSize: 10, color: S.tx2, fontWeight: 600, textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>{c.name.slice(0, 8)}</span>
               </div>
             ))}
@@ -203,28 +200,15 @@ export default function HomePage() {
         })()}
 
         {/* Host active session */}
-        {latestHost && (() => {
-          const cover = getSessionCover(latestHost.tags, latestHost.cover_url)
-          return (
-          <div onClick={() => navigate('/session/' + latestHost.id + '/host')} style={{ ...card, background: cover.bg, border: `1px solid ${S.pbd}`, cursor: 'pointer', overflow: 'hidden', position: 'relative' }}>
-            {cover.coverImage && <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
-            <div style={{ position: 'relative', zIndex: 1 }}>
-            <p style={{ ...typeStyle('micro'), color: S.p, margin: '0 0 8px' }}>{t('home.your_session')}</p>
-            <p style={{ ...typeStyle('section'), color: S.tx, margin: 0 }}>{latestHost.title}</p>
-            {latestHost.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '4px 0 0' }}>{latestHost.approx_area}</p>}
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, flexWrap: 'wrap' }}>
-              {latestHost.member_count && latestHost.member_count > 1 && (
-                <span style={{ ...typeStyle('meta'), color: S.sage, fontWeight: 600 }}>{t('session.member_count', { count: latestHost.member_count })}</span>
-              )}
-              {latestHost.tags?.slice(0, 3).map(t => <span key={t} style={chip}>{t}</span>)}
-            </div>
-            {hostPendingCount > 0 && (
-              <p style={{ ...typeStyle('label'), color: S.p, margin: '8px 0 0' }}>{t('home.pending_count', { count: hostPendingCount })}</p>
-            )}
-            </div>
-          </div>
-          )})()}
+        {latestHost && (
+          <SessionInfoCard
+            session={{ id: latestHost.id, title: latestHost.title, status: 'open', approx_area: latestHost.approx_area, tags: latestHost.tags, cover_url: latestHost.cover_url }}
+            memberCount={latestHost.member_count ? latestHost.member_count - 1 : undefined}
+            onClick={() => navigate('/session/' + latestHost.id + '/host')}
+            label={t('home.your_session')}
+            labelColor={S.p}
+          />
+        )}
 
         {/* Pending applications */}
         {pendingApps.length > 0 && (

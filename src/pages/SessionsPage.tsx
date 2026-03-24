@@ -2,14 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { colors, radius, glassCard, typeStyle } from '../brand'
+import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { sessionTiming } from '../lib/timing'
-import { getSessionCover } from '../lib/sessionCover'
 import { DM_DIRECT_TITLE } from '../lib/constants'
-import { Plus, Clock, CheckCircle2, Radio, MapPin, Globe, Zap } from 'lucide-react'
+import { Plus, Globe, Zap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { SkeletonCard } from '../components/Skeleton'
+import SessionInfoCard from '../components/SessionInfoCard'
 
 const S = colors
 const R = radius
@@ -56,71 +56,24 @@ export default function SessionsPage() {
     <p style={{ fontSize: 10, fontWeight: 700, color, textTransform: 'uppercase' as const, letterSpacing: '0.08em', margin: '16px 0 6px' }}>{text}</p>
   )
 
-  const sessionCard = (sess: Session, onClick: () => void) => {
-    const isOpen = sess.status === 'open'
-    const isEnded = sess.status === 'ended'
-    const cover = getSessionCover(sess.tags, sess.cover_url)
-    return (
-      <div key={sess.id} onClick={onClick} style={{ ...glassCard, background: cover.bg, overflow: 'hidden', position: 'relative' }}>
-        {/* Cover image or glass overlay */}
-        {cover.coverImage && <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <p style={{ ...typeStyle('section'), color: S.tx, margin: 0, flex: 1 }}>{sess.title}</p>
-          <span style={{
-            ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.pill, marginLeft: 8,
-            color: isOpen ? S.sage : isEnded ? S.red : S.tx3,
-            background: isOpen ? S.sagebg : isEnded ? S.redbg : S.bg2,
-            border: `1px solid ${isOpen ? S.sagebd : isEnded ? S.redbd : S.rule}`,
-            display: 'flex', alignItems: 'center', gap: 4,
-          }}>
-            {isOpen && <Radio size={8} />}
-            {isOpen ? t('session.live') : isEnded ? t('session.ended') : t('session.draft')}
-          </span>
-        </div>
-        {sess.approx_area && (
-          <p style={{ ...typeStyle('body'), color: S.tx2, margin: '5px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <MapPin size={11} strokeWidth={1.5} />{sess.approx_area}
-          </p>
-        )}
-        {sess.tags && sess.tags.length > 0 && (
-          <div style={{ display: 'flex', gap: 4, marginTop: 8, flexWrap: 'wrap' }}>
-            {sess.tags.slice(0, 4).map(tag => (
-              <span key={tag} style={{ ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.chip, background: 'rgba(249,168,168,0.15)', color: S.p, border: `1px solid rgba(249,168,168,0.25)` }}>{tag}</span>
-            ))}
-          </div>
-        )}
-        <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '8px 0 0' }}>{sessionTiming(sess)}</p>
-        {isEnded && (
-          <p style={{ ...typeStyle('meta'), color: S.p, fontWeight: 600, margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>{t('sessions.review_session')} →</p>
-        )}
-        </div>
-      </div>
-    )
-  }
+  const renderSessionCard = (sess: Session, onClick: () => void) => (
+    <SessionInfoCard
+      key={sess.id}
+      session={sess}
+      onClick={onClick}
+      timing={sessionTiming(sess)}
+      endedCta={sess.status === 'ended' ? `${t('sessions.review_session')} →` : undefined}
+    />
+  )
 
-  const appCard = (app: AppSession, icon: React.ReactNode, badgeColor: string, badgeText: string) => {
-    const cover = getSessionCover(app.tags, app.cover_url)
-    return (
-    <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)} style={{ ...glassCard, background: cover.bg, overflow: 'hidden', position: 'relative' }}>
-      {cover.coverImage && <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />}
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,20,31,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }} />
-      <div style={{ position: 'relative', zIndex: 1 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <p style={{ ...typeStyle('section'), color: S.tx, margin: 0, flex: 1 }}>{app.title}</p>
-        <span style={{
-          ...typeStyle('meta'), padding: '3px 10px', borderRadius: R.pill, marginLeft: 8,
-          color: badgeColor, background: badgeColor + '12', border: `1px solid ${badgeColor}33`,
-          display: 'flex', alignItems: 'center', gap: 4,
-        }}>
-          {icon}{badgeText}
-        </span>
-      </div>
-      {app.approx_area && <p style={{ ...typeStyle('body'), color: S.tx2, margin: '5px 0 0' }}>{app.approx_area}</p>}
-      </div>
-    </div>
-  )}
+  const renderAppCard = (app: AppSession) => (
+    <SessionInfoCard
+      key={app.session_id}
+      session={{ id: app.session_id, title: app.title, status: 'open', approx_area: app.approx_area, tags: app.tags, cover_url: app.cover_url }}
+      compact
+      showCapacity={false}
+    />
+  )
 
   const pinnedCount = myActive.length + myPending.length
   const hostedOpen = myHosted.filter(s => s.status === 'open')
@@ -157,15 +110,15 @@ export default function SessionsPage() {
         {pinnedCount > 0 && (
           <>
             {sectionLabel(t('sessions.pinned'), S.sage)}
-            {myActive.map(app => appCard(app, <CheckCircle2 size={10} />, S.sage, t('status.accepted')))}
-            {myPending.map(app => appCard(app, <Clock size={10} />, S.lav, t('status.pending')))}
+            {myActive.map(app => renderAppCard(app))}
+            {myPending.map(app => renderAppCard(app))}
           </>
         )}
 
         {hostedOpen.length > 0 && (
           <>
             {sectionLabel(t('sessions.my_hosted'), S.p)}
-            {hostedOpen.map(sess => sessionCard(sess, () => navigate('/session/' + sess.id + '/host')))}
+            {hostedOpen.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id + '/host')))}
           </>
         )}
 
@@ -177,12 +130,12 @@ export default function SessionsPage() {
             <p style={{ ...typeStyle('body'), margin: 0 }}>{t('sessions.no_public')}</p>
           </div>
         )}
-        {publicSessions.map(sess => sessionCard(sess, () => navigate('/session/' + sess.id)))}
+        {publicSessions.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
 
         {myHosted.filter(s => s.status !== 'open').length > 0 && (
           <>
             {sectionLabel(t('sessions.past'), S.tx3)}
-            {myHosted.filter(s => s.status !== 'open').slice(0, 5).map(sess => sessionCard(sess, () => navigate('/session/' + sess.id)))}
+            {myHosted.filter(s => s.status !== 'open').slice(0, 5).map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
           </>
         )}
       </div>

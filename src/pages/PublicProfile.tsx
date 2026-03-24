@@ -10,7 +10,7 @@ import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors, glassCard } from '../brand'
 import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Send, Ban, Flag } from 'lucide-react'
+import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag } from 'lucide-react'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -288,7 +288,7 @@ export default function PublicProfile() {
           )}
         </div>
         <button onClick={() => setShowShareSheet(true)} style={{ marginTop: 8, width: '100%', padding: 10, borderRadius: 12, border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)'), background: 'transparent', color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Send size={13} strokeWidth={1.5} /> {t('share.recommend_profile')}
+          <Share2 size={13} strokeWidth={1.5} /> {t('share.recommend_profile')}
         </button>
       </div>
 

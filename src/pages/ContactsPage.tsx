@@ -8,6 +8,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
+import CyclingAvatar from '../components/CyclingAvatar'
 import { useTranslation } from 'react-i18next'
 
 
@@ -179,13 +180,12 @@ export default function ContactsPage() {
             <div key={contact.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid ' + S.rule2, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
               {/* Avatar */}
               <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
-                {contact.avatar_url ? (
-                  <img src={contact.avatar_url} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
-                ) : (
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff' }}>
-                    {(contact.display_name || '?')[0].toUpperCase()}
-                  </div>
-                )}
+                <CyclingAvatar
+                  photos={contact.avatar_url ? [contact.avatar_url] : []}
+                  size={44}
+                  fallbackLetter={(contact.display_name || '?')[0]}
+                  border={'1px solid ' + S.rule}
+                />
               </div>
 
               {/* Info */}
