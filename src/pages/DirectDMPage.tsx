@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Camera, Smile, X } from 'lucide-react'
+import { ArrowLeft, Send, Camera, Smile, X, Plus } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -49,6 +49,8 @@ export default function DirectDMPage() {
   const [menuMsg, setMenuMsg] = useState<Message | null>(null)
   const [chatLightbox, setChatLightbox] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
+  const [showActions, setShowActions] = useState(false)
+  const [_showAddressSheet, setShowAddressSheet] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [recording, setRecording] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -239,6 +241,21 @@ export default function DirectDMPage() {
         <div style={{ flex: 1 }} onClick={() => navigate('/profile/' + peerId)}>
           <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }}>{peerProfile?.name || 'Chargement...'}</p>
           {peerProfile?.role && <span style={{ fontSize: 11, color: S.p }}>{peerProfile.role}</span>}
+        </div>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setShowActions(v => !v)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Plus size={16} strokeWidth={2} />
+          </button>
+          {showActions && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 6, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, overflow: 'hidden', zIndex: 60, minWidth: 220, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
+              <button onClick={() => { setShowActions(false); navigate('/session/create?invite=' + peerId) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid '+S.rule, color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {t('dm.create_session')}
+              </button>
+              <button onClick={() => { setShowActions(false); setShowAddressSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {t('dm.share_address')}
+              </button>
+            </div>
+          )}
         </div>
       </header>
 

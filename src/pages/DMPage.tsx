@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { SkeletonChatPage, SkeletonLine } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
-import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X } from 'lucide-react'
+import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { sendPushToUser } from '../lib/pushSender'
@@ -49,6 +49,8 @@ export default function DMPage() {
   const [showCheckInConfirmed, setShowCheckInConfirmed] = useState(false)
   const [replyTo, setReplyTo] = useState<{ id: string; text: string; sender_name: string } | null>(null)
   const [menuMsg, setMenuMsg] = useState<Message | null>(null)
+  const [showActions, setShowActions] = useState(false)
+  const [_showAddressSheet, setShowAddressSheet] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [displayName, setDisplayName] = useState<string>('')
@@ -371,11 +373,26 @@ export default function DMPage() {
             </div>
           </div>
         </div>
-        {peerId && (
-          <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
-            {t('profile.see_profile')}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
+          <button onClick={() => setShowActions(v => !v)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Plus size={16} strokeWidth={2} />
           </button>
-        )}
+          {peerId && (
+            <button onClick={() => navigate(isHost ? '/session/' + id + '/candidate/' + peerId : '/profile/' + peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>
+              {t('profile.see_profile')}
+            </button>
+          )}
+          {showActions && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 6, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, overflow: 'hidden', zIndex: 60, minWidth: 220, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
+              <button onClick={() => { setShowActions(false); navigate('/session/create?invite=' + peerId) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid '+S.rule, color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {t('dm.create_session')}
+              </button>
+              <button onClick={() => { setShowActions(false); setShowAddressSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {t('dm.share_address')}
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Status banner */}

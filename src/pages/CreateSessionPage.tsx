@@ -28,6 +28,7 @@ export default function CreateSessionPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
+  const inviteParam = searchParams.get('invite')
   const [user, setUser] = useState<any>(null)
   const [_template, setTemplate] = useState('custom')
   const [title, setTitle] = useState('')
@@ -153,6 +154,22 @@ export default function CreateSessionPage() {
     }
     if (data) {
       setCreatedSession({ id: data.id, title: data.title, approx_area: data.approx_area, invite_code: data.invite_code })
+      // Auto-invite peer from DM if ?invite= param present
+      if (inviteParam) {
+        await supabase.from('applications').insert({
+          session_id: data.id,
+          applicant_id: inviteParam,
+          status: 'accepted',
+          eps_json: {},
+        })
+        await supabase.from('notifications').insert({
+          user_id: inviteParam,
+          session_id: data.id,
+          type: 'session_invite',
+          message: t('session.invite_body'),
+          href: '/join/' + data.invite_code,
+        })
+      }
       // Load user's groups for invite
       const { data: pData } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
       const gIds = ((pData?.profile_json as any)?.contact_groups || []).map((g: any) => g.id)

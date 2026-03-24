@@ -903,7 +903,10 @@
     "tip": "Safety reminder: Share your location with a trusted friend. You can leave at any time, no questions asked. If there is a problem, contact the host via this DM."
   },
   "dm": {
-    "application_pending": "Application pending..."
+    "application_pending": "Application pending...",
+    "actions_title": "Actions",
+    "create_session": "Create a session together",
+    "share_address": "Share an address"
   },
   "landing": {
     "headline": "Organize your group tonight",
