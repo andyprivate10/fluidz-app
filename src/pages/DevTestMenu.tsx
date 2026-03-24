@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { seedAll, clearAll, TEST_INVITE_CODE } from "../lib/seedTestData";
+import { seedDemoData, clearDemoData } from "../lib/seedDemoData";
 import type { User } from "@supabase/supabase-js";
 
 const PROJECT_START = new Date("2026-03-07T00:00:00");
@@ -26,6 +27,8 @@ export default function DevTestMenu() {
   const [user, setUser] = useState<User | null>(null);
   const [msg, setMsg] = useState("");
   const [seeding, setSeeding] = useState(false);
+  const [seedingDemo, setSeedingDemo] = useState(false);
+  const [demoProgress, setDemoProgress] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const dayNumber = Math.floor((Date.now() - PROJECT_START.getTime()) / 86400000) + 1;
 
@@ -107,6 +110,31 @@ export default function DevTestMenu() {
     }
   };
 
+  const seedDemo = async () => {
+    setSeedingDemo(true);
+    setDemoProgress("Démarrage...");
+    try {
+      await seedDemoData((step) => setDemoProgress(step));
+      setDemoProgress("");
+      setMsg("✅ Demo data seeded — 10 users, 5 sessions, 20+ contacts");
+      setUser(null);
+    } catch (err: any) {
+      setMsg("❌ Demo seed ERREUR: " + (err?.message || String(err)));
+    } finally {
+      setSeedingDemo(false);
+    }
+  };
+
+  const clearDemo = async () => {
+    setMsg("Nettoyage demo...");
+    try {
+      await clearDemoData();
+      setMsg("✅ Demo data nettoyée");
+    } catch (e: any) {
+      setMsg("❌ Clear demo err: " + e?.message);
+    }
+  };
+
   const goHost = async () => {
     const u = await login("marcus@fluidz.test");
     if (u && sessionId) navigate("/session/" + sessionId + "/host");
@@ -145,6 +173,14 @@ export default function DevTestMenu() {
           {seeding ? "⏳ Seed en cours..." : "🌱 Seeder les données (idempotent)"}
         </button>
         <button onClick={reset} style={{ ...btn, background: "#450a0a", fontSize: 12 }}>🗑️ Reset complet</button>
+      </div>
+
+      <p style={{ color: "#a78bfa", fontSize: 12, marginBottom: 8, fontWeight: 700 }}>1b. DEMO SEED (rich data)</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+        <button onClick={seedDemo} disabled={seedingDemo} style={{ ...btn, background: seedingDemo ? "#2a2740" : "#1a1040", border: "1px solid #4c1d95" }}>
+          {seedingDemo ? "⏳ " + demoProgress : "🎭 Seed Demo Data (10 users, 5 sessions, contacts...)"}
+        </button>
+        <button onClick={clearDemo} style={{ ...btn, background: "#450a0a", fontSize: 12 }}>🗑️ Clear demo data</button>
       </div>
 
       <p style={{ color: "#f9a8a8", fontSize: 12, marginBottom: 8, fontWeight: 700 }}>

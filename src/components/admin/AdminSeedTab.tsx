@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { colors } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { seedAll, clearAll } from '../../lib/seedTestData'
-import { Database, Trash2, AlertTriangle, Play } from 'lucide-react'
+import { seedDemoData, clearDemoData } from '../../lib/seedDemoData'
+import { Database, Trash2, AlertTriangle, Play, Users } from 'lucide-react'
 
 const S = colors
 
@@ -10,6 +11,8 @@ export default function AdminSeedTab() {
   const [seeding, setSeeding] = useState(false)
   const [resetting, setResetting] = useState(false)
   const [resetConfirm, setResetConfirm] = useState(false)
+  const [seedingDemo, setSeedingDemo] = useState(false)
+  const [clearingDemo, setClearingDemo] = useState(false)
   const [log, setLog] = useState<string[]>([])
 
   const appendLog = (msg: string) => {
@@ -49,6 +52,34 @@ export default function AdminSeedTab() {
       appendLog(`ERREUR: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setResetting(false)
+    }
+  }
+
+  const handleSeedDemo = async () => {
+    if (seedingDemo) return
+    setSeedingDemo(true)
+    appendLog('Demo seed demarre (10 users, 5 sessions, contacts, intents, reviews...)')
+    try {
+      await seedDemoData((step) => appendLog(step))
+      appendLog('Demo seed termine avec succes.')
+    } catch (err) {
+      appendLog(`ERREUR: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setSeedingDemo(false)
+    }
+  }
+
+  const handleClearDemo = async () => {
+    if (clearingDemo) return
+    setClearingDemo(true)
+    appendLog('Nettoyage demo data...')
+    try {
+      await clearDemoData()
+      appendLog('Demo data nettoyee avec succes.')
+    } catch (err) {
+      appendLog(`ERREUR: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setClearingDemo(false)
     }
   }
 
@@ -121,6 +152,53 @@ export default function AdminSeedTab() {
             <Trash2 size={14} strokeWidth={2} />
           )}
           {resetConfirm ? 'Confirmer le reset' : 'Reset DB'}
+        </button>
+      </div>
+
+      {/* Demo Seed buttons */}
+      <p style={adminStyles.sectionLabel(S.sage)}>DEMO DATA (rich seed)</p>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <button
+          onClick={handleSeedDemo}
+          disabled={seedingDemo}
+          style={{
+            ...adminStyles.btnPrimary,
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            opacity: seedingDemo ? 0.6 : 1,
+            background: '#4c1d95',
+          }}
+        >
+          {seedingDemo ? (
+            <div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          ) : (
+            <Users size={14} strokeWidth={2} />
+          )}
+          Seed Demo (10 users)
+        </button>
+
+        <button
+          onClick={handleClearDemo}
+          disabled={clearingDemo}
+          style={{
+            ...adminStyles.btnDanger,
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            opacity: clearingDemo ? 0.6 : 1,
+          }}
+        >
+          {clearingDemo ? (
+            <div style={{ width: 14, height: 14, border: '2px solid ' + S.red + '44', borderTopColor: S.red, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          ) : (
+            <Trash2 size={14} strokeWidth={2} />
+          )}
+          Clear demo data
         </button>
       </div>
 
