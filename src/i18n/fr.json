@@ -42,7 +42,9 @@
     "pending_count": "{{count}} candidature(s) en attente",
     "my_profile": "Mon profil",
     "complete_profile": "Complète ton profil",
-    "complete_profile_desc": "Plus de chances d'être accepté"
+    "complete_profile_desc": "Plus de chances d'être accepté",
+    "naughty_book": "NAUGHTY BOOK",
+    "see_all_contacts": "Voir tout"
   },
   "explore": {
     "title": "Autour de moi",

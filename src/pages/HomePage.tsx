@@ -25,6 +25,7 @@ export default function HomePage() {
   const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string }[]>([])
   const [hostPendingCount, setHostPendingCount] = useState(0)
   const [profilePct, setProfilePct] = useState(100)
+  const [recentContacts, setRecentContacts] = useState<{ id: string; name: string; avatar?: string }[]>([])
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -67,6 +68,18 @@ export default function HomePage() {
     const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title)')
       .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
     setActiveApps((active || []).map((a: any) => ({ session_id: a.session_id, status: a.status, title: a.sessions?.title || 'Session' })))
+
+    // Recent contacts
+    const { data: contacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).order('created_at', { ascending: false }).limit(8)
+    if (contacts && contacts.length > 0) {
+      const cIds = contacts.map((c: any) => c.contact_user_id)
+      const { data: cProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', cIds)
+      const ordered = cIds.map(cid => {
+        const p = (cProfiles || []).find((pr: any) => pr.id === cid)
+        return { id: cid, name: p?.display_name || '?', avatar: (p?.profile_json as any)?.avatar_url }
+      })
+      setRecentContacts(ordered)
+    } else { setRecentContacts([]) }
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
@@ -122,6 +135,28 @@ export default function HomePage() {
         ) : null}
 
       </div>
+
+      {/* ─── Recent Contacts ─────────────────────────── */}
+      {recentContacts.length > 0 && (
+        <div style={{ position: 'relative', zIndex: 1, padding: '0 24px 8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <span style={{ ...typeStyle('micro'), color: S.p }}>{t('home.naughty_book')}</span>
+            <span onClick={() => navigate('/contacts')} style={{ ...typeStyle('meta'), color: S.tx3, cursor: 'pointer' }}>{t('home.see_all_contacts')}</span>
+          </div>
+          <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+            {recentContacts.map(c => (
+              <div key={c.id} onClick={() => navigate('/contacts/' + c.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer', flexShrink: 0, width: 52 }}>
+                {c.avatar ? (
+                  <img src={c.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+                ) : (
+                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff' }}>{(c.name || '?')[0].toUpperCase()}</div>
+                )}
+                <span style={{ fontSize: 10, color: S.tx2, fontWeight: 600, textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>{c.name.slice(0, 8)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ─── Content ─────────────────────────────────── */}
       <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 96 }}>

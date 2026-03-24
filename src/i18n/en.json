@@ -42,7 +42,9 @@
     "pending_count": "{{count}} pending application(s)",
     "my_profile": "My profile",
     "complete_profile": "Complete your profile",
-    "complete_profile_desc": "Better chances of being accepted"
+    "complete_profile_desc": "Better chances of being accepted",
+    "naughty_book": "NAUGHTY BOOK",
+    "see_all_contacts": "See all"
   },
   "explore": {
     "title": "Around me",
