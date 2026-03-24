@@ -551,8 +551,17 @@ export default function SessionPage() {
         {myApp && (
           <div style={{ ...glassCard }}>
             {myApp.status === 'pending' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <span style={{ fontSize: 14, fontWeight: 600, color: S.p, padding: '6px 12px', borderRadius: 99, background: S.p2, border: '1px solid '+S.amberbd }}>{t('session.pending')}</span>
+                <button onClick={async () => {
+                  if (!window.confirm(t('session.cancel_confirm'))) return
+                  await supabase.from('applications').delete().eq('session_id', id).eq('applicant_id', currentUser!.id)
+                  showToast(t('session.cancelled'), 'info')
+                  setMyApp(null)
+                  loadData()
+                }} style={{ padding: '8px 12px', borderRadius: 10, border: '1px solid '+S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                  {t('session.cancel_application')}
+                </button>
               </div>
             )}
             {myApp.status === 'accepted' && (
@@ -574,6 +583,15 @@ export default function SessionPage() {
                 )}
                 <button onClick={() => navigate('/session/' + id + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   {t('session.open_dm')}
+                </button>
+                <button onClick={async () => {
+                  if (!window.confirm(t('session.leave_confirm'))) return
+                  await supabase.from('applications').update({ status: 'left' }).eq('session_id', id).eq('applicant_id', currentUser!.id)
+                  showToast(t('session.left_session'), 'info')
+                  setMyApp(null)
+                  loadData()
+                }} style={{ padding: '6px 12px', borderRadius: 10, border: 'none', background: 'transparent', color: S.tx3, fontSize: 11, fontWeight: 600, cursor: 'pointer', textAlign: 'center' }}>
+                  {t('session.leave_session')}
                 </button>
               </div>
             )}
@@ -602,6 +620,15 @@ export default function SessionPage() {
                 </button>
                 <button onClick={() => navigate('/session/' + id + '/chat')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.p, borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                   {t('session.group_chat')}
+                </button>
+                <button onClick={async () => {
+                  if (!window.confirm(t('session.leave_confirm'))) return
+                  await supabase.from('applications').update({ status: 'left' }).eq('session_id', id).eq('applicant_id', currentUser!.id)
+                  showToast(t('session.left_session'), 'info')
+                  setMyApp(null)
+                  loadData()
+                }} style={{ padding: '6px 12px', borderRadius: 10, border: 'none', background: 'transparent', color: S.tx3, fontSize: 11, fontWeight: 600, cursor: 'pointer', textAlign: 'center' }}>
+                  {t('session.leave_session')}
                 </button>
               </div>
             )}

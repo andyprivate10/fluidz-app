@@ -241,7 +241,13 @@
     "share_already_here": "already here",
     "share_join_us": "Join us",
     "share_looking_for": "Looking for",
-    "add_to_book_desc": "You can add the members of this session to your Naughty Book"
+    "add_to_book_desc": "You can add the members of this session to your Naughty Book",
+    "cancel_application": "Cancel application",
+    "cancel_confirm": "Cancel your application for this session?",
+    "cancelled": "Application cancelled",
+    "leave_session": "Leave session",
+    "leave_confirm": "Leave this session? You will lose access to the address and chats.",
+    "left_session": "You left the session"
   },
   "chat": {
     "title": "Messages",
