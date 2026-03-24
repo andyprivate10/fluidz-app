@@ -991,6 +991,12 @@
     "confirm": "Confirmer",
     "processing": "Traitement…"
   },
+  "push": {
+    "enable_title": "Activer les notifications",
+    "enable_desc": "Reçois un ping quand un candidat postule ou qu'on t'écrit",
+    "allow": "Activer",
+    "later": "Plus tard"
+  },
   "dm_request": {
     "title": "Demande de DM",
     "profile_required_desc": "Profil requis pour envoyer un DM",

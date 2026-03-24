@@ -991,6 +991,12 @@
     "confirm": "Confirm",
     "processing": "Processing…"
   },
+  "push": {
+    "enable_title": "Enable notifications",
+    "enable_desc": "Get pinged when someone applies or messages you",
+    "allow": "Enable",
+    "later": "Later"
+  },
   "dm_request": {
     "title": "DM Request",
     "profile_required_desc": "Profile required to send a DM",

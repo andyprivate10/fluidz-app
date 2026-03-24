@@ -9,6 +9,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
 import BottomNav from './components/BottomNav'
 import InstallPrompt from './components/InstallPrompt'
+import PushPrompt from './components/PushPrompt'
 
 // Lazy-loaded pages
 const SessionPage = lazy(() => import('./pages/SessionPage'))
@@ -116,6 +117,7 @@ export default function App() {
         <Suspense fallback={<LazyFallback />}><AnimatedRoutes /></Suspense>
         <BottomNav />
         <InstallPrompt />
+        <PushPrompt />
       </BrowserRouter>
     </ErrorBoundary>
   )
