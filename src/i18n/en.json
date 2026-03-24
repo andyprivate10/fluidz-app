@@ -444,7 +444,13 @@
     "unmuted_toast": "Notifications unmuted",
     "add_to_naughtybook": "Add to NaughtyBook",
     "in_naughtybook": "In your NaughtyBook ✓",
-    "added_to_naughtybook": "Added to NaughtyBook!"
+    "added_to_naughtybook": "Added to NaughtyBook!",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites",
+    "in_naughtybook_badge": "NaughtyBook",
+    "dm_request": "Send DM request",
+    "dm_direct": "Send DM",
+    "dm_pending": "Request pending"
   },
   "review": {
     "title": "How was it?",
@@ -1003,7 +1009,11 @@
     "application_pending": "Application pending...",
     "actions_title": "Actions",
     "create_session": "Create a session together",
-    "share_address": "Share an address"
+    "share_address": "Share an address",
+    "share_template": "Share a template",
+    "past_sessions": "Your past sessions",
+    "use_template": "Use this template",
+    "template_shared": "Template shared"
   },
   "landing": {
     "headline": "Organize your group tonight",
@@ -1246,5 +1256,18 @@
     "match_title": "Mutual interest!",
     "match_body": "You have intentions in common",
     "updated": "Intentions updated"
+  },
+  "shortcuts": {
+    "title": "MY SHORTCUTS",
+    "addresses": "Addresses",
+    "templates": "Templates",
+    "message_types": "Message templates",
+    "preferences": "Preferences"
+  },
+  "templates": {
+    "title": "My templates",
+    "reuse": "Reuse",
+    "empty": "No templates",
+    "empty_desc": "Your past sessions will appear here as reusable templates"
   }
 }

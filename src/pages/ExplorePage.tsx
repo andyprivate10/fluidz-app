@@ -347,7 +347,7 @@ export default function ExplorePage() {
                 style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule2, position: 'relative' }}
               >
                 {p.avatar_url ? (
-                  <img src={p.avatar_url} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
+                  <img src={p.avatar_url} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff' }}>
                     {p.display_name[0]?.toUpperCase()}

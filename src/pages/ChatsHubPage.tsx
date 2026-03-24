@@ -214,7 +214,7 @@ export default function ChatsHubPage() {
                   <Users size={18} strokeWidth={1.5} style={{ color: S.p }} />
                 </div>
               ) : thread.peerAvatar ? (
-                <img src={thread.peerAvatar} alt="" style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', flexShrink: 0, border: `1px solid ${S.rule2}` }} />
+                <img src={thread.peerAvatar} alt="" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', flexShrink: 0, border: `1px solid ${S.rule2}` }} />
               ) : (
                 <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', ...typeStyle('label'), color: S.tx3, flexShrink: 0 }}>
                   {(thread.peerName || '?')[0].toUpperCase()}

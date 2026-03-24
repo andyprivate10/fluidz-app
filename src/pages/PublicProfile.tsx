@@ -10,7 +10,9 @@ import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
 import { colors, glassCard } from '../brand'
 import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, Sparkles, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag } from 'lucide-react'
+import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, BookOpen, Clock } from 'lucide-react'
+import DmRequestSheet from '../components/DmRequestSheet'
+import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -55,65 +57,6 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
   )
 }
 
-function Create1to1Button({ targetUserId, targetName }: { targetUserId: string; targetName: string }) {
-  const { t } = useTranslation()
-  const nav = useNavigate()
-  const [creating, setCreating] = useState(false)
-  async function create() {
-    setCreating(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setCreating(false); return }
-    const { data: myProf } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
-    const myName = myProf?.display_name || t('common.someone')
-    const code = Math.random().toString(36).slice(2, 8)
-    const { data: sess, error } = await supabase.from('sessions').insert({ host_id: user.id, title: myName + ' & ' + targetName, description: 'Session privée 1-to-1', status: 'open', tags: [], invite_code: code, group_chat_enabled: false }).select('id').single()
-    if (error || !sess) { setCreating(false); return }
-    await supabase.from('applications').insert({ session_id: sess.id, applicant_id: targetUserId, status: 'accepted', eps_json: { direct_invite: true, role: '' } })
-    await supabase.from('notifications').insert({ user_id: targetUserId, session_id: sess.id, type: 'session_invite', title: 'Session privée avec ' + myName, body: myName + ' veut te rencontrer en privé', href: '/session/' + sess.id })
-    setCreating(false)
-    nav('/session/' + sess.id + '/dm/' + targetUserId)
-  }
-  return (
-    <button onClick={create} disabled={creating} style={{ flex: 1, padding: '10px', borderRadius: 12, background: 'transparent', border: '1px solid ' + S.lavbd, color: S.lav, fontSize: 12, fontWeight: 600, cursor: creating ? 'not-allowed' : 'pointer', opacity: creating ? 0.6 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-      <Sparkles size={12} strokeWidth={1.5} />{creating ? '...' : '1-to-1'}
-    </button>
-  )
-}
-
-function InviteToSessionButton({ targetUserId }: { targetUserId: string }) {
-  const [sessions, setSessions] = useState<{ id: string; title: string }[]>([])
-  const [sending, setSending] = useState(false)
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user || user.id === targetUserId) return
-      Promise.all([
-        supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open'),
-        supabase.from('applications').select('session_id, sessions(id, title)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
-      ]).then(([{ data: hosted }, { data: member }]) => {
-        const all = new Map<string, { id: string; title: string }>()
-        ;(hosted || []).forEach((s: any) => all.set(s.id, s))
-        ;(member || []).forEach((a: any) => { if (a.sessions) all.set(a.sessions.id, { id: a.sessions.id, title: a.sessions.title }) })
-        setSessions([...all.values()])
-      })
-    })
-  }, [targetUserId])
-  async function invite(sessionId: string) {
-    setSending(true)
-    const sess = sessions.find(s => s.id === sessionId)
-    await supabase.from('notifications').insert({ user_id: targetUserId, session_id: sessionId, type: 'session_invite', title: 'Tu es invité !', body: 'Invité à "' + (sess?.title || 'session') + '"', href: '/session/' + sessionId })
-    setSending(false)
-  }
-  if (sessions.length === 0) return null
-  return (
-    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-      {sessions.map(s => (
-        <button key={s.id} onClick={() => invite(s.id)} disabled={sending} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 11, fontWeight: 600, cursor: sending ? 'not-allowed' : 'pointer', border: '1px solid ' + S.sagebd, background: S.sagebg, color: S.sage }}>
-          Inviter à "{s.title}"
-        </button>
-      ))}
-    </div>
-  )
-}
 
 /* ═══ MAIN ═══ */
 export default function PublicProfile() {
@@ -130,6 +73,10 @@ export default function PublicProfile() {
   const [photoIdx, setPhotoIdx] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
   const [myUserId, setMyUserId] = useState<string | null>(null)
+  const [isInNaughtyBook, setIsInNaughtyBook] = useState(false)
+  const [dmStatus, setDmStatus] = useState<'direct' | 'need_request' | 'pending' | 'blocked'>('direct')
+  const [peerPrivacy, setPeerPrivacy] = useState<DmPrivacyLevel>('open')
+  const [showDmRequest, setShowDmRequest] = useState(false)
   const { confirm, dialogProps } = useConfirmDialog()
 
   useEffect(() => {
@@ -148,6 +95,26 @@ export default function PublicProfile() {
       if (user.id !== userId) {
         supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: userId, type: 'profile_view' as any, meta: {} }).then(() => {})
         supabase.from('favorites').select('id').eq('user_id', user.id).eq('target_user_id', userId).maybeSingle().then(({ data }) => setIsFavorite(!!data))
+        // Check NaughtyBook contact
+        supabase.from('contacts').select('id').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(({ data }) => setIsInNaughtyBook(!!data))
+        // Check DM privacy for this peer
+        const peerPj = (prof?.profile_json || {}) as Record<string, unknown>
+        const privacy = (peerPj.dm_privacy as DmPrivacyLevel) || 'open'
+        setPeerPrivacy(privacy)
+        if (privacy === 'open') {
+          setDmStatus('direct')
+        } else {
+          // Check if already in contacts (bypass privacy)
+          supabase.from('contacts').select('id').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(async ({ data: isContact }) => {
+            if (isContact) { setDmStatus('direct'); return }
+            // Check for existing DM request
+            const { data: req } = await supabase.from('dm_requests').select('status').eq('sender_id', user.id).eq('receiver_id', userId).maybeSingle()
+            if (!req) { setDmStatus('need_request'); return }
+            if (req.status === 'pending') { setDmStatus('pending'); return }
+            if (req.status === 'accepted') { setDmStatus('direct'); return }
+            setDmStatus('need_request')
+          })
+        }
       }
     }
     run()
@@ -264,12 +231,38 @@ export default function PublicProfile() {
 
       {/* ═══ ACTIONS ═══ */}
       <div style={{ padding: '16px 20px 0' }}>
+        {/* NaughtyBook badge */}
+        {isInNaughtyBook && (
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, marginBottom: 10 }}>
+            <BookOpen size={12} strokeWidth={1.5} style={{ color: S.sage }} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: S.sage }}>{t('profile.in_naughtybook_badge')}</span>
+          </div>
+        )}
+
         <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
+
+        {/* DM + Story + Favorite row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          <button onClick={() => navigate('/dm/' + userId)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}><MessageCircle size={13} strokeWidth={1.5} /> DM</button>
-          <button onClick={() => setShowStory(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}><Play size={12} strokeWidth={2} fill={S.tx2} /> Story</button>
-          <Create1to1Button targetUserId={userId!} targetName={displayName} />
+          {/* Smart DM button */}
+          {dmStatus === 'direct' || isInNaughtyBook ? (
+            <button onClick={() => navigate('/dm/' + userId)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+              <MessageCircle size={13} strokeWidth={1.5} /> {t('profile.dm_direct')}
+            </button>
+          ) : dmStatus === 'pending' ? (
+            <button disabled style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, opacity: 0.6 }}>
+              <Clock size={13} strokeWidth={1.5} /> {t('profile.dm_pending')}
+            </button>
+          ) : (
+            <button onClick={() => setShowDmRequest(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.lavbd, color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+              <MessageCircle size={13} strokeWidth={1.5} /> {t('profile.dm_request')}
+            </button>
+          )}
+          <button onClick={() => setShowStory(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <Play size={12} strokeWidth={2} fill={S.tx2} /> Story
+          </button>
         </div>
+
+        {/* Favorite + NaughtyBook row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
           <div style={{ flex: 1 }}><AddContactButton targetUserId={userId!} /></div>
           {myUserId && myUserId !== userId && (
@@ -282,11 +275,13 @@ export default function PublicProfile() {
                 await supabase.from('favorites').upsert({ user_id: myUserId, target_user_id: userId }, { onConflict: 'user_id,target_user_id' })
                 setIsFavorite(true)
               }
-            }} style={{ width: 40, height: 40, borderRadius: 12, border: '1px solid ' + (isFavorite ? S.pbd : S.rule), background: isFavorite ? S.p2 : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-              <Heart size={18} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
+            }} style={{ padding: '8px 14px', borderRadius: 12, border: '1px solid ' + (isFavorite ? S.pbd : S.rule), background: isFavorite ? S.p2 : 'transparent', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}>
+              <Heart size={16} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: isFavorite ? S.p : S.tx3 }}>{isFavorite ? t('profile.unfavorite') : t('profile.favorite')}</span>
             </button>
           )}
         </div>
+
         <button onClick={() => setShowShareSheet(true)} style={{ marginTop: 8, width: '100%', padding: 10, borderRadius: 12, border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)'), background: 'transparent', color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
           <Share2 size={13} strokeWidth={1.5} /> {t('share.recommend_profile')}
         </button>
@@ -355,8 +350,6 @@ export default function PublicProfile() {
 
         {allVideos.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.lav)}>{t('profile.videos_label')} · {allVideos.length}</div><div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>{allVideos.map((url: string, i: number) => <div key={i} style={{ flexShrink: 0 }}><video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} /></div>)}</div></div>}
 
-        <InviteToSessionButton targetUserId={userId!} />
-
         {/* Block / Report */}
         <div style={{ display: 'flex', gap: 8, marginTop: 16, paddingBottom: 20 }}>
           <button onClick={async () => {
@@ -391,6 +384,17 @@ export default function PublicProfile() {
       />
       {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
       <ConfirmDialog {...dialogProps} />
+      {userId && myUserId && myUserId !== userId && (
+        <DmRequestSheet
+          open={showDmRequest}
+          onClose={() => setShowDmRequest(false)}
+          targetUserId={userId}
+          targetName={displayName}
+          targetAvatar={allPhotos[0]}
+          privacyLevel={peerPrivacy}
+          onSent={() => { setDmStatus('pending'); setShowDmRequest(false) }}
+        />
+      )}
     </div>
   )
 }

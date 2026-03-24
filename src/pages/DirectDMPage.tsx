@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin } from 'lucide-react'
+import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -16,6 +16,7 @@ import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
 import ChatMessageMenu from '../components/ChatMessageMenu'
 import AddressShareSheet, { encodeAddressMessage, isAddressMessage, parseAddressMessage } from '../components/AddressShareSheet'
+import TemplateShareSheet from '../components/TemplateShareSheet'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 
@@ -54,6 +55,7 @@ export default function DirectDMPage() {
   const [sending, setSending] = useState(false)
   const [showActions, setShowActions] = useState(false)
   const [showAddressSheet, setShowAddressSheet] = useState(false)
+  const [showTemplateSheet, setShowTemplateSheet] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [recording, setRecording] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -283,7 +285,7 @@ export default function DirectDMPage() {
           <ArrowLeft size={18} strokeWidth={1.5} />
         </button>
         {peerProfile?.avatar ? (
-          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
+          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
         ) : (
           <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
             {(peerProfile?.name || '?')[0].toUpperCase()}
@@ -302,8 +304,11 @@ export default function DirectDMPage() {
               <button onClick={() => { setShowActions(false); navigate('/session/create?invite=' + peerId) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid '+S.rule, color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
                 {t('dm.create_session')}
               </button>
-              <button onClick={() => { setShowActions(false); setShowAddressSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+              <button onClick={() => { setShowActions(false); setShowAddressSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid '+S.rule, color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
                 {t('dm.share_address')}
+              </button>
+              <button onClick={() => { setShowActions(false); setShowTemplateSheet(true) }} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
+                {t('dm.share_template')}
               </button>
             </div>
           )}
@@ -367,6 +372,23 @@ export default function DirectDMPage() {
                       </a>
                     </div>
                   )
+                })() :
+                msg.text.startsWith('[TPL_SHARE]') ? (() => {
+                  try {
+                    const tpl = JSON.parse(msg.text.slice(11))
+                    return (
+                      <div style={{ padding: '10px 12px', background: S.lavbg, borderRadius: 10, border: '1px solid '+S.lavbd }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                          <FileText size={14} style={{ color: S.lav }} />
+                          <span style={{ fontSize: 12, fontWeight: 700, color: S.tx }}>{tpl.title}</span>
+                        </div>
+                        {tpl.tags?.length > 0 && <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 6 }}>{tpl.tags.map((tag: string) => <span key={tag} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 99, background: S.bg2, color: S.tx2, border: '1px solid '+S.rule }}>{tag}</span>)}</div>}
+                        <a href={'/session/create?template='+tpl.id+'&invite='+(peerId || '')} style={{ fontSize: 11, fontWeight: 700, color: S.lav, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <Repeat size={11} /> {t('dm.use_template')}
+                        </a>
+                      </div>
+                    )
+                  } catch { return <span style={{ color: S.tx }}>{msg.text}</span> }
                 })() :
                 <span style={{ color: S.tx }}>{msg.text}</span>
               )}
@@ -434,6 +456,21 @@ export default function DirectDMPage() {
               session_id: sessionId, sender_id: currentUser.id,
               text: encodeAddressMessage(addr),
               sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
+            })
+          }}
+        />
+      )}
+      {currentUser && (
+        <TemplateShareSheet
+          open={showTemplateSheet}
+          onClose={() => setShowTemplateSheet(false)}
+          userId={currentUser.id}
+          onSelect={async (s) => {
+            if (!sessionId || !currentUser) return
+            const encoded = '[TPL_SHARE]' + JSON.stringify({ id: s.id, title: s.title, tags: s.tags })
+            await supabase.from('messages').insert({
+              session_id: sessionId, sender_id: currentUser.id,
+              text: encoded, sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
             })
           }}
         />

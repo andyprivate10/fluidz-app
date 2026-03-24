@@ -444,7 +444,13 @@
     "unmuted_toast": "Notifications réactivées",
     "add_to_naughtybook": "Ajouter au NaughtyBook",
     "in_naughtybook": "Dans ton NaughtyBook ✓",
-    "added_to_naughtybook": "Ajouté au NaughtyBook !"
+    "added_to_naughtybook": "Ajouté au NaughtyBook !",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris",
+    "in_naughtybook_badge": "NaughtyBook",
+    "dm_request": "Envoyer une demande de DM",
+    "dm_direct": "Envoyer un DM",
+    "dm_pending": "Demande en attente"
   },
   "review": {
     "title": "Comment c'etait ?",
@@ -1003,7 +1009,11 @@
     "application_pending": "Candidature en attente...",
     "actions_title": "Actions",
     "create_session": "Créer une session ensemble",
-    "share_address": "Partager une adresse"
+    "share_address": "Partager une adresse",
+    "share_template": "Partager un template",
+    "past_sessions": "Tes sessions passees",
+    "use_template": "Utiliser ce template",
+    "template_shared": "Template partage"
   },
   "landing": {
     "headline": "Organise ton groupe ce soir",
@@ -1246,5 +1256,18 @@
     "match_title": "Intérêt mutuel !",
     "match_body": "Vous avez des intentions en commun",
     "updated": "Intentions mises à jour"
+  },
+  "shortcuts": {
+    "title": "MES RACCOURCIS",
+    "addresses": "Adresses",
+    "templates": "Templates",
+    "message_types": "Messages types",
+    "preferences": "Preferences"
+  },
+  "templates": {
+    "title": "Mes templates",
+    "reuse": "Reutiliser",
+    "empty": "Aucun template",
+    "empty_desc": "Tes sessions passees apparaitront ici comme templates reutilisables"
   }
 }

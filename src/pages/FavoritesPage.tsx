@@ -67,7 +67,7 @@ export default function FavoritesPage() {
         {favorites.map(fav => (
           <div key={fav.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', border: '1px solid ' + S.rule2, position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/profile/' + fav.target_user_id)}>
             {fav.avatar ? (
-              <img src={fav.avatar} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
+              <img src={fav.avatar} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
             ) : (
               <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff' }}>
                 {fav.name[0]?.toUpperCase()}

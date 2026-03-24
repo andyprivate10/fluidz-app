@@ -4,6 +4,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastProvider from './components/Toast'
+import { AuthProvider } from './contexts/AuthContext'
 import HomePage from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
 import LoginPage from './pages/LoginPage'
@@ -40,6 +41,7 @@ const DirectDMPage = lazy(() => import('./pages/DirectDMPage'))
 const AddressesPage = lazy(() => import('./pages/AddressesPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
+const TemplatesPage = lazy(() => import('./pages/TemplatesPage'))
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'))
 
@@ -70,6 +72,10 @@ const routes = [
   { path: '/contacts/:contactUserId', element: <ContactDetailPage /> },
   { path: '/groups', element: <GroupsPage /> },
   { path: '/favorites', element: <FavoritesPage /> },
+  { path: '/me/templates', element: <TemplatesPage /> },
+  { path: '/me/addresses', element: <AddressesPage /> },
+  { path: '/me/messages', element: <TemplatesPage /> },
+  { path: '/me/preferences', element: <TemplatesPage /> },
   { path: '/auth/callback', element: <AuthCallbackPage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
@@ -112,13 +118,15 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
-        <ToastProvider />
-        <Suspense fallback={<LazyFallback />}><AnimatedRoutes /></Suspense>
-        <BottomNav />
-        <InstallPrompt />
-        <PushPrompt />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <ToastProvider />
+          <Suspense fallback={<LazyFallback />}><AnimatedRoutes /></Suspense>
+          <BottomNav />
+          <InstallPrompt />
+          <PushPrompt />
+        </BrowserRouter>
+      </AuthProvider>
     </ErrorBoundary>
   )
 }

@@ -18,6 +18,7 @@ export default function LazyImage({
 }) {
   const [loaded, setLoaded] = useState(false)
   const [inView, setInView] = useState(false)
+  const [errored, setErrored] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -42,11 +43,12 @@ export default function LazyImage({
       className={className}
       onClick={onClick}
     >
-      {inView && (
+      {inView && !errored && (
         <img
           src={src}
           alt={alt}
           onLoad={() => setLoaded(true)}
+          onError={() => setErrored(true)}
           style={{
             width: '100%',
             height: '100%',

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors } from '../brand'
-import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart } from 'lucide-react'
+import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings } from 'lucide-react'
 
 const S = colors
 
@@ -127,9 +127,15 @@ export default function SideDrawer({ open, onClose }: Props) {
           {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.naughty_book'), '/contacts')}
           {menuItem(<Heart size={18} strokeWidth={1.5} />, t('favorites.title'), '/favorites')}
 
+          {/* Section: Raccourcis */}
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('shortcuts.title')}</p>
+          {menuItem(<MapPin size={18} strokeWidth={1.5} />, t('shortcuts.addresses'), '/me/addresses')}
+          {menuItem(<FileText size={18} strokeWidth={1.5} />, t('shortcuts.templates'), '/me/templates')}
+          {menuItem(<MessageSquare size={18} strokeWidth={1.5} />, t('shortcuts.message_types'), '/me/messages')}
+          {menuItem(<Settings size={18} strokeWidth={1.5} />, t('shortcuts.preferences'), '/me/preferences')}
+
           {/* Section: Settings */}
-          <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('drawer.settings')}</p>
-          {menuItem(<MapPin size={18} strokeWidth={1.5} />, t('drawer.addresses'), '/addresses')}
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('drawer.settings')}</p>
           
           {/* Visibility toggle */}
           <button onClick={toggleVisibility} style={{
