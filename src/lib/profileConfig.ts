@@ -107,7 +107,7 @@ export interface SessionTag {
 export const SESSION_TAGS: SessionTag[] = [
   // Vibes
   { slug: 'dark_room', label: 'Dark Room', category: 'Vibes' },
-  { slug: 'chemical', label: 'Chemical', category: 'Vibes' },
+  { slug: 'powder_room', label: 'Powder Room', category: 'Vibes' },
   { slug: 'techno', label: 'Techno', category: 'Vibes' },
   { slug: 'chill', label: 'Chill', category: 'Vibes' },
   // Rôles

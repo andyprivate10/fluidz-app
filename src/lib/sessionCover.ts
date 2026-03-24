@@ -10,7 +10,7 @@ const TAG_GRADIENTS: Record<string, { bg: string; overlay: string }> = {
     bg: 'linear-gradient(135deg, #0a1410 0%, #102820 40%, #0a0f14 100%)',
     overlay: 'rgba(107,168,136,0.12)',
   },
-  'Chemical': {
+  'Powder Room': {
     bg: 'linear-gradient(135deg, #100a18 0%, #1a1030 40%, #0a0a14 100%)',
     overlay: 'rgba(144,128,186,0.12)',
   },
@@ -39,7 +39,7 @@ const DEFAULT_GRADIENT = {
 const COVER_IMAGES: Record<string, string> = {
   dark_room: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><defs><radialGradient id="a" cx="30%" cy="40%" r="60%"><stop offset="0%" stop-color="#3d1525" stop-opacity=".9"/><stop offset="50%" stop-color="#1a0a0f" stop-opacity=".95"/><stop offset="100%" stop-color="#0a0508" stop-opacity="1"/></radialGradient><radialGradient id="b" cx="75%" cy="70%" r="45%"><stop offset="0%" stop-color="#E0887A" stop-opacity=".12"/><stop offset="100%" stop-color="#0a0508" stop-opacity="0"/></radialGradient><radialGradient id="c" cx="50%" cy="20%" r="50%"><stop offset="0%" stop-color="#9080BA" stop-opacity=".06"/><stop offset="100%" stop-color="transparent"/></radialGradient><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".08"/></feComponentTransfer></filter></defs><rect fill="url(#a)" width="800" height="400"/><rect fill="url(#b)" width="800" height="400"/><rect fill="url(#c)" width="800" height="400"/><rect filter="url(#n)" width="800" height="400" opacity=".5"/><circle cx="200" cy="180" r="120" fill="#E0887A" opacity=".04" /><circle cx="600" cy="280" r="80" fill="#9080BA" opacity=".03"/></svg>`)}`,
 
-  chemical: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><defs><radialGradient id="a" cx="60%" cy="50%" r="65%"><stop offset="0%" stop-color="#1a1030" stop-opacity=".9"/><stop offset="50%" stop-color="#100a18" stop-opacity=".95"/><stop offset="100%" stop-color="#05030a" stop-opacity="1"/></radialGradient><radialGradient id="b" cx="25%" cy="30%" r="50%"><stop offset="0%" stop-color="#9080BA" stop-opacity=".15"/><stop offset="100%" stop-color="transparent"/></radialGradient><radialGradient id="c" cx="80%" cy="75%" r="40%"><stop offset="0%" stop-color="#A78BFA" stop-opacity=".08"/><stop offset="100%" stop-color="transparent"/></radialGradient><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".06"/></feComponentTransfer></filter></defs><rect fill="url(#a)" width="800" height="400"/><rect fill="url(#b)" width="800" height="400"/><rect fill="url(#c)" width="800" height="400"/><rect filter="url(#n)" width="800" height="400" opacity=".4"/><circle cx="180" cy="150" r="100" fill="#9080BA" opacity=".05"/><circle cx="650" cy="300" r="60" fill="#A78BFA" opacity=".04"/></svg>`)}`,
+  powder_room: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><defs><radialGradient id="a" cx="60%" cy="50%" r="65%"><stop offset="0%" stop-color="#1a1030" stop-opacity=".9"/><stop offset="50%" stop-color="#100a18" stop-opacity=".95"/><stop offset="100%" stop-color="#05030a" stop-opacity="1"/></radialGradient><radialGradient id="b" cx="25%" cy="30%" r="50%"><stop offset="0%" stop-color="#9080BA" stop-opacity=".15"/><stop offset="100%" stop-color="transparent"/></radialGradient><radialGradient id="c" cx="80%" cy="75%" r="40%"><stop offset="0%" stop-color="#A78BFA" stop-opacity=".08"/><stop offset="100%" stop-color="transparent"/></radialGradient><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".06"/></feComponentTransfer></filter></defs><rect fill="url(#a)" width="800" height="400"/><rect fill="url(#b)" width="800" height="400"/><rect fill="url(#c)" width="800" height="400"/><rect filter="url(#n)" width="800" height="400" opacity=".4"/><circle cx="180" cy="150" r="100" fill="#9080BA" opacity=".05"/><circle cx="650" cy="300" r="60" fill="#A78BFA" opacity=".04"/></svg>`)}`,
 
   techno: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><defs><radialGradient id="a" cx="40%" cy="60%" r="60%"><stop offset="0%" stop-color="#102820" stop-opacity=".9"/><stop offset="50%" stop-color="#0a1410" stop-opacity=".95"/><stop offset="100%" stop-color="#050a08" stop-opacity="1"/></radialGradient><radialGradient id="b" cx="70%" cy="25%" r="50%"><stop offset="0%" stop-color="#6BA888" stop-opacity=".12"/><stop offset="100%" stop-color="transparent"/></radialGradient><radialGradient id="c" cx="20%" cy="80%" r="45%"><stop offset="0%" stop-color="#34D399" stop-opacity=".06"/><stop offset="100%" stop-color="transparent"/></radialGradient><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".07"/></feComponentTransfer></filter></defs><rect fill="url(#a)" width="800" height="400"/><rect fill="url(#b)" width="800" height="400"/><rect fill="url(#c)" width="800" height="400"/><rect filter="url(#n)" width="800" height="400" opacity=".45"/><circle cx="550" cy="120" r="90" fill="#6BA888" opacity=".05"/><circle cx="150" cy="320" r="70" fill="#34D399" opacity=".03"/></svg>`)}`,
 
@@ -53,7 +53,7 @@ const COVER_IMAGES: Record<string, string> = {
 // Map template slugs to tag-based matching
 const TAG_TO_TEMPLATE: Record<string, string> = {
   'Dark Room': 'dark_room',
-  'Chemical': 'chemical',
+  'Powder Room': 'powder_room',
   'Techno': 'techno',
   'Party': 'party',
   'Bears': 'bears',
@@ -107,7 +107,7 @@ export function getSessionAccentColor(tags?: string[]): string {
   const map: Record<string, string> = {
     'Dark Room': '#E0887A',
     'Techno': '#6BA888',
-    'Chemical': '#9080BA',
+    'Powder Room': '#9080BA',
     'Party': '#F9A8A8',
     'Bears': '#C8A064',
     'Musclés': '#7DD3FC',

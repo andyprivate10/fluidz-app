@@ -18,7 +18,7 @@ const BUCKET = 'templates'
 // Map image slug (hyphenated) → template metadata
 const TEMPLATE_META = {
   'after':          { label: 'After',          color: '#8B5CF6', tags: ['Party'],                   description: 'L\'after qui prolonge la nuit' },
-  'alchemy':        { label: 'Alchemy',        color: '#D97706', tags: ['Fetish'],                  description: 'Transmutation des désirs' },
+  'alchemy':        { label: 'Alchemy',        color: '#D97706', tags: ['Fetish'],                  description: 'Transmutation des desirs' },
   'artsy':          { label: 'Artsy',          color: '#EC4899', tags: ['Chill'],                   description: 'Quand l\'art rencontre le désir' },
   'basement':       { label: 'Basement',       color: '#6B7280', tags: ['Dark Room', 'Fetish'],     description: 'Dans les profondeurs, tout est permis' },
   'champagne-bath': { label: 'Champagne Bath', color: '#F59E0B', tags: ['Chill', 'Hot'],            description: 'Luxe, bulles et plaisir' },
@@ -29,7 +29,7 @@ const TEMPLATE_META = {
   'latex':          { label: 'Latex',          color: '#1F2937', tags: ['Fetish'],                  description: 'Seconde peau, première sensation' },
   'leather':        { label: 'Leather',        color: '#92400E', tags: ['Fetish'],                  description: 'Cuir et attitude' },
   'nature':         { label: 'Nature',         color: '#059669', tags: ['Chill'],                   description: 'En plein air, en pleine liberté' },
-  'powder':         { label: 'Powder',         color: '#9080BA', tags: ['Chemical', 'Hot', 'Party'], description: 'Soirée chems, entre initiés' },
+  'powder':         { label: 'Powder Room',    color: '#9080BA', tags: ['Powder Room', 'Hot', 'Party'], description: 'Ambiance mysterieuse, entre inities' },
   'pump':           { label: 'Pump',           color: '#DC2626', tags: ['Hot'],                     description: 'Énergie brute, intensité max' },
   'puppy':          { label: 'Puppy',          color: '#F97316', tags: ['Fetish'],                  description: 'Jeux de rôle canins, tail wags' },
   'reggae':         { label: 'Reggae',         color: '#16A34A', tags: ['Chill', 'Party'],          description: 'Good vibes, rythme lent' },

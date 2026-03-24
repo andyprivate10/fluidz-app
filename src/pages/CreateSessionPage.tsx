@@ -80,7 +80,7 @@ export default function CreateSessionPage() {
                 </div>
               </div>
             ))}
-            {h.sessionTemplates.filter(tpl => tpl.slug !== 'chemical').map(tpl => {
+            {h.sessionTemplates.map(tpl => {
               const meta = tpl.meta as any
               const coverUrl = meta?.cover_url
               return (
