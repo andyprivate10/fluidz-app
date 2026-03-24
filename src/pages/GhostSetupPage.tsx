@@ -33,8 +33,8 @@ export default function GhostSetupPage() {
   const { copied: codeCopied, copy: copyCode } = useCopyFeedback()
 
   async function handleCreate() {
-    if (!displayName.trim()) { showToast('Choisis un pseudo', 'error'); return }
-    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { showToast('Le code secret doit faire 4 chiffres', 'error'); return }
+    if (!displayName.trim()) { showToast(t('ghost.choose_pseudo'), 'error'); return }
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { showToast(t('ghost.pin_length'), 'error'); return }
 
     setLoading(true)
     const code = generateCode()
@@ -60,7 +60,7 @@ export default function GhostSetupPage() {
         setGhostCode(d2.session_code)
         setGhostId(d2.id)
       } else {
-        showToast('Erreur: ' + error.message, 'error')
+        showToast(t('errors.error_prefix') + ': ' + error.message, 'error')
         setLoading(false)
         return
       }
@@ -93,7 +93,7 @@ export default function GhostSetupPage() {
         supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', sessionId).in('status', ['accepted', 'checked_in']),
       ])
       if (sess?.max_capacity && (count ?? 0) + 1 >= sess.max_capacity) {
-        showToast('Session complète', 'error')
+        showToast(t('ghost.session_full'), 'error')
         return
       }
       navigate(`/session/${sessionId}/apply?ghost_id=${gId}`)
