@@ -16,6 +16,9 @@ import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
 import type { LinkedProfile as PlatformProfile } from '../components/profile/LinkedProfiles'
 import { monthsAgoCount } from '../lib/timing'
+import MultiChipSelector from '../components/MultiChipSelector'
+import { TRIBES, TRIBE_CATEGORIES } from '../lib/tribeTypes'
+import { ETHNICITIES, ETHNICITY_REGIONS } from '../lib/ethnicityTypes'
 
 const PREP_OPTIONS = ['Actif','Inactif','Non']
 
@@ -109,6 +112,8 @@ export default function MePage() {
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
   const [morphology, setMorphology] = useState('')
+  const [tribes, setTribes] = useState<string[]>([])
+  const [ethnicities, setEthnicities] = useState<string[]>([])
   const [kinks, setKinks] = useState<string[]>([])
   const [prep, setPrep] = useState('')
   const [dernierTest, setDernierTest] = useState('')
@@ -218,6 +223,8 @@ export default function MePage() {
       setHeight(p.height || '')
       setWeight(p.weight || '')
       setMorphology(p.morphology || '')
+      setTribes(Array.isArray(p.tribes) ? p.tribes : [])
+      setEthnicities(Array.isArray(p.ethnicities) ? p.ethnicities : [])
       // Normalize old kink names to current accented versions
       const kinkNorm: Record<string, string> = { 'SM leger': 'SM léger', 'Fetichisme': 'Fétichisme', 'Jeux de role': 'Jeux de rôle' }
       const rawKinks: string[] = p.kinks || []
@@ -262,7 +269,7 @@ export default function MePage() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -279,7 +286,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, kinks, prep, limits, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -594,12 +601,35 @@ export default function MePage() {
                 </select>
               </div>
               <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.lav, display:'block', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t('ethnicities.title')}</label>
+                <p style={{ fontSize:11, color:S.tx4, margin:'0 0 8px' }}>{t('ethnicities.select_hint')}</p>
+                <MultiChipSelector
+                  items={ETHNICITIES.map(e => ({ slug: e.slug, group: e.region }))}
+                  groupLabels={Object.fromEntries(ETHNICITY_REGIONS.map(r => [r, t('ethnicities.region_' + r)]))}
+                  selected={ethnicities}
+                  onChange={setEthnicities}
+                  getLabel={slug => t('ethnicities.' + slug)}
+                  mixedLabel={t('ethnicities.mixed_label')}
+                />
+              </div>
+              <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_role')}</label>
                 <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                   {roles.map(r => (
                     <Chip key={r.label} label={r.label} active={role===r.label} onClick={() => setRole(role===r.label?'':r.label)} />
                   ))}
                 </div>
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:S.p, display:'block', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t('tribes.title')}</label>
+                <p style={{ fontSize:11, color:S.tx4, margin:'0 0 8px' }}>{t('tribes.select_hint')}</p>
+                <MultiChipSelector
+                  items={TRIBES.map(tr => ({ slug: tr.slug, group: tr.category, color: tr.color }))}
+                  groupLabels={Object.fromEntries(TRIBE_CATEGORIES.map(c => [c, t('tribes.category_' + c)]))}
+                  selected={tribes}
+                  onChange={setTribes}
+                  getLabel={slug => t('tribes.' + slug)}
+                />
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.orientation')}</label>
