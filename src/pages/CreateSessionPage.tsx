@@ -53,6 +53,9 @@ export default function CreateSessionPage() {
   const [durationHours, setDurationHours] = useState(3)
   const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
   const [savedTemplates, setSavedTemplates] = useState<{ slug: string; label: string; meta: Record<string, unknown> }[]>([])
+  const [preInviteGroup, setPreInviteGroup] = useState<{ id: string; name: string; members: string[] } | null>(null)
+  const [showGroupPicker, setShowGroupPicker] = useState(false)
+  const [allGroups, setAllGroups] = useState<{ id: string; name: string; members: string[] }[]>([])
   const [templateSaved, setTemplateSaved] = useState(false)
 
   useEffect(() => {
@@ -79,6 +82,24 @@ export default function CreateSessionPage() {
           setSavedAddresses(Array.isArray(addrs) ? addrs : [])
           const tpls = pj?.saved_templates
           setSavedTemplates(Array.isArray(tpls) ? tpls : [])
+        })
+        // Load user's groups for pre-invite
+        supabase.from('contact_groups').select('id, name').eq('owner_id', u.id).then(({ data: gRows }) => {
+          if (gRows && gRows.length > 0) {
+            supabase.from('contact_group_members').select('group_id, contact_user_id').in('group_id', gRows.map(g => g.id)).then(({ data: mRows }) => {
+              const groups = gRows.map(g => ({
+                id: g.id, name: g.name,
+                members: (mRows || []).filter((m: any) => m.group_id === g.id).map((m: any) => m.contact_user_id),
+              }))
+              setAllGroups(groups)
+              // Auto-select group from ?group= param
+              const groupParam = searchParams.get('group')
+              if (groupParam) {
+                const found = groups.find(g => g.id === groupParam)
+                if (found) setPreInviteGroup(found)
+              }
+            })
+          }
         })
       }
     })
@@ -169,6 +190,18 @@ export default function CreateSessionPage() {
           message: t('session.invite_body'),
           href: '/join/' + data.invite_code,
         })
+      }
+      // Auto-invite pre-selected group members
+      if (preInviteGroup && preInviteGroup.members.length > 0) {
+        const apps = preInviteGroup.members.map(uid => ({
+          session_id: data.id, applicant_id: uid, status: 'accepted', eps_json: {},
+        }))
+        await supabase.from('applications').insert(apps)
+        const notifs = preInviteGroup.members.map(uid => ({
+          user_id: uid, session_id: data.id, type: 'session_invite',
+          message: t('session.invite_body'), href: '/join/' + data.invite_code,
+        }))
+        await supabase.from('notifications').insert(notifs)
       }
       // Load user's groups for invite
       const { data: pData } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
@@ -550,6 +583,33 @@ export default function CreateSessionPage() {
               </p>
             )}
           </div>
+          {/* Import from group */}
+          {allGroups.length > 0 && (
+            <div>
+              <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.08em',margin:'0 0 8px'}}>{t('session.import_from_group')}</p>
+              {preInviteGroup ? (
+                <div style={{padding:'10px 14px',borderRadius:12,background:S.sagebg,border:'1px solid '+S.sagebd,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                  <span style={{fontSize:13,fontWeight:600,color:S.sage}}>{preInviteGroup.name} ({preInviteGroup.members.length})</span>
+                  <button onClick={()=>setPreInviteGroup(null)} style={{padding:'4px 8px',borderRadius:6,border:'none',background:'transparent',color:S.tx3,fontSize:11,fontWeight:600,cursor:'pointer'}}>✕</button>
+                </div>
+              ) : (
+                <div style={{position:'relative'}}>
+                  <button onClick={()=>setShowGroupPicker(!showGroupPicker)} style={{width:'100%',padding:'10px 14px',borderRadius:12,fontSize:13,fontWeight:600,border:'1px solid '+S.rule,background:S.bg2,color:S.tx2,cursor:'pointer',textAlign:'left'}}>
+                    {t('session.invite_group')}
+                  </button>
+                  {showGroupPicker && (
+                    <div style={{position:'absolute',top:'100%',left:0,right:0,marginTop:4,background:S.bg1,border:'1px solid '+S.rule,borderRadius:12,overflow:'hidden',zIndex:60,boxShadow:'0 8px 24px rgba(0,0,0,0.5)'}}>
+                      {allGroups.map(g => (
+                        <button key={g.id} onClick={()=>{setPreInviteGroup(g);setShowGroupPicker(false)}} style={{width:'100%',padding:'10px 14px',background:'transparent',border:'none',borderBottom:'1px solid '+S.rule,color:S.tx,fontSize:13,fontWeight:600,cursor:'pointer',textAlign:'left'}}>
+                          {g.name} ({g.members.length})
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           <button onClick={()=>setStep('address')} disabled={!title} style={{padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:!title?'not-allowed':'pointer',opacity:!title?0.5:1,boxShadow:'0 4px 20px '+S.pbd,marginTop:4}}>
             {t('session.continue_button')}
           </button>

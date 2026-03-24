@@ -198,6 +198,9 @@ export default function GroupsPage() {
                 <span style={{ fontSize:11, color:S.tx3, marginLeft:8, alignSelf:'center' }}>{group.member_count} membre{group.member_count !== 1 ? 's' : ''}</span>
               </div>
             )}
+            <button onClick={() => navigate('/session/create?group=' + group.id)} style={{ marginTop: 10, width: '100%', padding: '8px 12px', borderRadius: 10, border: '1px solid ' + S.pbd, background: S.p2, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+              {t('session.create_session_with_group')}
+            </button>
           </div>
         ))}
       </div>
