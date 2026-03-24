@@ -9,6 +9,7 @@ import { DM_DIRECT_TITLE } from '../lib/constants'
 import { getSessionCover } from '../lib/sessionCover'
 import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useAdminConfig } from '../hooks/useAdminConfig'
 import { timeAgo } from '../lib/timing'
 
 const S = colors
@@ -19,6 +20,7 @@ type QuickSession = { id: string; title: string; approx_area: string; status: st
 export default function HomePage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { sessionTemplates } = useAdminConfig()
   const [userId, setUserId] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [latestHost, setLatestHost] = useState<QuickSession | null>(null)
@@ -403,11 +405,14 @@ export default function HomePage() {
             </button>
 
             <div style={{ display: 'flex', gap: 8 }}>
-              {([
+              {[
                 { label: 'Custom', slug: 'custom', color: S.p, bg: S.p2, border: S.pbd },
-                { label: 'Dark Room', slug: 'darkroom', color: '#E0887A', bg: 'rgba(224,136,122,0.10)', border: 'rgba(224,136,122,0.25)' },
-                { label: 'Techno', slug: 'techno', color: '#6BA888', bg: 'rgba(107,168,136,0.10)', border: 'rgba(107,168,136,0.25)' },
-              ]).map(tpl => (
+                ...sessionTemplates.slice(0, 3).map(tpl => {
+                  const meta = (tpl.meta || {}) as Record<string, string>
+                  const color = meta.color || S.tx2
+                  return { label: tpl.label, slug: tpl.slug, color, bg: color + '18', border: color + '44' }
+                }),
+              ].slice(0, 4).map(tpl => (
                 <button key={tpl.slug} onClick={() => navigate('/session/create?tpl=' + tpl.slug)}
                   style={{
                     flex: 1, padding: '10px 6px', borderRadius: R.chip, ...typeStyle('meta'),
