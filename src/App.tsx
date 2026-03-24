@@ -40,6 +40,7 @@ const AddressesPage = lazy(() => import('./pages/AddressesPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
 const LandingPage = lazy(() => import('./pages/LandingPage'))
+const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'))
 
 const routes = [
   { path: '/', element: <HomePage /> },
@@ -68,6 +69,7 @@ const routes = [
   { path: '/contacts/:contactUserId', element: <ContactDetailPage /> },
   { path: '/groups', element: <GroupsPage /> },
   { path: '/favorites', element: <FavoritesPage /> },
+  { path: '/auth/callback', element: <AuthCallbackPage /> },
   { path: '/notifications', element: <NotificationsPage /> },
   { path: '/profile/:userId', element: <PublicProfile /> },
   { path: '/session/:id/candidate/:applicantId', element: <CandidateProfilePage /> },

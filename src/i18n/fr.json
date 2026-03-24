@@ -519,7 +519,9 @@
     "resend_cooldown": "Renvoyer dans {{seconds}}s",
     "resend_link": "Renvoyer le lien",
     "check_spam": "Verifie tes spams si tu ne trouves pas l'email",
-    "magic_link_sent": "Lien envoyé ! Vérifie ta boîte mail."
+    "magic_link_sent": "Lien envoyé ! Vérifie ta boîte mail.",
+    "google": "Continuer avec Google",
+    "or_email": "ou par email"
   },
   "onboarding": {
     "step_label": "Etape {{step}}/3",

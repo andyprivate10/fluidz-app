@@ -519,7 +519,9 @@
     "resend_cooldown": "Resend in {{seconds}}s",
     "resend_link": "Resend link",
     "check_spam": "Check your spam if you can't find the email",
-    "magic_link_sent": "Link sent! Check your inbox."
+    "magic_link_sent": "Link sent! Check your inbox.",
+    "google": "Continue with Google",
+    "or_email": "or with email"
   },
   "onboarding": {
     "step_label": "Step {{step}}/3",
