@@ -119,6 +119,9 @@ export default function MePage() {
   const [dernierTest, setDernierTest] = useState('')
   const [seroStatus, setSeroStatus] = useState('')
   const [limits, setLimits] = useState('')
+  const [dmPrivacy, setDmPrivacy] = useState<'open' | 'profile_required' | 'full_access'>('open')
+  const [savedMsgs, setSavedMsgs] = useState<{ id: string; label: string; text: string }[]>([])
+  const [newMsgText, setNewMsgText] = useState('')
   const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
   const [platformProfiles, setPlatformProfiles] = useState<PlatformProfile[]>([])
   const [avatarUrl, setAvatarUrl] = useState('')
@@ -225,6 +228,9 @@ export default function MePage() {
       setMorphology(p.morphology || '')
       setTribes(Array.isArray(p.tribes) ? p.tribes : [])
       setEthnicities(Array.isArray(p.ethnicities) ? p.ethnicities : [])
+      setDmPrivacy(p.dm_privacy || 'open')
+      // Load saved messages
+      supabase.from('saved_messages').select('id, label, text').eq('user_id', uid).order('sort_order').then(({ data }) => setSavedMsgs(data || []))
       // Normalize old kink names to current accented versions
       const kinkNorm: Record<string, string> = { 'SM leger': 'SM léger', 'Fetichisme': 'Fétichisme', 'Jeux de role': 'Jeux de rôle' }
       const rawKinks: string[] = p.kinks || []
@@ -269,7 +275,7 @@ export default function MePage() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dm_privacy: dmPrivacy, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -286,7 +292,7 @@ export default function MePage() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -639,6 +645,55 @@ export default function MePage() {
                   ))}
                 </div>
               </div>
+            </div>
+          </Section>
+
+          {/* DM Privacy */}
+          <Section title={t('dm_privacy.title')} color={S.p}>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {([
+                { level: 'open' as const, label: t('dm_privacy.open'), desc: t('dm_privacy.open_desc'), color: '#4ADE80' },
+                { level: 'profile_required' as const, label: t('dm_privacy.profile_required'), desc: t('dm_privacy.profile_required_desc'), color: '#7DD3FC' },
+                { level: 'full_access' as const, label: t('dm_privacy.full_access'), desc: t('dm_privacy.full_access_desc'), color: '#F9A8A8' },
+              ]).map(opt => {
+                const on = dmPrivacy === opt.level
+                return (
+                  <button key={opt.level} onClick={() => setDmPrivacy(opt.level)} style={{
+                    padding:'12px 14px', borderRadius:14, border:'1px solid '+(on ? opt.color+'66' : S.rule),
+                    background: on ? opt.color+'14' : S.bg2, cursor:'pointer', textAlign:'left',
+                    display:'flex', flexDirection:'column', gap:2,
+                  }}>
+                    <span style={{ fontSize:13, fontWeight:700, color: on ? opt.color : S.tx2 }}>{opt.label}</span>
+                    <span style={{ fontSize:11, color:S.tx3 }}>{opt.desc}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </Section>
+
+          {/* Saved messages */}
+          <Section title={t('saved_messages.title')} color={S.lav}>
+            <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+              {savedMsgs.map(msg => (
+                <div key={msg.id} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 10px', borderRadius:10, background:S.bg2, border:'1px solid '+S.rule }}>
+                  <span style={{ flex:1, fontSize:12, color:S.tx2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{msg.text}</span>
+                  <button onClick={async () => { await supabase.from('saved_messages').delete().eq('id', msg.id); setSavedMsgs(prev => prev.filter(m => m.id !== msg.id)); showToast(t('saved_messages.deleted'), 'info') }} style={{ background:'none', border:'none', color:S.red, cursor:'pointer', fontSize:11, fontWeight:600, padding:4 }}>✕</button>
+                </div>
+              ))}
+              {savedMsgs.length < 5 ? (
+                <div style={{ display:'flex', gap:6 }}>
+                  <input value={newMsgText} onChange={e => setNewMsgText(e.target.value)} placeholder={t('saved_messages.placeholder')} style={{ flex:1, padding:'8px 10px', borderRadius:10, background:S.bg2, border:'1px solid '+S.rule, color:S.tx, fontSize:12, outline:'none' }} />
+                  <button onClick={async () => {
+                    if (!newMsgText.trim() || !user) return
+                    const { data } = await supabase.from('saved_messages').insert({ user_id: user.id, label: newMsgText.trim().slice(0,30), text: newMsgText.trim(), sort_order: savedMsgs.length }).select('id, label, text').single()
+                    if (data) { setSavedMsgs(prev => [...prev, data]); setNewMsgText('') }
+                  }} style={{ padding:'8px 14px', borderRadius:10, background:S.p2, border:'1px solid '+S.pbd, color:S.p, fontSize:12, fontWeight:600, cursor:'pointer' }}>
+                    {t('saved_messages.add')}
+                  </button>
+                </div>
+              ) : (
+                <p style={{ fontSize:11, color:S.tx4, margin:0 }}>{t('saved_messages.max_reached')}</p>
+              )}
             </div>
           </Section>
 

@@ -989,6 +989,22 @@
     "confirm": "Confirm",
     "processing": "Processing…"
   },
+  "dm_privacy": {
+    "title": "DM PRIVACY",
+    "open": "Open",
+    "open_desc": "Anyone can DM me",
+    "profile_required": "Profile required",
+    "profile_required_desc": "Must share profile to DM me",
+    "full_access": "Full access",
+    "full_access_desc": "Must share adult albums to DM me"
+  },
+  "saved_messages": {
+    "title": "SAVED MESSAGES",
+    "add": "Add",
+    "placeholder": "New message template...",
+    "max_reached": "Maximum 5 messages",
+    "deleted": "Message deleted"
+  },
   "tips": {
     "explore_title": "Explore profiles nearby",
     "explore_desc": "See who's around tonight",

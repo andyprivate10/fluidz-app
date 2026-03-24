@@ -989,6 +989,22 @@
     "confirm": "Confirmer",
     "processing": "Traitement…"
   },
+  "dm_privacy": {
+    "title": "CONFIDENTIALITÉ DM",
+    "open": "Ouvert",
+    "open_desc": "N'importe qui peut m'envoyer un DM",
+    "profile_required": "Profil requis",
+    "profile_required_desc": "Doit partager son profil pour m'écrire",
+    "full_access": "Accès complet",
+    "full_access_desc": "Doit partager ses albums adultes pour m'écrire"
+  },
+  "saved_messages": {
+    "title": "MESSAGES SAUVEGARDÉS",
+    "add": "Ajouter",
+    "placeholder": "Nouveau message type...",
+    "max_reached": "Maximum 5 messages",
+    "deleted": "Message supprimé"
+  },
   "tips": {
     "explore_title": "Explore les profils autour de toi",
     "explore_desc": "Découvre qui est dans ton coin ce soir",
