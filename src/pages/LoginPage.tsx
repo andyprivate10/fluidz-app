@@ -42,10 +42,12 @@ export default function LoginPage() {
   async function checkProfileAndRedirect(userId: string) {
     const { data: profile } = await supabase
       .from('user_profiles')
-      .select('id, profile_json')
+      .select('id, display_name, profile_json')
       .eq('id', userId)
       .maybeSingle()
-    if (!profile || !profile.profile_json?.onboarding_done) {
+    const pj = profile?.profile_json
+    const isOnboarded = pj?.onboarding_done || pj?.avatar_url || pj?.role || (profile?.display_name && profile.display_name !== 'Anonymous')
+    if (!profile || !isOnboarded) {
       navigate('/onboarding')
     } else {
       navigate(next)

@@ -16,7 +16,7 @@ export default function AuthCallbackPage() {
       // Ensure user_profiles row exists
       const { data: existing } = await supabase
         .from('user_profiles')
-        .select('id, profile_json')
+        .select('id, display_name, profile_json')
         .eq('id', session.user.id)
         .maybeSingle()
 
@@ -34,7 +34,9 @@ export default function AuthCallbackPage() {
       }
 
       // Existing user — check if onboarding done
-      if (!existing.profile_json?.onboarding_done) {
+      const pj = existing.profile_json
+      const isOnboarded = pj?.onboarding_done || pj?.avatar_url || pj?.role || (existing.display_name && existing.display_name !== 'Anonymous')
+      if (!isOnboarded) {
         navigate('/onboarding')
         return
       }
