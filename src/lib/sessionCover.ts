@@ -26,6 +26,41 @@ const TAG_GRADIENTS: Record<string, { bg: string; overlay: string }> = {
     bg: 'linear-gradient(135deg, #0a0f14 0%, #102030 40%, #0a0a14 100%)',
     overlay: 'rgba(125,211,252,0.08)',
   },
+  'Hot': {
+    bg: 'linear-gradient(135deg, #1a0a08 0%, #2d1510 40%, #14080a 100%)',
+    overlay: 'rgba(244,114,114,0.10)',
+  },
+  'Fetish': {
+    bg: 'linear-gradient(135deg, #0a0a0f 0%, #1a1520 40%, #0a0a0f 100%)',
+    overlay: 'rgba(168,85,247,0.08)',
+  },
+  'Chill': {
+    bg: 'linear-gradient(135deg, #0a1014 0%, #0f2028 40%, #0a0f14 100%)',
+    overlay: 'rgba(14,165,233,0.08)',
+  },
+}
+
+// Template slug → gradient (for templates without a matching tag)
+const TEMPLATE_GRADIENTS: Record<string, { bg: string; overlay: string }> = {
+  after:          { bg: 'linear-gradient(135deg, #1a1028 0%, #0f0a18 40%, #06040c 100%)', overlay: 'rgba(139,92,246,0.10)' },
+  artsy:          { bg: 'linear-gradient(135deg, #180a14 0%, #2a1028 40%, #0f0a14 100%)', overlay: 'rgba(236,72,153,0.10)' },
+  basement:       { bg: 'linear-gradient(135deg, #0a0a0f 0%, #14121a 40%, #0a0a0f 100%)', overlay: 'rgba(107,114,128,0.10)' },
+  champagne_bath: { bg: 'linear-gradient(135deg, #14100a 0%, #28200f 40%, #0f0a0a 100%)', overlay: 'rgba(245,158,11,0.10)' },
+  drag:           { bg: 'linear-gradient(135deg, #100a18 0%, #201030 40%, #0a0a14 100%)', overlay: 'rgba(168,85,247,0.10)' },
+  euphoria:       { bg: 'linear-gradient(135deg, #180a14 0%, #2a1028 40%, #0f0a14 100%)', overlay: 'rgba(244,114,182,0.10)' },
+  jacuzzi:        { bg: 'linear-gradient(135deg, #0a1014 0%, #0f2028 40%, #0a0f14 100%)', overlay: 'rgba(6,182,212,0.10)' },
+  latex:          { bg: 'linear-gradient(135deg, #0a0a0f 0%, #14121a 40%, #0a0a0f 100%)', overlay: 'rgba(31,41,55,0.12)' },
+  leather:        { bg: 'linear-gradient(135deg, #14100a 0%, #28180a 40%, #0f0a0a 100%)', overlay: 'rgba(146,64,14,0.10)' },
+  nature:         { bg: 'linear-gradient(135deg, #0a140a 0%, #0f280f 40%, #0a140a 100%)', overlay: 'rgba(5,150,105,0.10)' },
+  pump:           { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2d1010 40%, #140808 100%)', overlay: 'rgba(220,38,38,0.10)' },
+  puppy:          { bg: 'linear-gradient(135deg, #14100a 0%, #28180a 40%, #0f0a0a 100%)', overlay: 'rgba(249,115,22,0.10)' },
+  reggae:         { bg: 'linear-gradient(135deg, #0a140a 0%, #0f280f 40%, #0a140a 100%)', overlay: 'rgba(22,163,74,0.10)' },
+  rooftop:        { bg: 'linear-gradient(135deg, #0a1014 0%, #0f2030 40%, #0a0f14 100%)', overlay: 'rgba(14,165,233,0.10)' },
+  rush:           { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2d1010 40%, #140808 100%)', overlay: 'rgba(239,68,68,0.10)' },
+  sauna:          { bg: 'linear-gradient(135deg, #14100a 0%, #281a0a 40%, #0f0a08 100%)', overlay: 'rgba(234,88,12,0.10)' },
+  secret_garden:  { bg: 'linear-gradient(135deg, #0a140a 0%, #0f280f 40%, #0a140a 100%)', overlay: 'rgba(16,185,129,0.10)' },
+  spectrum:       { bg: 'linear-gradient(135deg, #100a18 0%, #1a1030 40%, #0a0a14 100%)', overlay: 'rgba(124,58,237,0.10)' },
+  vinyl:          { bg: 'linear-gradient(135deg, #0a0a0f 0%, #14141a 40%, #0a0a0f 100%)', overlay: 'rgba(55,65,81,0.10)' },
 }
 
 // Default fallback
@@ -65,25 +100,34 @@ export type SessionCoverResult = {
   coverImage?: string
 }
 
-export function getSessionCover(tags?: string[], coverUrl?: string | null): SessionCoverResult {
+export function getSessionCover(tags?: string[], coverUrl?: string | null, templateSlug?: string | null): SessionCoverResult {
   // 1. Session's own cover_url
   if (coverUrl) {
-    const gradient = tags?.length ? (TAG_GRADIENTS[tags.find(t => TAG_GRADIENTS[t]) || ''] || DEFAULT_GRADIENT) : DEFAULT_GRADIENT
+    const gradient = templateSlug && TEMPLATE_GRADIENTS[templateSlug]
+      ? TEMPLATE_GRADIENTS[templateSlug]
+      : tags?.length ? (TAG_GRADIENTS[tags.find(t => TAG_GRADIENTS[t]) || ''] || DEFAULT_GRADIENT) : DEFAULT_GRADIENT
     return { bg: gradient.bg, overlay: gradient.overlay, coverImage: coverUrl }
   }
 
-  // 2. Template match by tags
+  // 2. Template slug match
+  if (templateSlug) {
+    const gradient = TEMPLATE_GRADIENTS[templateSlug] || DEFAULT_GRADIENT
+    const coverImage = COVER_IMAGES[templateSlug]
+    return { bg: gradient.bg, overlay: gradient.overlay, coverImage }
+  }
+
+  // 3. Template match by tags
   if (tags && tags.length > 0) {
     for (const tag of tags) {
       if (TAG_GRADIENTS[tag]) {
-        const templateSlug = TAG_TO_TEMPLATE[tag]
-        const coverImage = templateSlug ? COVER_IMAGES[templateSlug] : undefined
+        const slug = TAG_TO_TEMPLATE[tag]
+        const coverImage = slug ? COVER_IMAGES[slug] : undefined
         return { bg: TAG_GRADIENTS[tag].bg, overlay: TAG_GRADIENTS[tag].overlay, coverImage }
       }
     }
   }
 
-  // 3. Fallback to gradient only
+  // 4. Fallback to gradient only
   return { ...DEFAULT_GRADIENT }
 }
 
@@ -93,8 +137,8 @@ export function getTemplateCoverImage(slug: string): string | undefined {
 }
 
 // For session cards: returns inline style object
-export function sessionCardCoverStyle(tags?: string[]): React.CSSProperties {
-  const cover = getSessionCover(tags)
+export function sessionCardCoverStyle(tags?: string[], coverUrl?: string | null, templateSlug?: string | null): React.CSSProperties {
+  const cover = getSessionCover(tags, coverUrl, templateSlug)
   return {
     background: cover.bg,
     position: 'relative' as const,

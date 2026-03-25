@@ -40,7 +40,7 @@ export default function HostDashboard() {
     </div>
   )
 
-  const cover = h.getSessionCover(h.sess?.tags, h.sess?.cover_url)
+  const cover = h.getSessionCover(h.sess?.tags, h.sess?.cover_url, h.sess?.template_slug)
   const isLive = h.sess?.status === 'open'
   const isEnded = h.sess?.status === 'ended'
 

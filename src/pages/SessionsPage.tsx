@@ -14,8 +14,8 @@ import SessionInfoCard from '../components/SessionInfoCard'
 const S = colors
 const R = radius
 
-type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string; cover_url?: string }
-type AppSession = { session_id: string; status: string; title: string; approx_area: string; tags?: string[]; cover_url?: string }
+type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string; cover_url?: string; template_slug?: string }
+type AppSession = { session_id: string; status: string; title: string; approx_area: string; tags?: string[]; cover_url?: string; template_slug?: string }
 
 export default function SessionsPage() {
   const { t } = useTranslation()
@@ -33,12 +33,13 @@ export default function SessionsPage() {
     const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).neq('title', DM_DIRECT_TITLE).order('created_at', { ascending: false })
     setMyHosted(h || [])
 
-    const { data: apps } = await supabase.from('applications').select('session_id, status, sessions(title, approx_area, tags, cover_url)').eq('applicant_id', user.id).order('created_at', { ascending: false })
+    const { data: apps } = await supabase.from('applications').select('session_id, status, sessions(title, approx_area, tags, cover_url, template_slug)').eq('applicant_id', user.id).order('created_at', { ascending: false })
     const mapped = (apps || []).map((a: any) => ({
       session_id: a.session_id, status: a.status,
       title: a.sessions?.title || 'Session', approx_area: a.sessions?.approx_area || '',
       tags: a.sessions?.tags || [],
       cover_url: a.sessions?.cover_url || undefined,
+      template_slug: a.sessions?.template_slug || undefined,
     }))
     setMyActive(mapped.filter(a => a.status === 'accepted' || a.status === 'checked_in'))
     setMyPending(mapped.filter(a => a.status === 'pending'))
@@ -69,7 +70,7 @@ export default function SessionsPage() {
   const renderAppCard = (app: AppSession) => (
     <SessionInfoCard
       key={app.session_id}
-      session={{ id: app.session_id, title: app.title, status: 'open', approx_area: app.approx_area, tags: app.tags, cover_url: app.cover_url }}
+      session={{ id: app.session_id, title: app.title, status: 'open', approx_area: app.approx_area, tags: app.tags, cover_url: app.cover_url, template_slug: app.template_slug }}
       compact
       showCapacity={false}
     />

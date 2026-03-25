@@ -35,7 +35,7 @@ export default function JoinPage() {
   }, [code])
 
   async function lookupSession() {
-    const { data: sess } = await supabase.from('sessions').select('id,title,description,approx_area,status,host_id,tags,max_capacity').eq('invite_code', code).maybeSingle()
+    const { data: sess } = await supabase.from('sessions').select('id,title,description,approx_area,status,host_id,tags,max_capacity,template_slug,cover_url').eq('invite_code', code).maybeSingle()
     if (!sess) { setStatus('error'); return }
     setSession(sess)
 
@@ -215,8 +215,8 @@ export default function JoinPage() {
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
           {/* Cover gradient */}
           <div style={{position:'absolute',top:0,left:0,right:0,height:180,borderRadius:'24px 24px 0 0',overflow:'hidden',zIndex:0}}>
-            <div style={{position:'absolute',inset:0,background:getSessionCover(session.tags).bg}} />
-            <div style={{position:'absolute',width:200,height:200,top:-80,right:-40,borderRadius:'50%',filter:'blur(60px)',background:getSessionCover(session.tags).overlay}} />
+            <div style={{position:'absolute',inset:0,background:getSessionCover(session.tags, session.cover_url, session.template_slug).bg}} />
+            <div style={{position:'absolute',width:200,height:200,top:-80,right:-40,borderRadius:'50%',filter:'blur(60px)',background:getSessionCover(session.tags, session.cover_url, session.template_slug).overlay}} />
             <div style={{position:'absolute',bottom:0,left:0,right:0,height:120,background:`linear-gradient(to top, rgba(22,20,31,0.95) 10%, transparent)`}} />
           </div>
 

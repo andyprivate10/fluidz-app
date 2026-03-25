@@ -7,7 +7,7 @@ import { getSessionCover } from '../../lib/sessionCover'
 const S = colors
 
 type Props = {
-  session: { title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string }
+  session: { title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string; template_slug?: string }
   members: { applicant_id: string; status: string }[]
   memberAvatars: Record<string, string>
   memberNames: Record<string, string>
@@ -22,7 +22,7 @@ type Props = {
 export default function SessionHero({ session, members, memberAvatars, memberNames, statusColor, statusLabel, elapsed, remaining, isHost, hostProfile }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const cover = getSessionCover(session.tags, session.cover_url)
+  const cover = getSessionCover(session.tags, session.cover_url, session.template_slug)
 
   return (
     <div style={{ position: 'relative', minHeight: 200, overflow: 'hidden', borderBottom: '1px solid '+S.rule }}>

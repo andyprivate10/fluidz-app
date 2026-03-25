@@ -14,6 +14,7 @@ type SessionInfoCardSession = {
   approx_area?: string
   tags?: string[]
   cover_url?: string
+  template_slug?: string
   max_capacity?: number
 }
 
@@ -35,7 +36,7 @@ export default function SessionInfoCard({
 }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const cover = getSessionCover(session.tags, session.cover_url)
+  const cover = getSessionCover(session.tags, session.cover_url, session.template_slug)
   const isOpen = session.status === 'open'
   const isEnded = session.status === 'ended'
 
