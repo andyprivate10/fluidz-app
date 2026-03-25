@@ -2,11 +2,7 @@
   command = "npm run build"
   publish = "dist"
 
-# Landing page — served as static HTML before SPA catch-all
 [[redirects]]
-  from = "/landing"
-  to = "/landing.html"
-  status = 200
 
 [[redirects]]
   from = "/pro"
