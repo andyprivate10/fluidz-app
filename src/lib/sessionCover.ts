@@ -122,10 +122,11 @@ export function getSessionCover(tags?: string[], coverUrl?: string | null, templ
     return { bg: gradient.bg, overlay: gradient.overlay, coverImage: coverUrl }
   }
 
-  // 2. Template slug match
+  // 2. Template slug match (with dash→underscore normalization)
   if (templateSlug) {
-    const gradient = TEMPLATE_GRADIENTS[templateSlug] || DEFAULT_GRADIENT
-    const coverImage = COVER_IMAGES[templateSlug]
+    const normalized = templateSlug.replace(/-/g, '_')
+    const gradient = TEMPLATE_GRADIENTS[normalized] || TEMPLATE_GRADIENTS[templateSlug] || DEFAULT_GRADIENT
+    const coverImage = COVER_IMAGES[normalized] || COVER_IMAGES[templateSlug]
     return { bg: gradient.bg, overlay: gradient.overlay, coverImage }
   }
 
@@ -136,6 +137,12 @@ export function getSessionCover(tags?: string[], coverUrl?: string | null, templ
         const slug = TAG_TO_TEMPLATE[tag]
         const coverImage = slug ? COVER_IMAGES[slug] : undefined
         return { bg: TAG_GRADIENTS[tag].bg, overlay: TAG_GRADIENTS[tag].overlay, coverImage }
+      }
+      // Tag-to-slug fallback: try converting tag to a slug
+      const tagSlug = tag.toLowerCase().replace(/\s+/g, '_')
+      if (COVER_IMAGES[tagSlug]) {
+        const gradient = TEMPLATE_GRADIENTS[tagSlug] || DEFAULT_GRADIENT
+        return { bg: gradient.bg, overlay: gradient.overlay, coverImage: COVER_IMAGES[tagSlug] }
       }
     }
   }
