@@ -154,7 +154,7 @@ export default function AdminMediaTab() {
                   }}
                 >
                   <Trash2 size={10} strokeWidth={1.5} />
-                  {deleting === file.name ? 'Confirmer' : 'Supprimer'}
+                  {deleting === file.name ? t('common.confirm') : t('common.delete')}
                 </button>
               </div>
             ))}

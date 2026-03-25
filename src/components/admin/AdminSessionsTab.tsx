@@ -206,7 +206,7 @@ export default function AdminSessionsTab() {
                   <button onClick={() => setStatus(s.id, 'open')} style={{ ...adminStyles.btnSecondary, fontSize: 11, padding: '6px 12px' }}>Set Open</button>
                   <button onClick={() => setStatus(s.id, 'ended')} style={{ ...adminStyles.btnSecondary, fontSize: 11, padding: '6px 12px' }}>Set Ended</button>
                   <button onClick={() => deleteSession(s.id)} style={{ ...adminStyles.btnDanger, fontSize: 11, padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Trash2 size={11} strokeWidth={1.5} /> Supprimer
+                    <Trash2 size={11} strokeWidth={1.5} /> {t('common.delete')}
                   </button>
                 </div>
 
