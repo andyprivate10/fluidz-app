@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { colors } from '../../brand'
 import { Plus, ChevronDown, ChevronRight, GripVertical, ArrowUp, ArrowDown, Trash2, Edit3, Check, X, Clock, PlayCircle, CheckCircle2, Circle, Ban } from 'lucide-react'
@@ -31,6 +32,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
 const STATUS_ORDER: string[] = ['backlog', 'todo', 'in_progress', 'done', 'cancelled']
 
 export default function AdminDevTab() {
+  const { t } = useTranslation()
   const [items, setItems] = useState<BacklogItem[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -250,7 +252,7 @@ export default function AdminDevTab() {
                       <button onClick={() => saveEdit(epic.id)} style={{ padding: 3, borderRadius: 6, background: S.sagebg, border: '1px solid ' + S.sagebd, color: S.sage, cursor: 'pointer' }}><Check size={11} /></button>
                       <button onClick={() => setEditingId(null)} style={{ padding: 3, borderRadius: 6, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, cursor: 'pointer' }}><X size={11} /></button>
                     </>}
-                    <button onClick={() => { if (confirm('Supprimer cet epic et toutes ses stories ?')) deleteItem(epic.id) }} style={{ padding: 3, borderRadius: 6, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, cursor: 'pointer' }}><Trash2 size={11} /></button>
+                    <button onClick={() => { if (confirm(t('admin.confirm_delete_epic'))) deleteItem(epic.id) }} style={{ padding: 3, borderRadius: 6, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, cursor: 'pointer' }}><Trash2 size={11} /></button>
                   </div>
                 </div>
               )}

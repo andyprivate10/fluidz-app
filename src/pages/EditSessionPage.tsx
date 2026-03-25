@@ -2,6 +2,7 @@ import { ArrowLeft, Clock } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -22,6 +23,7 @@ export default function EditSessionPage() {
   const { sessionTags } = useAdminConfig()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [title, setTitle] = useState('')
@@ -39,7 +41,6 @@ export default function EditSessionPage() {
   useEffect(() => {
     if (!id) return
     const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
       if (!user) { navigate('/login?next=/session/' + id + '/edit'); return }
 
       const { data: sess } = await supabase.from('sessions').select('*').eq('id', id).single()
@@ -60,7 +61,7 @@ export default function EditSessionPage() {
       setLoading(false)
     }
     load()
-  }, [id])
+  }, [id, user])
 
   const toggleTag = (tag: string) => {
     setTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])

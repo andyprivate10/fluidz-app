@@ -4,8 +4,12 @@
 UPDATE sessions SET template_slug = 'dark_room' WHERE template_slug = 'darkroom';
 
 -- custom → real slugs based on tags/title
-UPDATE sessions SET template_slug = 'leather' WHERE template_slug = 'custom' AND tags @> ARRAY['leather'];
+UPDATE sessions SET template_slug = 'leather' WHERE template_slug = 'custom' AND tags::text ILIKE '%leather%';
 UPDATE sessions SET template_slug = 'after' WHERE template_slug = 'custom' AND title ILIKE '%after%';
+
+-- null slugs: derive from tags
+UPDATE sessions SET template_slug = 'techno' WHERE template_slug IS NULL AND tags::text ILIKE '%techno%';
+UPDATE sessions SET template_slug = 'dark_room' WHERE template_slug IS NULL AND tags::text ILIKE '%dark%room%';
 
 -- Remaining custom/null: derive slug from first tag
 UPDATE sessions SET template_slug = COALESCE(

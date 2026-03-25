@@ -55,7 +55,7 @@ export function useApplyData() {
         setDataLoading(true)
         Promise.all([
           supabase.from('ghost_sessions').select('display_name, profile_json').eq('id', ghostIdParam).maybeSingle(),
-          supabase.from('sessions').select('title,approx_area,max_capacity').eq('id', id).maybeSingle(),
+          supabase.from('sessions').select('title,approx_area,max_capacity,template_slug,cover_url').eq('id', id).maybeSingle(),
         ]).then(async ([{ data: ghost }, { data: sess }]) => {
           if (ghost) {
             setGuestDisplayName(ghost.display_name || '')
@@ -91,7 +91,7 @@ export function useApplyData() {
             setGuestMode(true)
             setEnabled(['basics', 'role', 'occasion'])
             setDataLoading(true)
-            supabase.from('sessions').select('title,approx_area,max_capacity').eq('id', id).maybeSingle().then(async ({ data: sess }) => {
+            supabase.from('sessions').select('title,approx_area,max_capacity,template_slug,cover_url').eq('id', id).maybeSingle().then(async ({ data: sess }) => {
               setSession(sess ?? null)
               if (sess?.max_capacity) {
                 const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
@@ -112,7 +112,7 @@ export function useApplyData() {
     try {
       const [{ data: prof }, { data: sess }, { data: lastApp }, { data: existingApp }] = await Promise.all([
         supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
-        supabase.from('sessions').select('title,approx_area,max_capacity').eq('id', id).maybeSingle(),
+        supabase.from('sessions').select('title,approx_area,max_capacity,template_slug,cover_url').eq('id', id).maybeSingle(),
         supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
         supabase.from('applications').select('status').eq('applicant_id', uid).eq('session_id', id).maybeSingle(),
       ])

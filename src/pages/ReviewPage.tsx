@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import {Star, Send, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
@@ -14,6 +15,7 @@ type Participant = { applicant_id: string; display_name: string; avatar_url?: st
 
 export default function ReviewPage() {
   const { t } = useTranslation()
+  const { user: authUser } = useAuth()
 
   const VIBE_TAGS = [
     { id: 'fun', label: 'Fun', color: S.sage },
@@ -48,8 +50,8 @@ export default function ReviewPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user: u } } = await supabase.auth.getUser()
-      if (!u) { navigate('/login'); return }
+      if (!authUser) { navigate('/login'); return }
+      const u = authUser
       setUser(u)
 
       const { data: sess } = await supabase.from('sessions').select('title,status').eq('id', id).maybeSingle()

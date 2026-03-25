@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -20,6 +21,7 @@ type AppSession = { session_id: string; status: string; title: string; approx_ar
 export default function SessionsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [myHosted, setMyHosted] = useState<Session[]>([])
   const [myActive, setMyActive] = useState<AppSession[]>([])
   const [myPending, setMyPending] = useState<AppSession[]>([])
@@ -27,7 +29,6 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true)
 
   const loadData = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login?next=/sessions'); return }
 
     const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).neq('title', DM_DIRECT_TITLE).order('created_at', { ascending: false })
@@ -48,7 +49,7 @@ export default function SessionsPage() {
     setPublicSessions(pub || [])
 
     setLoading(false)
-  }, [navigate])
+  }, [navigate, user])
 
   useEffect(() => { loadData() }, [loadData])
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadData)

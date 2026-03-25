@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -36,16 +37,16 @@ function NotifIcon({ type }: { type: string }) {
 export default function NotificationsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [notifs, setNotifs] = useState<Notif[]>([])
   const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
     const { data } = await supabase.from('notifications').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50)
     setNotifs(data || [])
     setLoading(false)
-  }, [navigate])
+  }, [navigate, user])
 
   useEffect(() => { load() }, [load])
   const { pullHandlers, pullIndicator } = usePullToRefresh(load)

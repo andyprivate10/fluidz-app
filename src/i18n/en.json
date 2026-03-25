@@ -808,7 +808,12 @@
     "logout": "Log out",
     "language": "Language",
     "french": "Francais",
-    "english": "English"
+    "english": "English",
+    "delete_account": "Delete my account",
+    "delete_warning": "This will permanently delete your profile, photos, messages, and all associated data. This action cannot be undone.",
+    "delete_confirm": "Type DELETE to confirm",
+    "delete_button": "Delete my account permanently",
+    "deleted_success": "Account deleted"
   },
   "common": {
     "loading": "Loading...",
@@ -870,12 +875,7 @@
     "language": "Language",
     "admin": "Admin",
     "admin_dashboard": "Admin dashboard",
-    "logout": "Sign out",
-    "delete_account": "Delete my account",
-    "delete_warning": "This will permanently delete your profile, photos, messages, and all associated data. This action cannot be undone.",
-    "delete_confirm": "Type DELETE to confirm",
-    "delete_button": "Delete my account permanently",
-    "deleted_success": "Account deleted"
+    "logout": "Sign out"
   },
   "sessions": {
     "empty_hosted": "No sessions. Create your first one.",
@@ -1429,5 +1429,11 @@
     "explore_page": "Nearby profiles. Add to favorites or send a DM.",
     "contacts_page": "Your contact book. People you met through Fluidz.",
     "review_page": "Your reviews are anonymous. The VibeScore helps the community."
+  },
+  "admin": {
+    "confirm_delete_epic": "Delete this epic and all its stories?",
+    "confirm_delete_session": "Delete this session? This action is irreversible.",
+    "confirm_delete_template": "Delete this template?",
+    "confirm_reset_profile": "Reset profile? Only the display_name will be kept."
   }
 }

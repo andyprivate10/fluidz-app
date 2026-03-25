@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, UserPlus, CheckCircle2 } from 'lucide-react'
@@ -51,6 +52,7 @@ export default function ExplorePage() {
   const { roles: roleOptions } = useAdminConfig()
   const roleFilters = [t('common.all'), ...roleOptions.map(r => r.label)]
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const [profiles, setProfiles] = useState<NearbyProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [myLat, setMyLat] = useState<number | null>(null)
@@ -67,34 +69,33 @@ export default function ExplorePage() {
   const [myContactIds, setMyContactIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) { navigate('/login?next=/explore'); return }
-      setUserId(user.id)
-      supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).then(({ data }) => {
-        if (data) setMyContactIds(new Set(data.map((c: any) => c.contact_user_id)))
-      })
-      // Unread counts for header badges
-      supabase.from('notifications').select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id).is('read_at', null)
-      supabase.from('notifications').select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
-      // Load current visibility setting
-      supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng, profile_json').eq('id', user.id).maybeSingle().then(async (res) => {
-        // Also load profile view count
-        const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
-        const { count } = await supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', user.id).eq('type', 'profile_view').gte('created_at', weekAgo)
-        setMyViewCount(count ?? 0)
-        return res
-      }).then(({ data }) => {
-        if (data) {
-          setVisible(!!data.location_visible)
-          if (data.approx_lat && data.approx_lng) { setMyLat(data.approx_lat); setMyLng(data.approx_lng) }
-          const pj = (data as any).profile_json || {}
-          if (pj.home_country) setMyHomeCountry(pj.home_country)
-        }
-      })
+    if (!authUser) { navigate('/login?next=/explore'); return }
+    const user = authUser
+    setUserId(user.id)
+    supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).then(({ data }) => {
+      if (data) setMyContactIds(new Set(data.map((c: any) => c.contact_user_id)))
     })
-  }, [])
+    // Unread counts for header badges
+    supabase.from('notifications').select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id).is('read_at', null)
+    supabase.from('notifications').select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
+    // Load current visibility setting
+    supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng, profile_json').eq('id', user.id).maybeSingle().then(async (res) => {
+      // Also load profile view count
+      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
+      const { count } = await supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', user.id).eq('type', 'profile_view').gte('created_at', weekAgo)
+      setMyViewCount(count ?? 0)
+      return res
+    }).then(({ data }) => {
+      if (data) {
+        setVisible(!!data.location_visible)
+        if (data.approx_lat && data.approx_lng) { setMyLat(data.approx_lat); setMyLng(data.approx_lng) }
+        const pj = (data as any).profile_json || {}
+        if (pj.home_country) setMyHomeCountry(pj.home_country)
+      }
+    })
+  }, [authUser])
 
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) { setGeoError(true); return }

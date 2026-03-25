@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { Heart, ArrowLeft } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -13,15 +14,16 @@ type Favorite = { id: string; target_user_id: string; name: string; avatar?: str
 export default function FavoritesPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [favorites, setFavorites] = useState<Favorite[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!user) return
     loadFavorites()
-  }, [])
+  }, [user])
 
   async function loadFavorites() {
-    const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
     const { data: favs } = await supabase.from('favorites').select('id, target_user_id').eq('user_id', user.id).order('created_at', { ascending: false })
     if (!favs || favs.length === 0) { setFavorites([]); setLoading(false); return }

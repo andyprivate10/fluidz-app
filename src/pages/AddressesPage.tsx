@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { compressImage } from '../lib/media'
@@ -26,6 +27,7 @@ const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,bord
 export default function AddressesPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const [addresses, setAddresses] = useState<SavedAddress[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
@@ -43,12 +45,10 @@ export default function AddressesPage() {
   const [uploading, setUploading] = useState<number | null>(null)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) { navigate('/login'); return }
-      setUserId(user.id)
-      loadAddresses(user.id)
-    })
-  }, [])
+    if (!authUser) { navigate('/login'); return }
+    setUserId(authUser.id)
+    loadAddresses(authUser.id)
+  }, [authUser])
 
   async function loadAddresses(uid: string) {
     const { data } = await supabase.from('user_profiles').select('profile_json').eq('id', uid).maybeSingle()

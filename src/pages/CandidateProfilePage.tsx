@@ -4,6 +4,7 @@ import ProfileStory from '../components/ProfileStory'
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors, glassCard } from '../brand'
@@ -20,6 +21,7 @@ export default function CandidateProfilePage() {
   const { t } = useTranslation()
   const { id: sessionId, applicantId } = useParams()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const [app, setApp] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [sess, setSess] = useState<any>(null)
@@ -35,7 +37,7 @@ export default function CandidateProfilePage() {
 
   async function loadData() {
     setLoading(true)
-    const { data: { user } } = await supabase.auth.getUser()
+    const user = authUser
 
     // Session + host check
     const { data: sessData } = await supabase.from('sessions').select('*').eq('id', sessionId).maybeSingle()
@@ -83,8 +85,8 @@ export default function CandidateProfilePage() {
 
     // Safety tip on accept (only once per session)
     if (decision === 'accepted') {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
+      if (authUser) {
+        const user = authUser
         const { count } = await supabase.from('messages')
           .select('*', { count: 'exact', head: true })
           .eq('session_id', sessionId)

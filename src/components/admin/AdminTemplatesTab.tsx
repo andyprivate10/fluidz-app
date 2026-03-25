@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { colors } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
@@ -22,6 +23,7 @@ function toSlug(label: string): string {
 }
 
 export default function AdminTemplatesTab() {
+  const { t } = useTranslation()
   const [templates, setTemplates] = useState<TemplateRow[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -96,7 +98,7 @@ export default function AdminTemplatesTab() {
   }
 
   async function deleteTemplate(id: string) {
-    if (!confirm('Supprimer ce template ?')) return
+    if (!confirm(t('admin.confirm_delete_template'))) return
     await supabase.from('admin_config').delete().eq('id', id)
     if (editingId === id) setEditingId(null)
     await loadTemplates()

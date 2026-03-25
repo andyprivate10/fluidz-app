@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { colors, radius } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Zap, Users, Calendar, LayoutTemplate, Settings, FolderOpen, Database, BarChart3, Code } from 'lucide-react'
-import type { User } from '@supabase/supabase-js'
 
 // Lazy-loaded tabs
 import AdminAuthTab from '../components/admin/AdminAuthTab'
@@ -50,19 +50,16 @@ export const adminStyles = {
 export default function AdminPage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { user } = useAuth()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
-  const [user, setUser] = useState<User | null>(null)
   const [activeTab, setActiveTab] = useState<TabId>('auth')
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
-      if (!u) { setIsAdmin(false); return }
-      setUser(u)
-      supabase.from('user_profiles').select('is_admin').eq('id', u.id).maybeSingle().then(({ data }) => {
-        setIsAdmin(data?.is_admin === true)
-      })
+    if (!user) { setIsAdmin(false); return }
+    supabase.from('user_profiles').select('is_admin').eq('id', user.id).maybeSingle().then(({ data }) => {
+      setIsAdmin(data?.is_admin === true)
     })
-  }, [])
+  }, [user])
 
   if (isAdmin === null) return (
     <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -78,14 +75,7 @@ export default function AdminPage() {
         <OrbLayer />
         <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 8px' }}>Admin Dashboard</h1>
         <p style={{ color: S.tx3, fontSize: 13, marginBottom: 20 }}>Connecte-toi avec un compte admin pour accéder au dashboard.</p>
-        <AdminAuthTab user={user} setUser={(u) => {
-          setUser(u)
-          if (u) {
-            supabase.from('user_profiles').select('is_admin').eq('id', u.id).maybeSingle().then(({ data }) => {
-              setIsAdmin(data?.is_admin === true)
-            })
-          }
-        }} />
+        <AdminAuthTab user={user ?? null} setUser={() => {}} />
       </div>
     )
   }
@@ -134,7 +124,7 @@ export default function AdminPage() {
 
       {/* Tab content */}
       <div style={{ position: 'relative', zIndex: 1, padding: '16px 20px' }}>
-        {activeTab === 'auth' && <AdminAuthTab user={user} setUser={setUser} />}
+        {activeTab === 'auth' && <AdminAuthTab user={user ?? null} setUser={() => {}} />}
         {activeTab === 'users' && <AdminUsersTab />}
         {activeTab === 'sessions' && <AdminSessionsTab />}
         {activeTab === 'templates' && <AdminTemplatesTab />}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SkeletonCard } from '../components/Skeleton'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -22,6 +23,7 @@ type ChatThread = {
 export default function ChatsHubPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [threads, setThreads] = useState<ChatThread[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'all' | 'direct' | 'dm' | 'group'>('all')
@@ -30,11 +32,10 @@ export default function ChatsHubPage() {
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(null)
 
   const loadThreads = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
 
     const [{ data: hosted }, { data: applied }, { data: dmPeerMsgs }] = await Promise.all([
-      supabase.from('sessions').select('id, title, host_id').eq('host_id', user.id),
+      supabase.from('sessions').select('id, title, host_id, template_slug, cover_url').eq('host_id', user.id),
       supabase.from('applications').select('session_id, sessions(id, title, host_id)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
       supabase.from('messages').select('session_id').eq('dm_peer_id', user.id).limit(50),
     ])
@@ -46,7 +47,7 @@ export default function ChatsHubPage() {
     })
     const dmPeerSessionIds = [...new Set((dmPeerMsgs || []).map((m: any) => m.session_id))].filter(sid => !sessionMap.has(sid))
     if (dmPeerSessionIds.length > 0) {
-      const { data: dmSessions } = await supabase.from('sessions').select('id, title, host_id').in('id', dmPeerSessionIds)
+      const { data: dmSessions } = await supabase.from('sessions').select('id, title, host_id, template_slug, cover_url').in('id', dmPeerSessionIds)
       ;(dmSessions || []).forEach((s: any) => sessionMap.set(s.id, { title: s.title, hostId: s.host_id, isHost: false }))
     }
 
@@ -89,7 +90,7 @@ export default function ChatsHubPage() {
 
     setThreads([...threadMap.values()].sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()))
     setLoading(false)
-  }, [navigate])
+  }, [navigate, user])
 
   useEffect(() => { loadThreads() }, [loadThreads])
 

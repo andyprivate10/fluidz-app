@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat } from 'lucide-react'
 import { compressImage } from '../lib/media'
@@ -44,6 +45,7 @@ export default function DirectDMPage() {
   const { t } = useTranslation()
   const { peerId } = useParams<{ peerId: string }>()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [peerProfile, setPeerProfile] = useState<{ name: string; avatar?: string; role?: string } | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
@@ -79,8 +81,8 @@ export default function DirectDMPage() {
   }, [peerId])
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { navigate('/login'); return }
+    if (!authUser) { navigate('/login'); return }
+    const user = authUser
     setCurrentUser(user)
 
     // Load peer profile

@@ -1429,5 +1429,11 @@
     "explore_page": "Les profils à proximité. Ajoute en favori ou envoie un DM.",
     "contacts_page": "Ton carnet de contacts. Les gens que tu as rencontrés via Fluidz.",
     "review_page": "Tes avis sont anonymes. Le VibeScore aide la communauté."
+  },
+  "admin": {
+    "confirm_delete_epic": "Supprimer cet epic et toutes ses stories ?",
+    "confirm_delete_session": "Supprimer cette session ? Cette action est irréversible.",
+    "confirm_delete_template": "Supprimer ce template ?",
+    "confirm_reset_profile": "Réinitialiser le profil ? Seul le display_name sera conservé."
   }
 }

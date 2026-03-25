@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { compressImage, readFileAsDataUrl } from '../lib/media'
 import ImageCropModal from '../components/ImageCropModal'
@@ -22,6 +23,7 @@ export default function OnboardingPage() {
   const { t } = useTranslation()
   const { roles: roleOptions, morphologies: morphoOptions } = useAdminConfig()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const [user, setUser] = useState<any>(null)
   const [step, setStep] = useState(1) // 1: basics, 2: role, 3: photo
   const [displayName, setDisplayName] = useState('')
@@ -35,23 +37,22 @@ export default function OnboardingPage() {
   const [cropSrc, setCropSrc] = useState<string | null>(null)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
-      if (!u) { navigate('/login'); return }
-      setUser(u)
-      // Load existing profile if any
-      supabase.from('user_profiles').select('display_name,profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
-        // Skip if onboarding already done
-        if (prof?.profile_json?.onboarding_done) { navigate('/'); return }
-        if (prof?.display_name && prof.display_name !== 'Anonymous') setDisplayName(prof.display_name)
-        const pj = prof?.profile_json || {}
-        if (pj.age) setAge(String(pj.age))
-        if (pj.location) setLocation(pj.location)
-        if (pj.role) setRole(pj.role)
-        if (pj.morphology) setMorpho(pj.morphology)
-        if (pj.avatar_url) setAvatarUrl(pj.avatar_url)
-      })
+    if (!authUser) { navigate('/login'); return }
+    const u = authUser
+    setUser(u)
+    // Load existing profile if any
+    supabase.from('user_profiles').select('display_name,profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
+      // Skip if onboarding already done
+      if (prof?.profile_json?.onboarding_done) { navigate('/'); return }
+      if (prof?.display_name && prof.display_name !== 'Anonymous') setDisplayName(prof.display_name)
+      const pj = prof?.profile_json || {}
+      if (pj.age) setAge(String(pj.age))
+      if (pj.location) setLocation(pj.location)
+      if (pj.role) setRole(pj.role)
+      if (pj.morphology) setMorpho(pj.morphology)
+      if (pj.avatar_url) setAvatarUrl(pj.avatar_url)
     })
-  }, [])
+  }, [authUser])
 
   async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]

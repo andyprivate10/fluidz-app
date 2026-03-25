@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { colors } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
@@ -32,6 +33,7 @@ interface ApplicationRow {
 type FilterType = 'all' | 'open' | 'ended'
 
 export default function AdminSessionsTab() {
+  const { t } = useTranslation()
   const [sessions, setSessions] = useState<SessionRow[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<FilterType>('all')
@@ -117,7 +119,7 @@ export default function AdminSessionsTab() {
   }
 
   async function deleteSession(sessionId: string) {
-    if (!confirm('Supprimer cette session ? Cette action est irreversible.')) return
+    if (!confirm(t('admin.confirm_delete_session'))) return
     await supabase.from('sessions').delete().eq('id', sessionId)
     setExpanded(null)
     await loadSessions()

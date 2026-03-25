@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { colors } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
@@ -35,6 +36,7 @@ interface ConfigOption {
 }
 
 export default function AdminUsersTab() {
+  const { t } = useTranslation()
   const [users, setUsers] = useState<UserProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -107,7 +109,7 @@ export default function AdminUsersTab() {
   }
 
   async function resetProfile(userId: string) {
-    if (!confirm('Reinitialiser le profil ? Seul le display_name sera conserve.')) return
+    if (!confirm(t('admin.confirm_reset_profile'))) return
     const u = users.find(x => x.id === userId)
     await supabase.from('user_profiles').update({ profile_json: {} }).eq('id', userId)
     if (u) setEditData(prev => ({ ...prev, [userId]: { display_name: u.display_name } }))

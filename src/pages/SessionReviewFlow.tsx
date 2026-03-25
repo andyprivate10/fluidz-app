@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import ReviewQuestion from '../components/review/ReviewQuestion'
@@ -27,6 +28,7 @@ export default function SessionReviewFlow() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
 
   const [user, setUser] = useState<any>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
@@ -40,8 +42,8 @@ export default function SessionReviewFlow() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user: u } } = await supabase.auth.getUser()
-      if (!u) { navigate('/login'); return }
+      if (!authUser) { navigate('/login'); return }
+      const u = authUser
       setUser(u)
 
       const { data: sess } = await supabase

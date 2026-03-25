@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
@@ -26,6 +27,7 @@ type Contact = { id: string; contact_user_id: string; display_name: string; avat
 export default function GroupsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { user: authUser } = useAuth()
   const [groups, setGroups] = useState<Group[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,8 +43,8 @@ export default function GroupsPage() {
   useEffect(() => { loadAll() }, [])
 
   async function loadAll() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { navigate('/login'); return }
+    if (!authUser) { navigate('/login'); return }
+    const user = authUser
 
     // Load groups
     const { data: grps } = await supabase.from('contact_groups').select('id, name, description, color').eq('owner_id', user.id).order('created_at', { ascending: false })
@@ -99,8 +101,8 @@ export default function GroupsPage() {
   async function saveGroup() {
     if (!newName.trim()) { showToast(t('groups_page.name_required'), 'error'); return }
     setSaving(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!authUser) return
+    const user = authUser
 
     if (editGroup) {
       // Update

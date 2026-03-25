@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
@@ -63,6 +64,7 @@ export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { user: authUser } = useAuth()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showStory, setShowStory] = useState(false)
@@ -83,8 +85,8 @@ export default function PublicProfile() {
     if (!userId) { setLoading(false); return }
     let c = false
     async function run() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user?.id) { setAllowed(false); setLoading(false); return }
+      if (!authUser?.id) { setAllowed(false); setLoading(false); return }
+      const user = authUser
       setAllowed(true)
       const { data: prof } = await supabase.from('user_profiles').select('display_name, profile_json, location_updated_at').eq('id', userId).maybeSingle()
       if (!c) setProfile(prof)

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
@@ -22,7 +23,7 @@ type Interaction = {
 
 export default function ContactDetailPage() {
   const { t } = useTranslation()
-
+  const { user: authUser } = useAuth()
   const { confirm, dialogProps } = useConfirmDialog()
   const RELATIONS = [
     { level: 'connaissance', label: t('contacts.connaissance'), icon: '○', color: S.tx3 },
@@ -60,8 +61,8 @@ export default function ContactDetailPage() {
   }, [contactUserId])
 
   async function loadData() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { navigate('/login'); return }
+    if (!authUser) { navigate('/login'); return }
+    const user = authUser
     setMyUserId(user.id)
 
     const [{ data: prof }, { data: ct }, { data: interactions }] = await Promise.all([
@@ -87,11 +88,11 @@ export default function ContactDetailPage() {
     const commonIds = [...mySessionIds].filter(id => theirSessionIds.has(id))
 
     if (commonIds.length > 0) {
-      const { data: sessions } = await supabase.from('sessions').select('id, title, status').in('id', commonIds).order('created_at', { ascending: false })
+      const { data: sessions } = await supabase.from('sessions').select('id, title, status, template_slug, cover_url').in('id', commonIds).order('created_at', { ascending: false })
       setCommonSessions(sessions || [])
     }
     // Load my active sessions for invite
-    const { data: mySessions } = await supabase.from('sessions').select('id, title').eq('host_id', user.id).eq('status', 'open')
+    const { data: mySessions } = await supabase.from('sessions').select('id, title, template_slug, cover_url').eq('host_id', user.id).eq('status', 'open')
     setActiveSessions(mySessions || [])
 
     // Load intents
@@ -116,8 +117,8 @@ export default function ContactDetailPage() {
     await supabase.from('contacts').update({ relation_level: level }).eq('id', contact.id)
     setContact({ ...contact, relation_level: level })
     // Log relation change
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
+    if (authUser) {
+      const user = authUser
       await supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: contactUserId, type: 'relation_change', meta: { new_level: level } })
     }
     showToast(t('contacts.notes_saved'), 'success')

@@ -66,7 +66,7 @@ export function useGroupChatData() {
     if (prof?.display_name) setDisplayName(prof.display_name)
 
     // Fetch session
-    const { data: sess } = await supabase.from('sessions').select('title,host_id,group_chat_enabled').eq('id', id).single()
+    const { data: sess } = await supabase.from('sessions').select('title,host_id,group_chat_enabled,template_slug,cover_url').eq('id', id).single()
     if (!sess) { setLoading(false); return }
     setSession(sess)
     setIsHost(user.id === sess.host_id)

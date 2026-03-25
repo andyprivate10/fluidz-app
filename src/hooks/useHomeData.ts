@@ -64,11 +64,11 @@ export function useHomeData() {
       if (hostSession) (hostSession as any).member_count = (mc || 0) + 1
     }
 
-    const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title)')
+    const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
       .eq('applicant_id', user.id).eq('status', 'pending')
     setPendingApps((pending || []).map((a: any) => ({ session_id: a.session_id, title: a.sessions?.title || 'Session' })))
 
-    const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title)')
+    const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
       .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
     setActiveApps((active || []).map((a: any) => ({ session_id: a.session_id, status: a.status, title: a.sessions?.title || 'Session' })))
 

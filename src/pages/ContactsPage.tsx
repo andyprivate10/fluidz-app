@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { Users, Search } from 'lucide-react'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
@@ -30,6 +31,7 @@ type Contact = {
 
 export default function ContactsPage() {
   const { t } = useTranslation()
+  const { user } = useAuth()
 
   const RELATION_STYLES = {
     connaissance: { label: t('contacts.connaissance'), color: S.tx3, stars: 1 },
@@ -45,11 +47,10 @@ export default function ContactsPage() {
   const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori'>('all')
 
   useEffect(() => {
-    loadContacts()
-  }, [])
+    if (user) loadContacts()
+  }, [user])
 
   const loadContacts = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/login'); return }
 
     const { data: raw } = await supabase
