@@ -14,7 +14,12 @@ export default function AuthCallbackPage() {
       if (!session?.user) { navigate('/login'); return }
 
       // Ensure user_profiles row exists
-      const { data: existing } = await supabase.from('user_profiles').select('id').eq('id', session.user.id).maybeSingle()
+      const { data: existing } = await supabase
+        .from('user_profiles')
+        .select('id, profile_json')
+        .eq('id', session.user.id)
+        .maybeSingle()
+
       if (!existing) {
         const name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User'
         const avatar = session.user.user_metadata?.avatar_url || null
@@ -23,6 +28,15 @@ export default function AuthCallbackPage() {
           display_name: name,
           profile_json: avatar ? { avatar_url: avatar } : {},
         })
+        // New user → onboarding
+        navigate('/onboarding')
+        return
+      }
+
+      // Existing user — check if onboarding done
+      if (!existing.profile_json?.onboarding_done) {
+        navigate('/onboarding')
+        return
       }
 
       // Check for stored redirect
