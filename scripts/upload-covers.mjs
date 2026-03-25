@@ -18,7 +18,7 @@ const BUCKET = 'templates'
 // Map image slug (hyphenated) → template metadata
 const TEMPLATE_META = {
   'after':          { label: 'After',          color: '#8B5CF6', tags: ['Party'],                   description: 'L\'after qui prolonge la nuit' },
-  'alchemy':        { label: 'Powder Room',    color: '#9080BA', tags: ['Powder Room', 'Hot'],      description: 'Ambiance mysterieuse, entre inities' },
+  'powder-room':    { label: 'Powder Room',    color: '#9080BA', tags: ['Powder Room', 'Hot'],      description: 'Ambiance mysterieuse, entre inities' },
   'artsy':          { label: 'Artsy',          color: '#EC4899', tags: ['Chill'],                   description: 'Quand l\'art rencontre le désir' },
   'basement':       { label: 'Basement',       color: '#6B7280', tags: ['Dark Room', 'Fetish'],     description: 'Dans les profondeurs, tout est permis' },
   'champagne-bath': { label: 'Champagne Bath', color: '#F59E0B', tags: ['Chill', 'Hot'],            description: 'Luxe, bulles et plaisir' },
