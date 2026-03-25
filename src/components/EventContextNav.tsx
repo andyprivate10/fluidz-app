@@ -31,19 +31,14 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
     { id: 'chat',  label: 'Chat',              path: `/session/${id}/chat` },
     { id: 'dm',    label: t('nav.dm_host'),    path: `/session/${id}/dm` },
   ]
-  const hostTabs = [
-    { id: 'candidates', label: t('nav.candidates'), path: `/session/${id}/host` },
-    { id: 'members',    label: t('nav.members'),    path: `/session/${id}` },
-    { id: 'share',      label: t('nav.share'),      path: `/session/${id}/host#share` },
-    { id: 'settings',   label: '···',               path: `/session/${id}/edit` },
-  ]
+  const hostTabs: typeof candidateTabs = []
 
   const tabs = role === 'host' ? hostTabs : role === 'member' ? memberTabs : candidateTabs
 
   const activeTab = tabs.find(t => {
     if (t.path.includes('#')) return location.pathname === t.path.split('#')[0]
     return location.pathname === t.path
-  })?.id || tabs[0].id
+  })?.id || tabs[0]?.id
 
   return (
     <div style={{ position: 'relative', zIndex: 10 }}>
@@ -65,38 +60,40 @@ export default function EventContextNav({ role, sessionTitle }: Props) {
       </div>
 
       {/* Hub tabs */}
-      <div style={{
-        display: 'flex', gap: 0, padding: '0 16px 10px',
-        borderBottom: `0.5px solid ${S.rule}`,
-        background: 'rgba(13,12,22,0.92)',
-        backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-      }}>
-        {tabs.map(tab => {
-          const isActive = tab.id === activeTab
-          return (
-            <button
-              key={tab.id}
-              onClick={() => navigate(tab.path)}
-              style={{
-                flex: 1, padding: '8px 4px', background: 'none', border: 'none',
-                cursor: 'pointer', position: 'relative',
-                fontSize: 12, fontWeight: isActive ? 700 : 500,
-                color: isActive ? S.p : S.tx3,
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                transition: 'color 0.2s',
-              }}
-            >
-              {tab.label}
-              {isActive && (
-                <div style={{
-                  position: 'absolute', bottom: -1, left: '20%', right: '20%',
-                  height: 2, background: S.p, borderRadius: 2,
-                }} />
-              )}
-            </button>
-          )
-        })}
-      </div>
+      {tabs.length > 0 && (
+        <div style={{
+          display: 'flex', gap: 0, padding: '0 16px 10px',
+          borderBottom: `0.5px solid ${S.rule}`,
+          background: 'rgba(13,12,22,0.92)',
+          backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        }}>
+          {tabs.map(tab => {
+            const isActive = tab.id === activeTab
+            return (
+              <button
+                key={tab.id}
+                onClick={() => navigate(tab.path)}
+                style={{
+                  flex: 1, padding: '8px 4px', background: 'none', border: 'none',
+                  cursor: 'pointer', position: 'relative',
+                  fontSize: 12, fontWeight: isActive ? 700 : 500,
+                  color: isActive ? S.p : S.tx3,
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  transition: 'color 0.2s',
+                }}
+              >
+                {tab.label}
+                {isActive && (
+                  <div style={{
+                    position: 'absolute', bottom: -1, left: '20%', right: '20%',
+                    height: 2, background: S.p, borderRadius: 2,
+                  }} />
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
