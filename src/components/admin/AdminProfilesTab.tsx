@@ -171,7 +171,7 @@ export default function AdminProfilesTab() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <img src={pj.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
                       <button onClick={() => removeMedia(u.id, 'avatar', pj.avatar_url!)} style={{ ...adminStyles.btnDanger, padding: '4px 8px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 3 }}>
-                        <Trash2 size={10} strokeWidth={1.5} /> {deleting === pj.avatar_url ? t('common.confirm') : t('common.delete')}
+                        <Trash2 size={10} strokeWidth={1.5} /> {deleting === pj.avatar_url ? 'Confirm' : 'Delete'}
                       </button>
                     </div>
                   ) : <span style={{ fontSize: 10, color: S.tx4 }}>Aucun</span>}

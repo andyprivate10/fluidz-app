@@ -297,7 +297,7 @@ export default function AdminConfigTab() {
                   gap: 3,
                 }}>
                   <Trash2 size={12} strokeWidth={1.5} />
-                  {deleteConfirm === item.id ? 'Confirmer' : ''}
+                  {deleteConfirm === item.id ? 'Confirm' : ''}
                 </button>
               </div>
             ))}

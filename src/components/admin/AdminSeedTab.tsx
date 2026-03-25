@@ -39,7 +39,7 @@ export default function AdminSeedTab() {
     if (resetting) return
     if (!resetConfirm) {
       setResetConfirm(true)
-      appendLog('Reset demande. Cliquez a nouveau pour confirmer.')
+      appendLog('Reset requested. Click again to confirm.')
       return
     }
     setResetting(true)
@@ -151,7 +151,7 @@ export default function AdminSeedTab() {
           ) : (
             <Trash2 size={14} strokeWidth={2} />
           )}
-          {resetConfirm ? 'Confirmer le reset' : 'Reset DB'}
+          {resetConfirm ? 'Confirm reset' : 'Reset DB'}
         </button>
       </div>
 
