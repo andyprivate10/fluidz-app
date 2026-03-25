@@ -183,6 +183,25 @@ export default function DevTestMenu() {
         <button onClick={clearDemo} style={{ ...btn, background: "#450a0a", fontSize: 12 }}>🗑️ Clear demo data</button>
       </div>
 
+      <p style={{ color: "#7dd3fc", fontSize: 12, marginBottom: 8, fontWeight: 700 }}>1c. FIX TEST PASSWORDS</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+        <p style={{ color: "#7e7694", fontSize: 11, margin: "0 0 4px" }}>
+          If test accounts were created without passwords, run this SQL in Supabase Dashboard &gt; SQL Editor:
+        </p>
+        <code style={{ background: "#141222", padding: 10, borderRadius: 8, fontSize: 10, color: "#7dd3fc", display: "block", whiteSpace: "pre-wrap", border: "1px solid #2a2740" }}>
+{`UPDATE auth.users
+SET encrypted_password = crypt('testpass123', gen_salt('bf'))
+WHERE email IN (
+  'marcus@fluidz.test', 'karim@fluidz.test', 'yann@fluidz.test',
+  'lucas@fluidz.test', 'amine@fluidz.test', 'theo@fluidz.test',
+  'romain@fluidz.test', 'samir@fluidz.test', 'alex@fluidz.test', 'jules@fluidz.test'
+);`}
+        </code>
+        <button onClick={() => { navigator.clipboard.writeText("UPDATE auth.users SET encrypted_password = crypt('testpass123', gen_salt('bf')) WHERE email IN ('marcus@fluidz.test', 'karim@fluidz.test', 'yann@fluidz.test', 'lucas@fluidz.test', 'amine@fluidz.test', 'theo@fluidz.test', 'romain@fluidz.test', 'samir@fluidz.test', 'alex@fluidz.test', 'jules@fluidz.test');"); setMsg("SQL copié !"); }} style={{ ...btn, fontSize: 12, color: "#7dd3fc", border: "1px solid rgba(125,211,252,0.25)" }}>
+          📋 Copier le SQL
+        </button>
+      </div>
+
       <p style={{ color: "#f9a8a8", fontSize: 12, marginBottom: 8, fontWeight: 700 }}>
         2. PERSONA {!sessionId && <span style={{ color: "#f87171" }}>(seed d'abord)</span>}
       </p>
