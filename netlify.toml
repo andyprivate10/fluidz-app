@@ -3,13 +3,11 @@
   publish = "dist"
 
 [[redirects]]
-
-[[redirects]]
   from = "/pro"
   to = "/pro.html"
   status = 200
 
-# SPA catch-all — must be LAST
+# SPA catch-all - must be LAST
 [[redirects]]
   from = "/*"
   to = "/index.html"

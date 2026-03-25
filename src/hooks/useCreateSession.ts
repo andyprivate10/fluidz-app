@@ -23,13 +23,7 @@ const STEPS: StepName[] = ['basics', 'rules', 'address', 'timing', 'visibility']
 export function useCreateSession() {
   const { t } = useTranslation()
   const { sessionTags, roles, sessionTemplates: rawTemplates } = useAdminConfig()
-  // Filter templates: only Custom, Dark Room, Powder Room, Techno
-  const allowedSlugs = ['dark_room', 'powder_room', 'techno']
-  const sessionTemplates = rawTemplates.filter(tpl =>
-    allowedSlugs.includes(tpl.slug) ||
-    allowedSlugs.includes(tpl.slug.replace(/-/g, '_')) ||
-    ['Dark Room', 'Powder Room', 'Techno'].includes(tpl.label)
-  )
+  const sessionTemplates = rawTemplates
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
