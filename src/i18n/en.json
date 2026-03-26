@@ -37,6 +37,7 @@
     "ready_desc": "Create a session and share the link, or explore profiles around you.",
     "create_session": "Create a session",
     "login": "Log in",
+    "create_account": "Create an account",
     "ghost_mode": "Ghost Mode (24h, no account)",
     "members": "{{count}} members",
     "pending_count": "{{count}} pending application(s)",
@@ -654,7 +655,15 @@
     "real_account_benefit": "Keep your profile forever and unlock all features",
     "create_account_cta": "Create an account",
     "pin_help": "To recover your profile if you close the app",
-    "have_code_recover": "I already have a code → Recover my profile"
+    "have_code_recover": "I already have a code → Recover my profile",
+    "code_length": "Code must be 6 characters",
+    "wrong_code": "Wrong code or PIN",
+    "session_code": "Session code",
+    "secret_code": "Secret code",
+    "continue_ghost": "Continue as ghost",
+    "convert_account": "Convert to permanent account",
+    "pin_length": "Secret code must be 4 digits",
+    "session_full": "Session full"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -1353,17 +1362,6 @@
   },
   "addresses_page": {
     "deleted": "Address deleted"
-  },
-  "ghost": {
-    "code_length": "Code must be 6 characters",
-    "wrong_code": "Wrong code or PIN",
-    "session_code": "Session code",
-    "secret_code": "Secret code",
-    "continue_ghost": "Continue as ghost",
-    "convert_account": "Convert to permanent account",
-    "choose_pseudo": "Choose a username",
-    "pin_length": "Secret code must be 4 digits",
-    "session_full": "Session full"
   },
   "login": {
     "error_prefix": "Error"

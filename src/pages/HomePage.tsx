@@ -318,23 +318,23 @@ export default function HomePage() {
         {/* Logged out CTAs */}
         {!userId && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <button onClick={() => navigate('/login?next=/session/create')} style={{
+            <button onClick={() => navigate('/login')} style={{
               position: 'relative', overflow: 'hidden', width: '100%', padding: 16,
               background: S.p, border: 'none', borderRadius: R.btn, color: '#fff',
               ...typeStyle('section'), cursor: 'pointer', boxShadow: `0 4px 24px ${S.pbd}`,
             }}>
-              {t('home.create_session')}
+              {t('home.login')}
               <div style={{
                 position: 'absolute', top: 0, bottom: 0, width: '60%',
                 background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
                 animation: 'shimmer 3s ease-in-out infinite',
               }} />
             </button>
-            <button onClick={() => navigate('/login')} style={{
+            <button onClick={() => navigate('/login?signup=1')} style={{
               width: '100%', padding: 14, borderRadius: R.btn, ...typeStyle('label'),
               color: S.tx2, border: `1px solid ${S.rule}`, background: 'transparent', cursor: 'pointer',
             }}>
-              {t('home.login')}
+              {t('home.create_account')}
             </button>
             <button onClick={() => navigate('/ghost/setup')} style={{
               width: '100%', padding: 12, borderRadius: R.btn, ...typeStyle('meta'),

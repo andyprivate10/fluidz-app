@@ -121,16 +121,6 @@ export default function SessionPage() {
               hostId={d.session.host_id}
               isMobile={d.isMobile}
             />
-            {effectiveRole === 'host' && (
-              <SessionVotes
-                memberCount={d.members.length}
-                pendingApps={d.pendingApps}
-                currentUserId={d.currentUser?.id}
-                getVoteStats={d.getVoteStats}
-                onVote={d.handleVote}
-                voteLoadingId={d.voteLoadingId}
-              />
-            )}
             <SessionStatusCard
               session={d.session}
               sessionId={d.id!}
