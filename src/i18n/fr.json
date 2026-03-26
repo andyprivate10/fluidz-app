@@ -173,6 +173,8 @@
     "login_to_apply": "Connecte-toi pour postuler",
     "my_application": "Ma candidature",
     "session_full_desc": "Le nombre max de participants a ete atteint.",
+    "ended_title": "Session terminée",
+    "ended_apply_blocked": "Cette session est terminée. Les candidatures ne sont plus acceptées.",
     "profile_preview": "Apercu de ton profil (ce qui sera partage)",
     "already_applied": "Tu as deja postule recemment.",
     "choose_share_sections": "Choisis ce que tu partages avec le host",
@@ -917,6 +919,7 @@
   "apply": {
     "sending": "Envoi...",
     "rate_limited": "Attends quelques minutes",
+    "rate_limit_wait": "Réessaye dans {{minutes}} min.",
     "submit": "Envoyer ma candidature",
     "adult_label": "Adulte",
     "sections_shared": "{{count}}/{{total}} sections partagées",

@@ -40,14 +40,22 @@ export default function ApplyPage() {
         {d.session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{d.session.approx_area}</p>}
       </div>
 
-      {d.capacityFull && (
+      {d.sessionEnded && (
+        <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
+          <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>{d.t('session.ended_title')}</p>
+          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>{d.t('session.ended_apply_blocked')}</p>
+          <button onClick={() => d.navigate('/session/' + d.id)} style={{marginTop:12,padding:'10px 24px',borderRadius:12,background:S.p2,border:'1px solid '+S.pbd,color:S.p,fontSize:13,fontWeight:700,cursor:'pointer'}}>{d.t('common.back')}</button>
+        </div>
+      )}
+
+      {d.capacityFull && !d.sessionEnded && (
         <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
           <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>{d.t('session.full')}</p>
           <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>{d.t('session.session_full_desc')}</p>
         </div>
       )}
 
-      {(d.profile || d.guestMode) && (
+      {!d.sessionEnded && (d.profile || d.guestMode) && (
         <div style={{margin:'12px 20px',padding:12,borderRadius:14,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2}}>
           <div style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:8}}>{d.t('session.profile_preview')}</div>
           {d.guestMode ? (
@@ -77,17 +85,17 @@ export default function ApplyPage() {
       {d.isRateLimited && d.rateLimitedUntil && (
         <div style={{margin:'12px 20px',padding:14,borderRadius:14,background:S.redbg,border:'1px solid '+S.redbd}}>
           <p style={{margin:0,fontSize:14,fontWeight:600,color:S.red}}>{d.t('session.already_applied')}</p>
-          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>Réessaye dans {Math.ceil((d.rateLimitedUntil.getTime() - Date.now()) / 60000)} min.</p>
+          <p style={{margin:'4px 0 0',fontSize:13,color:S.tx2}}>{d.t('apply.rate_limit_wait', { minutes: Math.ceil((d.rateLimitedUntil.getTime() - Date.now()) / 60000) })}</p>
         </div>
       )}
 
-      <div style={{display:'flex',padding:'12px 20px',gap:6}}>
+      {!d.sessionEnded && <div style={{display:'flex',padding:'12px 20px',gap:6}}>
         {(['pack','note','done'] as const).map((s, i) => (
           <div key={s} style={{flex:1,height:3,borderRadius:99,background:(['pack','note','done'].indexOf(d.step) >= i) ? S.p : S.bg3,transition:'background 0.3s'}} />
         ))}
-      </div>
+      </div>}
 
-      {d.step === 'pack' && (
+      {!d.sessionEnded && d.step === 'pack' && (
         <PackStep
           profile={d.profile} guestMode={d.guestMode}
           guestDisplayName={d.guestDisplayName}
@@ -104,7 +112,7 @@ export default function ApplyPage() {
         />
       )}
 
-      {d.step === 'note' && (
+      {!d.sessionEnded && d.step === 'note' && (
         <NoteStep
           profile={d.profile} guestMode={d.guestMode} guestDisplayName={d.guestDisplayName}
           enabled={d.enabled} selectedRole={d.selectedRole}

@@ -173,6 +173,8 @@
     "login_to_apply": "Log in to apply",
     "my_application": "My application",
     "session_full_desc": "The maximum number of participants has been reached.",
+    "ended_title": "Session ended",
+    "ended_apply_blocked": "This session has ended. Applications are no longer accepted.",
     "profile_preview": "Profile preview (what will be shared)",
     "already_applied": "You already applied recently.",
     "choose_share_sections": "Choose what you share with the host",
@@ -917,6 +919,7 @@
   "apply": {
     "sending": "Sending...",
     "rate_limited": "Wait a few minutes",
+    "rate_limit_wait": "Try again in {{minutes}} min.",
     "submit": "Send my application",
     "adult_label": "Adult",
     "sections_shared": "{{count}}/{{total}} sections shared",

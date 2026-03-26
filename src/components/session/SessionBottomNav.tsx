@@ -14,13 +14,20 @@ interface Props {
   activeTab: string
   onTabChange: (tab: string) => void
   badges?: { candidates?: number; votes?: number; chat?: number }
+  sessionStatus?: string
 }
 
-export default function SessionBottomNav({ role, activeTab, onTabChange, badges }: Props) {
+export default function SessionBottomNav({ role, activeTab, onTabChange, badges, sessionStatus }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   const backTab: Tab = { id: 'back', label: t('session_nav.back'), icon: <ArrowLeft size={20} strokeWidth={1.5} /> }
+  const isEnded = sessionStatus === 'ended'
+
+  const endedTabs: Tab[] = [
+    backTab,
+    { id: 'session', label: t('session_nav.session'), icon: <Home size={20} strokeWidth={1.5} /> },
+  ]
 
   const tabsByRole: Record<Role, Tab[]> = {
     host: [
@@ -48,7 +55,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges 
     ],
   }
 
-  const tabs = tabsByRole[role]
+  const tabs = isEnded ? endedTabs : tabsByRole[role]
 
   function handleClick(tab: Tab) {
     if (tab.id === 'back') {

@@ -202,7 +202,7 @@ export default function HomePage() {
         {/* Host active session */}
         {latestHost && (
           <SessionInfoCard
-            session={{ id: latestHost.id, title: latestHost.title, status: 'open', approx_area: latestHost.approx_area, tags: latestHost.tags, cover_url: latestHost.cover_url, template_slug: latestHost.template_slug }}
+            session={{ id: latestHost.id, title: latestHost.title, status: latestHost.status || 'open', approx_area: latestHost.approx_area, tags: latestHost.tags, cover_url: latestHost.cover_url, template_slug: latestHost.template_slug }}
             memberCount={latestHost.member_count ? latestHost.member_count - 1 : undefined}
             onClick={() => navigate('/session/' + latestHost.id)}
             label={t('home.your_session')}

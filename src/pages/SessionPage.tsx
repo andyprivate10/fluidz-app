@@ -105,18 +105,20 @@ export default function SessionPage() {
             isHost={d.isHost}
             hostProfile={d.hostProfile}
           />
-          <SessionQuickActions
-            sessionId={d.id!}
-            eventRole={d.eventRole}
-            exactAddress={d.session.exact_address}
-            status={d.session.status}
-            inviteCode={d.session.invite_code}
-            checkInDone={d.checkInDone}
-            checkInLoading={d.checkInLoading}
-            onCheckIn={d.handleCheckIn}
-            myApp={d.myApp}
-            pendingCount={d.pendingCount}
-          />
+          {d.session.status !== 'ended' && (
+            <SessionQuickActions
+              sessionId={d.id!}
+              eventRole={d.eventRole}
+              exactAddress={d.session.exact_address}
+              status={d.session.status}
+              inviteCode={d.session.invite_code}
+              checkInDone={d.checkInDone}
+              checkInLoading={d.checkInLoading}
+              onCheckIn={d.handleCheckIn}
+              myApp={d.myApp}
+              pendingCount={d.pendingCount}
+            />
+          )}
           <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             <SessionContentCards
               session={d.session}
@@ -296,6 +298,7 @@ export default function SessionPage() {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         badges={{ candidates: d.pendingCount, votes: pendingVoteCount }}
+        sessionStatus={d.session.status}
       />
 
       <ShareToContact
