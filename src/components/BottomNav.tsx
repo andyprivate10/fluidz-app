@@ -54,7 +54,7 @@ export default function BottomNav() {
   const { t } = useTranslation()
 
   // Hide on standalone pages
-  const hiddenRoutes = ['/landing', '/login', '/onboarding', '/auth/callback']
+  const hiddenRoutes = ['/landing', '/login', '/onboarding', '/auth/callback', '/session/']
   if (hiddenRoutes.some(r => location.pathname.startsWith(r))) return null
 
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
