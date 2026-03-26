@@ -72,9 +72,9 @@ export default function SessionInfoCard({
       )}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'rgba(22,20,31,0.55)',
-        backdropFilter: 'blur(4px)',
-        WebkitBackdropFilter: 'blur(4px)',
+        background: cover.coverImage ? 'rgba(22,20,31,0.35)' : 'rgba(22,20,31,0.55)',
+        backdropFilter: cover.coverImage ? 'blur(1px)' : 'blur(4px)',
+        WebkitBackdropFilter: cover.coverImage ? 'blur(1px)' : 'blur(4px)',
       }} />
       <div style={{ position: 'relative', zIndex: 1 }}>
         {label && (
