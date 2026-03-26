@@ -10,6 +10,7 @@ import OrbLayer from '../components/OrbLayer'
 import { MessageCircle, Users, Compass, Zap, Camera, Video, Search } from 'lucide-react'
 import { timeAgo } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
+import { getSessionCover } from '../lib/sessionCover'
 
 const S = colors
 const R = radius
@@ -18,6 +19,7 @@ type ChatThread = {
   id: string; type: 'dm_session' | 'group' | 'direct'; sessionId: string; sessionTitle: string
   peerId?: string; peerName?: string; peerAvatar?: string; peerLastActive?: string
   lastMessage: string; lastMessageAt: string; lastSenderId: string; isHost: boolean; unread?: boolean
+  templateSlug?: string; coverUrl?: string
 }
 
 export default function ChatsHubPage() {
@@ -36,19 +38,19 @@ export default function ChatsHubPage() {
 
     const [{ data: hosted }, { data: applied }, { data: dmPeerMsgs }] = await Promise.all([
       supabase.from('sessions').select('id, title, host_id, template_slug, cover_url').eq('host_id', user.id),
-      supabase.from('applications').select('session_id, sessions(id, title, host_id)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
+      supabase.from('applications').select('session_id, sessions(id, title, host_id, template_slug, cover_url)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
       supabase.from('messages').select('session_id').eq('dm_peer_id', user.id).limit(50),
     ])
 
-    const sessionMap = new Map<string, { title: string; hostId: string; isHost: boolean }>()
-    ;(hosted || []).forEach((s: any) => sessionMap.set(s.id, { title: s.title, hostId: s.host_id, isHost: true }))
+    const sessionMap = new Map<string, { title: string; hostId: string; isHost: boolean; templateSlug?: string; coverUrl?: string }>()
+    ;(hosted || []).forEach((s: any) => sessionMap.set(s.id, { title: s.title, hostId: s.host_id, isHost: true, templateSlug: s.template_slug, coverUrl: s.cover_url }))
     ;(applied || []).forEach((a: any) => {
-      if (a.sessions && !sessionMap.has(a.session_id)) sessionMap.set(a.session_id, { title: a.sessions.title, hostId: a.sessions.host_id, isHost: false })
+      if (a.sessions && !sessionMap.has(a.session_id)) sessionMap.set(a.session_id, { title: a.sessions.title, hostId: a.sessions.host_id, isHost: false, templateSlug: a.sessions.template_slug, coverUrl: a.sessions.cover_url })
     })
     const dmPeerSessionIds = [...new Set((dmPeerMsgs || []).map((m: any) => m.session_id))].filter(sid => !sessionMap.has(sid))
     if (dmPeerSessionIds.length > 0) {
       const { data: dmSessions } = await supabase.from('sessions').select('id, title, host_id, template_slug, cover_url').in('id', dmPeerSessionIds)
-      ;(dmSessions || []).forEach((s: any) => sessionMap.set(s.id, { title: s.title, hostId: s.host_id, isHost: false }))
+      ;(dmSessions || []).forEach((s: any) => sessionMap.set(s.id, { title: s.title, hostId: s.host_id, isHost: false, templateSlug: s.template_slug, coverUrl: s.cover_url }))
     }
 
     const sessionIds = Array.from(sessionMap.keys())
@@ -62,12 +64,12 @@ export default function ChatsHubPage() {
       if (!sess) continue
       if (msg.room_type === 'group') {
         const key = `group_${msg.session_id}`
-        if (!threadMap.has(key)) threadMap.set(key, { id: key, type: 'group', sessionId: msg.session_id, sessionTitle: sess.title, lastMessage: msg.text, lastMessageAt: msg.created_at, lastSenderId: msg.sender_id, isHost: sess.isHost })
+        if (!threadMap.has(key)) threadMap.set(key, { id: key, type: 'group', sessionId: msg.session_id, sessionTitle: sess.title, lastMessage: msg.text, lastMessageAt: msg.created_at, lastSenderId: msg.sender_id, isHost: sess.isHost, templateSlug: sess.templateSlug, coverUrl: sess.coverUrl })
       } else if (msg.room_type === 'dm') {
         const peerId = msg.sender_id === user.id ? msg.dm_peer_id : msg.sender_id
         if (!peerId) continue
         const key = `dm_${msg.session_id}_${peerId}`
-        if (!threadMap.has(key)) threadMap.set(key, { id: key, type: sess.title === DM_DIRECT_TITLE ? 'direct' : 'dm_session', sessionId: msg.session_id, sessionTitle: sess.title, peerId, peerName: msg.sender_id === user.id ? '' : msg.sender_name, lastMessage: msg.text, lastMessageAt: msg.created_at, lastSenderId: msg.sender_id, isHost: sess.isHost })
+        if (!threadMap.has(key)) threadMap.set(key, { id: key, type: sess.title === DM_DIRECT_TITLE ? 'direct' : 'dm_session', sessionId: msg.session_id, sessionTitle: sess.title, peerId, peerName: msg.sender_id === user.id ? '' : msg.sender_name, lastMessage: msg.text, lastMessageAt: msg.created_at, lastSenderId: msg.sender_id, isHost: sess.isHost, templateSlug: sess.templateSlug, coverUrl: sess.coverUrl })
       }
     }
 
@@ -222,9 +224,7 @@ export default function ChatsHubPage() {
               {/* Avatar with online dot */}
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 {thread.type === 'group' ? (
-                  <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.p3, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${S.pbd}` }}>
-                    <Users size={18} strokeWidth={1.5} style={{ color: S.p }} />
-                  </div>
+                  <GroupThreadAvatar templateSlug={thread.templateSlug} coverUrl={thread.coverUrl} />
                 ) : thread.peerAvatar ? (
                   <img src={thread.peerAvatar} alt="" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', border: `1px solid ${S.rule2}` }} />
                 ) : (
@@ -275,6 +275,24 @@ export default function ChatsHubPage() {
           )
         })}
       </div>
+    </div>
+  )
+}
+
+function GroupThreadAvatar({ templateSlug, coverUrl }: { templateSlug?: string; coverUrl?: string }) {
+  const cover = getSessionCover(undefined, coverUrl, templateSlug)
+  if (cover.coverImage) {
+    return (
+      <div style={{ width: 42, height: 42, borderRadius: radius.avatar, overflow: 'hidden', border: `1px solid ${colors.pbd}`, position: 'relative' }}>
+        <img src={cover.coverImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,4,10,0.3)' }} />
+        <Users size={14} strokeWidth={1.5} style={{ color: '#fff', position: 'absolute', bottom: 3, right: 3, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
+      </div>
+    )
+  }
+  return (
+    <div style={{ width: 42, height: 42, borderRadius: radius.avatar, background: cover.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${colors.pbd}` }}>
+      <Users size={18} strokeWidth={1.5} style={{ color: colors.p }} />
     </div>
   )
 }

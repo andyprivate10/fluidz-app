@@ -5,6 +5,7 @@ import { Users, Share2, Settings, MessageCircle, Navigation, UserCheck, Star, Bo
 import { colors } from '../../brand'
 import { supabase } from '../../lib/supabase'
 import { useState, useEffect } from 'react'
+import { useAuth } from '../../contexts/AuthContext'
 
 const S = colors
 const qBtn: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 16px', borderRadius: 14, border: '1px solid '+S.rule2, background: 'rgba(22,20,31,0.85)', cursor: 'pointer', minWidth: 64, whiteSpace: 'nowrap' }
@@ -26,6 +27,7 @@ type Props = {
 export default function SessionQuickActions({ sessionId, eventRole, exactAddress, status, inviteCode, checkInDone, checkInLoading, onCheckIn, myApp, pendingCount }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { isGhost } = useAuth()
   const [bookmarked, setBookmarked] = useState(false)
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
     <div style={{ padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
       {eventRole === 'member' && (
         <>
-          {exactAddress && (
+          {exactAddress && !isGhost && (
             <button aria-label="Open Maps" onClick={() => window.open('https://maps.google.com/?q=' + encodeURIComponent(exactAddress), '_blank')} style={qBtn}>
               <Navigation size={16} strokeWidth={1.5} style={{ color: S.sage }} />
               <span style={qLabel}>{t('session.qa_maps')}</span>
@@ -83,10 +85,12 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
             <Users size={16} strokeWidth={1.5} style={{ color: S.p }} />
             <span style={{ ...qLabel, color: S.p }}>{pendingCount > 0 ? t('session.candidates_count', { count: pendingCount }) : t('session.candidates')}</span>
           </button>
-          <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/join/' + inviteCode); showToast(t('session.link_copied'), 'success') }} style={qBtn}>
-            <Share2 size={16} strokeWidth={1.5} style={{ color: S.lav }} />
-            <span style={qLabel}>{t('session.share_link')}</span>
-          </button>
+          {!isGhost && (
+            <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/join/' + inviteCode); showToast(t('session.link_copied'), 'success') }} style={qBtn}>
+              <Share2 size={16} strokeWidth={1.5} style={{ color: S.lav }} />
+              <span style={qLabel}>{t('session.share_link')}</span>
+            </button>
+          )}
           <button onClick={() => navigate('/session/' + sessionId + '/edit')} style={qBtn}>
             <Settings size={16} strokeWidth={1.5} style={{ color: S.tx3 }} />
             <span style={qLabel}>{t('host.edit')}</span>

@@ -649,6 +649,10 @@
     "next_button": "Suivant →",
     "choose_pseudo": "Choisis un pseudo",
     "pin_label": "Code secret (4 chiffres)",
+    "temp_access_warning": "Accès temporaire 24h — tes données expireront si tu ne crées pas un vrai compte",
+    "prefer_real_account": "Tu préfères un vrai compte ?",
+    "real_account_benefit": "Garde ton profil pour toujours et débloque toutes les fonctionnalités",
+    "create_account_cta": "Créer un compte",
     "pin_help": "Pour retrouver ton profil si tu fermes l'app",
     "have_code_recover": "J'ai déjà un code → Récupérer mon profil"
   },

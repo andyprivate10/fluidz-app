@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import {Ghost, Copy, Check, ArrowRight, ArrowLeft} from 'lucide-react'
+import {Ghost, Copy, Check, ArrowRight, ArrowLeft, Clock, UserPlus} from 'lucide-react'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -115,6 +115,14 @@ export default function GhostSetupPage() {
     <div style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' as const, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <OrbLayer />
       <div style={{ width: '100%', maxWidth: 400 }}>
+
+        {/* 24h warning banner */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 14, background: S.orangebg, border: '1px solid ' + S.orangebd, marginBottom: 16 }}>
+          <Clock size={16} strokeWidth={1.5} style={{ color: S.orange, flexShrink: 0 }} />
+          <p style={{ fontSize: 12, fontWeight: 600, color: S.orange, margin: 0, lineHeight: 1.4 }}>
+            {t('ghost.temp_access_warning')}
+          </p>
+        </div>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -232,9 +240,24 @@ export default function GhostSetupPage() {
           </div>
         )}
 
+        {/* Create account CTA */}
+        {step !== 'done' && (
+          <div style={{ textAlign: 'center', marginTop: 20, padding: '16px', borderRadius: 16, background: S.bg1, border: '1px solid ' + S.rule }}>
+            <UserPlus size={20} style={{ color: S.p, marginBottom: 6 }} />
+            <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: '0 0 4px' }}>{t('ghost.prefer_real_account')}</p>
+            <p style={{ fontSize: 11, color: S.tx3, margin: '0 0 10px' }}>{t('ghost.real_account_benefit')}</p>
+            <button
+              onClick={() => navigate('/login' + (sessionId ? '?return=/session/' + sessionId + '/apply' : inviteCode ? '?return=/join/' + inviteCode : ''))}
+              style={{ padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, cursor: 'pointer' }}
+            >
+              {t('ghost.create_account_cta')}
+            </button>
+          </div>
+        )}
+
         {/* Recovery link */}
         {step !== 'done' && (
-          <div style={{ textAlign: 'center', marginTop: 24 }}>
+          <div style={{ textAlign: 'center', marginTop: 12 }}>
             <button
               onClick={() => navigate('/ghost/recover' + (sessionId ? '?session_id=' + sessionId : inviteCode ? '?invite_code=' + inviteCode : ''))}
               style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 12, cursor: 'pointer', textDecoration: 'underline' }}

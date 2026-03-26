@@ -9,6 +9,8 @@ import { showToast } from '../components/Toast'
 import EmojiBar from '../components/EmojiBar'
 import ChatMessageMenu from '../components/ChatMessageMenu'
 import { useGroupChatData } from '../hooks/useGroupChatData'
+import { useAuth } from '../contexts/AuthContext'
+import GhostBlockedModal from '../components/GhostBlockedModal'
 
 const S = colors
 
@@ -26,8 +28,18 @@ export default function GroupChatPage() {
     sendPhoto, startRecording, stopRecording,
     sendMessage, toggleGroupChat, handleDeleteMessage,
   } = useGroupChatData()
+  const { isGhost } = useAuth()
 
   if (loading) return <SkeletonChatPage />
+
+  if (isGhost) {
+    return (
+      <div style={{ minHeight: '100vh', background: S.bg, position: 'relative' as const }}>
+        <OrbLayer />
+        <GhostBlockedModal open={true} onClose={() => navigate('/session/' + id)} />
+      </div>
+    )
+  }
 
   if (!session) {
     return (

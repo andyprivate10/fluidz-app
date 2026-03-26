@@ -5,9 +5,10 @@ import { supabase } from '../lib/supabase'
 type AuthContextType = {
   user: User | null
   loading: boolean
+  isGhost: boolean
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true })
+const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isGhost: false })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -26,8 +27,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  const isGhost = user?.is_anonymous === true
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, isGhost }}>
       {children}
     </AuthContext.Provider>
   )

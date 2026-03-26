@@ -9,6 +9,7 @@ import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart} from 'luci
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { timeAgo } from '../lib/timing'
+import { getSessionCover } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
 import IntentSelector from '../components/IntentSelector'
 
@@ -46,7 +47,7 @@ export default function ContactDetailPage() {
   const [interactions, setInteractions] = useState<Interaction[]>([])
   const [loading, setLoading] = useState(true)
   const [editingNotes, setEditingNotes] = useState(false)
-  const [commonSessions, setCommonSessions] = useState<{ id: string; title: string; status: string }[]>([])
+  const [commonSessions, setCommonSessions] = useState<{ id: string; title: string; status: string; template_slug?: string; cover_url?: string }[]>([])
   const [activeSessions, setActiveSessions] = useState<{ id: string; title: string }[]>([])
   const [inviting, setInviting] = useState(false)
   const [notesText, setNotesText] = useState('')
@@ -316,20 +317,29 @@ export default function ContactDetailPage() {
           <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions en commun ({commonSessions.length})</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
-              {commonSessions.map(s => (
-                <button key={s.id} onClick={() => navigate('/session/' + s.id)} style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '8px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule,
-                  cursor: 'pointer', width: '100%', textAlign: 'left',
-                }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: S.tx }}>{s.title}</span>
-                  <span style={{
-                    fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
-                    color: s.status === 'open' ? S.sage : s.status === 'ended' ? S.red : S.tx4,
-                    background: s.status === 'open' ? S.sagebg : s.status === 'ended' ? S.redbg : S.bg3,
-                  }}>{t('status.' + s.status)}</span>
-                </button>
-              ))}
+              {commonSessions.map(s => {
+                const cover = getSessionCover(undefined, s.cover_url, s.template_slug)
+                return (
+                  <button key={s.id} onClick={() => navigate('/session/' + s.id)} style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '8px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule,
+                    cursor: 'pointer', width: '100%', textAlign: 'left',
+                  }}>
+                    <div style={{
+                      width: 32, height: 32, borderRadius: 8, flexShrink: 0, overflow: 'hidden',
+                      background: cover.coverImage ? undefined : cover.bg,
+                    }}>
+                      {cover.coverImage && <img src={cover.coverImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: S.tx, flex: 1 }}>{s.title}</span>
+                    <span style={{
+                      fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+                      color: s.status === 'open' ? S.sage : s.status === 'ended' ? S.red : S.tx4,
+                      background: s.status === 'open' ? S.sagebg : s.status === 'ended' ? S.redbg : S.bg3,
+                    }}>{t('status.' + s.status)}</span>
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}
