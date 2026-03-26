@@ -2,7 +2,6 @@ import { Clock, MessageCircle, Check } from 'lucide-react'
 import { colors, glassCard } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 import { useHostDashboard } from '../hooks/useHostDashboard'
 import type { HostTab } from '../hooks/useHostDashboard'
 import HostActivityTab from '../components/host/HostActivityTab'
@@ -55,7 +54,6 @@ export default function HostDashboard() {
     <div {...h.pullHandlers} style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96, position: 'relative', maxWidth: 480, margin: '0 auto' }}>
       <OrbLayer />
       {h.pullIndicator}
-      <EventContextNav role="host" sessionTitle={h.sess?.title} />
 
       {/* === HEADER === */}
       <div style={{ position: 'relative', overflow: 'hidden', borderBottom: '1px solid ' + S.rule }}>

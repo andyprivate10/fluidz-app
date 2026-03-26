@@ -9,7 +9,6 @@ import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 import { monthsAgoLabel } from '../lib/timing'
 import ImageLightbox from '../components/ImageLightbox'
 import { SYSTEM_SENDER } from '../lib/constants'
@@ -173,12 +172,10 @@ export default function CandidateProfilePage() {
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: isHost && app.status === 'pending' ? 100 : 24, maxWidth: 480, margin: '0 auto', position: 'relative' }}>
       <OrbLayer />
-      <EventContextNav role="host" sessionTitle={sess?.title} />
-
       {/* Photo gallery */}
       {candidatePhotos.length > 0 && (
         <div style={{ padding: '40px 20px 0' }}>
-          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
+          <button onClick={() => navigate('/session/' + sessionId + '?tab=candidates')} style={{ background: 'none', border: 'none', color: S.p, fontSize: 13, cursor: 'pointer', marginBottom: 12, padding: 0, display: 'flex', alignItems: 'center', gap: 4 }}><ArrowLeft size={16} strokeWidth={1.5} />{sess?.title || t('common.back_label')}</button>
           {/* Profil photos */}
           {photosProfil.length > 0 && (
             <>

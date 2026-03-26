@@ -2,7 +2,6 @@ import { SkeletonChatPage } from '../components/Skeleton'
 import { ArrowLeft, Send, Users, Shield, Camera, Smile, X } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 import { formatMessageTime } from '../lib/timing'
 import { SYSTEM_SENDER } from '../lib/constants'
 import { showToast } from '../components/Toast'
@@ -67,14 +66,13 @@ export default function GroupChatPage() {
       background:S.bg, maxWidth:480, margin:'0 auto', position:'relative' as const,
     }}>
       <OrbLayer />
-      <EventContextNav role={isHost ? 'host' : 'member'} sessionTitle={session?.title} />
       {/* Header */}
       <div style={{
         padding:'12px 16px', display:'flex', alignItems:'center', gap:12,
         borderBottom:'1px solid '+S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)',
         paddingTop:'calc(12px + env(safe-area-inset-top, 0px))',
       }}>
-        <button onClick={() => navigate('/session/' + id)} style={{ background:'none', border:'none', cursor:'pointer', padding:4 }}>
+        <button onClick={() => navigate('/session/' + id + '?tab=chat')} style={{ background:'none', border:'none', cursor:'pointer', padding:4 }}>
           <ArrowLeft size={18} strokeWidth={1.5} style={{ color:S.tx2 }} />
         </button>
         <div style={{ flex:1, minWidth:0 }}>

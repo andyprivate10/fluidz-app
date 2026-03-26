@@ -6,7 +6,6 @@ import { showToast } from '../components/Toast'
 import {Star, Send, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -138,9 +137,8 @@ export default function ReviewPage() {
   return (
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 40 }}>
       <OrbLayer />
-      <EventContextNav role='member' />
       <div style={{ padding: '40px 20px 20px' }}>
-        <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('review.back_session')}</button>
+        <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.p, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 4 }}><ArrowLeft size={16} strokeWidth={1.5} />{t('review.back_session')}</button>
 
         <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('review.title')}</h1>
         <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{session?.title || 'Session'}</p>

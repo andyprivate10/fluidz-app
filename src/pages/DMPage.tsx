@@ -3,7 +3,6 @@ import { showToast } from '../components/Toast'
 import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 import ImageLightbox from '../components/ImageLightbox'
 import EmojiBar from '../components/EmojiBar'
 import ChatMessageMenu from '../components/ChatMessageMenu'
@@ -24,11 +23,10 @@ export default function DMPage() {
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       <OrbLayer />
-      <EventContextNav role={d.isHost ? 'host' : d.isAccepted ? 'member' : 'candidate'} sessionTitle={d.session?.title} />
       {/* Header */}
       <header style={{ padding: '16px 24px', borderBottom: '1px solid '+S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => d.navigate('/session/'+d.id)} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}><ArrowLeft size={18} strokeWidth={1.5} /></button>
+          <button onClick={() => d.navigate('/session/'+d.id+'?tab=chat')} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}><ArrowLeft size={18} strokeWidth={1.5} /></button>
           {d.peerAvatar ? (
             <img src={d.peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
           ) : d.peerName ? (

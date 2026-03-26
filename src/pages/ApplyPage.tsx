@@ -1,6 +1,6 @@
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
+import { ArrowLeft } from 'lucide-react'
 import PackStep from '../components/apply/PackStep'
 import NoteStep from '../components/apply/NoteStep'
 import { useApplyData } from '../hooks/useApplyData'
@@ -32,9 +32,11 @@ export default function ApplyPage() {
   return (
     <div style={{minHeight:'100vh',background:S.bg,paddingBottom:96,position:'relative',maxWidth:480,margin:'0 auto'}}>
       <OrbLayer />
-      <EventContextNav role="candidate" sessionTitle={d.session?.title} />
       <div style={{padding:'12px 20px 16px',borderBottom:'1px solid ' + S.rule, background:'rgba(13,12,22,0.92)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)'}}>
-        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 4px'}}>{d.t('session.my_application')}</h1>
+        <button onClick={() => d.navigate('/session/' + d.id)} style={{ background:'none', border:'none', color:S.p, fontSize:13, cursor:'pointer', padding:0, marginBottom:8, display:'flex', alignItems:'center', gap:4 }}>
+          <ArrowLeft size={16} strokeWidth={1.5} />{d.session?.title || d.t('common.back')}
+        </button>
+        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Plus Jakarta Sans', sans-serif",color:S.tx,margin:'0 0 4px'}}>{d.t('session.my_application')}</h1>
         {d.session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{d.session.approx_area}</p>}
       </div>
 

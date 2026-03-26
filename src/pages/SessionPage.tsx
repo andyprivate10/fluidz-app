@@ -15,6 +15,8 @@ import SessionEndedSection from '../components/session/SessionEndedSection'
 import ShareToContact from '../components/ShareToContact'
 import { useSessionData } from '../hooks/useSessionData'
 import { useTranslation } from 'react-i18next'
+import { supabase } from '../lib/supabase'
+import { showToast } from '../components/Toast'
 
 const S = colors
 const st: React.CSSProperties = { background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 72 }
@@ -25,6 +27,18 @@ export default function SessionPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'session')
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+  async function handleDecide(appId: string, status: 'accepted' | 'rejected') {
+    setActionLoading(appId)
+    const { error } = await supabase.from('applications').update({ status }).eq('id', appId)
+    if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error') }
+    else {
+      showToast(status === 'accepted' ? t('host_actions.accepted') : t('host_actions.rejected'), 'success')
+      d.loadData()
+    }
+    setActionLoading(null)
+  }
 
   // Determine if visitor (not logged in or no application and not host)
   const effectiveRole: 'host' | 'member' | 'candidate' | 'visitor' =
@@ -154,7 +168,7 @@ export default function SessionPage() {
       {/* ═══ TAB: candidates (HOST) ═══ */}
       {activeTab === 'candidates' && effectiveRole === 'host' && (
         <div style={{ padding: '16px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 16px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.candidates')}
             {d.pendingApps.length > 0 && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '2px 8px', borderRadius: 99 }}>{d.pendingApps.length}</span>}
           </h2>
@@ -184,6 +198,15 @@ export default function SessionPage() {
                     </p>
                   </div>
                 </div>
+                {/* Accept / Reject buttons */}
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => handleDecide(app.id, 'rejected')} disabled={actionLoading === app.id} style={{ flex: 1, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: S.red, border: '1px solid ' + S.redbd, background: S.redbg, cursor: 'pointer' }}>
+                    {t('host.refuse')}
+                  </button>
+                  <button onClick={() => handleDecide(app.id, 'accepted')} disabled={actionLoading === app.id} style={{ flex: 2, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: '#fff', background: S.p, border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px ' + S.pbd }}>
+                    {actionLoading === app.id ? '...' : t('host_actions.accept')}
+                  </button>
+                </div>
               </div>
             )
           })}
@@ -193,7 +216,7 @@ export default function SessionPage() {
       {/* ═══ TAB: vote (MEMBER) ═══ */}
       {activeTab === 'vote' && effectiveRole === 'member' && (
         <div style={{ padding: '16px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 16px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.vote')}
           </h2>
           <SessionVotes
@@ -210,7 +233,7 @@ export default function SessionPage() {
       {/* ═══ TAB: application (CANDIDATE) ═══ */}
       {activeTab === 'application' && effectiveRole === 'candidate' && (
         <div style={{ padding: '16px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 16px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.application')}
           </h2>
           {!d.myApp && d.session.status === 'open' && (

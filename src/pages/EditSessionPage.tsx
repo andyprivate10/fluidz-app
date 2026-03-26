@@ -6,7 +6,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import EventContextNav from '../components/EventContextNav'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
 
@@ -102,9 +101,8 @@ export default function EditSessionPage() {
   return (
     <div style={{ minHeight:'100vh', background:S.bg, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>
       <OrbLayer />
-      <EventContextNav role='host' />
       <div style={{ padding:'40px 20px 16px', borderBottom:'1px solid '+S.rule ,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
-        <button onClick={() => navigate('/session/' + id + '/host')} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', marginBottom:12, padding:0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('host.dashboard')}</button>
+        <button onClick={() => navigate('/session/' + id)} style={{ background:'none', border:'none', color:S.p, fontSize:13, cursor:'pointer', marginBottom:12, padding:0, display:'flex', alignItems:'center', gap:4 }}><ArrowLeft size={16} strokeWidth={1.5} />{t('common.back')}</button>
         <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>{t('session.edit_title')}</h1>
       </div>
 

@@ -61,7 +61,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges 
   return (
     <nav aria-label="Session navigation" style={{
       position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
-      background: 'rgba(5,4,10,0.95)',
+      background: 'rgba(5,4,10,0.92)',
       backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
       borderTop: '0.5px solid rgba(255,255,255,0.05)',
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',
@@ -104,7 +104,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges 
                   <div style={{
                     position: 'absolute', top: -4, right: -8,
                     minWidth: 16, height: 16, borderRadius: 8,
-                    background: S.red, border: '2px solid rgba(5,4,10,0.95)',
+                    background: S.red, border: '2px solid rgba(5,4,10,0.92)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 9, fontWeight: 700, color: '#fff', padding: '0 3px',
                   }}>

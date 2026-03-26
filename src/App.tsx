@@ -1,4 +1,4 @@
-import { BrowserRouter, useLocation, useRoutes } from 'react-router-dom'
+import { BrowserRouter, useLocation, useRoutes, Navigate, useParams } from 'react-router-dom'
 import { lazy, Suspense, useEffect } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
@@ -19,7 +19,6 @@ const ApplyPage = lazy(() => import('./pages/ApplyPage'))
 const DMPage = lazy(() => import('./pages/DMPage'))
 const GroupChatPage = lazy(() => import('./pages/GroupChatPage'))
 const MePage = lazy(() => import('./pages/MePage'))
-const HostDashboard = lazy(() => import('./pages/HostDashboard'))
 const SessionsPage = lazy(() => import('./pages/SessionsPage'))
 const JoinPage = lazy(() => import('./pages/JoinPage'))
 const CandidateProfilePage = lazy(() => import('./pages/CandidateProfilePage'))
@@ -45,6 +44,8 @@ const TemplatesPage = lazy(() => import('./pages/TemplatesPage'))
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'))
 
+function HostRedirect() { const { id } = useParams(); return <Navigate to={`/session/${id}`} replace /> }
+
 const routes = [
   { path: '/', element: <HomePage /> },
   { path: '/landing', element: <LandingPage /> },
@@ -55,7 +56,7 @@ const routes = [
   { path: '/session/:id/dm', element: <DMPage /> },
   { path: '/session/:id/dm/:peerId', element: <DMPage /> },
   { path: '/session/:id/chat', element: <GroupChatPage /> },
-  { path: '/session/:id/host', element: <HostDashboard /> },
+  { path: '/session/:id/host', element: <HostRedirect /> },
   { path: '/session/:id/edit', element: <EditSessionPage /> },
   { path: '/session/:id/review', element: <ReviewPage /> },
   { path: '/join/:code', element: <JoinPage /> },
