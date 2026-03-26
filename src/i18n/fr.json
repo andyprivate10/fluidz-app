@@ -603,7 +603,10 @@
     "resend_cooldown": "Renvoyer dans {{seconds}}s",
     "resend_link": "Renvoyer le lien",
     "check_spam": "Verifie tes spams si tu ne trouves pas l'email",
-    "or_email": "ou par email"
+    "or_email": "ou par email",
+    "signup_success_title": "Compte créé !",
+    "signup_confirm_instructions": "Vérifie tes emails ({{email}}) pour confirmer ton compte, puis reviens te connecter.",
+    "back_to_login": "← Retour à la connexion"
   },
   "onboarding": {
     "step_label": "Etape {{step}}/3",

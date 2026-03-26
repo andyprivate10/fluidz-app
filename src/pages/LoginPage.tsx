@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Mail, Ghost, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { Mail, Ghost, ArrowRight, Eye, EyeOff, Zap } from 'lucide-react'
 import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -27,6 +27,7 @@ export default function LoginPage() {
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [cooldown, setCooldown] = useState(0)
   const [error, setError] = useState('')
+  const [signupNeedsConfirm, setSignupNeedsConfirm] = useState(false)
 
   // Cooldown timer
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function LoginPage() {
         const { error: loginErr } = await supabase.auth.signInWithPassword({ email: trimmed, password })
         if (loginErr) {
           // Signup succeeded but needs email confirmation
-          setMagicLinkSent(true)
+          setSignupNeedsConfirm(true)
           setLoading(false)
           return
         }
@@ -147,16 +148,18 @@ export default function LoginPage() {
     })
   }
 
-  // Dev login
-  const [devEmail, setDevEmail] = useState('marcus@fluidz.test')
-  const [devPass, setDevPass] = useState('testpass123')
-  async function devLogin() {
-    const { data, error: err } = await supabase.auth.signInWithPassword({ email: devEmail, password: devPass })
-    if (err) { showToast(err.message, 'error'); return }
+  // Quick dev login
+  const [devLoading, setDevLoading] = useState('')
+  async function quickDevLogin(account: string) {
+    const email = `${account}@fluidz.test`
+    setDevLoading(account)
+    const { data, error: err } = await supabase.auth.signInWithPassword({ email, password: 'testpass123' })
+    if (err) { showToast(err.message, 'error'); setDevLoading(''); return }
     if (data.user) {
-      await supabase.from('user_profiles').upsert({ id: data.user.id, display_name: devEmail.split('@')[0] || 'Dev' })
+      await supabase.from('user_profiles').upsert({ id: data.user.id, display_name: account.charAt(0).toUpperCase() + account.slice(1) })
       navigate(next)
     }
+    setDevLoading('')
   }
 
   const inp: React.CSSProperties = {
@@ -173,6 +176,40 @@ export default function LoginPage() {
       <div style={{ flex: 1, height: 1, background: S.rule }} />
     </div>
   )
+
+  if (signupNeedsConfirm) {
+    return (
+      <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', maxWidth: 480, margin: '0 auto' }}>
+        <OrbLayer />
+        <div style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }} className="animate-slide-up">
+          <div style={{ background: S.bg1, borderRadius: R.card, padding: 32, border: `1px solid ${S.sagebd}`, textAlign: 'center' }}>
+            <Mail size={32} strokeWidth={1.5} style={{ color: S.sage, marginBottom: 14 }} />
+            <h2 style={{ ...typeStyle('title'), color: S.tx, margin: '0 0 10px' }}>{t('auth.signup_success_title')}</h2>
+            <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 20px', lineHeight: 1.6 }}>
+              {t('auth.signup_confirm_instructions', { email })}
+            </p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 20 }}>
+              <a href="https://mail.google.com" target="_blank" rel="noopener" style={{
+                padding: '9px 16px', borderRadius: R.chip, background: S.bg2, border: `1px solid ${S.rule}`,
+                ...typeStyle('label'), color: S.tx2, textDecoration: 'none',
+              }}>Gmail</a>
+              <a href="https://outlook.live.com" target="_blank" rel="noopener" style={{
+                padding: '9px 16px', borderRadius: R.chip, background: S.bg2, border: `1px solid ${S.rule}`,
+                ...typeStyle('label'), color: S.tx2, textDecoration: 'none',
+              }}>Outlook</a>
+            </div>
+            <button onClick={() => { setSignupNeedsConfirm(false); setMode('login') }} style={{
+              background: 'none', border: 'none', ...typeStyle('label'),
+              color: S.p, cursor: 'pointer',
+            }}>
+              {t('auth.back_to_login')}
+            </button>
+          </div>
+          <p style={{ ...typeStyle('meta'), color: S.tx3, marginTop: 14, textAlign: 'center' }}>{t('auth.check_spam')}</p>
+        </div>
+      </div>
+    )
+  }
 
   if (magicLinkSent) {
     return (
@@ -220,6 +257,37 @@ export default function LoginPage() {
         </div>
 
         <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+          {/* DEV Quick Login */}
+          {isDev && (
+            <div style={{ background: S.p2, borderRadius: R.card, padding: 14, border: `1px solid ${S.pbd}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                <Zap size={14} style={{ color: S.p }} />
+                <span style={{ ...typeStyle('micro'), color: S.p, fontWeight: 700 }}>DEV QUICK LOGIN</span>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {([
+                  { name: 'marcus', label: 'Marcus (Host)' },
+                  { name: 'karim', label: 'Karim' },
+                  { name: 'yann', label: 'Yann' },
+                ] as const).map(a => (
+                  <button
+                    key={a.name}
+                    onClick={() => quickDevLogin(a.name)}
+                    disabled={!!devLoading}
+                    style={{
+                      flex: 1, padding: '10px 6px', borderRadius: R.chip,
+                      ...typeStyle('label'), fontSize: 12, color: '#fff', background: S.p,
+                      border: 'none', cursor: devLoading ? 'not-allowed' : 'pointer',
+                      opacity: devLoading && devLoading !== a.name ? 0.5 : 1,
+                    }}
+                  >
+                    {devLoading === a.name ? '...' : a.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* METHOD 1: Email + Password */}
           <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: R.card, padding: 24, border: `1px solid ${S.rule2}`, boxShadow: '0 2px 16px rgba(0,0,0,0.2)' }}>
@@ -334,19 +402,6 @@ export default function LoginPage() {
             {t('auth.ghost_recover')}
           </button>
 
-          {/* Dev login */}
-          {isDev && (
-            <div style={{ marginTop: 8, background: S.bg2, borderRadius: R.block, padding: 14, border: `1px solid ${S.rule2}` }}>
-              <p style={{ ...typeStyle('micro'), color: S.red, margin: '0 0 8px' }}>DEV LOGIN</p>
-              <select value={devEmail} onChange={e => setDevEmail(e.target.value)} style={{ ...inp, fontSize: 12, padding: '8px 12px', marginBottom: 6 }}>
-                <option value="marcus@fluidz.test">marcus@fluidz.test</option>
-                <option value="karim@fluidz.test">karim@fluidz.test</option>
-                <option value="yann@fluidz.test">yann@fluidz.test</option>
-              </select>
-              <input value={devPass} onChange={e => setDevPass(e.target.value)} placeholder="password" type="password" style={{ ...inp, fontSize: 12, padding: '8px 12px', marginBottom: 6 }} />
-              <button onClick={devLogin} style={{ width: '100%', padding: 8, borderRadius: R.chip, ...typeStyle('label'), color: S.red, border: `1px solid ${S.red}3d`, background: 'transparent', cursor: 'pointer' }}>DEV Sign in</button>
-            </div>
-          )}
         </div>
 
       </div>
