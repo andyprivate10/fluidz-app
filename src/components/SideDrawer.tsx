@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import { colors } from '../brand'
+import GhostTimer from './GhostTimer'
+import GhostConvertModal from './GhostConvertModal'
 import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings } from 'lucide-react'
 
 const S = colors
@@ -12,7 +15,10 @@ type Props = { open: boolean; onClose: () => void }
 export default function SideDrawer({ open, onClose }: Props) {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
+  const { user: authUser } = useAuth()
+  const isGhost = authUser?.is_anonymous === true
+  const [showConvert, setShowConvert] = useState(false)
+  const [user, setUser] = useState<{ id: string; email?: string; created_at?: string } | null>(null)
   const [profile, setProfile] = useState<{ display_name: string; avatar_url?: string; is_admin?: boolean; location_visible?: boolean } | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
 
@@ -20,7 +26,7 @@ export default function SideDrawer({ open, onClose }: Props) {
     if (!open) return
     supabase.auth.getUser().then(({ data: { user: u } }) => {
       if (!u) return
-      setUser(u)
+      setUser({ id: u.id, email: u.email, created_at: u.created_at })
       supabase.from('user_profiles').select('display_name, profile_json, is_admin, location_visible').eq('id', u.id).maybeSingle()
         .then(({ data }) => {
           if (data) setProfile({
@@ -118,6 +124,21 @@ export default function SideDrawer({ open, onClose }: Props) {
           </div>
         </div>
 
+        {/* Ghost timer */}
+        {isGhost && user?.created_at && (
+          <div style={{ padding: '12px 20px 0' }}>
+            <GhostTimer createdAt={user.created_at} />
+            <button onClick={() => { onClose(); setShowConvert(true) }} style={{
+              width: '100%', marginTop: 8, padding: 10, borderRadius: 12,
+              background: S.p, border: 'none', color: '#fff',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+            }}>
+              {t('ghost.save_real_account')}
+            </button>
+          </div>
+        )}
+
         {/* Menu items */}
         <div style={{ padding: '8px 20px', flex: 1 }}>
           {/* Section: Mon espace */}
@@ -195,6 +216,8 @@ export default function SideDrawer({ open, onClose }: Props) {
           </button>
         </div>
       </div>
+
+      <GhostConvertModal open={showConvert} onClose={() => setShowConvert(false)} />
     </>
   )
 }

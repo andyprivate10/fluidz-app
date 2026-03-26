@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { compressImage } from '../lib/media'
+import GhostBlockedModal from '../components/GhostBlockedModal'
 import {MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -28,6 +29,7 @@ export default function AddressesPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user: authUser } = useAuth()
+  const isGhost = authUser?.is_anonymous === true
   const [addresses, setAddresses] = useState<SavedAddress[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
@@ -138,6 +140,13 @@ export default function AddressesPage() {
   }
   function addStep() { setDirections(prev => [...prev, { text: '' }]) }
   function removeStep(index: number) { setDirections(prev => prev.filter((_, i) => i !== index)) }
+
+  if (isGhost) return (
+    <div style={{ minHeight: '100vh', background: S.bg, position: 'relative' as const }}>
+      <OrbLayer />
+      <GhostBlockedModal open={true} onClose={() => navigate(-1 as any)} />
+    </div>
+  )
 
   return (
     <div style={{ background:S.bg, minHeight:'100vh', position: 'relative' as const, maxWidth:480, margin:'0 auto', paddingBottom:40 }}>

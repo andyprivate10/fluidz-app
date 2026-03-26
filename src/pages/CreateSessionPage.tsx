@@ -2,6 +2,8 @@ import { ArrowLeft } from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useCreateSession } from '../hooks/useCreateSession'
+import { useAuth } from '../contexts/AuthContext'
+import GhostBlockedModal from '../components/GhostBlockedModal'
 import CreateStepBasics from '../components/session/CreateStepBasics'
 import CreateStepRules from '../components/session/CreateStepRules'
 import CreateStepAddress from '../components/session/CreateStepAddress'
@@ -12,6 +14,17 @@ const S = colors
 
 export default function CreateSessionPage() {
   const h = useCreateSession()
+  const { user } = useAuth()
+  const isGhost = user?.is_anonymous === true
+
+  if (isGhost) {
+    return (
+      <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', maxWidth: 480, margin: '0 auto', position: 'relative' as const }}>
+        <OrbLayer />
+        <GhostBlockedModal open={true} onClose={() => h.navigate(-1 as any)} />
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, paddingBottom: 96, maxWidth: 480, margin: '0 auto', position: 'relative' as const }}>

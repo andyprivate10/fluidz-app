@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
+import GhostBlockedModal from '../components/GhostBlockedModal'
 import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
 import { colors } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -28,6 +29,7 @@ export default function GroupsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user: authUser } = useAuth()
+  const isGhost = authUser?.is_anonymous === true
   const [groups, setGroups] = useState<Group[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
@@ -139,6 +141,13 @@ export default function GroupsPage() {
   }
 
   const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.rule, outline:'none', fontSize:14, fontFamily:"'Plus Jakarta Sans', sans-serif", boxSizing:'border-box' }
+
+  if (isGhost) return (
+    <div style={{ minHeight: '100vh', background: S.bg, position: 'relative' as const }}>
+      <OrbLayer />
+      <GhostBlockedModal open={true} onClose={() => navigate(-1 as any)} />
+    </div>
+  )
 
   return (
     <div style={{ background:S.bg, minHeight:'100vh', maxWidth:480, margin:'0 auto', paddingBottom:96 }}>

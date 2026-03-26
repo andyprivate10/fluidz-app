@@ -53,6 +53,7 @@ export default function AdminPage() {
   const { user } = useAuth()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [activeTab, setActiveTab] = useState<TabId>('auth')
+  const isGhost = user?.is_anonymous === true
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return }
@@ -60,6 +61,8 @@ export default function AdminPage() {
       setIsAdmin(data?.is_admin === true)
     })
   }, [user])
+
+  if (isGhost) { navigate('/'); return null }
 
   if (isAdmin === null) return (
     <div style={{ minHeight: '100vh', background: S.bg, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
