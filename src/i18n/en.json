@@ -580,6 +580,7 @@
     "error_invalid_email": "Invalid email address",
     "error_wrong_password": "Incorrect email or password",
     "error_rate_limit": "Too many attempts, please wait a few minutes",
+    "error_timeout": "Connection issue. Check your internet and try again.",
     "error_network": "Connection error, check your internet",
     "error_email_not_confirmed": "Check your email to confirm your account before logging in",
     "error_account_exists": "An account already exists with this email",

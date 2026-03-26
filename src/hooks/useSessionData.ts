@@ -6,6 +6,7 @@ import { useConfirmDialog } from '../components/ConfirmDialog'
 import { formatElapsed, formatRemaining } from '../lib/timing'
 import { useCopyFeedback } from './useCopyFeedback'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../contexts/AuthContext'
 import type { User } from '@supabase/supabase-js'
 
 export type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; cover_url?: string; template_slug?: string; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number>; host_rules?: string } }
@@ -18,6 +19,7 @@ export function useSessionData() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { confirm, dialogProps: confirmDialogProps } = useConfirmDialog()
+  const { user: authUser } = useAuth()
   const [session, setSession] = useState<Session | null>(null)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [myApp, setMyApp] = useState<{ status: string } | null>(null)
@@ -217,6 +219,15 @@ export function useSessionData() {
 
     return () => { supabase.removeChannel(channel) }
   }, [loadData])
+
+  // Re-fetch when auth state changes (e.g., visitor logs in and returns)
+  const prevAuthId = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (prevAuthId.current !== authUser?.id && prevAuthId.current !== undefined) {
+      loadData()
+    }
+    prevAuthId.current = authUser?.id
+  }, [authUser?.id, loadData])
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY

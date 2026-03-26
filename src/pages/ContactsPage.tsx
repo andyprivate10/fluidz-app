@@ -51,7 +51,7 @@ export default function ContactsPage() {
   }, [user])
 
   const loadContacts = useCallback(async () => {
-    if (!user) { navigate('/login'); return }
+    if (!user) { navigate('/login?next=/contacts'); return }
 
     const { data: raw } = await supabase
       .from('contacts')

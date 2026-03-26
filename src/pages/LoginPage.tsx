@@ -10,6 +10,17 @@ import OrbLayer from '../components/OrbLayer'
 const S = colors
 const R = radius
 
+const AUTH_TIMEOUT = 10000 // 10s timeout on auth calls
+
+function withTimeout<T>(promise: Promise<T>, ms = AUTH_TIMEOUT): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('AUTH_TIMEOUT')), ms)
+    ),
+  ])
+}
+
 export default function LoginPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -64,54 +75,77 @@ export default function LoginPage() {
     if (mode === 'signup') {
       if (password !== confirmPassword) { setError(t('auth.error_password_mismatch')); return }
       setLoading(true)
-      const { data, error: err } = await supabase.auth.signUp({ email: trimmed, password })
-      if (err) {
-        setLoading(false)
-        console.error('Signup error:', err.message)
-        if (err.message.includes('already registered') || err.message.includes('already exists')) {
-          setError(t('auth.error_account_exists'))
-        } else if (err.message.includes('rate limit')) {
-          setError(t('auth.error_rate_limit'))
-        } else {
-          setError(err.message)
-        }
-        return
-      }
-      if (data.user) {
-        // Auto-login after signup
-        const { error: loginErr } = await supabase.auth.signInWithPassword({ email: trimmed, password })
-        if (loginErr) {
-          // Signup succeeded but needs email confirmation
-          setSignupNeedsConfirm(true)
+      try {
+        const { data, error: err } = await withTimeout(supabase.auth.signUp({ email: trimmed, password }))
+        if (err) {
           setLoading(false)
+          console.error('Signup error:', err.message)
+          if (err.message.includes('already registered') || err.message.includes('already exists')) {
+            setError(t('auth.error_account_exists'))
+          } else if (err.message.includes('rate limit')) {
+            setError(t('auth.error_rate_limit'))
+          } else {
+            setError(err.message)
+          }
           return
         }
+        if (data.user) {
+          // Auto-login after signup
+          const { error: loginErr } = await withTimeout(supabase.auth.signInWithPassword({ email: trimmed, password }))
+          if (loginErr) {
+            // Signup succeeded but needs email confirmation
+            setSignupNeedsConfirm(true)
+            setLoading(false)
+            return
+          }
+          setLoading(false)
+          navigate('/onboarding')
+        }
+      } catch (e: any) {
         setLoading(false)
-        navigate('/onboarding')
+        if (e?.message === 'AUTH_TIMEOUT') {
+          console.error('Signup timeout')
+          setError(t('auth.error_timeout'))
+        } else {
+          console.error('Signup unexpected error:', e)
+          setError(e?.message || 'Unknown error')
+        }
+        return
       }
     } else {
       setLoading(true)
-      const { data, error: err } = await supabase.auth.signInWithPassword({ email: trimmed, password })
-      if (err) {
+      try {
+        const { data, error: err } = await withTimeout(supabase.auth.signInWithPassword({ email: trimmed, password }))
+        if (err) {
+          setLoading(false)
+          console.error('Login error:', err.message)
+          if (err.message.includes('Invalid login') || err.message.includes('invalid')) {
+            setError(t('auth.error_wrong_password'))
+          } else if (err.message.includes('Email not confirmed')) {
+            setError(t('auth.error_email_not_confirmed'))
+          } else if (err.message.includes('rate limit')) {
+            setError(t('auth.error_rate_limit'))
+          } else {
+            setError(err.message)
+          }
+          return
+        }
+        if (data.user) {
+          if (next && next !== '/') {
+            try { localStorage.setItem('auth_redirect', next) } catch (_) {}
+          }
+          setLoading(false)
+          await checkProfileAndRedirect(data.user.id)
+        }
+      } catch (e: any) {
         setLoading(false)
-        console.error('Login error:', err.message)
-        if (err.message.includes('Invalid login') || err.message.includes('invalid')) {
-          setError(t('auth.error_wrong_password'))
-        } else if (err.message.includes('Email not confirmed')) {
-          setError(t('auth.error_email_not_confirmed'))
-        } else if (err.message.includes('rate limit')) {
-          setError(t('auth.error_rate_limit'))
+        if (e?.message === 'AUTH_TIMEOUT') {
+          console.error('Login timeout')
+          setError(t('auth.error_timeout'))
         } else {
-          setError(err.message)
+          console.error('Login unexpected error:', e)
+          setError(e?.message || 'Unknown error')
         }
-        return
-      }
-      if (data.user) {
-        if (next && next !== '/') {
-          try { localStorage.setItem('auth_redirect', next) } catch (_) {}
-        }
-        setLoading(false)
-        await checkProfileAndRedirect(data.user.id)
       }
     }
   }
@@ -122,23 +156,34 @@ export default function LoginPage() {
     if (!validateEmail(trimmed)) { setError(t('auth.error_invalid_email')); return }
     if (cooldown > 0) return
     setLoading(true)
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email: trimmed,
-      options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + next },
-    })
-    if (err) {
+    try {
+      const { error: err } = await withTimeout(supabase.auth.signInWithOtp({
+        email: trimmed,
+        options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + next },
+      }))
+      if (err) {
+        setLoading(false)
+        console.error('Magic link error:', err.message)
+        if (err.message.includes('rate limit')) setError(t('auth.error_rate_limit'))
+        else setError(err.message)
+        return
+      }
+      setMagicLinkSent(true)
       setLoading(false)
-      console.error('Magic link error:', err.message)
-      if (err.message.includes('rate limit')) setError(t('auth.error_rate_limit'))
-      else setError(err.message)
-      return
+      if (next && next !== '/') {
+        try { localStorage.setItem('auth_redirect', next) } catch (_) {}
+      }
+      setCooldown(60)
+    } catch (e: any) {
+      setLoading(false)
+      if (e?.message === 'AUTH_TIMEOUT') {
+        console.error('Magic link timeout')
+        setError(t('auth.error_timeout'))
+      } else {
+        console.error('Magic link unexpected error:', e)
+        setError(e?.message || 'Unknown error')
+      }
     }
-    setMagicLinkSent(true)
-    setLoading(false)
-    if (next && next !== '/') {
-      try { localStorage.setItem('auth_redirect', next) } catch (_) {}
-    }
-    setCooldown(60)
   }
 
   async function handleGoogle() {
@@ -153,11 +198,20 @@ export default function LoginPage() {
   async function quickDevLogin(account: string) {
     const email = `${account}@fluidz.test`
     setDevLoading(account)
-    const { data, error: err } = await supabase.auth.signInWithPassword({ email, password: 'testpass123' })
-    if (err) { showToast(err.message, 'error'); setDevLoading(''); return }
-    if (data.user) {
-      await supabase.from('user_profiles').upsert({ id: data.user.id, display_name: account.charAt(0).toUpperCase() + account.slice(1) })
-      navigate(next)
+    try {
+      const { data, error: err } = await withTimeout(supabase.auth.signInWithPassword({ email, password: 'testpass123' }))
+      if (err) { showToast(err.message, 'error'); setDevLoading(''); return }
+      if (data.user) {
+        await supabase.from('user_profiles').upsert({ id: data.user.id, display_name: account.charAt(0).toUpperCase() + account.slice(1) })
+        navigate(next)
+      }
+    } catch (e: any) {
+      if (e?.message === 'AUTH_TIMEOUT') {
+        showToast(t('auth.error_timeout'), 'error')
+      } else {
+        console.error('Dev login error:', e)
+        showToast(e?.message || 'Unknown error', 'error')
+      }
     }
     setDevLoading('')
   }

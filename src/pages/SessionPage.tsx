@@ -72,7 +72,7 @@ export default function SessionPage() {
     // Handle special tab actions
     if (tab === 'apply') {
       if (!d.currentUser) {
-        navigate('/login?return=/session/' + d.id)
+        navigate('/login?next=/session/' + d.id + '/apply')
         return
       }
       navigate('/session/' + d.id + '/apply')

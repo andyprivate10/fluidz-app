@@ -34,7 +34,7 @@ export default function ChatsHubPage() {
   const searchTimer = useRef<ReturnType<typeof setTimeout>>(null)
 
   const loadThreads = useCallback(async () => {
-    if (!user) { navigate('/login'); return }
+    if (!user) { navigate('/login?next=/chats'); return }
 
     const [{ data: hosted }, { data: applied }, { data: dmPeerMsgs }] = await Promise.all([
       supabase.from('sessions').select('id, title, host_id, template_slug, cover_url').eq('host_id', user.id),

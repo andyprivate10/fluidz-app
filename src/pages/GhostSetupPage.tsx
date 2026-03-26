@@ -281,7 +281,7 @@ export default function GhostSetupPage() {
             <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: '0 0 4px' }}>{t('ghost.prefer_real_account')}</p>
             <p style={{ fontSize: 11, color: S.tx3, margin: '0 0 10px' }}>{t('ghost.real_account_benefit')}</p>
             <button
-              onClick={() => navigate('/login' + (sessionId ? '?return=/session/' + sessionId + '/apply' : inviteCode ? '?return=/join/' + inviteCode : ''))}
+              onClick={() => navigate('/login' + (sessionId ? '?next=/session/' + sessionId + '/apply' : inviteCode ? '?next=/join/' + inviteCode : ''))}
               style={{ padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, cursor: 'pointer' }}
             >
               {t('ghost.create_account_cta')}
