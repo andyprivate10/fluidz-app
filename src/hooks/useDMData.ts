@@ -29,7 +29,7 @@ export function useDMData() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string; lineup_json?: { directions?: string[] } } | null>(null)
+  const [session, setSession] = useState<{ title: string; exact_address: string | null; host_id: string; lineup_json?: { directions?: string[] }; status?: string } | null>(null)
   const [appStatus, setAppStatus] = useState<string | null>(null)
   const [peerId, setPeerId] = useState<string | null>(peerIdParam || null)
   const [peerName, setPeerName] = useState<string>('')
@@ -77,7 +77,7 @@ export function useDMData() {
 
         const { data: sess, error: sessErr } = await supabase
           .from('sessions')
-          .select('title,exact_address,host_id,lineup_json')
+          .select('title,exact_address,host_id,lineup_json,status')
           .eq('id', id)
           .single()
         if (sessErr) throw sessErr

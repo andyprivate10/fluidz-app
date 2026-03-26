@@ -146,56 +146,64 @@ export default function DMPage() {
         typingUsers={d.typingUsers}
       />
 
-      {/* Reply quote bar */}
-      {d.replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{d.replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{d.replyTo.text}</p></div><button onClick={() => d.setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
-      {/* Emoji bar */}
-      {d.showEmojiBar && (
-        <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
-          <EmojiBar onSelect={e => { d.setNewMessage(prev => prev + e); d.setShowEmojiBar(false) }} />
+      {d.session?.status === 'ended' ? (
+        <div style={{ padding: '14px 16px', background: 'rgba(5,4,10,0.92)', borderTop: '1px solid '+S.rule, textAlign: 'center', flexShrink: 0 }}>
+          <p style={{ margin: 0, fontSize: 13, color: S.tx3 }}>{d.t('session.session_ended_title')}</p>
         </div>
+      ) : (
+        <>
+          {/* Reply quote bar */}
+          {d.replyTo && <div style={{padding:'8px 14px', background:'rgba(5,4,10,0.92)', borderTop:'1px solid '+S.rule, display:'flex', alignItems:'center', gap:8}}><div style={{flex:1,borderLeft:'3px solid '+S.p, padding:'4px 10px'}}><span style={{fontSize:10,color:S.p,fontWeight:700}}>{d.replyTo.sender_name}</span><p style={{fontSize:12,color:S.tx2,margin:'2px 0 0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{d.replyTo.text}</p></div><button onClick={() => d.setReplyTo(null)} style={{background:'none',border:'none',color:S.tx3,cursor:'pointer'}}><X size={14}/></button></div>}
+          {/* Emoji bar */}
+          {d.showEmojiBar && (
+            <div style={{ padding: '6px 14px 0', background: 'rgba(5,4,10,0.92)' }}>
+              <EmojiBar onSelect={e => { d.setNewMessage(prev => prev + e); d.setShowEmojiBar(false) }} />
+            </div>
+          )}
+          <div style={{
+            background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: d.showEmojiBar ? 'none' : '1px solid '+S.rule,
+            display: 'flex', gap: 8, flexShrink: 0,
+          }}>
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: d.uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: d.uploading ? 0.5 : 1 }}>
+              <Camera size={18} style={{ color: S.tx3 }} />
+              <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) d.handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={d.uploading} />
+            </label>
+            <button type="button" onClick={d.recording ? d.stopRecording : d.startRecording} disabled={d.uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: d.recording ? S.red : S.bg2, color: d.recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: d.recording ? 'pulse 1s infinite' : 'none' }}>
+              {d.recording ? '\u25A0' : '\u25CF'}
+            </button>
+            <button type="button" onClick={d.shareLocation} style={{ padding: '10px', borderRadius: 12, background: d.sharingLocation ? S.sagebg : S.bg2, color: d.sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: d.sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>
+              {d.sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
+            </button>
+            <button type="button" onClick={() => d.setShowEmojiBar(!d.showEmojiBar)} style={{ width: 44, height: 44, borderRadius: 12, background: d.showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (d.showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+              <Smile size={18} style={{ color: d.showEmojiBar ? S.p : S.tx3 }} />
+            </button>
+            <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
+            <input
+              type="text"
+              value={d.newMessage}
+              onChange={(e) => { d.setNewMessage(e.target.value); d.sendTyping() }}
+              onKeyDown={(e) => { if (e.key === 'Enter') { d.stopTyping(); d.handleSend() } }}
+              placeholder={d.uploading ? d.t('chat.sending_photo') : d.t('chat.send')}
+              style={{
+                flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
+                borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+              }}
+            />
+            <button
+              type="button"
+              onClick={d.handleSend}
+              style={{
+                padding: '12px 16px', background: S.grad, color: 'white',
+                border: 'none', borderRadius: 12, fontWeight: 700, cursor: 'pointer',
+                fontSize: 16,
+              }}
+            >
+              &rarr;
+            </button>
+          </div>
+        </>
       )}
-      <div style={{
-        background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 14, borderTop: d.showEmojiBar ? 'none' : '1px solid '+S.rule,
-        display: 'flex', gap: 8, flexShrink: 0,
-      }}>
-        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: d.uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: d.uploading ? 0.5 : 1 }}>
-          <Camera size={18} style={{ color: S.tx3 }} />
-          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) d.handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={d.uploading} />
-        </label>
-        <button type="button" onClick={d.recording ? d.stopRecording : d.startRecording} disabled={d.uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: d.recording ? S.red : S.bg2, color: d.recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: d.recording ? 'pulse 1s infinite' : 'none' }}>
-          {d.recording ? '\u25A0' : '\u25CF'}
-        </button>
-        <button type="button" onClick={d.shareLocation} style={{ padding: '10px', borderRadius: 12, background: d.sharingLocation ? S.sagebg : S.bg2, color: d.sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: d.sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>
-          {d.sharingLocation ? <MapPin size={16} strokeWidth={1.5} /> : <MapPin size={16} strokeWidth={1.5} />}
-        </button>
-        <button type="button" onClick={() => d.setShowEmojiBar(!d.showEmojiBar)} style={{ width: 44, height: 44, borderRadius: 12, background: d.showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (d.showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
-          <Smile size={18} style={{ color: d.showEmojiBar ? S.p : S.tx3 }} />
-        </button>
-        <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
-        <input
-          type="text"
-          value={d.newMessage}
-          onChange={(e) => { d.setNewMessage(e.target.value); d.sendTyping() }}
-          onKeyDown={(e) => { if (e.key === 'Enter') { d.stopTyping(); d.handleSend() } }}
-          placeholder={d.uploading ? d.t('chat.sending_photo') : d.t('chat.send')}
-          style={{
-            flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
-            borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-          }}
-        />
-        <button
-          type="button"
-          onClick={d.handleSend}
-          style={{
-            padding: '12px 16px', background: S.grad, color: 'white',
-            border: 'none', borderRadius: 12, fontWeight: 700, cursor: 'pointer',
-            fontSize: 16,
-          }}
-        >
-          &rarr;
-        </button>
-      </div>
       {d.chatLightbox && <ImageLightbox images={[d.chatLightbox]} onClose={() => d.setChatLightbox(null)} />}
       {d.menuMsg && <ChatMessageMenu message={d.menuMsg} isOwn={d.menuMsg.sender_id === d.currentUser?.id} onCopy={() => showToast(d.t('chat.copied'), 'success')} onReply={() => d.setReplyTo({ id: d.menuMsg!.id, text: d.menuMsg!.text, sender_name: d.menuMsg!.sender_name })} onDelete={d.menuMsg.sender_id === d.currentUser?.id ? () => { d.handleDeleteMessage(d.menuMsg!.id) } : undefined} onClose={() => d.setMenuMsg(null)} labels={{ copy: d.t('chat.copy_text'), reply: d.t('chat.reply'), delete: d.t('chat.delete_msg') }} />}
       {d.currentUser && (

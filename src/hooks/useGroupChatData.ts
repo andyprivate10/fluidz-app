@@ -40,7 +40,7 @@ export function useGroupChatData() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [session, setSession] = useState<{ title: string; host_id: string; group_chat_enabled: boolean } | null>(null)
+  const [session, setSession] = useState<{ title: string; host_id: string; group_chat_enabled: boolean; status?: string } | null>(null)
   const [members, setMembers] = useState<Member[]>([])
   const [myAcceptedAt, setMyAcceptedAt] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
@@ -66,7 +66,7 @@ export function useGroupChatData() {
     if (prof?.display_name) setDisplayName(prof.display_name)
 
     // Fetch session
-    const { data: sess } = await supabase.from('sessions').select('title,host_id,group_chat_enabled,template_slug,cover_url').eq('id', id).single()
+    const { data: sess } = await supabase.from('sessions').select('title,host_id,group_chat_enabled,template_slug,cover_url,status').eq('id', id).single()
     if (!sess) { setLoading(false); return }
     setSession(sess)
     setIsHost(user.id === sess.host_id)

@@ -201,8 +201,14 @@ export default function GroupChatPage() {
           <EmojiBar onSelect={e => { setNewMessage(prev => prev + e); setShowEmojiBar(false) }} />
         </div>
       )}
+      {/* Ended session banner */}
+      {session.status === 'ended' && (
+        <div style={{ padding: '14px 16px', background: 'rgba(5,4,10,0.92)', borderTop: '1px solid '+S.rule, textAlign: 'center', flexShrink: 0 }}>
+          <p style={{ margin: 0, fontSize: 13, color: S.tx3 }}>{t('session.session_ended_title')}</p>
+        </div>
+      )}
       {/* Input */}
-      {canChat && (session.group_chat_enabled || isHost) && (
+      {session.status !== 'ended' && canChat && (session.group_chat_enabled || isHost) && (
         <div style={{
           padding:'10px 16px', borderTop: showEmojiBar ? 'none' : '1px solid '+S.rule, background:'rgba(5,4,10,0.92)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
           paddingBottom:'calc(10px + env(safe-area-inset-bottom, 0px))',

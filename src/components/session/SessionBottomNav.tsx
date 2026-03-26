@@ -59,7 +59,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
 
   function handleClick(tab: Tab) {
     if (tab.id === 'back') {
-      navigate('/')
+      navigate('/sessions')
       return
     }
     onTabChange(tab.id)
