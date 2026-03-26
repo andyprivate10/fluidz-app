@@ -53,14 +53,13 @@ export default function BottomNav() {
   const location = useLocation()
   const { t } = useTranslation()
 
-  // Hide on standalone pages
-  const hiddenRoutes = ['/landing', '/login', '/onboarding', '/auth/callback', '/session/']
-  if (hiddenRoutes.some(r => location.pathname.startsWith(r))) return null
-
+  // ALL hooks MUST be above conditional returns (React rules of hooks)
   const [unreadNotifCount, setUnreadNotifCount] = useState(0)
   const [unreadChatCount, setUnreadChatCount] = useState(0)
   const [hasNewApplication, setHasNewApplication] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Hide logic moved AFTER all hooks (see below) to respect React rules of hooks
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -104,8 +103,8 @@ export default function BottomNav() {
     document.title = unreadNotifCount > 0 ? `(${unreadNotifCount}) Fluidz` : 'Fluidz'
   }, [unreadNotifCount])
 
-  // Hide on certain paths
-  const hidePaths = ['/login', '/onboarding', '/ghost/setup']
+  // Hide on certain paths (all conditional returns MUST be after all hooks)
+  const hidePaths = ['/login', '/onboarding', '/ghost/setup', '/landing', '/auth/callback']
   if (hidePaths.some(p => location.pathname.startsWith(p))) return null
   if (/\/(dm|chat)/.test(location.pathname) && !location.pathname.startsWith('/chats')) return null
   if (/^\/session\/[a-f0-9-]+/.test(location.pathname)) return null
