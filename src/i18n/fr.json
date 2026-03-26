@@ -581,6 +581,7 @@
     "error_wrong_password": "Email ou mot de passe incorrect",
     "error_rate_limit": "Trop de tentatives, attends quelques minutes",
     "error_network": "Erreur de connexion, vérifie ta connexion internet",
+    "error_email_not_confirmed": "Vérifie tes emails pour confirmer ton compte avant de te connecter",
     "error_account_exists": "Un compte existe déjà avec cet email",
     "error_password_mismatch": "Les mots de passe ne correspondent pas",
     "password_min": "6 caractères minimum",
@@ -665,7 +666,8 @@
     "continue_ghost": "Continuer en ghost",
     "convert_account": "Convertir en compte permanent",
     "pin_length": "Le code secret doit faire 4 chiffres",
-    "session_full": "Session complète"
+    "session_full": "Session complète",
+    "anon_auth_failed": "Profil ghost sauvegardé mais connexion auto échouée. Utilise l'inscription par email pour accéder à la session."
   },
   "host": {
     "dashboard": "Host Dashboard",

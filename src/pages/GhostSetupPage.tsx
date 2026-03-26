@@ -30,6 +30,7 @@ export default function GhostSetupPage() {
   const [loading, setLoading] = useState(false)
   const [ghostCode, setGhostCode] = useState('')
   const [ghostId, setGhostId] = useState('')
+  const [anonAuthFailed, setAnonAuthFailed] = useState(false)
   const { copied: codeCopied, copy: copyCode } = useCopyFeedback()
 
   async function handleCreate() {
@@ -69,12 +70,35 @@ export default function GhostSetupPage() {
       setGhostId(data.id)
     }
 
+    const finalGhostId = data?.id || ghostId
+    const finalGhostCode = data?.session_code || ghostCode
+
     // Store ghost info in localStorage for this session
     try {
-      localStorage.setItem('ghost_id', data?.id || ghostId)
-      localStorage.setItem('ghost_code', data?.session_code || ghostCode)
+      localStorage.setItem('ghost_id', finalGhostId)
+      localStorage.setItem('ghost_code', finalGhostCode)
       localStorage.setItem('ghost_name', displayName.trim())
     } catch (_) {}
+
+    // Create anonymous auth session so AuthContext.user is set
+    const { data: anonData, error: anonErr } = await supabase.auth.signInAnonymously()
+    if (anonErr) {
+      console.error('Anonymous auth failed:', anonErr.message)
+      // Show fallback — ghost row exists but no auth session
+      setAnonAuthFailed(true)
+      setStep('done')
+      setLoading(false)
+      return
+    }
+
+    // Create user_profiles row with display name
+    if (anonData.user) {
+      await supabase.from('user_profiles').upsert({
+        id: anonData.user.id,
+        display_name: displayName.trim(),
+        profile_json: { is_ghost: true, ghost_session_id: finalGhostId }
+      }, { onConflict: 'id' })
+    }
 
     setStep('done')
     setLoading(false)
@@ -193,6 +217,16 @@ export default function GhostSetupPage() {
 
         {step === 'done' && (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16, textAlign: 'center' }}>
+
+            {anonAuthFailed && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 14, background: S.orangebg, border: '1px solid ' + S.orangebd }}>
+                <Clock size={16} strokeWidth={1.5} style={{ color: S.orange, flexShrink: 0 }} />
+                <p style={{ fontSize: 12, fontWeight: 600, color: S.orange, margin: 0, lineHeight: 1.4 }}>
+                  {t('ghost.anon_auth_failed')}
+                </p>
+              </div>
+            )}
+
             <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid ' + S.sagebd, borderRadius: 20, padding: 24 }}>
               <div style={{ fontSize: 14, color: S.sage, fontWeight: 700, marginBottom: 16 }}>{t('ghost.title')}</div>
 

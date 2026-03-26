@@ -66,12 +66,13 @@ export default function LoginPage() {
       const { data, error: err } = await supabase.auth.signUp({ email: trimmed, password })
       if (err) {
         setLoading(false)
+        console.error('Signup error:', err.message)
         if (err.message.includes('already registered') || err.message.includes('already exists')) {
           setError(t('auth.error_account_exists'))
         } else if (err.message.includes('rate limit')) {
           setError(t('auth.error_rate_limit'))
         } else {
-          setError(t('auth.error_network'))
+          setError(err.message)
         }
         return
       }
@@ -92,12 +93,15 @@ export default function LoginPage() {
       const { data, error: err } = await supabase.auth.signInWithPassword({ email: trimmed, password })
       if (err) {
         setLoading(false)
+        console.error('Login error:', err.message)
         if (err.message.includes('Invalid login') || err.message.includes('invalid')) {
           setError(t('auth.error_wrong_password'))
+        } else if (err.message.includes('Email not confirmed')) {
+          setError(t('auth.error_email_not_confirmed'))
         } else if (err.message.includes('rate limit')) {
           setError(t('auth.error_rate_limit'))
         } else {
-          setError(t('auth.error_network'))
+          setError(err.message)
         }
         return
       }
@@ -123,8 +127,9 @@ export default function LoginPage() {
     })
     if (err) {
       setLoading(false)
+      console.error('Magic link error:', err.message)
       if (err.message.includes('rate limit')) setError(t('auth.error_rate_limit'))
-      else setError(t('auth.error_network'))
+      else setError(err.message)
       return
     }
     setMagicLinkSent(true)
