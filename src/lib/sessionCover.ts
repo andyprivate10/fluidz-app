@@ -69,33 +69,34 @@ const DEFAULT_GRADIENT = {
   overlay: 'rgba(224,136,122,0.06)',
 }
 
-// Rich SVG data-URL cover images per template type
-// Each is a dark, moody abstract pattern with radial gradients
+// Real cover photos from Supabase Storage
+const SUPABASE_COVERS = 'https://kxbrfjqxufvskcxmliak.supabase.co/storage/v1/object/public/templates/covers'
+
 const COVER_IMAGES: Record<string, string> = {
-  dark_room: '/covers/dark_room.svg',
-  powder_room: '/covers/powder_room.svg',
-  techno: '/covers/techno.svg',
-  after: '/covers/after.svg',
-  artsy: '/covers/artsy.svg',
-  basement: '/covers/basement.svg',
-  champagne_bath: '/covers/champagne_bath.svg',
-  drag: '/covers/drag.svg',
-  euphoria: '/covers/euphoria.svg',
-  jacuzzi: '/covers/jacuzzi.svg',
-  latex: '/covers/latex.svg',
-  leather: '/covers/leather.svg',
-  nature: '/covers/nature.svg',
-  pump: '/covers/pump.svg',
-  puppy: '/covers/puppy.svg',
-  reggae: '/covers/reggae.svg',
-  rooftop: '/covers/rooftop.svg',
-  rush: '/covers/rush.svg',
-  sauna: '/covers/sauna.svg',
-  secret_garden: '/covers/secret_garden.svg',
-  spectrum: '/covers/spectrum.svg',
-  vinyl: '/covers/vinyl.svg',
-  bears: '/covers/bears.svg',
-  party: '/covers/party.svg',
+  dark_room: `${SUPABASE_COVERS}/dark-room.jpg`,
+  powder_room: `${SUPABASE_COVERS}/powder-room.jpg`,
+  techno: `${SUPABASE_COVERS}/techno.jpg`,
+  after: `${SUPABASE_COVERS}/after.jpg`,
+  artsy: `${SUPABASE_COVERS}/artsy.jpg`,
+  basement: `${SUPABASE_COVERS}/basement.jpg`,
+  champagne_bath: `${SUPABASE_COVERS}/champagne-bath.jpg`,
+  drag: `${SUPABASE_COVERS}/drag.jpg`,
+  euphoria: `${SUPABASE_COVERS}/euphoria.jpg`,
+  jacuzzi: `${SUPABASE_COVERS}/jacuzzi.jpg`,
+  latex: `${SUPABASE_COVERS}/latex.jpg`,
+  leather: `${SUPABASE_COVERS}/leather.jpg`,
+  nature: `${SUPABASE_COVERS}/nature.jpg`,
+  pump: `${SUPABASE_COVERS}/pump.jpg`,
+  puppy: `${SUPABASE_COVERS}/puppy.jpg`,
+  reggae: `${SUPABASE_COVERS}/reggae.jpg`,
+  rooftop: `${SUPABASE_COVERS}/rooftop.jpg`,
+  rush: `${SUPABASE_COVERS}/rush.jpg`,
+  sauna: `${SUPABASE_COVERS}/sauna.jpg`,
+  secret_garden: `${SUPABASE_COVERS}/secret-garden.jpg`,
+  spectrum: `${SUPABASE_COVERS}/spectrum.jpg`,
+  vinyl: `${SUPABASE_COVERS}/vinyl.jpg`,
+  bears: `${SUPABASE_COVERS}/bears.jpg`,
+  party: `${SUPABASE_COVERS}/party.jpg`,
 }
 
 // Map template slugs to tag-based matching
