@@ -208,7 +208,7 @@ export function useCreateSession() {
         })
       }
       // Navigate directly to host dashboard recruit tab
-      navigate(`/session/${data.id}/host?tab=recruit`)
+      navigate(`/session/${data.id}`)
     }
   }
 

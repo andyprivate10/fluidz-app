@@ -137,7 +137,7 @@ export default function DevTestMenu() {
 
   const goHost = async () => {
     const u = await login("marcus@fluidz.test");
-    if (u && sessionId) navigate("/session/" + sessionId + "/host");
+    if (u && sessionId) navigate("/session/" + sessionId);
   };
   const goMember = async () => {
     const u = await login("karim@fluidz.test");
@@ -230,7 +230,7 @@ WHERE email IN (
           <p style={{ color: "#7e7694", fontSize: 12, marginBottom: 8 }}>LIENS DIRECTS</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
             <button onClick={() => navigate("/session/" + sessionId)} style={{ ...btn, fontSize: 12 }}>Session (vue candidat)</button>
-            <button onClick={() => navigate("/session/" + sessionId + "/host")} style={{ ...btn, fontSize: 12 }}>Host Dashboard</button>
+            <button onClick={() => navigate("/session/" + sessionId)} style={{ ...btn, fontSize: 12 }}>Host Dashboard</button>
             <button onClick={() => navigate("/session/" + sessionId + "/apply")} style={{ ...btn, fontSize: 12 }}>Apply Page</button>
             <button onClick={() => navigate("/session/" + sessionId + "/dm")} style={{ ...btn, fontSize: 12 }}>DM</button>
             <button onClick={() => navigate("/session/" + sessionId + "/chat")} style={{ ...btn, fontSize: 12 }}>Group Chat</button>

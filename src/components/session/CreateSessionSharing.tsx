@@ -200,7 +200,7 @@ export default function CreateSessionSharing({
           {templateSaved ? <><Check size={14} strokeWidth={2.5} /> {t('session.template_saved')}</> : <><Bookmark size={14} strokeWidth={1.5} /> {t('session.save_as_template')}</>}
         </button>
 
-        <button onClick={() => navigate('/session/' + createdSession.id + '/host')} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
+        <button onClick={() => navigate('/session/' + createdSession.id)} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
           {t('session.go_to_session')}
         </button>
       </div>

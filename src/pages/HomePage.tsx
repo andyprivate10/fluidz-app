@@ -204,7 +204,7 @@ export default function HomePage() {
           <SessionInfoCard
             session={{ id: latestHost.id, title: latestHost.title, status: 'open', approx_area: latestHost.approx_area, tags: latestHost.tags, cover_url: latestHost.cover_url, template_slug: latestHost.template_slug }}
             memberCount={latestHost.member_count ? latestHost.member_count - 1 : undefined}
-            onClick={() => navigate('/session/' + latestHost.id + '/host')}
+            onClick={() => navigate('/session/' + latestHost.id)}
             label={t('home.your_session')}
             labelColor={S.p}
           />

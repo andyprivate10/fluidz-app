@@ -101,7 +101,7 @@ export default function CandidateProfilePage() {
       }
     }
 
-    navigate('/session/' + sessionId + '/host')
+    navigate('/session/' + sessionId + '?tab=candidates')
     setActioning(false)
   }
 

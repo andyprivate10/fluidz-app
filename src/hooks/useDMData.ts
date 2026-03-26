@@ -99,7 +99,7 @@ export function useDMData() {
             // Host: peerId must come from URL params
             if (!pid) {
               // Redirect to host dashboard if no peer specified
-              navigate('/session/' + id + '/host')
+              navigate('/session/' + id + '?tab=chat')
               return
             }
           } else {

@@ -87,7 +87,7 @@ export default function EditSessionPage() {
       showToast(t('errors.error_prefix') + ': ' + error.message, 'error')
     } else {
       showToast(t('common.saved') || 'Saved', 'success')
-      navigate('/session/' + id + '/host')
+      navigate('/session/' + id)
     }
     setSaving(false)
   }

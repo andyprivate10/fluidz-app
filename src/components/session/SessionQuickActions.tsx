@@ -81,7 +81,7 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
       )}
       {eventRole === 'host' && (
         <>
-          <button onClick={() => navigate('/session/' + sessionId + '/host')} style={{ ...qBtn, borderColor: S.pbd, background: S.p2 }}>
+          <button onClick={() => navigate('/session/' + sessionId + '?tab=candidates')} style={{ ...qBtn, borderColor: S.pbd, background: S.p2 }}>
             <Users size={16} strokeWidth={1.5} style={{ color: S.p }} />
             <span style={{ ...qLabel, color: S.p }}>{pendingCount > 0 ? t('session.candidates_count', { count: pendingCount }) : t('session.candidates')}</span>
           </button>

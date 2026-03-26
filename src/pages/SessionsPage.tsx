@@ -120,7 +120,7 @@ export default function SessionsPage() {
         {hostedOpen.length > 0 && (
           <>
             {sectionLabel(t('sessions.my_hosted'), S.p)}
-            {hostedOpen.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id + '/host')))}
+            {hostedOpen.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
           </>
         )}
 
