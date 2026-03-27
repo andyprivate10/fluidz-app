@@ -203,7 +203,7 @@ export function useSessionData() {
     } catch {
       setLoadError(true)
     }
-  }, [id])
+  }, [id, authUser?.id])
 
   useEffect(() => {
     setLoadError(false)
