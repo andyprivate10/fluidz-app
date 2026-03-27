@@ -61,6 +61,7 @@ export default function SessionInfoCard({
         overflow: 'hidden',
         position: 'relative',
         cursor: 'pointer',
+        opacity: isEnded ? 0.7 : 1,
       }}
     >
       {cover.coverImage && (

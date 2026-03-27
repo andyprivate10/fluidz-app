@@ -75,7 +75,7 @@ export default function SessionsPage() {
   const renderAppCard = (app: AppSession, extraBadge?: string) => (
     <SessionInfoCard
       key={app.session_id}
-      session={{ id: app.session_id, title: app.title, status: app.session_status || 'open', approx_area: app.approx_area, tags: app.tags, cover_url: app.cover_url, template_slug: app.template_slug }}
+      session={{ id: app.session_id, title: app.title, status: app.session_status ?? 'open', approx_area: app.approx_area, tags: app.tags, cover_url: app.cover_url, template_slug: app.template_slug }}
       compact
       showCapacity={false}
       label={extraBadge}
@@ -105,9 +105,9 @@ export default function SessionsPage() {
         onClick={() => setActiveTab(tab)}
         style={{
           flex: 1, padding: '9px 0', border: 'none', cursor: 'pointer',
-          borderRadius: R.block,
+          borderRadius: R.chip,
           background: active ? S.p : 'transparent',
-          color: active ? '#fff' : S.tx2,
+          color: active ? '#fff' : S.tx3,
           ...typeStyle('label'),
           fontSize: 13, fontWeight: active ? 700 : 500,
           transition: 'all 0.2s ease',
@@ -124,13 +124,13 @@ export default function SessionsPage() {
       {pullIndicator}
 
       {/* Header */}
-      <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 16px', borderBottom: `1px solid ${S.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 10, padding: '48px 20px 16px', borderBottom: `1px solid ${S.rule}`, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <h1 style={{ ...typeStyle('title'), color: S.tx, margin: 0 }}>{t('sessions.title')}</h1>
       </div>
 
       {/* Tabs */}
-      <div style={{ position: 'relative', zIndex: 1, padding: '12px 20px 0', display: 'flex', gap: 4, background: S.bg1, borderBottom: `1px solid ${S.rule}`, borderRadius: `0 0 ${R.block} ${R.block}` }}>
-        <div style={{ display: 'flex', width: '100%', gap: 4, background: S.bg1, borderRadius: R.block, padding: 3, border: `1px solid ${S.rule}` }}>
+      <div style={{ position: 'sticky', top: 73, zIndex: 10, padding: '12px 20px 12px', display: 'flex', gap: 4, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: `1px solid ${S.rule}` }}>
+        <div style={{ display: 'flex', width: '100%', gap: 4, background: S.bg2, borderRadius: R.block, padding: 3, border: `1px solid ${S.rule}` }}>
           {tabBtn('nearby', t('sessions.tab_nearby'))}
           {tabBtn('ended', t('sessions.tab_ended'))}
         </div>
