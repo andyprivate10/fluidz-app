@@ -77,10 +77,10 @@ export default function DMPage() {
       {d.showCheckInBanner && !d.showCheckInConfirmed && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.sage, fontWeight: 600, textAlign: 'center', marginBottom: 10 }}>
-            Tu as été accepté(e) ! Clique quand tu arrives.
+            {d.t('dm.checkin_banner')}
           </div>
           <button onClick={d.handleCheckIn} style={{ width: '100%', padding: 12, borderRadius: 12, fontSize: 14, fontWeight: 700, color: 'white', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer' }}>
-            Je suis là
+            {d.t('dm.checkin_button')}
           </button>
         </div>
       )}
@@ -94,7 +94,7 @@ export default function DMPage() {
       {!d.isHost && d.appStatus === 'rejected' && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.redbg, border: '1px solid '+S.redbd, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 13, color: S.red, fontWeight: 600, textAlign: 'center' }}>
-            Candidature refusee
+            {d.t('dm.application_rejected')}
           </div>
         </div>
       )}
@@ -103,7 +103,7 @@ export default function DMPage() {
       {d.isAccepted && d.session?.exact_address && (
         <div style={{ margin: '12px 16px 0', padding: 14, background: S.sagebg, border: '1px solid '+S.sage, borderRadius: 12, flexShrink: 0 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: S.sage, marginBottom: 4 }}>
-            Adresse revelee
+            {d.t('dm.address_revealed')}
           </div>
           <div style={{ fontSize: 14, color: S.tx, fontWeight: 600 }}>
             {d.session.exact_address}
@@ -118,7 +118,7 @@ export default function DMPage() {
           </div>
           {d.session.lineup_json?.directions && d.session.lineup_json.directions.length > 0 && (
             <div style={{ padding: '8px 16px 0' }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx2, margin: '0 0 4px' }}>ACCÈS</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.tx2, margin: '0 0 4px' }}>{d.t('dm.access_directions')}</p>
               {d.session.lineup_json.directions.map((step: any, i: number) => {
                 const text = typeof step === 'string' ? step : step.text
                 const photo = typeof step === 'string' ? undefined : step.photo_url

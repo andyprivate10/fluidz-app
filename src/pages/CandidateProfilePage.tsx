@@ -179,7 +179,7 @@ export default function CandidateProfilePage() {
           {/* Profil photos */}
           {photosProfil.length > 0 && (
             <>
-              {hasAdulteMedia && <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>Profil</p>}
+              {hasAdulteMedia && <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('profile.profile')}</p>}
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosProfil.map((url: string, i: number) => (
                   <LazyImage key={i} src={url} style={{ width: photosProfil.length === 1 && !hasAdulteMedia ? '100%' : 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.rule }} />
@@ -190,7 +190,7 @@ export default function CandidateProfilePage() {
           {/* Adulte photos/videos */}
           {hasAdulteMedia && (
             <>
-              <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>Adulte</p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '8px 0 6px' }}>{t('profile.adult')}</p>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
                 {photosAdulte.map((url: string, i: number) => (
                   <img key={'a' + i} src={url} alt="" loading="lazy" onClick={() => setLightbox({ images: photosAdulte, index: i })} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd, cursor: 'zoom-in' }} />
@@ -198,7 +198,7 @@ export default function CandidateProfilePage() {
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
                     <video src={url} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
-                    <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+                    <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
                   </div>
                 ))}
               </div>
@@ -213,7 +213,7 @@ export default function CandidateProfilePage() {
               {candidateVideos.map((url: string, i: number) => (
                 <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
                   <video src={url} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', border: '1px solid ' + S.rule }} />
-                  <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>vidéo</div>
+                  <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
                 </div>
               ))}
             </div>
@@ -281,7 +281,7 @@ export default function CandidateProfilePage() {
 
         {/* ── BLOC 1: PROFIL ── */}
         <div style={{ marginBottom: 6 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>Profil</p>
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>{t('profile.profile')}</p>
 
           {/* Bio */}
           {bio && (
@@ -307,7 +307,7 @@ export default function CandidateProfilePage() {
         {/* ── BLOC 2: ADULTE ── */}
         {(kinks.length > 0 || limits || hasAdulteMedia || (health.prep_status || health.dernier_test)) && (
           <div style={{ marginBottom: 6 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>Adulte</p>
+            <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>{t('profile.adult')}</p>
 
             {/* Body part photos grid */}
             {pj.body_part_photos && Object.keys(pj.body_part_photos).length > 0 && (

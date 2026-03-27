@@ -53,7 +53,7 @@ export default function GroupChatPage() {
     return (
       <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12, padding:24 }}>
         <Shield size={32} style={{ color:S.tx3 }} />
-        <p style={{ color:S.tx, fontSize:16, fontWeight:600, textAlign:'center' }}>Group chat pas encore activé</p>
+        <p style={{ color:S.tx, fontSize:16, fontWeight:600, textAlign:'center' }}>{t('chat.group_not_enabled')}</p>
         <p style={{ color:S.tx3, fontSize:13, textAlign:'center' }}>{t('chat.host_must_enable')}</p>
         <button onClick={() => navigate('/session/' + id)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back_to_session')}</button>
       </div>
@@ -143,7 +143,7 @@ export default function GroupChatPage() {
       {/* No-history notice */}
       {myAcceptedAt && messages.length === 0 && (
         <div style={{ padding:16, textAlign:'center' }}>
-          <p style={{ color:S.tx3, fontSize:13 }}>Pas de messages depuis ton arrivée.</p>
+          <p style={{ color:S.tx3, fontSize:13 }}>{t('chat.no_messages_yet')}</p>
         </div>
       )}
 

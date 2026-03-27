@@ -322,7 +322,9 @@
     "send_error": "Send error",
     "group_chat_on": "Group chat enabled",
     "group_chat_off": "Group chat disabled",
-    "checkin_required": "Access restricted to members after check-in"
+    "checkin_required": "Access restricted to members after check-in",
+    "group_not_enabled": "Group chat not yet enabled",
+    "no_messages_yet": "No messages since you joined."
   },
   "profile": {
     "account": "Account",
@@ -1117,7 +1119,12 @@
     "share_template": "Share a template",
     "past_sessions": "Your past sessions",
     "use_template": "Use this template",
-    "template_shared": "Template shared"
+    "template_shared": "Template shared",
+    "checkin_banner": "You've been accepted! Tap when you arrive.",
+    "checkin_button": "I'm here",
+    "application_rejected": "Application rejected",
+    "address_revealed": "Address revealed",
+    "access_directions": "ACCESS"
   },
   "landing": {
     "nav_features": "Features",
