@@ -49,10 +49,13 @@ export function useGroupChatData() {
   const [canChat, setCanChat] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const currentUserRef = useRef<User | null>(null)
 
   useEffect(() => {
     if (!id) return
-    init()
+    let cleanup: (() => void) | undefined
+    init().then(fn => { cleanup = fn })
+    return () => { cleanup?.() }
   }, [id])
 
   async function init() {
@@ -60,6 +63,7 @@ export function useGroupChatData() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { navigate('/me?next=/session/' + id + '/chat'); return }
     setCurrentUser(user)
+    currentUserRef.current = user
 
     // Fetch user display name
     const { data: prof } = await supabase.from('user_profiles').select('display_name').eq('id', user.id).maybeSingle()
@@ -140,7 +144,7 @@ export function useGroupChatData() {
         const msg = payload.new as Message & { room_type?: string }
         if (msg.room_type === 'group') {
           setMessages(prev => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
-          if (msg.sender_id !== currentUser?.id) notifyUser('message')
+          if (msg.sender_id !== currentUserRef.current?.id) notifyUser('message')
         }
       })
       .subscribe()
@@ -210,7 +214,7 @@ export function useGroupChatData() {
         const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
         if (blob.size < 100) return
         setUploading(true)
-        const { data: { user: u } } = await supabase.auth.getUser()
+        const u = currentUserRef.current
         if (!u) { setUploading(false); return }
         const path = u.id + '/audio_' + Date.now() + '.webm'
         const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })

@@ -242,7 +242,7 @@ export default function CandidateProfilePage() {
               {!eps.is_phantom && <VibeScoreBadge userId={app.applicant_id} />}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-              {age && <span style={{ fontSize: 13, color: S.tx3 }}>{age} ans</span>}
+              {age && <span style={{ fontSize: 13, color: S.tx3 }}>{age} {t('profile.age_years')}</span>}
               {location && <span style={{ fontSize: 13, color: S.tx3 }}>· {location}</span>}
             </div>
             {role && (
@@ -271,8 +271,8 @@ export default function CandidateProfilePage() {
           }}>
             {t('status.' + (app.status || 'pending'))}
           </span>
-          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Story</button>
-          {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>Ghost</span>}
+          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{t('profile.story')}</button>
+          {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>{t('common.ghost')}</span>}
           {!eps.is_phantom && <AddContactButton targetUserId={app.applicant_id} />}
         </div>
       </div>
@@ -317,7 +317,7 @@ export default function CandidateProfilePage() {
                   {Object.entries(pj.body_part_photos as Record<string, string | string[]>).map(([part, val]) => {
                     const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
                     if (urls.length === 0) return null
-                    const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
+                    const labelMap: Record<string, string> = { torso: t('body_parts.torso'), sex: t('body_parts.sex'), butt: t('body_parts.butt'), feet: t('body_parts.feet'), torse: t('body_parts.torso'), bite: t('body_parts.sex'), cul: t('body_parts.butt'), pieds: t('body_parts.feet') }
                     return (
                       <div key={part} style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid ' + S.rule2, background: 'rgba(22,20,31,0.85)' }}>
                         <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.04em', padding: '8px 10px 4px', margin: 0 }}>{labelMap[part] || part}</p>
@@ -398,7 +398,7 @@ export default function CandidateProfilePage() {
         {/* ── BLOC 3: SESSION ── */}
         {(messageText || eps.occasion_note) && (
           <div style={{ marginBottom: 6 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>Session</p>
+            <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>{t('nav.sessions')}</p>
 
             {/* Message au host */}
             {messageText && (

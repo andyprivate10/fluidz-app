@@ -114,7 +114,7 @@ export default function ExplorePage() {
         // Load public sessions nearby
         const delta = 0.15
         const { data: pubSess } = await supabase.from('sessions')
-          .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at, max_capacity, starts_at, ends_at')
+          .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at, max_capacity, starts_at, ends_at, template_slug')
           .eq('is_public', true).eq('status', 'open')
           .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
           .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
@@ -148,7 +148,7 @@ export default function ExplorePage() {
   async function loadNearbySessions(lat: number, lng: number) {
     const delta = 0.15
     const { data: pubSess } = await supabase.from('sessions')
-      .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at')
+      .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at, template_slug')
       .eq('is_public', true).eq('status', 'open')
       .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
       .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
@@ -383,7 +383,7 @@ export default function ExplorePage() {
                     {p.prep === 'Actif' && <Shield size={9} strokeWidth={2} style={{ color: S.sage }} />}
                     {myHomeCountry && p.home_country && p.home_country !== myHomeCountry && (
                       <span style={{ fontSize: 8, fontWeight: 700, color: S.lav, background: S.lavbg, padding: '1px 5px', borderRadius: 99, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 2 }}>
-                        <Globe size={7} strokeWidth={2} />Visitor
+                        <Globe size={7} strokeWidth={2} />{t('explore.visitor')}
                       </span>
                     )}
                   </div>

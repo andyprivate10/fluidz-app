@@ -97,7 +97,7 @@ export default function GroupChatPage() {
             color: session.group_chat_enabled ? S.sage : S.p,
             border:'1px solid ' + (session.group_chat_enabled ? S.sagebd : S.pbd),
           }}>
-            {session.group_chat_enabled ? 'ON' : 'OFF'}
+            {session.group_chat_enabled ? t('common.on') : t('common.off')}
           </button>
         )}
       </div>
@@ -109,7 +109,7 @@ export default function GroupChatPage() {
             {/* Host */}
             <div style={{ display:'flex', alignItems:'center', gap:6, padding:'4px 10px', background:S.bg2, borderRadius:99 }}>
               <div style={{ width:6, height:6, borderRadius:'50%', background:S.p }} />
-              <span style={{ fontSize:12, color:S.tx2 }}>Host</span>
+              <span style={{ fontSize:12, color:S.tx2 }}>{t('session.host')}</span>
             </div>
             {members.map(m => (
               <button key={m.applicant_id} onClick={() => navigate('/profile/' + m.applicant_id)} style={{
@@ -124,7 +124,7 @@ export default function GroupChatPage() {
                   </div>
                 )}
                 <span style={{ fontSize:12, color:S.tx2 }}>{m.display_name}</span>
-                {m.status === 'checked_in' || (m.status === 'accepted' && (m as any).checked_in) && <div style={{ width:6, height:6, borderRadius:'50%', background:S.sage }} />}
+                {(m.status === 'checked_in' || (m.status === 'accepted' && (m as any).checked_in)) && <div style={{ width:6, height:6, borderRadius:'50%', background:S.sage }} />}
               </button>
             ))}
           </div>

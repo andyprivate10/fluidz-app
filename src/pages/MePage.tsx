@@ -112,7 +112,7 @@ export default function MePage() {
         </div>
         <div style={{ display:'flex', gap:8, marginTop:12 }}>
           <button onClick={() => navigate('/profile/' + user.id)} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.pbd, color:S.p, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
-            <Eye size={14} strokeWidth={1.5} /> Voir profil
+            <Eye size={14} strokeWidth={1.5} /> {d.t('profile.see_profile')}
           </button>
           <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/profile/' + user.id); showToast(t('session.link_copied'), 'success') }} style={{ flex:1, padding:'10px 14px', borderRadius:12, background:S.bg1, border:'1px solid '+S.rule, color:S.tx2, fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
             <Share2 size={14} strokeWidth={1.5} />{t('common.share_label')}

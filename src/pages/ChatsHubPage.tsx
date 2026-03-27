@@ -77,7 +77,7 @@ export default function ChatsHubPage() {
     if (peerIds.length > 0) {
       const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', peerIds)
       const profMap = new Map<string, { name: string; avatar?: string; lastActive?: string }>()
-      ;(profiles || []).forEach((p: any) => profMap.set(p.id, { name: p.display_name || 'Anonyme', avatar: p.profile_json?.avatar_url, lastActive: p.profile_json?.last_active }))
+      ;(profiles || []).forEach((p: any) => profMap.set(p.id, { name: p.display_name || t('common.anonymous'), avatar: p.profile_json?.avatar_url, lastActive: p.profile_json?.last_active }))
       for (const t of threadMap.values()) {
         if (t.peerId && profMap.has(t.peerId)) { const p = profMap.get(t.peerId)!; t.peerName = p.name; t.peerAvatar = p.avatar; t.peerLastActive = p.lastActive }
       }
@@ -197,7 +197,7 @@ export default function ChatsHubPage() {
                 <Compass size={12} /> {t('chat.explore')}
               </button>
               <button onClick={() => navigate('/sessions')} style={{ padding: '8px 16px', borderRadius: R.chip, ...typeStyle('label'), color: S.tx3, border: `1px solid ${S.rule}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Zap size={12} /> Sessions
+                <Zap size={12} /> {t('nav.sessions')}
               </button>
             </div>
           </div>

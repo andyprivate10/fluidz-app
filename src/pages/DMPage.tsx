@@ -34,7 +34,7 @@ export default function DMPage() {
           ) : null}
           <div>
             <h1 style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>
-              {d.peerName || (d.session?.title ?? 'DM')}
+              {d.peerName || (d.session?.title ?? d.t('dm.title'))}
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               {d.peerRole && <span style={{ fontSize: 11, color: S.p, fontWeight: 600 }}>{d.peerRole}</span>}
@@ -113,7 +113,7 @@ export default function DMPage() {
               <Copy size={11} strokeWidth={1.5} style={{marginRight:2}} />{d.t('common.copy_label')}
             </button>
             <button onClick={() => { window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.session!.exact_address || ''), '_blank') }} style={{ flex: 1, padding: '6px', borderRadius: 8, fontSize: 11, fontWeight: 600, color: S.blue, border: '1px solid '+S.bluebd, background: 'transparent', cursor: 'pointer' }}>
-              <Map size={11} strokeWidth={1.5} style={{marginRight:2}} /> Maps
+              <Map size={11} strokeWidth={1.5} style={{marginRight:2}} /> {d.t('common.maps')}
             </button>
           </div>
           {d.session.lineup_json?.directions && d.session.lineup_json.directions.length > 0 && (

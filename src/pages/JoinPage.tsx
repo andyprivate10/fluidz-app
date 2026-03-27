@@ -127,7 +127,7 @@ export default function JoinPage() {
         user_id: session.host_id,
         session_id: session.id,
         type: 'direct_join',
-        title: `${name} a rejoint (invite directe)`,
+        title: t('host.direct_join_title', { name }),
         body: t('host.auto_accepted'),
         href: `/session/${session.id}/host`,
       })
@@ -154,15 +154,15 @@ export default function JoinPage() {
 
   // Direct invite but not logged in → redirect to login
   if (isDirect && !user && status === 'found') {
-    navigate('/login?next=/join/' + code + '%3Fdirect%3D1')
+    navigate('/login?next=' + encodeURIComponent('/join/' + code + '?direct=1'))
     return null
   }
 
   const statusLabels: Record<string, { text: string; color: string }> = {
-    pending: { text: t('join.status_pending'), color: S.orange },
-    accepted: { text: t('join.status_accepted'), color: S.sage },
+    pending: { text: 'pending', color: S.orange },
+    accepted: { text: 'accepted', color: S.sage },
     checked_in: { text: 'check_in_confirmed', color: S.sage },
-    rejected: { text: t('status.not_retained'), color: S.red },
+    rejected: { text: 'not_retained', color: S.red },
   }
 
   return (
@@ -251,7 +251,7 @@ export default function JoinPage() {
                 ) : (
                   <div style={{width:28,height:28,borderRadius:'50%',background:S.p2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
                 )}
-                <span style={{fontSize:13,color:S.tx3}}>par <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:S.pbd}}>{hostName}</span></span>
+                <span style={{fontSize:13,color:S.tx3}}>{t('session.hosted_by')} <span style={{color:S.p,fontWeight:600,textDecoration:'underline',textDecorationColor:S.pbd}}>{hostName}</span></span>
               </button>
             )}
 

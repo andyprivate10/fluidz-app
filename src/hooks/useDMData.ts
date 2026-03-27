@@ -77,7 +77,7 @@ export function useDMData() {
 
         const { data: sess, error: sessErr } = await supabase
           .from('sessions')
-          .select('title,exact_address,host_id,lineup_json,status')
+          .select('title,exact_address,host_id,lineup_json,status,template_slug')
           .eq('id', id)
           .single()
         if (sessErr) throw sessErr
@@ -184,13 +184,13 @@ export function useDMData() {
         const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
         if (blob.size < 100) return
         setUploading(true)
-        const { data: { user: u } } = await supabase.auth.getUser()
+        const u = currentUser
         if (!u) { setUploading(false); return }
         const path = `${u.id}/audio_${Date.now()}.webm`
         const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
         if (error) { setUploading(false); return }
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-        const name = displayName || u.email || 'Moi'
+        const name = displayName || u.email || t('common.me')
         await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '\u{1F3A4} Audio', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id, has_media: true, media_urls: [publicUrl] })
         setUploading(false)
       }
@@ -212,24 +212,24 @@ export function useDMData() {
       if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current)
       locationWatchRef.current = null
       setSharingLocation(false)
-      const { data: { user: u } } = await supabase.auth.getUser()
+      const u = currentUser
       if (u) {
-        const name = displayName || u.email || 'Moi'
-        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '\u{1F4CD} Partage de position termin\u00e9', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id })
+        const name = displayName || u.email || t('common.me')
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: t('dm.location_sharing_ended'), sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id })
       }
       return
     }
     if (!navigator.geolocation) return
     setSharingLocation(true)
-    const { data: { user: u } } = await supabase.auth.getUser()
+    const u = currentUser
     if (!u) { setSharingLocation(false); return }
-    const name = displayName || u.email || 'Moi'
+    const name = displayName || u.email || t('common.me')
     navigator.geolocation.getCurrentPosition(async (pos) => {
       const { latitude, longitude } = pos.coords
       const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
       await supabase.from('messages').insert({
         session_id: id, sender_id: u.id,
-        text: `\u{1F4CD} Ma position\n${mapUrl}`,
+        text: `\u{1F4CD} ${t('dm.my_position')}\n${mapUrl}`,
         sender_name: name, room_type: 'dm',
         dm_peer_id: peerIdParam || session?.host_id,
       })
@@ -240,7 +240,7 @@ export function useDMData() {
         const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
         await supabase.from('messages').insert({
           session_id: id, sender_id: u.id,
-          text: `\u{1F4CD} Position mise \u00e0 jour\n${mapUrl}`,
+          text: `\u{1F4CD} ${t('dm.position_updated')}\n${mapUrl}`,
           sender_name: name, room_type: 'dm',
           dm_peer_id: peerIdParam || session?.host_id,
         })
