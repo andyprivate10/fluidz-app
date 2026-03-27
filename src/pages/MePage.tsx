@@ -174,10 +174,10 @@ export default function MePage() {
                   }
                 }} disabled={mediaUploading} style={{ display:'none' }} />
                 <span style={{ fontSize:24, color:S.tx4, lineHeight:1 }}>+</span>
-                <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>Photo</span>
+                <span style={{ fontSize:10, color:S.tx4, marginTop:2 }}>{d.t('common.photo')}</span>
               </label>
             </div>
-            <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{photosProfil.length} photo{photosProfil.length !== 1 ? 's' : ''}</p>
+            <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{d.t('profile.photo_count', { count: photosProfil.length })}</p>
           </Section>
 
           <Section title={t('profile.infos')} color={S.lav}>
@@ -333,7 +333,7 @@ export default function MePage() {
           <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>{t('profile.prep_active_badge')}</span>}
-              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>Test il y a {monthsAgoCount(dernierTest)} mois</span>}
+              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>{d.t('profile.test_ago', { count: monthsAgoCount(dernierTest) })}</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               {PREP_OPTIONS.map(p => (
@@ -341,11 +341,11 @@ export default function MePage() {
               ))}
             </div>
             <div style={{ marginBottom:10 }}>
-              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Date dernier test</label>
+              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{d.t('profile.last_test_date')}</label>
               <input type="date" value={dernierTest} onChange={e => setDernierTest(e.target.value)} style={inputStyle} />
             </div>
             <div>
-              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>Statut sero (optionnel)</label>
+              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{d.t('profile.sero_status')}</label>
               <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder={t('placeholders.optional')} style={inputStyle} />
             </div>
           </Section>

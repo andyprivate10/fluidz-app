@@ -15,13 +15,12 @@ export const inp: React.CSSProperties = {
   fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' as const,
 }
 
-const DEFAULT_HOST_RULES = 'Respect mutuel obligatoire. Safe word respecté. Pas de photo/vidéo sans consentement. Le host se réserve le droit d\'éjecter tout participant.'
-
 export type StepName = 'basics' | 'rules' | 'address' | 'timing' | 'visibility'
 const STEPS: StepName[] = ['basics', 'rules', 'address', 'timing', 'visibility']
 
 export function useCreateSession() {
   const { t } = useTranslation()
+  const DEFAULT_HOST_RULES = t('session.default_host_rules')
   const { sessionTags, roles, sessionTemplates: rawTemplates } = useAdminConfig()
   const sessionTemplates = rawTemplates
   const navigate = useNavigate()
@@ -203,7 +202,8 @@ export function useCreateSession() {
           user_id: inviteParam,
           session_id: data.id,
           type: 'session_invite',
-          message: t('session.invite_body'),
+          title: t('session.invite_body'),
+          body: '',
           href: '/join/' + data.invite_code,
         })
       }

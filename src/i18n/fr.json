@@ -708,6 +708,7 @@
     "rejected_for": "Non retenu pour \"{{title}}\"",
     "accepted_route": "Accepté — en route",
     "auto_accepted": "Accepté automatiquement via lien direct",
+    "direct_join_title": "{{name}} a rejoint (invite directe)",
     "close_without_delete": "Fermer sans supprimer les médias partagés ?",
     "time_ended": "Terminé",
     "time_remaining": "{{time}} restant",
@@ -890,7 +891,10 @@
     "more": "de plus",
     "saved": "Sauvegardé",
     "previous": "Précédent",
-    "next": "Suivant"
+    "next": "Suivant",
+    "on": "ON",
+    "off": "OFF",
+    "ghost": "Ghost"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -1008,6 +1012,17 @@
     "active": "Active",
     "check_in_confirmed": "Check-in confirmé",
     "not_retained": "Non retenu"
+  },
+  "timing": {
+    "just_now": "à l'instant",
+    "ago_min": "il y a {{count}} min",
+    "yesterday": "hier",
+    "days_short": "j",
+    "in_time": "dans {{time}}",
+    "ended": "Terminé",
+    "remaining": "{{time}} restant",
+    "this_month": "ce mois-ci",
+    "months_ago": "il y a {{count}} mois"
   },
   "share": {
     "apply_here": "Postule ici",

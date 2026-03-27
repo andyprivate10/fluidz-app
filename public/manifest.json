@@ -1,7 +1,7 @@
 {
-  "name": "Fluidz — Let's exchange fluidz",
+  "name": "Fluidz — Organise tes soirées privées",
   "short_name": "Fluidz",
-  "description": "Manage adult relationships. Group sessions, trust-based matching, private profiles.",
+  "description": "Crée une session, partage le lien, les candidats postulent avec leur profil. Tu choisis qui vient.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
