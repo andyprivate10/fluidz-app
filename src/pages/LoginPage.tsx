@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams()
   const next = searchParams.get('next') || '/'
   const startSignup = searchParams.get('signup') === '1'
-  const isDev = searchParams.get('dev') === '1' || import.meta.env.DEV
+  const isDev = searchParams.get('dev') === '1' || import.meta.env.DEV || window.location.hostname === 'localhost'
 
   const [mode, setMode] = useState<'login' | 'signup'>(startSignup ? 'signup' : 'login')
   const [email, setEmail] = useState('')
