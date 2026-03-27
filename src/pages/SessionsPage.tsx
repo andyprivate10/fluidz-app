@@ -80,6 +80,8 @@ export default function SessionsPage() {
 
   const pinnedCount = myActive.length + myPending.length
   const hostedOpen = myHosted.filter(s => s.status === 'open')
+  const hostedEnded = myHosted.filter(s => s.status === 'ended')
+  const hostedOther = myHosted.filter(s => s.status !== 'open' && s.status !== 'ended')
 
   return (
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
@@ -102,7 +104,7 @@ export default function SessionsPage() {
           <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)', animation: 'shimmer 3s ease-in-out infinite' }} />
         </button>
 
-        {!loading && pinnedCount === 0 && hostedOpen.length === 0 && publicSessions.length === 0 && myHosted.filter(s => s.status !== 'open').length === 0 && (
+        {!loading && pinnedCount === 0 && hostedOpen.length === 0 && publicSessions.length === 0 && hostedEnded.length === 0 && hostedOther.length === 0 && (
           <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
             <Zap size={28} strokeWidth={1.5} style={{ color: S.tx3, marginBottom: 10, display: 'block', margin: '0 auto 10px' }} />
             <p style={{ ...typeStyle('section'), margin: '0 0 6px', color: S.tx2 }}>{t('sessions.empty_hosted')}</p>
@@ -135,10 +137,17 @@ export default function SessionsPage() {
         )}
         {publicSessions.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
 
-        {myHosted.filter(s => s.status !== 'open').length > 0 && (
+        {hostedEnded.length > 0 && (
+          <>
+            {sectionLabel(t('sessions.my_hosted_ended'), S.red)}
+            {hostedEnded.slice(0, 5).map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
+          </>
+        )}
+
+        {hostedOther.length > 0 && (
           <>
             {sectionLabel(t('sessions.past'), S.tx3)}
-            {myHosted.filter(s => s.status !== 'open').slice(0, 5).map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
+            {hostedOther.slice(0, 5).map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
           </>
         )}
       </div>

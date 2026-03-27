@@ -671,7 +671,8 @@
     "convert_account": "Convertir en compte permanent",
     "pin_length": "Le code secret doit faire 4 chiffres",
     "session_full": "Session complète",
-    "anon_auth_failed": "Profil ghost sauvegardé mais connexion auto échouée. Utilise l'inscription par email pour accéder à la session."
+    "anon_auth_failed": "Profil ghost sauvegardé mais connexion auto échouée. Utilise l'inscription par email pour accéder à la session.",
+    "auth_not_ready": "Authentification pas encore prête, réessaye"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -914,6 +915,7 @@
     "nearby": "Autour de moi",
     "no_public": "Aucune session publique pour le moment",
     "past": "Terminées",
+    "my_hosted_ended": "Mes sessions terminées",
     "review_session": "Laisser un avis"
   },
   "addresses": {

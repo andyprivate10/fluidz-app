@@ -109,6 +109,10 @@ export default function GhostSetupPage() {
   }
 
   async function goToApply() {
+    // Verify auth state is ready before navigating
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (!authUser) { showToast(t('ghost.auth_not_ready'), 'error'); return }
+
     const gId = ghostId || localStorage.getItem('ghost_id') || ''
     if (sessionId) {
       // Check capacity before navigating

@@ -671,7 +671,8 @@
     "convert_account": "Convert to permanent account",
     "pin_length": "Secret code must be 4 digits",
     "session_full": "Session full",
-    "anon_auth_failed": "Ghost profile saved but auto-login failed. Use email signup instead to access the session."
+    "anon_auth_failed": "Ghost profile saved but auto-login failed. Use email signup instead to access the session.",
+    "auth_not_ready": "Authentication not ready, please try again"
   },
   "host": {
     "dashboard": "Host Dashboard",
@@ -914,6 +915,7 @@
     "nearby": "Nearby",
     "no_public": "No public sessions at the moment",
     "past": "Past sessions",
+    "my_hosted_ended": "My ended sessions",
     "review_session": "Leave a review"
   },
   "addresses": {

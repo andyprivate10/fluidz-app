@@ -56,7 +56,7 @@ export default function SessionEndedSection({ session, sessionId, isHost, curren
       )}
 
       {/* Review CTA */}
-      {myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in') && (
+      {(isHost || (myApp && (myApp.status === 'accepted' || myApp.status === 'checked_in'))) && (
         <div style={{ padding: '0 16px 16px' }}>
           <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.amberbd, borderRadius: 16, padding: 20, textAlign: 'center' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('session.how_was_it')}</p>
