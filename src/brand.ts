@@ -85,7 +85,7 @@ export const radius = {
   block:  '16px',
   btn:    '16px',
   pill:   '20px',
-  avatar: '50%',
+  avatar: '28%',
   icon:   '10px',
   chip:   '8px',
 } as const
@@ -125,7 +125,7 @@ export const glassCard: React.CSSProperties = {
   backdropFilter: 'blur(12px)',
   WebkitBackdropFilter: 'blur(12px)',
   border: '1px solid ' + colors.rule2,
-  borderRadius: 20,
+  borderRadius: radius.card,
   padding: 16,
   boxShadow: '0 2px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03)',
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { FolderOpen, ArrowLeft, Trash2, Image, HardDrive } from 'lucide-react'
 
@@ -95,7 +95,7 @@ export default function AdminMediaTab() {
           >
             <ArrowLeft size={13} strokeWidth={1.5} /> Retour
           </button>
-          <span style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero }}>
             {selectedFolder}
           </span>
           <span style={{ fontSize: 10, color: S.tx3, marginLeft: 'auto' }}>
@@ -166,7 +166,7 @@ export default function AdminMediaTab() {
           {folders.map(folder => (
             <div key={folder} style={{ ...adminStyles.card, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
               <FolderOpen size={16} strokeWidth={1.5} style={{ color: S.violet, flexShrink: 0 }} />
-              <span style={{ flex: 1, fontSize: 12, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ flex: 1, fontSize: 12, color: S.tx, fontFamily: fonts.hero, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {folder}
               </span>
               <button

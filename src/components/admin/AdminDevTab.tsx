@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { Plus, ChevronDown, ChevronRight, GripVertical, ArrowUp, ArrowDown, Trash2, Edit3, Check, X, Clock, PlayCircle, CheckCircle2, Circle, Ban } from 'lucide-react'
 
 const S = colors
@@ -144,15 +144,15 @@ export default function AdminDevTab() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
         <div style={{ background: S.bg1, borderRadius: 14, padding: 12, textAlign: 'center', border: '1px solid ' + S.rule }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{totalStories}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: S.tx, fontFamily: fonts.hero }}>{totalStories}</div>
           <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Stories</div>
         </div>
         <div style={{ background: S.bg1, borderRadius: 14, padding: 12, textAlign: 'center', border: '1px solid ' + S.sagebd }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: S.sage, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{doneStories}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: S.sage, fontFamily: fonts.hero }}>{doneStories}</div>
           <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>Done</div>
         </div>
         <div style={{ background: S.bg1, borderRadius: 14, padding: 12, textAlign: 'center', border: '1px solid ' + S.orangebd }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: S.orange, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{inProgressStories}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: S.orange, fontFamily: fonts.hero }}>{inProgressStories}</div>
           <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>En cours</div>
         </div>
       </div>

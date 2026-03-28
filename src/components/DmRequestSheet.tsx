@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { showToast } from './Toast'
 import { X, Lock, Send } from 'lucide-react'
-import { colors, glassCard } from '../brand'
+import { colors, fonts, glassCard } from '../brand'
 import { useTranslation } from 'react-i18next'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 
@@ -84,7 +84,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }} />
       <div style={{ position: 'relative', width: '100%', maxWidth: 480, maxHeight: '80vh', background: S.bg1, borderRadius: '20px 20px 0 0', overflow: 'auto', padding: '20px 16px 32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 800, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{t('dm_request.title')}</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 800, color: S.tx, margin: 0, fontFamily: fonts.hero }}>{t('dm_request.title')}</h2>
           <button aria-label="Close" onClick={onClose} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
             <X size={18} />
           </button>
@@ -93,9 +93,9 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
         {/* Target info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
           {targetAvatar ? (
-            <img src={targetAvatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+            <img src={targetAvatar} alt="" style={{ width: 40, height: 40, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
           ) : (
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>{targetName[0]?.toUpperCase()}</div>
+            <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>{targetName[0]?.toUpperCase()}</div>
           )}
           <div>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{targetName}</p>
@@ -113,7 +113,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
           <div style={{ ...glassCard, padding: 14, marginBottom: 12 }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 8px' }}>{t('dm_request.your_profile')}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {myProfile.avatar_url ? <img src={String(myProfile.avatar_url)} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} /> : null}
+              {myProfile.avatar_url ? <img src={String(myProfile.avatar_url)} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover' }} /> : null}
               <div>
                 <span style={{ fontSize: 13, fontWeight: 700, color: S.tx }}>{String(myProfile.display_name || '')}</span>
                 {myProfile.role ? <span style={{ fontSize: 11, color: S.p, marginLeft: 6 }}>{String(myProfile.role)}</span> : null}
@@ -147,7 +147,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
           onChange={e => setMessage(e.target.value)}
           placeholder={t('dm_request.write_message')}
           rows={3}
-          style={{ width: '100%', padding: 12, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx, fontSize: 13, outline: 'none', resize: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif", marginBottom: 16 }}
+          style={{ width: '100%', padding: 12, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx, fontSize: 13, outline: 'none', resize: 'none', boxSizing: 'border-box', fontFamily: fonts.body, marginBottom: 16 }}
         />
 
         <button onClick={sendRequest} disabled={sending} style={{

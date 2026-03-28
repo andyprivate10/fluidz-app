@@ -1,13 +1,15 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Clock, Users, MapPin } from 'lucide-react'
-import { colors } from '../../brand'
+import { Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle } from 'lucide-react'
+import { colors, fonts } from '../../brand'
 import { getSessionCover } from '../../lib/sessionCover'
+import OptionsMenu from '../OptionsMenu'
+import { showToast } from '../Toast'
 
 const S = colors
 
 type Props = {
-  session: { title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string; template_slug?: string }
+  session: { id: string; title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string; template_slug?: string }
   members: { applicant_id: string; status: string }[]
   memberAvatars: Record<string, string>
   memberNames: Record<string, string>
@@ -39,7 +41,23 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: `linear-gradient(to top, ${S.bg} 5%, transparent)` }} />
 
       <div style={{ position: 'relative', zIndex: 1, padding: '16px 24px 20px' }}>
-        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, lineHeight: 1.1 }}>{session.title}</h1>
+        <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
+          <OptionsMenu options={(() => {
+            const opts: { label: string; icon?: React.ReactNode; onClick: () => void; danger?: boolean }[] = []
+            if (!isHost) {
+              opts.push({ label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: () => {}, danger: true })
+              opts.push({ label: t('options.block'), icon: <Ban size={15} strokeWidth={1.5} />, onClick: () => {}, danger: true })
+            }
+            if (isHost) {
+              opts.push({ label: t('options.edit_session'), icon: <Settings size={15} strokeWidth={1.5} />, onClick: () => navigate('/session/' + session.id + '/edit') })
+              opts.push({ label: t('options.end_session'), icon: <XCircle size={15} strokeWidth={1.5} />, onClick: () => { if (window.confirm(t('options.end_confirm'))) {} }, danger: true })
+            }
+            opts.push({ label: t('options.copy_link'), icon: <Link size={15} strokeWidth={1.5} />, onClick: () => { navigator.clipboard?.writeText(window.location.href); showToast(t('session.link_copied'), 'success') } })
+            opts.push({ label: t('options.share'), icon: <Share2Icon size={15} strokeWidth={1.5} />, onClick: () => { if (navigator.share) navigator.share({ url: window.location.href }) } })
+            return opts
+          })()} />
+        </div>
+        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, lineHeight: 1.1 }}>{session.title}</h1>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10, alignItems: 'center' }}>
           <span style={{ fontSize: 10, fontWeight: 700, color: statusColor, background: statusColor === S.sage ? S.sagebg : statusColor === S.red ? S.redbg : S.p2, border: '1px solid ' + (statusColor === S.sage ? S.sagebd : statusColor === S.red ? S.redbd : S.pbd), padding: '3px 10px', borderRadius: 50, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: 3 }}>
@@ -68,11 +86,11 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
               const isCheckedIn = m.status === 'checked_in'
               return (
                 <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, position: 'relative', cursor: 'pointer' }} aria-label={name} onClick={() => navigate('/profile/' + m.applicant_id)}>
-                  <div style={{ width: 38, height: 38, borderRadius: '50%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, '+S.p+', '+S.lav+')' : 'linear-gradient(135deg, '+S.p+'66, '+S.lav+'44)', boxShadow: isCheckedIn ? '0 0 8px '+S.p+'44' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 38, height: 38, borderRadius: '28%', padding: 2, background: isCheckedIn ? 'linear-gradient(135deg, '+S.p+', '+S.lav+')' : 'linear-gradient(135deg, '+S.p+'66, '+S.lav+'44)', boxShadow: isCheckedIn ? '0 0 8px '+S.p+'44' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {avatar ? (
-                      <img src={avatar} alt="" style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg }} />
+                      <img src={avatar} alt="" style={{ width: 34, height: 34, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.bg }} />
                     ) : (
-                      <div style={{ width: 34, height: 34, borderRadius: '50%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: S.tx2, border: '2px solid ' + S.bg }}>{name[0].toUpperCase()}</div>
+                      <div style={{ width: 34, height: 34, borderRadius: '28%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: S.tx2, border: '2px solid ' + S.bg }}>{name[0].toUpperCase()}</div>
                     )}
                   </div>
                   {isCheckedIn && <div style={{ position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid ' + S.bg }} />}
@@ -80,18 +98,18 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
               )
             })}
             {members.length > 6 && (
-              <div style={{ marginLeft: -8, width: 38, height: 38, borderRadius: '50%', background: S.bg2, border: '2px solid ' + S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: S.tx3 }}>+{members.length - 6}</div>
+              <div style={{ marginLeft: -8, width: 38, height: 38, borderRadius: '28%', background: S.bg2, border: '2px solid ' + S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: S.tx3 }}>+{members.length - 6}</div>
             )}
           </div>
         )}
 
         {!isHost && hostProfile && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, cursor: 'pointer' }} aria-label={'Host: ' + hostProfile.name} onClick={() => navigate('/profile/' + session.host_id)}>
-            <div style={{ width: 28, height: 28, borderRadius: '50%', padding: 1.5, background: 'linear-gradient(135deg, '+S.p+', '+S.lav+')' }}>
+            <div style={{ width: 28, height: 28, borderRadius: '28%', padding: 1.5, background: 'linear-gradient(135deg, '+S.p+', '+S.lav+')' }}>
               {hostProfile.avatar ? (
-                <img src={hostProfile.avatar} alt="" style={{ width: 25, height: 25, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid ' + S.bg }} />
+                <img src={hostProfile.avatar} alt="" style={{ width: 25, height: 25, borderRadius: '28%', objectFit: 'cover', border: '1.5px solid ' + S.bg }} />
               ) : (
-                <div style={{ width: 25, height: 25, borderRadius: '50%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: S.p, fontWeight: 700, border: '1.5px solid ' + S.bg }}>{hostProfile.name[0]}</div>
+                <div style={{ width: 25, height: 25, borderRadius: '28%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: S.p, fontWeight: 700, border: '1.5px solid ' + S.bg }}>{hostProfile.name[0]}</div>
               )}
             </div>
             <div>

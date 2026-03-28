@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import GhostTimer from './GhostTimer'
 import GhostConvertModal from './GhostConvertModal'
 import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings } from 'lucide-react'
@@ -56,7 +56,7 @@ export default function SideDrawer({ open, onClose }: Props) {
     <button onClick={() => go(path)} style={{
       display: 'flex', alignItems: 'center', gap: 14, padding: '14px 0',
       background: 'none', border: 'none', color: S.tx, cursor: 'pointer',
-      width: '100%', textAlign: 'left', fontFamily: "'Plus Jakarta Sans', sans-serif",
+      width: '100%', textAlign: 'left', fontFamily: fonts.body,
       borderBottom: '1px solid ' + S.rule,
     }}>
       <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}>{icon}</div>
@@ -107,14 +107,14 @@ export default function SideDrawer({ open, onClose }: Props) {
           {/* Profile preview */}
           <div onClick={() => go('/me')} style={{ display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer' }}>
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
+              <img src={profile.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
             ) : (
-              <div style={{ width: 48, height: 48, borderRadius: '50%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: S.p }}>
+              <div style={{ width: 48, height: 48, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: S.p }}>
                 {(profile?.display_name || '?')[0].toUpperCase()}
               </div>
             )}
             <div>
-              <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+              <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0, fontFamily: fonts.hero }}>
                 {profile?.display_name || t('drawer.my_profile')}
               </p>
               <p style={{ fontSize: 12, color: S.tx2, margin: '2px 0 0' }}>
@@ -132,7 +132,7 @@ export default function SideDrawer({ open, onClose }: Props) {
               width: '100%', marginTop: 8, padding: 10, borderRadius: 12,
               background: S.p, border: 'none', color: '#fff',
               fontSize: 13, fontWeight: 700, cursor: 'pointer',
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontFamily: fonts.body,
             }}>
               {t('ghost.save_real_account')}
             </button>
@@ -162,7 +162,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           <button onClick={toggleVisibility} style={{
             display: 'flex', alignItems: 'center', gap: 14, padding: '14px 0',
             background: 'none', border: 'none', color: S.tx, cursor: 'pointer',
-            width: '100%', textAlign: 'left', fontFamily: "'Plus Jakarta Sans', sans-serif",
+            width: '100%', textAlign: 'left', fontFamily: fonts.body,
             borderBottom: '1px solid ' + S.rule,
           }}>
             <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}><Eye size={18} strokeWidth={1.5} /></div>
@@ -184,7 +184,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           <button onClick={toggleLang} style={{
             display: 'flex', alignItems: 'center', gap: 14, padding: '14px 0',
             background: 'none', border: 'none', color: S.tx, cursor: 'pointer',
-            width: '100%', textAlign: 'left', fontFamily: "'Plus Jakarta Sans', sans-serif",
+            width: '100%', textAlign: 'left', fontFamily: fonts.body,
             borderBottom: '1px solid ' + S.rule,
           }}>
             <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}><Globe size={18} strokeWidth={1.5} /></div>
@@ -210,7 +210,7 @@ export default function SideDrawer({ open, onClose }: Props) {
             width: '100%', padding: 12, borderRadius: 12,
             background: 'transparent', border: '1px solid ' + S.redbd, color: S.red,
             fontSize: 13, fontWeight: 600, cursor: 'pointer',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontFamily: fonts.body,
           }}>
             <LogOut size={16} strokeWidth={1.5} />{` ${t('drawer.logout')}`}
           </button>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, HelpCircle } from 'lucide-react'
-import { colors, radius } from '../brand'
+import { colors, fonts, radius } from '../brand'
 
 const S = colors
 const R = radius
@@ -94,7 +94,7 @@ export default function Tooltip({ text, persistKey, children }: TooltipProps) {
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid ' + S.pbd, color: S.tx,
           fontSize: 12, lineHeight: 1.5, fontWeight: 500,
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontFamily: fonts.body,
           boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
           cursor: 'pointer',
           animation: 'fadeIn 0.2s ease-out',

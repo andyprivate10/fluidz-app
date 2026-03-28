@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { seedAll, clearAll } from '../../lib/seedTestData'
 import { seedDemoData, clearDemoData } from '../../lib/seedDemoData'
@@ -99,7 +99,7 @@ export default function AdminSeedTab() {
       }}>
         <AlertTriangle size={18} strokeWidth={1.5} style={{ color: S.red, flexShrink: 0, marginTop: 1 }} />
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: S.red, fontFamily: "'Bricolage Grotesque', sans-serif", marginBottom: 4 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: S.red, fontFamily: fonts.hero, marginBottom: 4 }}>
             Attention
           </div>
           <div style={{ fontSize: 12, color: S.tx2, lineHeight: 1.5 }}>

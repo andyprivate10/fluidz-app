@@ -1,3 +1,4 @@
+import OptionsMenu from '../components/OptionsMenu'
 import LazyImage from '../components/LazyImage'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { useState, useEffect } from 'react'
@@ -8,10 +9,10 @@ import { useAuth } from '../contexts/AuthContext'
 import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
 import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
-import { colors, glassCard } from '../brand'
+import { colors, fonts, glassCard } from '../brand'
 import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, BookOpen, Clock } from 'lucide-react'
+import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, BookOpen, Clock, Link2 } from 'lucide-react'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 import ShareToContact from '../components/ShareToContact'
@@ -171,14 +172,33 @@ export default function PublicProfile() {
           </>
         ) : (
           <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, ${S.bg1}, ${S.bg2})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 80, height: 80, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, fontWeight: 800, color: 'white' }}>{displayName[0].toUpperCase()}</div>
+            <div style={{ width: 80, height: 80, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, fontWeight: 800, color: 'white' }}>{displayName[0].toUpperCase()}</div>
           </div>
         )}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 200, background: `linear-gradient(to top, ${S.bg} 20%, transparent)`, zIndex: 2, pointerEvents: 'none' }} />
         <button onClick={() => navigate(-1)} style={{ position: 'absolute', top: 14, left: 14, zIndex: 4, width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowLeft size={18} strokeWidth={2} /></button>
+        <div style={{ position: 'absolute', top: 14, right: 14, zIndex: 4 }}>
+          <OptionsMenu options={[
+            { label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: async () => {
+              const { data: { user } } = await supabase.auth.getUser()
+              if (!user) return
+              await supabase.from('notifications').insert({ user_id: user.id, type: 'report', title: 'Report: ' + displayName, body: 'User ' + userId + ' reported', href: '/profile/' + userId })
+              showToast(t('profile.reported_toast'), 'info')
+            }, danger: true },
+            { label: t('options.block'), icon: <Ban size={15} strokeWidth={1.5} />, onClick: async () => {
+              const { data: { user } } = await supabase.auth.getUser()
+              if (!user) return
+              await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
+              showToast(t('profile.blocked_toast'), 'success')
+              navigate(-1)
+            }, danger: true },
+            { label: t('options.copy_link'), icon: <Link2 size={15} strokeWidth={1.5} />, onClick: () => { navigator.clipboard?.writeText(window.location.href); showToast(t('session.link_copied'), 'success') } },
+            { label: t('options.share'), icon: <Share2 size={15} strokeWidth={1.5} />, onClick: () => setShowShareSheet(true) },
+          ]} />
+        </div>
         <div style={{ position: 'absolute', bottom: 16, left: 20, right: 20, zIndex: 3 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
+            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: fonts.hero, color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
             <VibeScoreBadge userId={userId!} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
@@ -299,8 +319,8 @@ export default function PublicProfile() {
           <div style={{ ...glassCard, marginBottom: 12 }}>
             <div style={sLabel(S.lav)}>{t('profile.section_physique')}</div>
             <div style={{ display: 'grid', gridTemplateColumns: p.height && p.weight ? '1fr 1fr' : '1fr', gap: 10 }}>
-              {p.height && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{p.height}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>cm</div></div>}
-              {p.weight && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{p.weight}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>kg</div></div>}
+              {p.height && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: fonts.hero }}>{p.height}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>cm</div></div>}
+              {p.weight && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: fonts.hero }}>{p.weight}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>kg</div></div>}
             </div>
           </div>
         )}

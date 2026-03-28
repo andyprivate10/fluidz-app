@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
@@ -14,7 +14,7 @@ const S = colors
 const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
   padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',
-  fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' as const,
+  fontSize:14,fontFamily:fonts.body,boxSizing:'border-box' as const,
 }
 
 export default function EditSessionPage() {
@@ -103,7 +103,7 @@ export default function EditSessionPage() {
       <OrbLayer />
       <div style={{ padding:'40px 20px 16px', borderBottom:'1px solid '+S.rule ,background:'rgba(13,12,22,0.92)',backdropFilter:'blur(16px)',WebkitBackdropFilter:'blur(16px)'}}>
         <button onClick={() => navigate('/session/' + id)} style={{ background:'none', border:'none', color:S.p, fontSize:13, cursor:'pointer', marginBottom:12, padding:0, display:'flex', alignItems:'center', gap:4 }}><ArrowLeft size={16} strokeWidth={1.5} />{t('common.back')}</button>
-        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>{t('session.edit_title')}</h1>
+        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin:0 }}>{t('session.edit_title')}</h1>
       </div>
 
       <div style={{ padding:'20px', display:'flex', flexDirection:'column', gap:16 }}>

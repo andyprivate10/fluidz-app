@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { MapPin, Lock, Ghost } from 'lucide-react'
 import JoinLineup from '../components/join/JoinLineup'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 import { getSessionCover } from '../lib/sessionCover'
@@ -233,7 +233,7 @@ export default function JoinPage() {
 
           {/* Main card */}
           <div style={{position:'relative',zIndex:1,background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:24,padding:'28px 24px',border:'1px solid '+S.rule2,marginBottom:16,boxShadow:'0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)',marginTop: lineup.some(m => m.photos && m.photos.length > 0) ? 0 : 0}}>
-            <h1 style={{fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
+            <h1 style={{fontSize:24,fontWeight:800,fontFamily:fonts.hero,color:S.tx,textAlign:'center',margin:'0 0 6px',lineHeight:1.2}}>{session.title}</h1>
 
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginBottom:4}}>
               <MapPin size={14} style={{color:S.p}} />
@@ -342,7 +342,7 @@ export default function JoinPage() {
                   }}>
                     {t('session.apply')}
                   </button>
-                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 6px',fontFamily:"'Plus Jakarta Sans', sans-serif"}}>{t('session.profile_choice_note')}</p>
+                  <p style={{fontSize:10,color:S.tx3,textAlign:'center',margin:'8px 0 6px',fontFamily:fonts.body}}>{t('session.profile_choice_note')}</p>
                   <div style={{display:'flex',alignItems:'center',gap:12,margin:'4px 0 0'}}>
                     <div style={{flex:1,height:1,background:S.rule}} />
                     <span style={{fontSize:10,color:S.tx3}}>{t('session.ghost_question')}</span>

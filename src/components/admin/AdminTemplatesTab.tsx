@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { LayoutTemplate, Plus, Save, Trash2, ChevronUp as MoveUp, ChevronDown as MoveDown, ToggleLeft, ToggleRight } from 'lucide-react'
 
@@ -186,7 +186,7 @@ export default function AdminTemplatesTab() {
                 </button>
               </div>
               <div style={{ flex: 1, minWidth: 0, cursor: 'pointer' }} onClick={() => startEdit(t)}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{t.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero }}>{t.label}</div>
                 <div style={{ fontSize: 10, color: S.tx3, marginTop: 2 }}>
                   {t.tags && <span>{t.tags}</span>}
                   {t.tags && ' · '}

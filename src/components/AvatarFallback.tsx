@@ -1,4 +1,4 @@
-import { colors } from '../brand'
+import { colors, radius } from '../brand'
 
 const S = colors
 
@@ -37,7 +37,7 @@ export default function AvatarFallback({ name, size = 40, style, onClick }: Prop
       style={{
         width: size,
         height: size,
-        borderRadius: '50%',
+        borderRadius: radius.avatar,
         background: `linear-gradient(135deg, ${c1}, ${c2})`,
         display: 'flex',
         alignItems: 'center',

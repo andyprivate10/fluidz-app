@@ -86,7 +86,8 @@
     "hidden_toast": "You are hidden",
     "filter_age": "Age",
     "filter_tribes": "Types",
-    "filter_kinks": "Kinks"
+    "filter_kinks": "Kinks",
+    "visitor": "Visitor"
   },
   "session": {
     "live": "Live",
@@ -161,6 +162,8 @@
     "invalid_link": "Invalid link",
     "invalid_link_desc": "This invite link does not exist or has expired",
     "address_revealed_later": "Exact address revealed after acceptance",
+    "hosted_by": "by",
+    "default_host_rules": "Mutual respect required. Safe word respected. No photo/video without consent. The host reserves the right to remove any participant.",
     "lineup_label": "Lineup",
     "lineup_more": "+{{count}} others",
     "address_locked_note": "Address revealed after acceptance",
@@ -353,6 +356,11 @@
     "intimate_media": "Intimate photos/videos",
     "email": "Email",
     "see_profile": "See profile",
+    "age_years": "y/o",
+    "story": "Story",
+    "photo_count": "{{count}} photo(s)",
+    "test_ago": "Test {{count}} months ago",
+    "last_test_date": "Last test date",
     "session_1to1": "1-to-1 session",
     "autosave_saving": "Saving...",
     "autosave_saved": "-- Saved --",
@@ -708,6 +716,7 @@
     "rejected_for": "Not selected for \"{{title}}\"",
     "accepted_route": "Accepted — on the way",
     "auto_accepted": "Automatically accepted via direct link",
+    "direct_join_title": "{{name}} joined (direct invite)",
     "close_without_delete": "Close without deleting shared media?",
     "time_ended": "Ended",
     "time_remaining": "{{time}} remaining",
@@ -890,7 +899,10 @@
     "more": "more",
     "saved": "Saved",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "on": "ON",
+    "off": "OFF",
+    "ghost": "Ghost"
   },
   "drawer": {
     "my_space": "My space",
@@ -1009,6 +1021,23 @@
     "check_in_confirmed": "Check-in confirmed",
     "not_retained": "Not retained"
   },
+  "body_parts": {
+    "torso": "Torso",
+    "sex": "Sex",
+    "butt": "Butt",
+    "feet": "Feet"
+  },
+  "timing": {
+    "just_now": "just now",
+    "ago_min": "{{count}} min ago",
+    "yesterday": "yesterday",
+    "days_short": "d",
+    "in_time": "in {{time}}",
+    "ended": "Ended",
+    "remaining": "{{time}} remaining",
+    "this_month": "this month",
+    "months_ago": "{{count}} months ago"
+  },
   "share": {
     "apply_here": "Apply here",
     "join_here": "Join",
@@ -1124,7 +1153,11 @@
     "checkin_button": "I'm here",
     "application_rejected": "Application rejected",
     "address_revealed": "Address revealed",
-    "access_directions": "ACCESS"
+    "access_directions": "ACCESS",
+    "title": "DM",
+    "location_sharing_ended": "\ud83d\udccd Location sharing ended",
+    "my_position": "My position",
+    "position_updated": "Position updated"
   },
   "landing": {
     "nav_features": "Features",
@@ -1485,6 +1518,17 @@
     "timer_label": "Temporary account",
     "timer_remaining": "{{hours}}h {{minutes}}min remaining",
     "timer_expired": "Expired"
+  },
+  "options": {
+    "report": "Report",
+    "block": "Block",
+    "copy_link": "Copy link",
+    "share": "Share",
+    "edit_session": "Edit session",
+    "end_session": "End session",
+    "end_confirm": "End this session? Members will be notified.",
+    "reject": "Reject",
+    "copy_profile_link": "Copy profile link"
   },
   "admin": {
     "confirm_delete_epic": "Delete this epic and all its stories?",

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { Plus, Trash2, ChevronUp, ChevronDown, ChevronRight, ToggleLeft, ToggleRight, Tag, Users, Layers, Heart } from 'lucide-react'
 
@@ -271,7 +271,7 @@ export default function AdminConfigTab() {
 
                 {/* Label + slug */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{item.label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: S.tx, fontFamily: fonts.hero }}>{item.label}</div>
                   <div style={{ fontSize: 10, color: S.tx3, marginTop: 1 }}>
                     {item.slug}
                     {subTab === 'kink' && usageCounts[item.slug] !== undefined && (

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Home, Users, MessageCircle, CheckCircle, ClipboardList, Eye, Send } from 'lucide-react'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 
 const S = colors
 
@@ -124,7 +124,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
                 letterSpacing: '-0.01em',
                 color: isAccent ? '#fff' : isActive ? S.p : S.tx3,
                 transition: 'color 0.2s',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontFamily: fonts.body,
               }}>
                 {tab.label}
               </span>

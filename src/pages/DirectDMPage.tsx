@@ -234,7 +234,7 @@ export default function DirectDMPage() {
   if (loading) return (
     <div style={{ background: S.bg, height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column', maxWidth: 480, margin: '0 auto' }}>
       <div style={{ padding: '16px', borderBottom: '1px solid ' + S.rule, background: S.bg1, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', background: S.bg2 }} />
+        <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg2 }} />
         <div style={{ width: 120, height: 16, borderRadius: 8, background: S.bg2 }} />
       </div>
       <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -287,9 +287,9 @@ export default function DirectDMPage() {
           <ArrowLeft size={18} strokeWidth={1.5} />
         </button>
         {peerProfile?.avatar ? (
-          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
+          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
         ) : (
-          <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
+          <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
             {(peerProfile?.name || '?')[0].toUpperCase()}
           </div>
         )}

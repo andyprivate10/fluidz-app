@@ -36,9 +36,9 @@ export default function JoinLineup({ lineup, hostName, hostAvatar, maxCapacity }
             {lineup.slice(0, 5).map((m, i) => (
               <div key={m.applicant_id} style={{ marginLeft: i > 0 ? -8 : 0, zIndex: 5 - i }}>
                 {m.avatar_url ? (
-                  <img src={m.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg1 }} />
+                  <img src={m.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.bg1 }} />
                 ) : (
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff', border: '2px solid ' + S.bg1 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff', border: '2px solid ' + S.bg1 }}>
                     {(m.display_name || '?')[0].toUpperCase()}
                   </div>
                 )}
@@ -52,9 +52,9 @@ export default function JoinLineup({ lineup, hostName, hostAvatar, maxCapacity }
       ) : hostName ? (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', marginBottom: 12 }}>
           {hostAvatar ? (
-            <img src={hostAvatar} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.bg1 }} />
+            <img src={hostAvatar} alt="" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.bg1 }} />
           ) : (
-            <div style={{ width: 28, height: 28, borderRadius: '50%', background: S.p2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: S.p, fontWeight: 700 }}>{hostName[0]}</div>
+            <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.p2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: S.p, fontWeight: 700 }}>{hostName[0]}</div>
           )}
           <span style={{ fontSize: 12, fontWeight: 600, color: S.tx2 }}>
             {t('join.host_present', { name: hostName })}
@@ -75,9 +75,9 @@ export default function JoinLineup({ lineup, hostName, hostAvatar, maxCapacity }
             {lineup.slice(0, 8).map((m) => (
               <div key={m.applicant_id} onClick={() => navigate('/profile/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'rgba(5,4,10,0.80)', borderRadius: 12, border: '1px solid ' + S.rule, cursor: 'pointer', transition: 'border-color 0.2s' }}>
                 {m.avatar_url ? (
-                  <img src={m.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.rule2, flexShrink: 0 }} />
+                  <img src={m.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule2, flexShrink: 0 }} />
                 ) : (
-                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
                     {(m.display_name || '?')[0].toUpperCase()}
                   </div>
                 )}

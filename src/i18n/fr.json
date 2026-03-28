@@ -86,7 +86,8 @@
     "hidden_toast": "Tu es masqué",
     "filter_age": "Age",
     "filter_tribes": "Types",
-    "filter_kinks": "Kinks"
+    "filter_kinks": "Kinks",
+    "visitor": "Visitor"
   },
   "session": {
     "live": "Live",
@@ -161,6 +162,8 @@
     "invalid_link": "Lien invalide",
     "invalid_link_desc": "Ce lien d'invitation n'existe pas ou a expire",
     "address_revealed_later": "Adresse exacte revelee apres acceptation",
+    "hosted_by": "par",
+    "default_host_rules": "Respect mutuel obligatoire. Safe word respecté. Pas de photo/vidéo sans consentement. Le host se réserve le droit d'éjecter tout participant.",
     "lineup_label": "Lineup",
     "lineup_more": "+{{count}} autres",
     "address_locked_note": "Adresse revelee apres acceptation",
@@ -353,6 +356,11 @@
     "intimate_media": "Photos/Videos intimes",
     "email": "Email",
     "see_profile": "Voir profil",
+    "age_years": "ans",
+    "story": "Story",
+    "photo_count": "{{count}} photo(s)",
+    "test_ago": "Test il y a {{count}} mois",
+    "last_test_date": "Date dernier test",
     "session_1to1": "Session 1-to-1",
     "autosave_saving": "Sauvegarde...",
     "autosave_saved": "-- Sauvegarde --",
@@ -1013,6 +1021,12 @@
     "check_in_confirmed": "Check-in confirmé",
     "not_retained": "Non retenu"
   },
+  "body_parts": {
+    "torso": "Torse",
+    "sex": "Sex",
+    "butt": "Fessier",
+    "feet": "Pieds"
+  },
   "timing": {
     "just_now": "à l'instant",
     "ago_min": "il y a {{count}} min",
@@ -1139,7 +1153,11 @@
     "checkin_button": "Je suis là",
     "application_rejected": "Candidature refusée",
     "address_revealed": "Adresse révélée",
-    "access_directions": "ACCÈS"
+    "access_directions": "ACCÈS",
+    "title": "DM",
+    "location_sharing_ended": "📍 Partage de position terminé",
+    "my_position": "Ma position",
+    "position_updated": "Position mise à jour"
   },
   "landing": {
     "nav_features": "Fonctionnalités",
@@ -1500,6 +1518,17 @@
     "timer_label": "Compte temporaire",
     "timer_remaining": "{{hours}}h {{minutes}}min restantes",
     "timer_expired": "Expiré"
+  },
+  "options": {
+    "report": "Signaler",
+    "block": "Bloquer",
+    "copy_link": "Copier le lien",
+    "share": "Partager",
+    "edit_session": "Modifier la session",
+    "end_session": "Terminer la session",
+    "end_confirm": "Terminer cette session ? Les membres seront notifiés.",
+    "reject": "Rejeter",
+    "copy_profile_link": "Copier le lien du profil"
   },
   "admin": {
     "confirm_delete_epic": "Supprimer cet epic et toutes ses stories ?",

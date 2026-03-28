@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { colors } from '../brand'
+import { colors, radius } from '../brand'
+
+const R = radius
 
 const S = colors
 
@@ -34,7 +36,7 @@ export default function CyclingAvatar({ photos, size, fallbackLetter, border }: 
   if (!photos || photos.length === 0) {
     return (
       <div style={{
-        width: size, height: size, borderRadius: '50%',
+        width: size, height: size, borderRadius: R.avatar,
         background: S.p,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: size * 0.38, fontWeight: 700, color: '#fff',
@@ -50,7 +52,7 @@ export default function CyclingAvatar({ photos, size, fallbackLetter, border }: 
       <img
         src={photos[0]} alt=""
         style={{
-          width: size, height: size, borderRadius: '50%',
+          width: size, height: size, borderRadius: R.avatar,
           objectFit: 'cover', border: brd, flexShrink: 0,
         }}
       />
@@ -62,7 +64,7 @@ export default function CyclingAvatar({ photos, size, fallbackLetter, border }: 
       onMouseEnter={() => { hovered.current = true }}
       onMouseLeave={() => { hovered.current = false }}
       style={{
-        width: size, height: size, borderRadius: '50%',
+        width: size, height: size, borderRadius: R.avatar,
         overflow: 'hidden', position: 'relative',
         border: brd, flexShrink: 0,
       }}

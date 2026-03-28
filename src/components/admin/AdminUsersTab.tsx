@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { Users, ChevronDown, ChevronUp, Save, ExternalLink, RotateCcw, ShieldCheck } from 'lucide-react'
 
@@ -141,12 +141,12 @@ export default function AdminUsersTab() {
               }}
             >
               {pj.avatar_url ? (
-                <img src={pj.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                <img src={pj.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
               ) : (
-                <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.bg2, border: '1px solid ' + S.rule, flexShrink: 0 }} />
+                <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.bg2, border: '1px solid ' + S.rule, flexShrink: 0 }} />
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {u.display_name || '(sans nom)'}
                 </div>
                 {pj.role && <div style={{ fontSize: 10, color: S.tx3, marginTop: 2 }}>{pj.role}</div>}

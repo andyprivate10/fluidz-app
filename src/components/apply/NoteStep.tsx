@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { useTranslation } from 'react-i18next'
 import type { Section } from './applySections'
 
@@ -40,10 +40,10 @@ export default function NoteStep({
     <div style={{padding:'16px 20px'}}>
       <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.for_this_session')}</h2>
       <p style={{fontSize:13,color:S.tx3,margin:'0 0 8px'}}>{t('apply.note_hint')}</p>
-      <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={t('apply.note_placeholder')} rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
+      <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={t('apply.note_placeholder')} rows={3} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:fonts.body,resize:'none',boxSizing:'border-box',lineHeight:1.5,marginBottom:12}} />
       <div style={{marginBottom:12}}>
         <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>{t('session.message_to_host')}</p>
-        <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder={t('apply.message_placeholder')} rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
+        <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder={t('apply.message_placeholder')} rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:fonts.body,resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
       </div>
 
       {/* Visual preview */}

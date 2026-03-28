@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { formatElapsed } from '../../lib/timing'
 import { Calendar, Users, FileText, MessageSquare, Star, Clock } from 'lucide-react'
@@ -118,7 +118,7 @@ export default function AdminStatsTab() {
             padding: 16,
           }}>
             <s.icon size={20} strokeWidth={1.5} style={{ color: s.color }} />
-            <div style={{ fontSize: 28, fontWeight: 800, color: s.color, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+            <div style={{ fontSize: 28, fontWeight: 800, color: s.color, fontFamily: fonts.hero }}>
               {s.count}
             </div>
             <div style={{ fontSize: 10, fontWeight: 600, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -140,7 +140,7 @@ export default function AdminStatsTab() {
             padding: 12,
           }}>
             <s.icon size={16} strokeWidth={1.5} style={{ color: s.color }} />
-            <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: fonts.hero }}>
               {s.count}
             </div>
             <div style={{ fontSize: 9, fontWeight: 600, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
@@ -152,7 +152,7 @@ export default function AdminStatsTab() {
 
       {/* Bar chart: Candidatures par jour */}
       <div style={adminStyles.card}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: S.tx, marginBottom: 12, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: S.tx, marginBottom: 12, fontFamily: fonts.hero }}>
           Candidatures par jour (7 derniers jours)
         </div>
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 100 }}>
@@ -178,7 +178,7 @@ export default function AdminStatsTab() {
 
       {/* Active sessions */}
       <div style={adminStyles.card}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: S.tx, marginBottom: 10, fontFamily: "'Bricolage Grotesque', sans-serif", display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: S.tx, marginBottom: 10, fontFamily: fonts.hero, display: 'flex', alignItems: 'center', gap: 6 }}>
           <Clock size={14} strokeWidth={1.5} style={{ color: S.sage }} />
           Sessions actives
           <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, marginLeft: 4 }}>({activeSessions.length})</span>

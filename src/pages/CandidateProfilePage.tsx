@@ -1,4 +1,6 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Flag, Ban, Link2, XCircle } from 'lucide-react'
+import OptionsMenu from '../components/OptionsMenu'
+import { showToast } from '../components/Toast'
 import LazyImage from '../components/LazyImage'
 import ProfileStory from '../components/ProfileStory'
 import { useEffect, useState } from 'react'
@@ -7,7 +9,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import AddContactButton from '../components/AddContactButton'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { colors, glassCard } from '../brand'
+import { colors, fonts, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { monthsAgoLabel } from '../lib/timing'
 import ImageLightbox from '../components/ImageLightbox'
@@ -111,7 +113,7 @@ export default function CandidateProfilePage() {
         <OrbLayer />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 20 }}>
-            <div style={{ width: 64, height: 64, borderRadius: '50%', background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
+            <div style={{ width: 64, height: 64, borderRadius: '28%', background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
               <div style={{ width: '60%', height: 18, borderRadius: 8, background: S.bg2, marginBottom: 8, animation: 'pulse 1.5s ease-in-out infinite' }} />
               <div style={{ width: '35%', height: 12, borderRadius: 8, background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite' }} />
@@ -227,18 +229,27 @@ export default function CandidateProfilePage() {
           <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', marginBottom: 16, padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
         )}
 
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+          <OptionsMenu options={[
+            { label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: () => {}, danger: true },
+            { label: t('options.block'), icon: <Ban size={15} strokeWidth={1.5} />, onClick: () => {}, danger: true },
+            { label: t('options.copy_link'), icon: <Link2 size={15} strokeWidth={1.5} />, onClick: () => { navigator.clipboard?.writeText(window.location.href); showToast(t('session.link_copied'), 'success') } },
+            ...(isHost && app.status === 'pending' ? [{ label: t('options.reject'), icon: <XCircle size={15} strokeWidth={1.5} />, onClick: () => handleDecision('rejected'), danger: true }] : []),
+          ]} />
+        </div>
+
         {/* Avatar + Name */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {avatarUrl ? (
-            <img src={avatarUrl} alt="" loading="lazy" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
+            <img src={avatarUrl} alt="" loading="lazy" style={{ width: 64, height: 64, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
-            <div style={{ width: 64, height: 64, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#fff' }}>
+            <div style={{ width: 64, height: 64, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#fff' }}>
               {displayName[0]?.toUpperCase()}
             </div>
           )}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: 0 }}>{displayName}</h1>
+              <h1 style={{ fontSize:24,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: 0 }}>{displayName}</h1>
               {!eps.is_phantom && <VibeScoreBadge userId={app.applicant_id} />}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>

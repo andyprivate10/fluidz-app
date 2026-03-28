@@ -333,7 +333,7 @@ export default function MePage() {
           <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
               {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>{t('profile.prep_active_badge')}</span>}
-              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>{d.t('profile.test_ago', { count: monthsAgoCount(dernierTest) })}</span>}
+              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>{d.t('profile.test_ago', { count: monthsAgoCount(dernierTest) ?? 0 })}</span>}
             </div>
             <div style={{ display:'flex', gap:8, marginBottom:10 }}>
               {PREP_OPTIONS.map(p => (

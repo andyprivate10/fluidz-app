@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import SideDrawer from './SideDrawer'
 
 const S = colors
@@ -177,7 +177,7 @@ export default function BottomNav() {
                   letterSpacing: '-0.01em',
                   color: isActive ? S.p : S.tx3,
                   transition: 'color 0.2s',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontFamily: fonts.body,
                 }}>
                   {t(`nav.${tab.id}`)}
                 </span>
@@ -218,7 +218,7 @@ export default function BottomNav() {
               letterSpacing: '-0.01em',
               color: drawerOpen ? S.p : S.tx3,
               transition: 'color 0.2s',
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontFamily: fonts.body,
             }}>
               Menu
             </span>

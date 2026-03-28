@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import type { User } from '@supabase/supabase-js'
 import { Zap, LogOut, UserCircle } from 'lucide-react'
@@ -117,7 +117,7 @@ export default function AdminAuthTab({ user, setUser }: Props) {
             >
               <UserCircle size={28} strokeWidth={1.2} style={{ color: isActive ? S.sage : S.tx3, flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: S.tx, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: S.tx, fontFamily: fonts.hero }}>
                   {acct.name}
                 </div>
                 <div style={{ fontSize: 11, color: S.tx2, marginTop: 2 }}>{acct.email}</div>

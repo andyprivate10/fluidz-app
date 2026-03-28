@@ -1,4 +1,4 @@
-import { colors, radius, typeStyle, glassCard } from '../brand'
+import { colors, fonts, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
 import { useHomeData } from '../hooks/useHomeData'
@@ -157,9 +157,9 @@ export default function HomePage() {
               {sessionSuggestions.map(s => (
                 <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid ' + S.rule, background: S.bg2 }}>
                   {s.avatar ? (
-                    <img src={s.avatar} alt="" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover' }} />
+                    <img src={s.avatar} alt="" style={{ width: 22, height: 22, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{(s.name || '?')[0].toUpperCase()}</div>
+                    <div style={{ width: 22, height: 22, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{(s.name || '?')[0].toUpperCase()}</div>
                   )}
                   <span style={{ fontSize: 11, color: S.tx2, fontWeight: 600 }}>{s.name}</span>
                   <button onClick={(e) => {
@@ -248,7 +248,7 @@ export default function HomePage() {
               placeholder={t('home.join_placeholder')}
               style={{
                 flex: 1, padding: '10px 14px', background: S.bg2, border: `1px solid ${S.rule}`,
-                borderRadius: R.icon, color: S.tx, fontSize: 13, outline: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif",
+                borderRadius: R.icon, color: S.tx, fontSize: 13, outline: 'none', fontFamily: fonts.body,
                 letterSpacing: '-0.02em',
               }}
             />

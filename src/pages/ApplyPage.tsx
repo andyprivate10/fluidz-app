@@ -1,4 +1,4 @@
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { ArrowLeft } from 'lucide-react'
 import PackStep from '../components/apply/PackStep'
@@ -36,7 +36,7 @@ export default function ApplyPage() {
         <button onClick={() => d.navigate('/session/' + d.id)} style={{ background:'none', border:'none', color:S.p, fontSize:13, cursor:'pointer', padding:0, marginBottom:8, display:'flex', alignItems:'center', gap:4 }}>
           <ArrowLeft size={16} strokeWidth={1.5} />{d.session?.title || d.t('common.back')}
         </button>
-        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Plus Jakarta Sans', sans-serif",color:S.tx,margin:'0 0 4px'}}>{d.t('session.my_application')}</h1>
+        <h1 style={{fontSize:22,fontWeight:800,fontFamily:fonts.body,color:S.tx,margin:'0 0 4px'}}>{d.t('session.my_application')}</h1>
         {d.session && <p style={{fontSize:13,color:S.tx3,margin:0}}>{d.session.approx_area}</p>}
       </div>
 

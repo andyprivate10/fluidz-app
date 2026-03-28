@@ -116,7 +116,6 @@ export default function SessionPage() {
               checkInLoading={d.checkInLoading}
               onCheckIn={d.handleCheckIn}
               myApp={d.myApp}
-              pendingCount={d.pendingCount}
             />
           )}
           <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -185,9 +184,9 @@ export default function SessionPage() {
               <div key={app.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                   {app.avatar_url ? (
-                    <img src={app.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
+                    <img src={app.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
                   ) : (
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.p }}>
+                    <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.p }}>
                       {(app.display_name || '?')[0].toUpperCase()}
                     </div>
                   )}

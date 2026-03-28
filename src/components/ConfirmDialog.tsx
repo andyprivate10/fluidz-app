@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -48,7 +48,7 @@ export default function ConfirmDialog({ open, title, description, confirmLabel, 
         border: '1px solid ' + S.rule2, borderBottom: 'none',
         animation: 'slideUp 0.2s ease-out',
       }}>
-        <h3 style={{ fontSize: 17, fontWeight: 800, color: S.tx, margin: '0 0 6px', fontFamily: "'Bricolage Grotesque', sans-serif" }}>{title}</h3>
+        <h3 style={{ fontSize: 17, fontWeight: 800, color: S.tx, margin: '0 0 6px', fontFamily: fonts.hero }}>{title}</h3>
         {description && <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 20px', lineHeight: 1.5 }}>{description}</p>}
         <div style={{ display: 'flex', gap: 10 }}>
           <button

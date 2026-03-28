@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { colors, radius } from '../brand'
+import { colors, fonts, radius } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Zap, Users, Calendar, LayoutTemplate, Settings, FolderOpen, Database, BarChart3, Code } from 'lucide-react'
@@ -40,7 +40,7 @@ type TabId = typeof TABS[number]['id']
 // Shared styles for admin sub-components
 export const adminStyles = {
   card: { background: S.bg1, borderRadius: R.card, border: '1px solid ' + S.rule, padding: 16 } as React.CSSProperties,
-  input: { width: '100%', background: S.bg2, color: S.tx, borderRadius: 12, padding: '10px 14px', border: '1px solid ' + S.rule, outline: 'none', fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box' as const } as React.CSSProperties,
+  input: { width: '100%', background: S.bg2, color: S.tx, borderRadius: 12, padding: '10px 14px', border: '1px solid ' + S.rule, outline: 'none', fontSize: 13, fontFamily: fonts.body, boxSizing: 'border-box' as const } as React.CSSProperties,
   btnPrimary: { padding: '10px 16px', borderRadius: 12, fontWeight: 700, fontSize: 13, border: 'none', background: S.grad, color: '#fff', cursor: 'pointer', position: 'relative' as const, overflow: 'hidden' as const } as React.CSSProperties,
   btnSecondary: { padding: '10px 16px', borderRadius: 12, fontWeight: 600, fontSize: 13, border: '1px solid ' + S.rule, background: S.bg2, color: S.tx2, cursor: 'pointer' } as React.CSSProperties,
   btnDanger: { padding: '10px 16px', borderRadius: 12, fontWeight: 600, fontSize: 13, border: '1px solid ' + S.redbd, background: S.redbg, color: S.red, cursor: 'pointer' } as React.CSSProperties,
@@ -76,7 +76,7 @@ export default function AdminPage() {
     return (
       <div style={{ minHeight: '100vh', background: S.bg, position: 'relative', maxWidth: 480, margin: '0 auto', padding: '24px 20px' }}>
         <OrbLayer />
-        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 8px' }}>Admin Dashboard</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: '0 0 8px' }}>Admin Dashboard</h1>
         <p style={{ color: S.tx3, fontSize: 13, marginBottom: 20 }}>Connecte-toi avec un compte admin pour accéder au dashboard.</p>
         <AdminAuthTab user={user ?? null} setUser={() => {}} />
       </div>
@@ -94,7 +94,7 @@ export default function AdminPage() {
             <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
               <ArrowLeft size={14} strokeWidth={1.5} /> {t('common.back_label')}
             </button>
-            <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: 0 }}>Admin</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: 0 }}>Admin</h1>
           </div>
           {user && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

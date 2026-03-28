@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { MapPin, X } from 'lucide-react'
-import { colors, glassCard } from '../brand'
+import { colors, fonts, glassCard } from '../brand'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -41,7 +41,7 @@ export default function AddressShareSheet({ open, onClose, onSelect, userId }: P
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }} />
       <div style={{ position: 'relative', width: '100%', maxWidth: 480, maxHeight: '60vh', background: S.bg1, borderRadius: '20px 20px 0 0', overflow: 'auto', padding: '20px 16px 32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 800, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>{t('address.share_title')}</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 800, color: S.tx, margin: 0, fontFamily: fonts.hero }}>{t('address.share_title')}</h2>
           <button aria-label="Close" onClick={onClose} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
             <X size={18} />
           </button>

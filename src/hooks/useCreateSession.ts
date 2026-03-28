@@ -5,14 +5,14 @@ import { showToast } from '../components/Toast'
 import { useAdminConfig } from './useAdminConfig'
 import { getSessionCover, getTemplateCoverImage } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 
 const S = colors
 
 export const inp: React.CSSProperties = {
   width:'100%',background:S.bg2,color:S.tx,borderRadius:14,
   padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',
-  fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' as const,
+  fontSize:14,fontFamily:fonts.body,boxSizing:'border-box' as const,
 }
 
 export type StepName = 'basics' | 'rules' | 'address' | 'timing' | 'visibility'
