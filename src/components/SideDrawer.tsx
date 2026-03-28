@@ -96,7 +96,7 @@ export default function SideDrawer({ open, onClose }: Props) {
         <div style={{ padding: '52px 20px 20px', borderBottom: '1px solid ' + S.rule }}>
           <button onClick={onClose} aria-label="Close menu" style={{
             position: 'absolute', top: 14, right: 14,
-            width: 32, height: 32, borderRadius: '50%',
+            width: 32, height: 32, borderRadius: '28%',
             background: S.bg2, border: '1px solid ' + S.rule,
             color: S.tx2, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
