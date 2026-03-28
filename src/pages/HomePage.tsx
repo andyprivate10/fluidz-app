@@ -4,6 +4,7 @@ import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircl
 import { useHomeData } from '../hooks/useHomeData'
 import SessionInfoCard from '../components/SessionInfoCard'
 import CyclingAvatar from '../components/CyclingAvatar'
+import { SkeletonHomePage } from '../components/Skeleton'
 
 const S = colors
 const R = radius
@@ -12,6 +13,7 @@ export default function HomePage() {
   const {
     navigate,
     t,
+    loading,
     sessionTemplates,
     userId,
     displayName,
@@ -37,6 +39,8 @@ export default function HomePage() {
 
   // ─── Shared styles ────────────────────────────────────
   const card = glassCard
+
+  if (loading) return <SkeletonHomePage />
 
   return (
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>

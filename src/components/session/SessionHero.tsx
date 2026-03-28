@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle } from 'lucide-react'
+import { Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle, UserPlus } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 import { getSessionCover } from '../../lib/sessionCover'
 import OptionsMenu from '../OptionsMenu'
@@ -9,7 +9,7 @@ import { showToast } from '../Toast'
 const S = colors
 
 type Props = {
-  session: { id: string; title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string; template_slug?: string }
+  session: { id: string; title: string; status: string; tags?: string[]; approx_area: string; max_capacity?: number; host_id: string; cover_url?: string; template_slug?: string; invite_code?: string | null }
   members: { applicant_id: string; status: string }[]
   memberAvatars: Record<string, string>
   memberNames: Record<string, string>
@@ -54,6 +54,9 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
               opts.push({ label: t('options.end_session'), icon: <XCircle size={15} strokeWidth={1.5} />, onClick: () => { onEndSession?.() }, danger: true })
             }
             opts.push({ label: t('options.copy_link'), icon: <Link size={15} strokeWidth={1.5} />, onClick: () => { navigator.clipboard?.writeText(window.location.href); showToast(t('session.link_copied'), 'success') } })
+            if (isHost && session.invite_code) {
+              opts.push({ label: t('session.direct_invite'), icon: <UserPlus size={15} strokeWidth={1.5} />, onClick: () => { const url = window.location.origin + '/join/' + session.invite_code + '?direct=1'; navigator.clipboard?.writeText(url); showToast(t('session.direct_link_copied'), 'success') } })
+            }
             opts.push({ label: t('options.share'), icon: <Share2Icon size={15} strokeWidth={1.5} />, onClick: () => { if (navigator.share) navigator.share({ url: window.location.href }) } })
             return opts
           })()} />

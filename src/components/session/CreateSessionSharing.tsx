@@ -1,4 +1,5 @@
-import { Copy, Eye, EyeOff, Bookmark, Check } from 'lucide-react'
+import { Copy, Eye, EyeOff, Bookmark, Check, UserPlus } from 'lucide-react'
+import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import Confetti from '../Confetti'
 import { colors, fonts } from '../../brand'
@@ -45,7 +46,9 @@ export default function CreateSessionSharing({
   navigate,
 }: CreateSessionSharingProps) {
   const { t } = useTranslation()
+  const [directCopied, setDirectCopied] = useState(false)
   const shareUrl = typeof window !== 'undefined' ? window.location.origin + '/join/' + createdSession.invite_code : ''
+  const directUrl = shareUrl + '?direct=1'
   const shareText = createdSession.title + (createdSession.approx_area ? ' – ' + createdSession.approx_area : '') + '\n\n' + shareUrl
 
   return (
@@ -108,6 +111,21 @@ export default function CreateSessionSharing({
             <QRCodeSVG value={shareUrl} size={160} level="M" fgColor="#0C0A14" bgColor="#ffffff" />
           </div>
           <p style={{fontSize:11,color:S.tx3,margin:'10px 0 0'}}>{t('session.qr_hint')}</p>
+        </div>
+
+        {/* Direct invite */}
+        <div style={{background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',border:'1px solid '+S.rule2,borderRadius:16,padding:16,marginBottom:16}}>
+          <p style={{fontSize:10,fontWeight:700,color:S.lav,textTransform:'uppercase' as const,letterSpacing:'0.08em',margin:'0 0 6px'}}>{t('session.direct_invite')}</p>
+          <p style={{fontSize:12,color:S.tx3,margin:'0 0 12px'}}>{t('session.direct_invite_desc')}</p>
+          <button onClick={() => { navigator.clipboard?.writeText(directUrl); setDirectCopied(true); setTimeout(() => setDirectCopied(false), 2000) }} style={{
+            width:'100%',padding:12,borderRadius:12,fontSize:13,fontWeight:700,cursor:'pointer',
+            border:'1px solid '+(directCopied?S.sage:S.lavbd || 'rgba(184,178,204,0.25)'),
+            background:directCopied?S.sagebg:'transparent',
+            color:directCopied?S.sage:S.lav,
+            display:'flex',alignItems:'center',justifyContent:'center',gap:6,
+          }}>
+            <UserPlus size={14} strokeWidth={1.5} /> {directCopied ? t('session.direct_link_copied') : t('session.direct_invite')}
+          </button>
         </div>
 
         {/* Share buttons */}

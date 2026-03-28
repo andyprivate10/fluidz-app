@@ -29,10 +29,11 @@ export function useHomeData() {
   const [showTips, setShowTips] = useState(false)
   const [sessionSuggestions, setSessionSuggestions] = useState<{ id: string; name: string; avatar?: string }[]>([])
   const [pendingReviews, setPendingReviews] = useState<{ session_id: string; title: string }[]>([])
+  const [loading, setLoading] = useState(true)
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) { setLoading(false); return }
     setUserId(user.id)
 
     try {
@@ -117,6 +118,7 @@ export function useHomeData() {
         setSessionSuggestions((sProfiles || []).map((p: any) => ({ id: p.id, name: p.display_name || '?', avatar: p.profile_json?.avatar_url })))
       }
     }
+    setLoading(false)
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
@@ -150,6 +152,7 @@ export function useHomeData() {
   return {
     navigate,
     t,
+    loading,
     sessionTemplates,
     userId,
     displayName,

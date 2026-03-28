@@ -295,7 +295,10 @@
     "step_address": "Address",
     "step_timing": "Timing",
     "step_visibility": "Visibility",
-    "ends_soon": "Ends in {{min}} min"
+    "ends_soon": "Ends in {{min}} min",
+    "direct_invite": "Direct invite",
+    "direct_invite_desc": "This link adds the person directly without vote.",
+    "direct_link_copied": "Direct invite link copied"
   },
   "chat": {
     "title": "Messages",

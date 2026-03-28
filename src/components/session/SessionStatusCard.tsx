@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Clock, Share2, MessageCircle, Check, Send } from 'lucide-react'
+import { Clock, Share2, MessageCircle, Check, Send, UserPlus } from 'lucide-react'
 import { colors, glassCard } from '../../brand'
 import { useTranslation } from 'react-i18next'
 import MapView from '../MapView'
@@ -33,6 +34,8 @@ export default function SessionStatusCard({
 }: Props) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const [directCopied, setDirectCopied] = useState(false)
+  const isHost = currentUser?.id === session.host_id
 
   return (
     <>
@@ -62,6 +65,19 @@ export default function SessionStatusCard({
             >
               {inviteLinkCopied ? t('session.link_copied') : t('session.invite_link')}
             </button>
+            {isHost && (
+              <button
+                onClick={() => {
+                  const url = window.location.origin + '/join/' + session.invite_code + '?direct=1'
+                  navigator.clipboard?.writeText(url)
+                  setDirectCopied(true)
+                  setTimeout(() => setDirectCopied(false), 2000)
+                }}
+                style={{ marginTop: 6, width: '100%', padding: 10, borderRadius: 12, border: '1px solid '+(directCopied ? S.sage : S.lavbd), background: directCopied ? S.sagebg : 'transparent', color: directCopied ? S.sage : S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
+              >
+                <UserPlus size={13} strokeWidth={1.5} /> {directCopied ? t('session.direct_link_copied') : t('session.direct_invite')}
+              </button>
+            )}
             <button
               onClick={() => {
                 const url = window.location.origin + '/join/' + session.invite_code
