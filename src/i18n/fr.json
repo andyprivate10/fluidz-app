@@ -220,6 +220,10 @@
     "host_must_confirm": "Le host doit confirmer ton arrivée",
     "copy": "Copier",
     "check_in_action": "Check-in",
+    "check_in_requested": "Check-in demandé",
+    "check_in_waiting": "En attente de confirmation du host",
+    "confirm_check_in": "Confirmer le check-in",
+    "check_in_requests": "Demandes de check-in",
     "copy_for": "Copier pour {{app}}",
     "section_description": "Description",
     "section_roles_wanted": "Rôles recherchés",
@@ -1157,7 +1161,9 @@
     "title": "DM",
     "location_sharing_ended": "📍 Partage de position terminé",
     "my_position": "Ma position",
-    "position_updated": "Position mise à jour"
+    "position_updated": "Position mise à jour",
+    "safety_tip_title": "Conseil de sécurité",
+    "safety_tip_body": "Ne partagez jamais d'informations personnelles avant de vous rencontrer. Rencontrez-vous dans un lieu sûr. Prévenez un ami."
   },
   "landing": {
     "nav_features": "Fonctionnalités",
@@ -1527,6 +1533,7 @@
     "edit_session": "Modifier la session",
     "end_session": "Terminer la session",
     "end_confirm": "Terminer cette session ? Les membres seront notifiés.",
+    "session_ended": "Session terminée",
     "reject": "Rejeter",
     "copy_profile_link": "Copier le lien du profil"
   },

@@ -220,6 +220,10 @@
     "host_must_confirm": "The host must confirm your arrival",
     "copy": "Copy",
     "check_in_action": "Check-in",
+    "check_in_requested": "Check-in requested",
+    "check_in_waiting": "Waiting for host confirmation",
+    "confirm_check_in": "Confirm check-in",
+    "check_in_requests": "Check-in requests",
     "copy_for": "Copy for {{app}}",
     "section_description": "Description",
     "section_roles_wanted": "Roles wanted",
@@ -1157,7 +1161,9 @@
     "title": "DM",
     "location_sharing_ended": "\ud83d\udccd Location sharing ended",
     "my_position": "My position",
-    "position_updated": "Position updated"
+    "position_updated": "Position updated",
+    "safety_tip_title": "Safety tip",
+    "safety_tip_body": "Never share personal info before meeting. Meet in a safe place. Tell a friend."
   },
   "landing": {
     "nav_features": "Features",
@@ -1527,6 +1533,7 @@
     "edit_session": "Edit session",
     "end_session": "End session",
     "end_confirm": "End this session? Members will be notified.",
+    "session_ended": "Session ended",
     "reject": "Reject",
     "copy_profile_link": "Copy profile link"
   },

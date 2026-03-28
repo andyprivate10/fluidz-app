@@ -70,7 +70,7 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
           )}
         </>
       )}
-      {eventRole === 'host' && !isGhost && (
+      {((eventRole === 'host') || (eventRole === 'member' && checkInDone)) && !isGhost && (
         <button onClick={() => { navigator.clipboard?.writeText(window.location.origin + '/join/' + inviteCode); showToast(t('session.link_copied'), 'success') }} style={qBtn}>
           <Share2 size={16} strokeWidth={1.5} style={{ color: S.lav }} />
           <span style={qLabel}>{t('session.share_link')}</span>

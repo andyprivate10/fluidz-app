@@ -44,6 +44,7 @@ export function useSessionData() {
   const [votes, setVotes] = useState<VoteRow[]>([])
   const [voteLoadingId, setVoteLoadingId] = useState<string | null>(null)
   const [reviewSummary, setReviewSummary] = useState<{ avg: number; count: number; topVibes: string[] } | null>(null)
+  const [checkInRequests, setCheckInRequests] = useState<PendingApplication[]>([])
   const touchStartY = useRef(0)
   const [elapsed, setElapsed] = useState('')
   const [remaining, setRemaining] = useState('')
@@ -158,6 +159,29 @@ export function useSessionData() {
       }
       setPendingApps(pendingEnriched)
 
+      // Fetch check-in requests (for host)
+      if (user && sess?.host_id === user.id) {
+        const { data: ciReqs } = await supabase
+          .from('applications')
+          .select('id, applicant_id, status')
+          .eq('session_id', id)
+          .eq('check_in_requested', true)
+          .eq('status', 'accepted')
+        if (ciReqs && ciReqs.length > 0) {
+          const ciIds = ciReqs.map(r => r.applicant_id)
+          const { data: ciProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ciIds)
+          const ciMap: Record<string, { display_name?: string | null; avatar_url?: string | null }> = {}
+          ;(ciProfiles ?? []).forEach((r: any) => {
+            ciMap[r.id] = { display_name: r.display_name, avatar_url: r.profile_json?.avatar_url }
+          })
+          setCheckInRequests(ciReqs.map(r => ({
+            id: r.id, applicant_id: r.applicant_id,
+            display_name: ciMap[r.applicant_id]?.display_name ?? null,
+            avatar_url: ciMap[r.applicant_id]?.avatar_url ?? null,
+          })))
+        } else { setCheckInRequests([]) }
+      } else { setCheckInRequests([]) }
+
       const { data: voteRows } = await supabase
         .from('votes')
         .select('id, applicant_id, voter_id, vote, session_id')
@@ -167,14 +191,14 @@ export function useSessionData() {
       if (user) {
         const { data: app } = await supabase
           .from('applications')
-          .select('status,checked_in')
+          .select('status,checked_in,check_in_requested')
           .eq('session_id', id)
           .eq('applicant_id', user.id)
           .maybeSingle()
         setMyApp(app)
         if (app?.status === 'checked_in') setCheckInDone(true)
-        // If checked_in flag is true but status still accepted → check-in request pending
-        if (app?.checked_in && app?.status === 'accepted') setCheckInDone(true)
+        // If check_in_requested or checked_in flag is true but status still accepted → pending confirmation
+        if ((app?.check_in_requested || app?.checked_in) && app?.status === 'accepted') setCheckInDone(true)
         if (app?.status === 'pending') {
           setShowPostulerSuccess(true)
           setTimeout(() => setShowPostulerSuccess(false), 2000)
@@ -282,7 +306,7 @@ export function useSessionData() {
     setCheckInLoading(true)
     const { error } = await supabase
       .from('applications')
-      .update({ checked_in: true })
+      .update({ check_in_requested: true })
       .eq('session_id', id)
       .eq('applicant_id', currentUser.id)
     if (error) {
@@ -291,8 +315,43 @@ export function useSessionData() {
     } else {
       setCheckInDone(true)
       if (navigator.vibrate) navigator.vibrate([30, 50, 30])
+      // Notify host
+      if (session?.host_id) {
+        const name = memberNames[currentUser.id] || t('common.someone')
+        await supabase.from('notifications').insert({
+          user_id: session.host_id,
+          session_id: id,
+          type: 'check_in_request',
+          title: t('session.check_in_requests'),
+          body: name,
+          href: `/session/${id}?tab=candidates`,
+        })
+      }
     }
     setCheckInLoading(false)
+  }
+
+  const confirmCheckIn = async (memberId: string) => {
+    const { error } = await supabase
+      .from('applications')
+      .update({ checked_in: true, status: 'checked_in', check_in_requested: false })
+      .eq('session_id', id)
+      .eq('applicant_id', memberId)
+    if (error) {
+      showToast(t('errors.error_prefix') + ': ' + error.message, 'error')
+    } else {
+      showToast(t('session.confirm_check_in') + ' ✓', 'success')
+      // Notify member
+      await supabase.from('notifications').insert({
+        user_id: memberId,
+        session_id: id,
+        type: 'check_in_confirmed',
+        title: t('session.checkin_confirmed'),
+        body: session?.title || '',
+        href: `/session/${id}`,
+      })
+      loadData()
+    }
   }
 
   const cancelApplication = async () => {
@@ -311,6 +370,22 @@ export function useSessionData() {
     loadData()
   }
 
+  const endSession = async () => {
+    if (!await confirm({ title: t('options.end_session'), description: t('options.end_confirm'), danger: true, confirmLabel: t('options.end_session') })) return
+    const { error } = await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
+    if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error'); return }
+    // Create review queue for all participants
+    const { data: endedApps } = await supabase.from('applications').select('applicant_id').eq('session_id', id!).in('status', ['accepted', 'checked_in'])
+    if (endedApps && endedApps.length > 0 && session) {
+      const queueEntries = [...endedApps.map(a => a.applicant_id), session.host_id].filter(Boolean).map(uid => ({
+        user_id: uid, session_id: id, status: 'pending',
+      }))
+      await supabase.from('review_queue').upsert(queueEntries, { onConflict: 'user_id,session_id' })
+    }
+    showToast(t('options.session_ended'), 'success')
+    loadData()
+  }
+
   return {
     t, id, navigate,
     session, currentUser, myApp, members, memberAvatars, memberRoles, memberNames,
@@ -324,7 +399,8 @@ export function useSessionData() {
     isHost, eventRole, statusLabel,
     handleTouchStart, handleTouchEnd,
     getVoteStats, handleVote, handleCheckIn,
-    cancelApplication, leaveSession, loadData,
+    cancelApplication, leaveSession, endSession, confirmCheckIn, loadData,
+    checkInRequests,
     confirmDialogProps,
   }
 }

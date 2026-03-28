@@ -104,6 +104,7 @@ export default function SessionPage() {
             remaining={d.remaining}
             isHost={d.isHost}
             hostProfile={d.hostProfile}
+            onEndSession={d.endSession}
           />
           {d.session.status !== 'ended' && (
             <SessionQuickActions
@@ -173,7 +174,34 @@ export default function SessionPage() {
             {t('session_nav.candidates')}
             {d.pendingApps.length > 0 && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '2px 8px', borderRadius: 99 }}>{d.pendingApps.length}</span>}
           </h2>
-          {d.pendingApps.length === 0 && (
+          {/* Check-in requests */}
+          {d.checkInRequests.length > 0 && (
+            <>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: S.sage, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                {t('session.check_in_requests')}
+              </h3>
+              {d.checkInRequests.map(req => (
+                <div key={req.id} style={{ background: S.sagebg, border: '1px solid ' + S.sagebd, borderRadius: 16, padding: 14, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {req.avatar_url ? (
+                    <img src={req.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.sagebd }} />
+                  ) : (
+                    <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.sagebg, border: '2px solid ' + S.sagebd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.sage }}>
+                      {(req.display_name || '?')[0].toUpperCase()}
+                    </div>
+                  )}
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{req.display_name || t('common.anonymous')}</p>
+                    <p style={{ fontSize: 11, color: S.sage, margin: '2px 0 0' }}>{t('session.check_in_requested')}</p>
+                  </div>
+                  <button onClick={() => d.confirmCheckIn(req.applicant_id)} style={{ padding: '8px 16px', borderRadius: 12, fontWeight: 700, fontSize: 13, color: '#fff', background: S.sage, border: 'none', cursor: 'pointer' }}>
+                    {t('session.confirm_check_in')}
+                  </button>
+                </div>
+              ))}
+              <div style={{ height: 12 }} />
+            </>
+          )}
+          {d.pendingApps.length === 0 && d.checkInRequests.length === 0 && (
             <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
               <p style={{ fontSize: 14 }}>{t('host.no_pending')}</p>
             </div>

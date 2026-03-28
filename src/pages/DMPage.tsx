@@ -1,6 +1,6 @@
 import { SkeletonChatPage } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
-import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus } from 'lucide-react'
+import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus, Shield } from 'lucide-react'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import ImageLightbox from '../components/ImageLightbox'
@@ -131,6 +131,17 @@ export default function DMPage() {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Safety tip card for accepted members */}
+      {d.isAccepted && !d.isHost && (
+        <div style={{ margin: '12px 16px 0', padding: 14, background: S.bluebg, border: '1px solid ' + S.bluebd, borderRadius: 12, flexShrink: 0, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+          <Shield size={18} strokeWidth={1.5} style={{ color: S.blue, flexShrink: 0, marginTop: 1 }} />
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: S.blue, marginBottom: 3 }}>{d.t('dm.safety_tip_title')}</div>
+            <div style={{ fontSize: 12, color: S.blue, lineHeight: 1.5, opacity: 0.85 }}>{d.t('dm.safety_tip_body')}</div>
+          </div>
         </div>
       )}
 

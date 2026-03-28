@@ -263,11 +263,23 @@ export function useDMData() {
     if (!id || !currentUser) return
     await supabase
       .from('applications')
-      .update({ checked_in: true })
+      .update({ check_in_requested: true })
       .eq('session_id', id)
       .eq('applicant_id', currentUser.id)
     setShowCheckInConfirmed(true)
-    setTimeout(() => setShowCheckInConfirmed(false), 3000)
+    setTimeout(() => setShowCheckInConfirmed(false), 5000)
+    // Notify host
+    if (session?.host_id) {
+      const name = displayName || t('common.someone')
+      await supabase.from('notifications').insert({
+        user_id: session.host_id,
+        session_id: id,
+        type: 'check_in_request',
+        title: t('session.check_in_requests'),
+        body: name,
+        href: `/session/${id}?tab=candidates`,
+      })
+    }
   }
 
   async function handleSendPhoto(file: File) {

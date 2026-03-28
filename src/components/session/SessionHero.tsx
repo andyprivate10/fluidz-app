@@ -19,9 +19,10 @@ type Props = {
   remaining: string
   isHost: boolean
   hostProfile: { name: string; avatar?: string } | null
+  onEndSession?: () => void
 }
 
-export default function SessionHero({ session, members, memberAvatars, memberNames, statusColor, statusLabel, elapsed, remaining, isHost, hostProfile }: Props) {
+export default function SessionHero({ session, members, memberAvatars, memberNames, statusColor, statusLabel, elapsed, remaining, isHost, hostProfile, onEndSession }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const cover = getSessionCover(session.tags, session.cover_url, session.template_slug)
@@ -50,7 +51,7 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
             }
             if (isHost) {
               opts.push({ label: t('options.edit_session'), icon: <Settings size={15} strokeWidth={1.5} />, onClick: () => navigate('/session/' + session.id + '/edit') })
-              opts.push({ label: t('options.end_session'), icon: <XCircle size={15} strokeWidth={1.5} />, onClick: () => { if (window.confirm(t('options.end_confirm'))) {} }, danger: true })
+              opts.push({ label: t('options.end_session'), icon: <XCircle size={15} strokeWidth={1.5} />, onClick: () => { onEndSession?.() }, danger: true })
             }
             opts.push({ label: t('options.copy_link'), icon: <Link size={15} strokeWidth={1.5} />, onClick: () => { navigator.clipboard?.writeText(window.location.href); showToast(t('session.link_copied'), 'success') } })
             opts.push({ label: t('options.share'), icon: <Share2Icon size={15} strokeWidth={1.5} />, onClick: () => { if (navigator.share) navigator.share({ url: window.location.href }) } })
