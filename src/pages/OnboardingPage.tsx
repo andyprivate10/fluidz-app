@@ -6,7 +6,7 @@ import { showToast } from '../components/Toast'
 import { compressImage, readFileAsDataUrl } from '../lib/media'
 import ImageCropModal from '../components/ImageCropModal'
 import {User as UserIcon, Camera, Sparkles, ChevronRight, ArrowLeft} from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
@@ -16,7 +16,7 @@ const S = colors
 const inp: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,
   padding:'14px 16px', border:'1px solid '+S.rule, outline:'none',
-  fontSize:15, fontFamily:"'Plus Jakarta Sans', sans-serif", boxSizing:'border-box',
+  fontSize:15, fontFamily:fonts.body, boxSizing:'border-box',
 }
 
 export default function OnboardingPage() {
@@ -136,7 +136,7 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
             <UserIcon size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step1_title')}</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step1_title')}</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('onboarding.step1_desc')}</p>
           </div>
 
@@ -168,7 +168,7 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div style={{ textAlign: 'center' }}>
             <Sparkles size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step2_title')}</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step2_title')}</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('onboarding.step2_desc')}</p>
           </div>
 
@@ -218,7 +218,7 @@ export default function OnboardingPage() {
         <div className="animate-slide-up" style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 20, alignItems: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <Camera size={32} style={{ color: S.p, marginBottom: 8 }} />
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step3_title')}</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 4px' }}>{t('onboarding.step3_title')}</h1>
             <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{t('onboarding.step3_desc')}</p>
           </div>
 

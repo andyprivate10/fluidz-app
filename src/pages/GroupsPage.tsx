@@ -6,7 +6,7 @@ import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import GhostBlockedModal from '../components/GhostBlockedModal'
 import {Plus, Users, Trash2, ChevronRight, X, ArrowLeft} from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 
@@ -140,7 +140,7 @@ export default function GroupsPage() {
     setSelectedMembers(prev => prev.includes(uid) ? prev.filter(x => x !== uid) : [...prev, uid])
   }
 
-  const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.rule, outline:'none', fontSize:14, fontFamily:"'Plus Jakarta Sans', sans-serif", boxSizing:'border-box' }
+  const inp: React.CSSProperties = { width:'100%', background:S.bg2, color:S.tx, borderRadius:12, padding:'12px 14px', border:'1px solid '+S.rule, outline:'none', fontSize:14, fontFamily:fonts.body, boxSizing:'border-box' }
 
   if (isGhost) return (
     <div style={{ minHeight: '100vh', background: S.bg, position: 'relative' as const }}>
@@ -155,7 +155,7 @@ export default function GroupsPage() {
       <div style={{ padding:'40px 20px 16px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <div>
           <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', padding:0, marginBottom:8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
-          <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>{t('contacts.groups')}</h1>
+          <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin:0 }}>{t('contacts.groups')}</h1>
           <p style={{ fontSize:12, color:S.tx3, margin:'2px 0 0' }}>{groups.length} groupe{groups.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={openCreate} style={{ width:40, height:40, borderRadius:12, background:S.grad, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>

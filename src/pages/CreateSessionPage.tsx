@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useCreateSession } from '../hooks/useCreateSession'
 import { useAuth } from '../contexts/AuthContext'
@@ -37,7 +37,7 @@ export default function CreateSessionPage() {
           <ArrowLeft size={16} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />
           {h.t('common.back')}
         </button>
-        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 4px' }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: '0 0 4px' }}>
           {h.t('session.new_session')}
         </h1>
         <p style={{ fontSize: 13, color: S.tx3, margin: 0 }}>

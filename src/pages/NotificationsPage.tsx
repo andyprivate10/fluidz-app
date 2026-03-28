@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
-import { colors, radius, typeStyle } from '../brand'
+import { colors, fonts, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import {Bell, CheckCheck, ArrowLeft, UserPlus, CheckCircle2, XCircle, Send, MapPin, Heart, MessageCircle, Star, BookOpen, Ban} from 'lucide-react'
 import SwipeableRow from '../components/SwipeableRow'
@@ -125,7 +125,7 @@ export default function NotificationsPage() {
           <SwipeableRow onDelete={() => deleteNotif(n.id)}>
           <button onClick={() => handleClick(n)} style={{
             width: '100%', textAlign: 'left', padding: '14px 12px', borderRadius: R.block,
-            border: 'none', background: n.type === 'intent_match' ? 'rgba(74,222,128,0.06)' : S.bg, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif",
+            border: 'none', background: n.type === 'intent_match' ? 'rgba(74,222,128,0.06)' : S.bg, cursor: 'pointer', fontFamily: fonts.body,
             borderBottom: `1px solid ${n.type === 'intent_match' ? S.sagebd : S.rule}`, position: 'relative',
             borderLeft: n.read_at ? 'none' : `3px solid ${n.type === 'intent_match' ? S.sage : S.p}`,
           }}>

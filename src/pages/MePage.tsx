@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Eye, Share2 } from 'lucide-react'
 import { showToast } from '../components/Toast'
@@ -104,7 +104,7 @@ export default function MePage() {
       }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div>
-            <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin:0 }}>
+            <h1 style={{ fontSize:24,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin:0 }}>
               {displayName || t('common.my_profile_short')}
             </h1>
             <p style={{ fontSize:12, color:S.tx3, marginTop:3 }}>{user.email}</p>

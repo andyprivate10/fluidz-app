@@ -6,7 +6,7 @@ import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart} from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { timeAgo } from '../lib/timing'
 import { getSessionCover } from '../lib/sessionCover'
@@ -189,7 +189,7 @@ export default function ContactDetailPage() {
           )}
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: 0 }}>{profile.display_name}</h1>
+              <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: 0 }}>{profile.display_name}</h1>
               <VibeScoreBadge userId={contactUserId!} />
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
@@ -248,7 +248,7 @@ export default function ContactDetailPage() {
           </div>
           {editingNotes ? (
             <div>
-              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} onBlur={saveNotes} placeholder={t('contacts.notes_placeholder')} maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }} />
+              <textarea value={notesText} onChange={e => setNotesText(e.target.value)} onBlur={saveNotes} placeholder={t('contacts.notes_placeholder')} maxLength={500} rows={3} style={{ width: '100%', padding: 10, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 10, color: S.tx, fontSize: 13, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: fonts.body }} />
               <button onClick={saveNotes} style={{ marginTop: 6, padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: S.sagebg, color: S.sage, border: '1px solid ' + S.sagebd, cursor: 'pointer' }}>{t('contacts.save_btn')}</button>
             </div>
           ) : (

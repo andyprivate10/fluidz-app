@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { colors, glassCard } from '../brand'
+import { colors, fonts, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { ArrowLeft, Repeat, FileText } from 'lucide-react'
 import { getSessionAccentColor } from '../lib/sessionCover'
@@ -60,7 +60,7 @@ export default function TemplatesPage() {
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
           <ArrowLeft size={18} strokeWidth={1.5} />
         </button>
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+        <h1 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: 0, fontFamily: fonts.hero }}>
           {t('templates.title')}
         </h1>
       </header>

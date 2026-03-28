@@ -1,7 +1,7 @@
 import { SkeletonChatPage } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
 import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus } from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import ImageLightbox from '../components/ImageLightbox'
 import EmojiBar from '../components/EmojiBar'
@@ -187,7 +187,7 @@ export default function DMPage() {
               style={{
                 flex: 1, padding: 12, background: S.bg2, border: '1px solid '+S.rule,
                 borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontFamily: fonts.body,
               }}
             />
             <button

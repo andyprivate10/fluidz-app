@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import {Ghost, Copy, Check, ArrowRight, ArrowLeft, Clock, UserPlus} from 'lucide-react'
 import { showToast } from '../components/Toast'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useCopyFeedback } from '../hooks/useCopyFeedback'
 import { useTranslation } from 'react-i18next'
@@ -135,7 +135,7 @@ export default function GhostSetupPage() {
   const inp: React.CSSProperties = {
     width: '100%', background: S.bg2, color: S.tx, borderRadius: 14,
     padding: '14px 16px', border: '1px solid ' + S.rule, outline: 'none',
-    fontSize: 16, fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
+    fontSize: 16, fontFamily: fonts.body, boxSizing: 'border-box',
     textAlign: 'center',
   }
 
@@ -155,7 +155,7 @@ export default function GhostSetupPage() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 6px' }}>{t('ghost.title')} ◌</h1>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 6px' }}>{t('ghost.title')} ◌</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0, lineHeight: 1.5 }}>
             {t('ghost.subtitle')}
           </p>

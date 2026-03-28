@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Heart, ArrowLeft } from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 
@@ -49,7 +49,7 @@ export default function FavoritesPage() {
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 0, marginBottom: 12 }}>
           <ArrowLeft size={16} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />{t('common.back_label')}
         </button>
-        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: 0 }}>{t('favorites.title')}</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: 0 }}>{t('favorites.title')}</h1>
         <p style={{ fontSize: 12, color: S.tx3, margin: '2px 0 0' }}>{favorites.length} {t('favorites.count')}</p>
       </div>
 

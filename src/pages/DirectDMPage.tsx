@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat } from 'lucide-react'
 import { compressImage } from '../lib/media'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { formatMessageTime } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
@@ -250,7 +250,7 @@ export default function DirectDMPage() {
     <div style={{ background: S.bg, minHeight: '100vh', position: 'relative', maxWidth: 480, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <OrbLayer />
       <div style={{ fontSize: 36, marginBottom: 16 }}>🔒</div>
-      <h2 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px', fontFamily: "'Bricolage Grotesque', sans-serif", textAlign: 'center' }}>
+      <h2 style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px', fontFamily: fonts.hero, textAlign: 'center' }}>
         {dmBlocked.status === 'pending' ? t('dm_request.waiting') : dmBlocked.status === 'declined' ? t('dm_request.declined_info') : t('dm_privacy.' + dmBlocked.level)}
       </h2>
       <p style={{ fontSize: 13, color: S.tx3, textAlign: 'center', margin: '0 0 20px' }}>
@@ -439,7 +439,7 @@ export default function DirectDMPage() {
         <input
           type="text" value={newMessage} onChange={e => { setNewMessage(e.target.value); sendTyping() }}
           onKeyDown={e => { if (e.key === 'Enter') { stopTyping(); handleSend() } }}
-          placeholder={t('placeholders.message_dots')} style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          placeholder={t('placeholders.message_dots')} style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: fonts.body }}
         />
         <button onClick={handleSend} disabled={!newMessage.trim() || sending} style={{ width: 40, height: 40, borderRadius: 12, background: newMessage.trim() ? S.grad : S.bg2, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Send size={16} style={{ color: newMessage.trim() ? '#fff' : S.tx4 }} />

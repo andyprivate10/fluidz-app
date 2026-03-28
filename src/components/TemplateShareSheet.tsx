@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { showToast } from './Toast'
 import { X } from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -50,7 +50,7 @@ export default function TemplateShareSheet({ open, onClose, userId, onSelect }: 
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }} />
       <div style={{ position: 'relative', width: '100%', maxWidth: 480, maxHeight: '70vh', background: S.bg1, borderRadius: '20px 20px 0 0', overflow: 'auto', padding: '20px 16px 32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 800, color: S.tx, margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: S.tx, margin: 0, fontFamily: fonts.hero }}>
             {t('dm.past_sessions')}
           </h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer' }}>

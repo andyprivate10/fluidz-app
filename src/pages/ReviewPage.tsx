@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import {Star, Send, ArrowLeft} from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 
@@ -140,7 +140,7 @@ export default function ReviewPage() {
       <div style={{ padding: '40px 20px 20px' }}>
         <button onClick={() => navigate('/session/' + id)} style={{ background: 'none', border: 'none', color: S.p, fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 4 }}><ArrowLeft size={16} strokeWidth={1.5} />{t('review.back_session')}</button>
 
-        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 4px' }}>{t('review.title')}</h1>
+        <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 4px' }}>{t('review.title')}</h1>
         <p style={{ color: S.tx3, fontSize: 13, margin: 0 }}>{session?.title || 'Session'}</p>
       </div>
 
@@ -212,7 +212,7 @@ export default function ReviewPage() {
               placeholder={t('review.comment_placeholder')}
               maxLength={500}
               rows={3}
-              style={{ width: '100%', padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 14, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              style={{ width: '100%', padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 14, resize: 'vertical', outline: 'none', boxSizing: 'border-box', fontFamily: fonts.body }}
             />
           </div>
 
@@ -237,7 +237,7 @@ export default function ReviewPage() {
           {participants.length > 0 && (
             <>
               <div style={{ height: 1, background: S.rule, margin: '8px 0' }} />
-              <p style={{ fontSize: 16, fontWeight: 800, fontFamily: "'Bricolage Grotesque', sans-serif", color: S.tx, margin: '0 0 4px' }}>{t('review.rate_participants')}</p>
+              <p style={{ fontSize: 16, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: '0 0 4px' }}>{t('review.rate_participants')}</p>
               <p style={{ fontSize: 12, color: S.tx3, margin: '0 0 12px' }}>{t('review.optional_anon')}</p>
 
               {participants.map(p => {

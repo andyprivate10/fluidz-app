@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Star } from 'lucide-react'
-import { colors, glassCard } from '../../brand'
+import { colors, fonts, glassCard } from '../../brand'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -65,7 +65,7 @@ export default function ReviewVibeScore({
 
         <h2 style={{
           fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 6px',
-          fontFamily: "'Bricolage Grotesque', sans-serif",
+          fontFamily: fonts.hero,
         }}>
           {t('review.vibe_score')}
         </h2>

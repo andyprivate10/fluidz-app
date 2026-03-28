@@ -1,4 +1,4 @@
-import { colors, glassCard } from '../../brand'
+import { colors, fonts, glassCard } from '../../brand'
 import { useTranslation } from 'react-i18next'
 
 const S = colors
@@ -123,7 +123,7 @@ function ReviewIntentsStateful({
 
         <h2 style={{
           fontSize: 19, fontWeight: 800, color: S.tx, margin: '0 0 8px',
-          fontFamily: "'Bricolage Grotesque', sans-serif",
+          fontFamily: fonts.hero,
         }}>
           {t(q.questionKey)}
         </h2>

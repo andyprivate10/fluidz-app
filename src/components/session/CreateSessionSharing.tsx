@@ -1,7 +1,7 @@
 import { Copy, Eye, EyeOff, Bookmark, Check } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import Confetti from '../Confetti'
-import { colors } from '../../brand'
+import { colors, fonts } from '../../brand'
 import OrbLayer from '../OrbLayer'
 import { supabase } from '../../lib/supabase'
 import { useTranslation } from 'react-i18next'
@@ -53,7 +53,7 @@ export default function CreateSessionSharing({
       <OrbLayer />
       <Confetti />
       <div style={{position:'relative',zIndex:1,padding:'40px 20px 24px'}}>
-        <h1 style={{fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
+        <h1 style={{fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx,margin:'0 0 8px'}}>{t('session.created_title')}</h1>
         <p style={{fontSize:13,color:S.tx3,margin:'0 0 20px'}}>{t('session.share_instructions')}</p>
 
         {/* VISIBILITY: Publier / Garder Secret */}

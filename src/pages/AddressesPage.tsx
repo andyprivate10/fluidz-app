@@ -7,7 +7,7 @@ import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { compressImage } from '../lib/media'
 import GhostBlockedModal from '../components/GhostBlockedModal'
 import {MapPin, Plus, Trash2, Camera, ChevronDown, ChevronUp, X, ArrowLeft} from 'lucide-react'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
 
@@ -23,7 +23,7 @@ type SavedAddress = {
   created_at: string
 }
 
-const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:"'Plus Jakarta Sans', sans-serif",boxSizing:'border-box' }
+const inp: React.CSSProperties = { width:'100%',background:S.bg2,color:S.tx,borderRadius:12,padding:'12px 14px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:fonts.body,boxSizing:'border-box' }
 
 export default function AddressesPage() {
   const { t } = useTranslation()
@@ -154,7 +154,7 @@ export default function AddressesPage() {
         <button onClick={() => navigate(-1)} style={{ background:'none',border:'none',color:S.tx3,fontSize:13,cursor:'pointer',padding:0,marginBottom:12 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <div>
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx,margin:'0 0 2px' }}>{t('settings.addresses')}</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx,margin:'0 0 2px' }}>{t('settings.addresses')}</h1>
             <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length} adresse{addresses.length !== 1 ? 's' : ''} sauvegardée{addresses.length !== 1 ? 's' : ''}</p>
           </div>
           <button onClick={openCreate} className='btn-shimmer' style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
 import { SkeletonSessionPage } from '../components/Skeleton'
@@ -169,7 +169,7 @@ export default function SessionPage() {
       {/* ═══ TAB: candidates (HOST) ═══ */}
       {activeTab === 'candidates' && effectiveRole === 'host' && (
         <div style={{ padding: '16px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: S.tx, margin: '0 0 16px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.candidates')}
             {d.pendingApps.length > 0 && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '2px 8px', borderRadius: 99 }}>{d.pendingApps.length}</span>}
           </h2>
@@ -217,7 +217,7 @@ export default function SessionPage() {
       {/* ═══ TAB: vote (MEMBER) ═══ */}
       {activeTab === 'vote' && effectiveRole === 'member' && (
         <div style={{ padding: '16px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: S.tx, margin: '0 0 16px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.vote')}
           </h2>
           <SessionVotes
@@ -234,7 +234,7 @@ export default function SessionPage() {
       {/* ═══ TAB: application (CANDIDATE) ═══ */}
       {activeTab === 'application' && effectiveRole === 'candidate' && (
         <div style={{ padding: '16px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: S.tx, margin: '0 0 16px' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.application')}
           </h2>
           {!d.myApp && d.session.status === 'open' && (
@@ -323,7 +323,7 @@ function ChatSubTab({ label, active, onClick, disabled, disabledText }: { label:
         border: '1px solid ' + (active ? colors.pbd : colors.rule),
         color: disabled ? colors.tx3 : active ? colors.p : colors.tx,
         fontSize: 13, fontWeight: 600, cursor: disabled ? 'default' : 'pointer',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontFamily: fonts.body,
         opacity: disabled ? 0.5 : 1,
       }}
       title={disabledText}

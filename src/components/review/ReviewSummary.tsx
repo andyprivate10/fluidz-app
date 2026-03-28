@@ -1,4 +1,4 @@
-import { colors, glassCard } from '../../brand'
+import { colors, fonts, glassCard } from '../../brand'
 import { useTranslation } from 'react-i18next'
 import OrbLayer from '../OrbLayer'
 import Confetti from '../Confetti'
@@ -28,7 +28,7 @@ export default function ReviewSummary({ reviewedCount, addedToBookCount, onFinis
         <div style={{ fontSize: 48, marginBottom: 16 }}>&#x2728;</div>
         <h2 style={{
           fontSize: 22, fontWeight: 800, color: S.tx, margin: '0 0 12px',
-          fontFamily: "'Bricolage Grotesque', sans-serif",
+          fontFamily: fonts.hero,
         }}>
           {t('review.summary')}
         </h2>

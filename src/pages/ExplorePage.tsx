@@ -6,7 +6,7 @@ import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, UserPlus, CheckCircle2 } from 'lucide-react'
 import MapView from '../components/MapView'
-import { colors } from '../brand'
+import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
@@ -228,7 +228,7 @@ export default function ExplorePage() {
       <div style={{ position: 'relative', zIndex: 1, padding: '48px 20px 12px', borderBottom: '1px solid ' + S.rule, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:"'Bricolage Grotesque', sans-serif",color:S.tx, margin: '0 0 2px' }}>{t('explore.title')}</h1>
+            <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 2px' }}>{t('explore.title')}</h1>
             <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{t('explore.profiles_count', { count: filtered.length })} {t('explore.nearby')}{myViewCount > 0 ? ` · ${t('explore.views_week', { count: myViewCount })}` : ''}</p>
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -270,7 +270,7 @@ export default function ExplorePage() {
             placeholder={t('explore.search_profile')} style={{
               width: '100%', padding: '10px 14px', borderRadius: 12, background: S.bg2,
               border: '1px solid '+S.rule, color: S.tx, fontSize: 13, outline: 'none',
-              fontFamily: "'Plus Jakarta Sans', sans-serif", boxSizing: 'border-box',
+              fontFamily: fonts.body, boxSizing: 'border-box',
             }}
           />
         </div>
