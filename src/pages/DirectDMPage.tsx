@@ -287,7 +287,7 @@ export default function DirectDMPage() {
           <ArrowLeft size={18} strokeWidth={1.5} />
         </button>
         {peerProfile?.avatar ? (
-          <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
+          <img src={peerProfile.avatar} alt="" loading="lazy" onClick={() => navigate('/profile/' + peerId)} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
         ) : (
           <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx, cursor: 'pointer' }}>
             {(peerProfile?.name || '?')[0].toUpperCase()}

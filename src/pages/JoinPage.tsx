@@ -247,7 +247,7 @@ export default function JoinPage() {
             {hostName && session.host_id && (
               <button type="button" onClick={() => navigate('/profile/' + session.host_id)} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,margin:'0 0 12px',background:'none',border:'none',cursor:'pointer',padding:0}}>
                 {hostAvatar ? (
-                  <div style={{position:'relative'}}><img src={hostAvatar} alt="" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'2px solid '+S.bg,outline:'1.5px solid '+S.pbd}} /><div style={{position:'absolute',bottom:-1,right:-1,width:8,height:8,borderRadius:'50%',background:S.sage,border:'2px solid '+S.bg}} /></div>
+                  <div style={{position:'relative'}}><img src={hostAvatar} alt="" loading="lazy" style={{width:28,height:28,borderRadius:'50%',objectFit:'cover',border:'2px solid '+S.bg,outline:'1.5px solid '+S.pbd}} /><div style={{position:'absolute',bottom:-1,right:-1,width:8,height:8,borderRadius:'50%',background:S.sage,border:'2px solid '+S.bg}} /></div>
                 ) : (
                   <div style={{width:28,height:28,borderRadius:'50%',background:S.p2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:S.p,fontWeight:700}}>{hostName[0]}</div>
                 )}

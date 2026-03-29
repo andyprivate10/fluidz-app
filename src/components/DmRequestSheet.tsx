@@ -93,7 +93,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
         {/* Target info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
           {targetAvatar ? (
-            <img src={targetAvatar} alt="" style={{ width: 40, height: 40, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+            <img src={targetAvatar} alt="" loading="lazy" style={{ width: 40, height: 40, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
           ) : (
             <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: S.tx }}>{targetName[0]?.toUpperCase()}</div>
           )}
@@ -113,7 +113,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
           <div style={{ ...glassCard, padding: 14, marginBottom: 12 }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 8px' }}>{t('dm_request.your_profile')}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {myProfile.avatar_url ? <img src={String(myProfile.avatar_url)} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover' }} /> : null}
+              {myProfile.avatar_url ? <img src={String(myProfile.avatar_url)} alt="" loading="lazy" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover' }} /> : null}
               <div>
                 <span style={{ fontSize: 13, fontWeight: 700, color: S.tx }}>{String(myProfile.display_name || '')}</span>
                 {myProfile.role ? <span style={{ fontSize: 11, color: S.p, marginLeft: 6 }}>{String(myProfile.role)}</span> : null}

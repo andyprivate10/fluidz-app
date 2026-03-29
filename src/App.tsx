@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastProvider from './components/Toast'
 import { AuthProvider } from './contexts/AuthContext'
-import HomePage from './pages/HomePage'
-import NotFoundPage from './pages/NotFoundPage'
-import LoginPage from './pages/LoginPage'
+const HomePage = lazy(() => import('./pages/HomePage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
 import BottomNav from './components/BottomNav'
 import RequireAuth from './components/RequireAuth'
 import InstallPrompt from './components/InstallPrompt'

@@ -73,7 +73,7 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                 <Heart size={14} strokeWidth={1.5} style={{ color: S.p, flexShrink: 0 }} />
                 <button type="button" onClick={() => navigate('/profile/' + lp.user_id)} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>
                   {info?.avatar_url ? (
-                    <img src={info.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover' }} />
+                    <img src={info.avatar_url} alt="" loading="lazy" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: S.tx }}>
                       {(info?.display_name || '?')[0].toUpperCase()}
@@ -133,7 +133,7 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                   {results.filter(r => !linkedProfiles.some(lp => lp.user_id === r.id)).map(r => (
                     <button key={r.id} onClick={() => addLink(r.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 10, background: 'transparent', border: '1px solid ' + S.rule, cursor: 'pointer', width: '100%', textAlign: 'left' }}>
                       {r.avatar_url ? (
-                        <img src={r.avatar_url} alt="" style={{ width: 24, height: 24, borderRadius: '28%', objectFit: 'cover' }} />
+                        <img src={r.avatar_url} alt="" loading="lazy" style={{ width: 24, height: 24, borderRadius: '28%', objectFit: 'cover' }} />
                       ) : (
                         <div style={{ width: 24, height: 24, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: S.tx }}>{r.display_name[0]?.toUpperCase()}</div>
                       )}

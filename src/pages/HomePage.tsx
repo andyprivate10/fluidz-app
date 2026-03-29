@@ -163,7 +163,7 @@ export default function HomePage() {
               {sessionSuggestions.map(s => (
                 <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid ' + S.rule, background: S.bg2 }}>
                   {s.avatar ? (
-                    <img src={s.avatar} alt="" style={{ width: 22, height: 22, borderRadius: '28%', objectFit: 'cover' }} />
+                    <img src={s.avatar} alt="" loading="lazy" style={{ width: 22, height: 22, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 22, height: 22, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: S.tx }}>{(s.name || '?')[0].toUpperCase()}</div>
                   )}

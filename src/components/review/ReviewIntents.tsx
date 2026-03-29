@@ -103,7 +103,7 @@ function ReviewIntentsStateful({
       {/* Card */}
       <div style={{ ...glassCard, width: '100%', textAlign: 'center', padding: 28, marginBottom: 24 }}>
         {avatar ? (
-          <img src={avatar} alt="" style={{
+          <img src={avatar} alt="" loading="lazy" style={{
             width: 80, height: 80, borderRadius: '50%', objectFit: 'cover',
             border: '2px solid ' + S.rule2, margin: '0 auto 12px', display: 'block',
           }} />

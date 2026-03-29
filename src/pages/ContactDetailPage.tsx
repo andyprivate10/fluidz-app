@@ -329,7 +329,7 @@ export default function ContactDetailPage() {
                       width: 32, height: 32, borderRadius: 8, flexShrink: 0, overflow: 'hidden',
                       background: cover.coverImage ? undefined : cover.bg,
                     }}>
-                      {cover.coverImage && <img src={cover.coverImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                      {cover.coverImage && <img src={cover.coverImage} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 600, color: S.tx, flex: 1 }}>{s.title}</span>
                     <span style={{

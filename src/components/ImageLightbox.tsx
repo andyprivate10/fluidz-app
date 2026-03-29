@@ -59,7 +59,7 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
         {isVideo ? (
           <video src={src} controls autoPlay playsInline style={{ maxWidth: zoomed ? 'none' : '100%', maxHeight: zoomed ? 'none' : '80vh', borderRadius: 12 }} />
         ) : (
-          <img src={src} alt="" style={{
+          <img src={src} alt="" loading="lazy" style={{
             maxWidth: zoomed ? 'none' : '100%', maxHeight: zoomed ? 'none' : '80vh',
             borderRadius: 12, objectFit: 'contain',
             transform: zoomed ? 'scale(1.5)' : 'scale(1)',

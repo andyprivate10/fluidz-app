@@ -107,7 +107,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           {/* Profile preview */}
           <div onClick={() => go('/me')} style={{ display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer' }}>
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
+              <img src={profile.avatar_url} alt="" loading="lazy" style={{ width: 48, height: 48, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
             ) : (
               <div style={{ width: 48, height: 48, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: S.p }}>
                 {(profile?.display_name || '?')[0].toUpperCase()}

@@ -104,7 +104,7 @@ export default function AdminProfilesTab() {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {urls.map(url => (
           <div key={url} style={{ position: 'relative', width: 56, height: 56 }}>
-            <img src={url} alt="" style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', border: '1px solid ' + S.rule }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+            <img src={url} alt="" loading="lazy" style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', border: '1px solid ' + S.rule }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
             <button onClick={() => removeMedia(userId, category, url)} style={{ position: 'absolute', top: -4, right: -4, width: 16, height: 16, borderRadius: 99, background: S.red, border: '1px solid ' + S.bg, color: S.tx, fontSize: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}>
               {deleting === url ? '!' : '×'}
             </button>
@@ -147,7 +147,7 @@ export default function AdminProfilesTab() {
           <div key={u.id} style={{ ...adminStyles.card, padding: 0, overflow: 'hidden' }}>
             <button onClick={() => toggleExpand(u.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: 14, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
               {pj.avatar_url ? (
-                <img src={pj.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
+                <img src={pj.avatar_url} alt="" loading="lazy" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
               ) : (
                 <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.bg2, border: '1px solid ' + S.rule, flexShrink: 0 }} />
               )}
@@ -169,7 +169,7 @@ export default function AdminProfilesTab() {
                   <label style={{ fontSize: 10, color: S.sage, fontWeight: 700, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Avatar</label>
                   {pj.avatar_url ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <img src={pj.avatar_url} alt="" style={{ width: 48, height: 48, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+                      <img src={pj.avatar_url} alt="" loading="lazy" style={{ width: 48, height: 48, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
                       <button onClick={() => removeMedia(u.id, 'avatar', pj.avatar_url!)} style={{ ...adminStyles.btnDanger, padding: '4px 8px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 3 }}>
                         <Trash2 size={10} strokeWidth={1.5} /> {deleting === pj.avatar_url ? 'Confirm' : 'Delete'}
                       </button>

@@ -141,7 +141,7 @@ export default function AdminUsersTab() {
               }}
             >
               {pj.avatar_url ? (
-                <img src={pj.avatar_url} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
+                <img src={pj.avatar_url} alt="" loading="lazy" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
               ) : (
                 <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.bg2, border: '1px solid ' + S.rule, flexShrink: 0 }} />
               )}

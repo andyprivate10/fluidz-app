@@ -28,7 +28,7 @@ export default function DMPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => d.navigate('/session/'+d.id+'?tab=chat')} style={{ background:'none', border:'none', color: S.tx3, fontSize: 16, cursor:'pointer', padding: 0 }}><ArrowLeft size={18} strokeWidth={1.5} /></button>
           {d.peerAvatar ? (
-            <img src={d.peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
+            <img src={d.peerAvatar} alt="" loading="lazy" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
           ) : d.peerName ? (
             <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: S.tx, flexShrink: 0 }}>{d.peerName[0].toUpperCase()}</div>
           ) : null}

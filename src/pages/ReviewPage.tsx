@@ -248,7 +248,7 @@ export default function ReviewPage() {
                   <div key={p.applicant_id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 16, border: '1px solid ' + S.rule2, marginBottom: 10, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                       {p.avatar_url ? (
-                        <img src={p.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
+                        <img src={p.avatar_url} alt="" loading="lazy" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
                       ) : (
                         <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx3 }}>
                           {p.display_name[0].toUpperCase()}

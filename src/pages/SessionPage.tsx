@@ -203,7 +203,7 @@ export default function SessionPage() {
               {d.checkInRequests.map(req => (
                 <div key={req.id} style={{ background: S.sagebg, border: '1px solid ' + S.sagebd, borderRadius: 16, padding: 14, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
                   {req.avatar_url ? (
-                    <img src={req.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.sagebd }} />
+                    <img src={req.avatar_url} alt="" loading="lazy" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.sagebd }} />
                   ) : (
                     <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.sagebg, border: '2px solid ' + S.sagebd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.sage }}>
                       {(req.display_name || '?')[0].toUpperCase()}
@@ -235,7 +235,7 @@ export default function SessionPage() {
                 return (
                   <div key={m.applicant_id} onClick={() => navigate('/profile/' + m.applicant_id)} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 14, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
                     {avatar ? (
-                      <img src={avatar} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + (isCheckedIn ? S.sage : S.pbd) }} />
+                      <img src={avatar} alt="" loading="lazy" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + (isCheckedIn ? S.sage : S.pbd) }} />
                     ) : (
                       <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx2 }}>
                         {name[0].toUpperCase()}
@@ -264,7 +264,7 @@ export default function SessionPage() {
                   <div key={app.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 10 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                       {app.avatar_url ? (
-                        <img src={app.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
+                        <img src={app.avatar_url} alt="" loading="lazy" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
                       ) : (
                         <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.p }}>
                           {(app.display_name || '?')[0].toUpperCase()}

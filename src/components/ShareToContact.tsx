@@ -155,7 +155,7 @@ export default function ShareToContact({ open, onClose, shareType, shareId, shar
                 cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.15s',
               }}>
                 {c.avatar_url ? (
-                  <img src={c.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
+                  <img src={c.avatar_url} alt="" loading="lazy" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
                 ) : (
                   <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx, flexShrink: 0 }}>
                     {c.display_name[0]?.toUpperCase()}

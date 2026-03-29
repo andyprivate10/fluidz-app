@@ -134,7 +134,7 @@ export default function SessionStatusCard({
               return (
                 <button key={m.applicant_id} onClick={() => navigate('/contacts/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 10, border: '1px solid '+S.rule, background: S.bg2, cursor: 'pointer' }}>
                   {avatar ? (
-                    <img src={avatar} alt="" style={{ width: 20, height: 20, borderRadius: '28%', objectFit: 'cover' }} />
+                    <img src={avatar} alt="" loading="lazy" style={{ width: 20, height: 20, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 20, height: 20, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: S.tx }}>{name[0].toUpperCase()}</div>
                   )}

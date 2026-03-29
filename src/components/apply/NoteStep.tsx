@@ -72,7 +72,7 @@ export default function NoteStep({
                   </div>
                 </>
               ) : (
-                <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                <img src={url} alt="" loading="lazy" style={{width:'100%',height:'100%',objectFit:'cover'}} />
               )}
               <button onClick={() => setOccasionPhotos(occasionPhotos.filter((_, j) => j !== i))} style={{position:'absolute',top:2,right:2,background:'rgba(0,0,0,0.6)',border:'none',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}}>
                 <X size={10} color={S.tx} />
@@ -97,7 +97,7 @@ export default function NoteStep({
         <p style={{fontSize:11,fontWeight:700,color:S.p,margin:'0 0 10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>{t('session.what_host_sees')}</p>
         <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:10}}>
           {profile?.profile_json?.avatar_url ? (
-            <img src={profile.profile_json.avatar_url} alt="" style={{width:40,height:40,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.rule}} />
+            <img src={profile.profile_json.avatar_url} alt="" loading="lazy" style={{width:40,height:40,borderRadius:'28%',objectFit:'cover',border:'1px solid '+S.rule}} />
           ) : (
             <div style={{width:40,height:40,borderRadius:'28%',background:S.grad,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:700,color: S.tx}}>{(profile?.display_name || '?')[0].toUpperCase()}</div>
           )}

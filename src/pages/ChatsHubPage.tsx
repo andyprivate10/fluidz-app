@@ -228,7 +228,7 @@ export default function ChatsHubPage() {
                 {thread.type === 'group' ? (
                   <GroupThreadAvatar templateSlug={thread.templateSlug} coverUrl={thread.coverUrl} />
                 ) : thread.peerAvatar ? (
-                  <img src={thread.peerAvatar} alt="" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', border: `1px solid ${S.rule2}` }} />
+                  <img src={thread.peerAvatar} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: 42, height: 42, borderRadius: R.avatar, objectFit: 'cover', border: `1px solid ${S.rule2}` }} />
                 ) : (
                   <div style={{ width: 42, height: 42, borderRadius: R.avatar, background: S.bg3, display: 'flex', alignItems: 'center', justifyContent: 'center', ...typeStyle('label'), color: S.tx3 }}>
                     {(thread.peerName || '?')[0].toUpperCase()}
@@ -287,7 +287,7 @@ function GroupThreadAvatar({ templateSlug, coverUrl }: { templateSlug?: string; 
   if (cover.coverImage) {
     return (
       <div style={{ width: 42, height: 42, borderRadius: radius.avatar, overflow: 'hidden', border: `1px solid ${colors.pbd}`, position: 'relative' }}>
-        <img src={cover.coverImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img src={cover.coverImage} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,4,10,0.3)' }} />
         <Users size={14} strokeWidth={1.5} style={{ color: S.tx, position: 'absolute', bottom: 3, right: 3, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
       </div>

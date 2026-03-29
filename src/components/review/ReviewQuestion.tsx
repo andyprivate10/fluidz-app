@@ -38,7 +38,7 @@ export default function ReviewQuestion({
       {/* Person card */}
       <div style={{ ...glassCard, width: '100%', textAlign: 'center', padding: 28, marginBottom: 24 }}>
         {avatar ? (
-          <img src={avatar} alt="" style={{
+          <img src={avatar} alt="" loading="lazy" style={{
             width: 100, height: 100, borderRadius: '50%', objectFit: 'cover',
             border: '3px solid ' + S.rule2, margin: '0 auto 16px', display: 'block',
           }} />
