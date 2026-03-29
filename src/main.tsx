@@ -23,5 +23,3 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
-// force rebuild
-console.info('[fluidz] build 20260326')

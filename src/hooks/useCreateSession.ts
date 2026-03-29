@@ -20,7 +20,6 @@ const STEPS: StepName[] = ['basics', 'rules', 'address', 'timing', 'visibility']
 
 export function useCreateSession() {
   const { t } = useTranslation()
-  const DEFAULT_HOST_RULES = t('session.default_host_rules')
   const { sessionTags, roles, sessionTemplates: rawTemplates } = useAdminConfig()
   const sessionTemplates = rawTemplates
   const navigate = useNavigate()
@@ -51,7 +50,7 @@ export function useCreateSession() {
   const [durationHours, setDurationHours] = useState(3)
   const [maxCapacity, setMaxCapacity] = useState<number | ''>('')
   const [savedTemplates, setSavedTemplates] = useState<{ slug: string; label: string; meta: Record<string, unknown> }[]>([])
-  const [hostRules, setHostRules] = useState(DEFAULT_HOST_RULES)
+  const [hostRules, setHostRules] = useState(t('session.default_host_rules'))
   const [addressMode, setAddressMode] = useState<'last'|'list'|'new'>('last')
 
   useEffect(() => {

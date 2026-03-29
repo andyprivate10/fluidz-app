@@ -157,7 +157,7 @@ export default function ShareToContact({ open, onClose, shareType, shareId, shar
                 {c.avatar_url ? (
                   <img src={c.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', flexShrink: 0 }} />
                 ) : (
-                  <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx, flexShrink: 0 }}>
                     {c.display_name[0]?.toUpperCase()}
                   </div>
                 )}
@@ -169,7 +169,7 @@ export default function ShareToContact({ open, onClose, shareType, shareId, shar
                   background: on ? S.p : 'transparent', border: on ? 'none' : '2px solid ' + S.rule,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {on && <Check size={12} strokeWidth={3} style={{ color: '#fff' }} />}
+                  {on && <Check size={12} strokeWidth={3} style={{ color: S.tx }} />}
                 </div>
               </button>
             )
@@ -184,7 +184,7 @@ export default function ShareToContact({ open, onClose, shareType, shareId, shar
             width: '100%', padding: 14, borderRadius: 14, marginTop: 12,
             background: sent ? S.sagebg : selected.size > 0 ? S.grad : S.bg2,
             border: sent ? '1px solid ' + S.sage : 'none',
-            color: sent ? S.sage : selected.size > 0 ? '#fff' : S.tx3,
+            color: sent ? S.sage : selected.size > 0 ? S.tx : S.tx3,
             fontSize: 15, fontWeight: 700, cursor: selected.size === 0 || sending || sent ? 'default' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             opacity: sending ? 0.7 : 1,

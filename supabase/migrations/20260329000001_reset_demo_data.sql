@@ -170,7 +170,7 @@ INSERT INTO applications (session_id, applicant_id, status, eps_json) VALUES
   ('dddd0001-0001-0001-0001-000000000003', (SELECT id FROM auth.users WHERE email = 'marcus@fluidz.test'), 'pending', '{}'::jsonb);
 
 -- Step 5: Create contacts for Marcus (NaughtyBook)
-INSERT INTO contacts (user_id, contact_id, nickname, created_at) VALUES
+INSERT INTO contacts (user_id, contact_user_id, notes, created_at) VALUES
   ((SELECT id FROM auth.users WHERE email = 'marcus@fluidz.test'), 'aaaa0001-0001-0001-0001-000000000004', 'Kevin', now()),
   ((SELECT id FROM auth.users WHERE email = 'marcus@fluidz.test'), (SELECT id FROM auth.users WHERE email = 'yann@fluidz.test'), 'Yann', now()),
   ((SELECT id FROM auth.users WHERE email = 'marcus@fluidz.test'), (SELECT id FROM auth.users WHERE email = 'karim@fluidz.test'), 'Karim', now()),

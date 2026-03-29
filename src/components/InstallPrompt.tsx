@@ -62,7 +62,7 @@ export default function InstallPrompt() {
       </div>
       <button onClick={install} style={{
         padding: '8px 14px', borderRadius: 10, background: S.p, border: 'none',
-        color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0,
+        color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0,
       }}>
         {t('app.install')}
       </button>

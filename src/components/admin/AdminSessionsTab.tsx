@@ -55,7 +55,7 @@ export default function AdminSessionsTab() {
     const hostIds = [...new Set(sessData.map(s => s.host_id))]
     const { data: profiles } = await supabase.from('user_profiles').select('id, display_name').in('id', hostIds)
     const hostMap: Record<string, string> = {}
-    for (const p of profiles || []) hostMap[p.id] = p.display_name || '(inconnu)'
+    for (const p of profiles || []) hostMap[p.id] = p.display_name || t('admin.unknown')
 
     // Count applications per session
     const sessionIds = sessData.map(s => s.id)
@@ -65,7 +65,7 @@ export default function AdminSessionsTab() {
 
     const rows: SessionRow[] = sessData.map(s => ({
       ...s,
-      host_name: hostMap[s.host_id] || '(inconnu)',
+      host_name: hostMap[s.host_id] || t('admin.unknown'),
       app_count: appCountMap[s.id] || 0,
     }))
 
@@ -86,8 +86,8 @@ export default function AdminSessionsTab() {
       const applicantIds = appData.map(a => a.applicant_id)
       const { data: profiles } = await supabase.from('user_profiles').select('id, display_name').in('id', applicantIds)
       const nameMap: Record<string, string> = {}
-      for (const p of profiles || []) nameMap[p.id] = p.display_name || '(inconnu)'
-      setApps(prev => ({ ...prev, [sessionId]: appData.map(a => ({ ...a, applicant_name: nameMap[a.applicant_id] || '(inconnu)' })) }))
+      for (const p of profiles || []) nameMap[p.id] = p.display_name || t('admin.unknown')
+      setApps(prev => ({ ...prev, [sessionId]: appData.map(a => ({ ...a, applicant_name: nameMap[a.applicant_id] || t('admin.unknown') })) }))
     } else {
       setApps(prev => ({ ...prev, [sessionId]: [] }))
     }
@@ -140,7 +140,7 @@ export default function AdminSessionsTab() {
     return true
   })
 
-  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>Chargement...</p>
+  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>{t('admin.loading')}</p>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -176,10 +176,10 @@ export default function AdminSessionsTab() {
             >
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {s.title || '(sans titre)'}
+                  {s.title || t('admin.no_title')}
                 </div>
                 <div style={{ fontSize: 10, color: S.tx3, marginTop: 2 }}>
-                  {s.host_name} &middot; {s.app_count} membre{s.app_count !== 1 ? 's' : ''} &middot; {new Date(s.created_at).toLocaleDateString('fr-FR')}
+                  {s.host_name} &middot; {s.app_count} {s.app_count !== 1 ? t('admin.members') : t('admin.member')} &middot; {new Date(s.created_at).toLocaleDateString('fr-FR')}
                 </div>
               </div>
               <span style={statusBadge(s.status)}>{s.status}</span>
@@ -189,15 +189,15 @@ export default function AdminSessionsTab() {
             {isOpen && editData[s.id] && (
               <div style={{ padding: '0 14px 14px', display: 'flex', flexDirection: 'column', gap: 10, borderTop: '1px solid ' + S.rule }}>
                 <div style={{ paddingTop: 12 }}>
-                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Titre</label>
+                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.title')}</label>
                   <input style={adminStyles.input} value={editData[s.id].title} onChange={e => setEditData(prev => ({ ...prev, [s.id]: { ...prev[s.id], title: e.target.value } }))} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Description</label>
+                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.description')}</label>
                   <textarea style={{ ...adminStyles.input, minHeight: 60, resize: 'vertical' }} value={editData[s.id].description} onChange={e => setEditData(prev => ({ ...prev, [s.id]: { ...prev[s.id], description: e.target.value } }))} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Tags (virgule-sep)</label>
+                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.tags_comma')}</label>
                   <input style={adminStyles.input} value={editData[s.id].tags} onChange={e => setEditData(prev => ({ ...prev, [s.id]: { ...prev[s.id], tags: e.target.value } }))} />
                 </div>
 
@@ -246,7 +246,7 @@ export default function AdminSessionsTab() {
 
                 {/* Save */}
                 <button onClick={() => saveSession(s.id)} disabled={saving} style={{ ...adminStyles.btnPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}>
-                  <Save size={12} strokeWidth={2} /> Sauvegarder
+                  <Save size={12} strokeWidth={2} /> {t('admin.save')}
                 </button>
               </div>
             )}
@@ -254,7 +254,7 @@ export default function AdminSessionsTab() {
         )
       })}
 
-      {filtered.length === 0 && <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>Aucune session</p>}
+      {filtered.length === 0 && <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>{t('admin.no_session')}</p>}
     </div>
   )
 }

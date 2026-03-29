@@ -37,7 +37,7 @@ export default function LandingPro({ rv }: { rv: RevealRef }) {
           </p>
           <button onClick={() => navigate('/login')} className="l-btn-shim" style={{
             padding: '13px 28px', borderRadius: 14, fontSize: 14, fontWeight: 700,
-            color: '#fff', background: S.lav, border: 'none', cursor: 'pointer',
+            color: S.tx, background: S.lav, border: 'none', cursor: 'pointer',
             fontFamily: fonts.body, display: 'inline-flex', alignItems: 'center', gap: 6,
             boxShadow: '0 4px 20px rgba(144,128,186,0.3)',
           }}>
@@ -68,7 +68,7 @@ export default function LandingPro({ rv }: { rv: RevealRef }) {
         </p>
         <button onClick={() => navigate('/login?signup=1')} className="l-btn-shim" style={{
           padding: '15px 36px', borderRadius: 16, background: S.p, border: 'none',
-          color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: fonts.body,
+          color: S.tx, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: fonts.body,
           boxShadow: '0 4px 20px rgba(224,136,122,0.3)',
           display: 'inline-flex', alignItems: 'center', gap: 8,
         }}>

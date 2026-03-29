@@ -44,7 +44,7 @@ export default function AvatarFallback({ name, size = 40, style, onClick }: Prop
         justifyContent: 'center',
         fontSize: size * 0.4,
         fontWeight: 800,
-        color: '#fff',
+        color: S.tx,
         flexShrink: 0,
         cursor: onClick ? 'pointer' : undefined,
         ...style,

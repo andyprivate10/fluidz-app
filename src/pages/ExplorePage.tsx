@@ -178,7 +178,7 @@ export default function ExplorePage() {
       .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
       .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
       .neq('id', userId)
-      .limit(50)
+      .limit(20)
 
     const mapped: NearbyProfile[] = (data || []).map((p: any) => {
       const pj = p.profile_json || {}

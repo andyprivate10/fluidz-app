@@ -17,13 +17,13 @@ export default function ReviewPage() {
   const { user: authUser } = useAuth()
 
   const VIBE_TAGS = [
-    { id: 'fun', label: 'Fun', color: S.sage },
-    { id: 'safe', label: 'Safe', color: S.blue },
-    { id: 'intense', label: 'Intense', color: S.p },
-    { id: 'chill', label: 'Chill', color: S.p },
+    { id: 'fun', label: t('review.tag_fun'), color: S.sage },
+    { id: 'safe', label: t('review.tag_safe'), color: S.blue },
+    { id: 'intense', label: t('review.tag_intense'), color: S.p },
+    { id: 'chill', label: t('review.tag_chill'), color: S.p },
     { id: 'respectful', label: t('review.respectful'), color: S.sage },
-    { id: 'awkward', label: 'Awkward', color: S.red },
-    { id: 'hot', label: 'Hot', color: S.p },
+    { id: 'awkward', label: t('review.tag_awkward'), color: S.red },
+    { id: 'hot', label: t('review.tag_hot'), color: S.p },
     { id: 'welcoming', label: t('review.welcoming'), color: S.blue },
   ]
 
@@ -87,7 +87,7 @@ export default function ReviewPage() {
   }, [id])
 
   async function submitReview() {
-    if (!user || !id || rating === 0) { showToast('Donne au moins une note', 'error'); return }
+    if (!user || !id || rating === 0) { showToast(t('review.rate_required'), 'error'); return }
     setSubmitting(true)
 
     const { error } = await supabase.from('reviews').insert({
@@ -157,7 +157,7 @@ export default function ReviewPage() {
             
             <p style={{ fontSize: 18, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>{t('review.thanks')}</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 16px' }}>{t('review.thanks_desc')}</p>
-            <button onClick={() => navigate('/')} style={{ padding: '12px 24px', borderRadius: 12, background: S.grad, color: '#fff', border: 'none', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+            <button onClick={() => navigate('/')} style={{ padding: '12px 24px', borderRadius: 12, background: S.grad, color: S.tx, border: 'none', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
               {t('review.back_home')}
             </button>
           </div>
@@ -219,7 +219,7 @@ export default function ReviewPage() {
           {/* Submit */}
           <button onClick={submitReview} disabled={submitting || rating === 0} style={{
             width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15,
-            color: '#fff', background: rating > 0 ? S.grad : S.bg3, border: 'none',
+            color: S.tx, background: rating > 0 ? S.grad : S.bg3, border: 'none',
             cursor: submitting || rating === 0 ? 'not-allowed' : 'pointer',
             opacity: submitting || rating === 0 ? 0.6 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -284,7 +284,7 @@ export default function ReviewPage() {
                         {pr > 0 && (
                           <button onClick={() => submitPeerReview(p.applicant_id)} style={{
                             width: '100%', padding: 10, borderRadius: 10, fontSize: 13, fontWeight: 700,
-                            background: S.grad, color: '#fff', border: 'none', cursor: 'pointer',
+                            background: S.grad, color: S.tx, border: 'none', cursor: 'pointer',
                           }}>{t('review.send')}</button>
                         )}
                       </>

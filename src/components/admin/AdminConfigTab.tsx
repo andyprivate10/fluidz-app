@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
@@ -37,6 +38,7 @@ function slugify(label: string): string {
 }
 
 export default function AdminConfigTab() {
+  const { t } = useTranslation()
   const [subTab, setSubTab] = useState<SubTab>('kink')
   const [items, setItems] = useState<ConfigItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -137,7 +139,7 @@ export default function AdminConfigTab() {
   if (HAS_CATEGORY.includes(subTab)) {
     const catMap = new Map<string, ConfigItem[]>()
     for (const item of items) {
-      const cat = item.category || 'Sans categorie'
+      const cat = item.category || t('admin.no_category')
       if (!catMap.has(cat)) catMap.set(cat, [])
       catMap.get(cat)!.push(item)
     }
@@ -179,7 +181,7 @@ export default function AdminConfigTab() {
           <input
             value={newLabel}
             onChange={e => setNewLabel(e.target.value)}
-            placeholder="Nouveau label..."
+            placeholder={t('admin.template_name')}
             style={{ ...adminStyles.input, flex: 1 }}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
           />
@@ -189,20 +191,20 @@ export default function AdminConfigTab() {
               onChange={e => setNewCategory(e.target.value)}
               style={{ ...adminStyles.input, flex: 0.6, cursor: 'pointer' }}
             >
-              <option value="">Categorie...</option>
+              <option value="">{t('admin.no_category')}</option>
               {categories.map(c => <option key={c} value={c}>{c}</option>)}
-              <option value="__new">+ Nouvelle</option>
+              <option value="__new">{t('admin.add_new')}</option>
             </select>
           )}
           <button onClick={handleAdd} style={{ ...adminStyles.btnPrimary, display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Plus size={14} strokeWidth={2} /> Ajouter
+            <Plus size={14} strokeWidth={2} /> {t('admin.add')}
           </button>
         </div>
         {newCategory === '__new' && HAS_CATEGORY.includes(subTab) && (
           <input
             value=""
             onChange={e => setNewCategory(e.target.value)}
-            placeholder="Nom de la nouvelle categorie..."
+            placeholder={t('admin.new_category')}
             style={adminStyles.input}
           />
         )}
@@ -214,19 +216,19 @@ export default function AdminConfigTab() {
       {/* Bulk actions */}
       <div style={{ display: 'flex', gap: 8 }}>
         <button onClick={() => handleBulkToggle(true)} style={{ ...adminStyles.btnSecondary, display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
-          <ToggleRight size={13} strokeWidth={1.5} /> Tout activer
+          <ToggleRight size={13} strokeWidth={1.5} /> {t('admin.enable_all')}
         </button>
         <button onClick={() => handleBulkToggle(false)} style={{ ...adminStyles.btnSecondary, display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
-          <ToggleLeft size={13} strokeWidth={1.5} /> Tout desactiver
+          <ToggleLeft size={13} strokeWidth={1.5} /> {t('admin.disable_all')}
         </button>
         <span style={{ fontSize: 11, color: S.tx3, marginLeft: 'auto', alignSelf: 'center' }}>
-          {items.length} element{items.length !== 1 ? 's' : ''}
+          {items.length} {items.length !== 1 ? t('admin.elements') : t('admin.element')}
         </span>
       </div>
 
       {/* Items list */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: 24, color: S.tx3, fontSize: 12 }}>Chargement...</div>
+        <div style={{ textAlign: 'center', padding: 24, color: S.tx3, fontSize: 12 }}>{t('admin.loading')}</div>
       ) : (
         grouped.map(group => (
           <div key={group.category} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -276,7 +278,7 @@ export default function AdminConfigTab() {
                     {item.slug}
                     {subTab === 'kink' && usageCounts[item.slug] !== undefined && (
                       <span style={{ marginLeft: 8, color: S.lav }}>
-                        {usageCounts[item.slug]} profil{usageCounts[item.slug] !== 1 ? 's' : ''}
+                        {usageCounts[item.slug]} {usageCounts[item.slug] !== 1 ? t('admin.profiles') : t('admin.profile')}
                       </span>
                     )}
                   </div>

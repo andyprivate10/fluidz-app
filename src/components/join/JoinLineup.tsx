@@ -38,7 +38,7 @@ export default function JoinLineup({ lineup, hostName, hostAvatar, maxCapacity }
                 {m.avatar_url ? (
                   <img src={m.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.bg1 }} />
                 ) : (
-                  <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff', border: '2px solid ' + S.bg1 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: S.tx, border: '2px solid ' + S.bg1 }}>
                     {(m.display_name || '?')[0].toUpperCase()}
                   </div>
                 )}
@@ -77,7 +77,7 @@ export default function JoinLineup({ lineup, hostName, hostAvatar, maxCapacity }
                 {m.avatar_url ? (
                   <img src={m.avatar_url} alt="" style={{ width: 40, height: 40, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule2, flexShrink: 0 }} />
                 ) : (
-                  <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx, flexShrink: 0 }}>
                     {(m.display_name || '?')[0].toUpperCase()}
                   </div>
                 )}

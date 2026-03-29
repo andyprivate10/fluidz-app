@@ -98,7 +98,7 @@ export default function LandingHero({ scrollTo }: { scrollTo: (id: string) => vo
             />
             <button onClick={handleInvite} style={{
               padding: '12px 20px', borderRadius: R.chip, background: S.p,
-              border: 'none', color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+              border: 'none', color: S.tx, fontWeight: 700, fontSize: 14, cursor: 'pointer',
               boxShadow: '0 2px 12px ' + S.pbd,
             }}>{t('landing.join')}</button>
           </div>
@@ -108,7 +108,7 @@ export default function LandingHero({ scrollTo }: { scrollTo: (id: string) => vo
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', animation: 'lFadeUp .6s .3s ease both' }}>
           <button onClick={() => navigate('/login?signup=1')} className="l-btn-shim" style={{
             padding: '15px 36px', borderRadius: 16, background: S.p, border: 'none',
-            color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: fonts.body,
+            color: S.tx, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: fonts.body,
             boxShadow: '0 4px 20px rgba(224,136,122,0.3)',
             display: 'inline-flex', alignItems: 'center', gap: 8,
           }}>

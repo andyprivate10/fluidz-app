@@ -22,11 +22,11 @@ type BacklogItem = {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; bd: string; icon: typeof Circle }> = {
-  backlog:     { label: 'Backlog',     color: S.tx3,    bg: S.bg2,     bd: S.rule,    icon: Circle },
-  todo:        { label: 'To Do',       color: S.blue,   bg: S.bluebg,  bd: S.bluebd,  icon: Clock },
-  in_progress: { label: 'En cours',    color: S.orange, bg: S.orangebg,bd: S.orangebd,icon: PlayCircle },
-  done:        { label: 'Terminé',     color: S.sage,   bg: S.sagebg,  bd: S.sagebd,  icon: CheckCircle2 },
-  cancelled:   { label: 'Annulé',      color: S.red,    bg: S.redbg,   bd: S.redbd,   icon: Ban },
+  backlog:     { label: 'admin.status_backlog',  color: S.tx3,    bg: S.bg2,     bd: S.rule,    icon: Circle },
+  todo:        { label: 'admin.status_todo',    color: S.blue,   bg: S.bluebg,  bd: S.bluebd,  icon: Clock },
+  in_progress: { label: 'admin.status_in_progress', color: S.orange, bg: S.orangebg,bd: S.orangebd,icon: PlayCircle },
+  done:        { label: 'admin.status_done',        color: S.sage,   bg: S.sagebg,  bd: S.sagebd,  icon: CheckCircle2 },
+  cancelled:   { label: 'admin.status_cancelled',   color: S.red,    bg: S.redbg,   bd: S.redbd,   icon: Ban },
 }
 
 const STATUS_ORDER: string[] = ['backlog', 'todo', 'in_progress', 'done', 'cancelled']
@@ -153,7 +153,7 @@ export default function AdminDevTab() {
         </div>
         <div style={{ background: S.bg1, borderRadius: 14, padding: 12, textAlign: 'center', border: '1px solid ' + S.orangebd }}>
           <div style={{ fontSize: 22, fontWeight: 800, color: S.orange, fontFamily: fonts.hero }}>{inProgressStories}</div>
-          <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>En cours</div>
+          <div style={{ fontSize: 10, color: S.tx3, fontWeight: 600 }}>{t('admin.status_in_progress')}</div>
         </div>
       </div>
 
@@ -169,7 +169,7 @@ export default function AdminDevTab() {
             padding: '5px 12px', borderRadius: 99, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + (filter === f ? S.pbd : S.rule),
             background: filter === f ? S.p2 : 'transparent', color: filter === f ? S.p : S.tx3,
           }}>
-            {f === 'all' ? 'Tout' : f === 'active' ? 'Actif' : f === 'backlog' ? 'Backlog' : 'Terminé'}
+            {f === 'all' ? t('admin.filter_all') : f === 'active' ? t('admin.filter_active') : f === 'backlog' ? t('admin.status_backlog') : t('admin.filter_done')}
           </button>
         ))}
         <button onClick={() => setShowAddEpic(!showAddEpic)} style={{
@@ -183,11 +183,11 @@ export default function AdminDevTab() {
       {/* Add Epic form */}
       {showAddEpic && (
         <div style={{ background: S.bg1, borderRadius: 14, padding: 14, marginBottom: 12, border: '1px solid ' + S.pbd }}>
-          <input value={newEpicTitle} onChange={e => setNewEpicTitle(e.target.value)} placeholder="Titre de l'epic..." onKeyDown={e => e.key === 'Enter' && addEpic()}
+          <input value={newEpicTitle} onChange={e => setNewEpicTitle(e.target.value)} placeholder={t('admin.epic_placeholder')} onKeyDown={e => e.key === 'Enter' && addEpic()}
             style={{ width: '100%', padding: 10, borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx, fontSize: 13, marginBottom: 8, boxSizing: 'border-box' }} />
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={addEpic} style={{ flex: 1, padding: 8, borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Ajouter</button>
-            <button onClick={() => setShowAddEpic(false)} style={{ padding: 8, borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, cursor: 'pointer' }}>Annuler</button>
+            <button onClick={addEpic} style={{ flex: 1, padding: 8, borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('admin.add')}</button>
+            <button onClick={() => setShowAddEpic(false)} style={{ padding: 8, borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, cursor: 'pointer' }}>{t('admin.cancel')}</button>
           </div>
         </div>
       )}
@@ -225,7 +225,7 @@ export default function AdminDevTab() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
                   <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 99, background: sc.bg, color: sc.color, border: '1px solid ' + sc.bd, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                    <Icon size={9} strokeWidth={2} /> {sc.label}
+                    <Icon size={9} strokeWidth={2} /> {t(sc.label)}
                   </span>
                   {prog.total > 0 && <span style={{ fontSize: 9, color: S.tx3 }}>{prog.done}/{prog.total}</span>}
                 </div>
@@ -241,7 +241,7 @@ export default function AdminDevTab() {
                         padding: '3px 8px', borderRadius: 8, fontSize: 9, fontWeight: 600, cursor: 'pointer',
                         background: epic.status === s ? c.bg : 'transparent', color: epic.status === s ? c.color : S.tx4,
                         border: '1px solid ' + (epic.status === s ? c.bd : S.rule),
-                      }}>{c.label}</button>
+                      }}>{t(c.label)}</button>
                     )
                   })}
                   <div style={{ marginLeft: 'auto', display: 'flex', gap: 3 }}>
@@ -300,9 +300,9 @@ export default function AdminDevTab() {
                   {/* Add story */}
                   {showAddStory === epic.id ? (
                     <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-                      <input value={newStoryTitle} onChange={e => setNewStoryTitle(e.target.value)} placeholder="Nouvelle story..." onKeyDown={e => e.key === 'Enter' && addStory(epic.id)}
+                      <input value={newStoryTitle} onChange={e => setNewStoryTitle(e.target.value)} placeholder={t('admin.story_placeholder')} onKeyDown={e => e.key === 'Enter' && addStory(epic.id)}
                         style={{ flex: 1, padding: 8, borderRadius: 8, background: S.bg, border: '1px solid ' + S.rule, color: S.tx, fontSize: 12, boxSizing: 'border-box' }} autoFocus />
-                      <button onClick={() => addStory(epic.id)} style={{ padding: '6px 12px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Ajouter</button>
+                      <button onClick={() => addStory(epic.id)} style={{ padding: '6px 12px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{t('admin.add')}</button>
                       <button onClick={() => { setShowAddStory(null); setNewStoryTitle('') }} style={{ padding: '6px 8px', borderRadius: 8, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 11, cursor: 'pointer' }}><X size={12} /></button>
                     </div>
                   ) : (
@@ -322,7 +322,7 @@ export default function AdminDevTab() {
 
       {filteredEpics.length === 0 && (
         <div style={{ textAlign: 'center', padding: 40, color: S.tx3, fontSize: 13 }}>
-          Aucun epic dans ce filtre
+          {t('admin.no_epic')}
         </div>
       )}
     </div>

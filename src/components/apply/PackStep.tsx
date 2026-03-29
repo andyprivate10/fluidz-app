@@ -88,7 +88,7 @@ export default function PackStep({
           </div>
         </div>
         <div style={{width:20,height:20,borderRadius:99,background:on?S.grad:'transparent',border:on?'none':'2px solid '+S.rule,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-          {on && <Check size={11} strokeWidth={3} style={{color:'#fff'}} />}
+          {on && <Check size={11} strokeWidth={3} style={{color: S.tx}} />}
         </div>
       </div>
     )
@@ -136,7 +136,7 @@ export default function PackStep({
             return (
               <button key={url} type="button" onClick={() => setSelP((prev: string[]) => on ? prev.filter(p => p !== url) : [...prev, url])} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                 <img src={url} alt="" loading="lazy" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
+                {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color: S.tx}} /></div>}
               </button>
             )
           })}
@@ -145,7 +145,7 @@ export default function PackStep({
             return (
               <button key={url} type="button" onClick={() => setSelV((prev: string[]) => on ? prev.filter(v => v !== url) : [...prev, url])} style={{position:'relative',width:66,height:52,padding:0,border:on ? '2px solid '+accentColor : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                 <video src={url} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
+                {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color: S.tx}} /></div>}
               </button>
             )
           })}
@@ -178,8 +178,8 @@ export default function PackStep({
                 return next
               })} style={{position:'relative',width:52,height:52,padding:0,border:on ? '2px solid '+S.p : '1px solid '+S.rule,borderRadius:8,overflow:'hidden',cursor:'pointer',background:'none',opacity:on?1:0.35,transition:'opacity 0.15s'}}>
                 <img src={url} alt={partLabel} loading="lazy" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color:'#fff'}} /></div>}
-                <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.6)',fontSize:8,color:'#fff',textAlign:'center',padding:'1px 0'}}>{partLabel}</div>
+                {on && <div style={{position:'absolute',top:1,right:1,width:14,height:14,borderRadius:99,background:S.grad,display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={8} strokeWidth={3} style={{color: S.tx}} /></div>}
+                <div style={{position:'absolute',bottom:0,left:0,right:0,background:'rgba(0,0,0,0.6)',fontSize:8,color: S.tx,textAlign:'center',padding:'1px 0'}}>{partLabel}</div>
               </button>
             )
           })}
@@ -230,7 +230,7 @@ export default function PackStep({
               <button key={r.label} type="button" onClick={() => setSelectedRole(on ? '' : r.label)} style={{
                 padding:'6px 14px',borderRadius:99,fontSize:13,fontWeight:600,
                 border:on?'none':'1px solid '+S.rule,
-                background:on?S.grad:S.bg2,color:on?'#fff':S.tx3,cursor:'pointer',
+                background:on?S.grad:S.bg2,color:on? S.tx:S.tx3,cursor:'pointer',
               }}>{r.label}</button>
             )
           })}
@@ -267,7 +267,7 @@ export default function PackStep({
       <div style={{marginTop:12,padding:'10px 14px',background:'rgba(22,20,31,0.85)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)',borderRadius:12,border:'1px solid '+S.rule2}}>
         <p style={{fontSize:12,color:S.tx3,margin:0}}>{t('apply.sections_shared', { count: enabled.length, total: ALL_SECTIONS.length })}</p>
       </div>
-      <button onClick={onContinue} disabled={disabled} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:disabled?'not-allowed':'pointer',opacity:disabled?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
+      <button onClick={onContinue} disabled={disabled} className='btn-shimmer' style={{width:'100%',marginTop:14,padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color: S.tx,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:disabled?'not-allowed':'pointer',opacity:disabled?0.5:1,boxShadow:'0 4px 20px ' + S.pbd}}>
         {capacityFull ? t('session.full') : t('session.continue_button')}
       </button>
     </div>

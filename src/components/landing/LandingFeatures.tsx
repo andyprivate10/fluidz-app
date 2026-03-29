@@ -119,7 +119,7 @@ export default function LandingFeatures({ rv }: { rv: RevealRef }) {
           <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 20px', lineHeight: 1.6 }}>{t('landing.killer_2_desc')}</p>
           <div style={{ background: S.bg2, borderRadius: R.block, padding: 16, border: '1px solid ' + S.rule }}>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.sage, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>K</div>
+              <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.sage, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: S.tx }}>K</div>
               <div>
                 <p style={{ ...typeStyle('section'), color: S.tx, margin: 0 }}>Karim</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>

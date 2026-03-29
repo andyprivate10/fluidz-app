@@ -82,7 +82,7 @@ export default function LandingNav() {
           ))}
           <button onClick={() => { navigate('/login'); setMenuOpen(false) }} style={{
             padding: '14px 24px', borderRadius: 14, background: S.p, border: 'none',
-            color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: fonts.body,
+            color: S.tx, fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: fonts.body,
           }}>{t('landing.nav_open_app')}</button>
         </div>
       )}

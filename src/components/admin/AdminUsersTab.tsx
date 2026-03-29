@@ -116,7 +116,7 @@ export default function AdminUsersTab() {
     await loadUsers()
   }
 
-  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>Chargement...</p>
+  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>{t('admin.loading')}</p>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -147,7 +147,7 @@ export default function AdminUsersTab() {
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {u.display_name || '(sans nom)'}
+                  {u.display_name || t('admin.no_name')}
                 </div>
                 {pj.role && <div style={{ fontSize: 10, color: S.tx3, marginTop: 2 }}>{pj.role}</div>}
               </div>
@@ -235,11 +235,11 @@ export default function AdminUsersTab() {
                 <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                   <button onClick={() => saveUser(u.id)} disabled={saving} style={{ ...adminStyles.btnPrimary, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}>
                     <Save size={12} strokeWidth={2} />
-                    Sauvegarder
+                    {t('admin.save')}
                   </button>
                   <button onClick={() => window.open('/profile/' + u.id, '_blank')} style={{ ...adminStyles.btnSecondary, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <ExternalLink size={12} strokeWidth={1.5} />
-                    Voir profil
+                    {t('admin.view_profile')}
                   </button>
                   <button onClick={() => resetProfile(u.id)} style={{ ...adminStyles.btnDanger, display: 'flex', alignItems: 'center', gap: 4 }}>
                     <RotateCcw size={12} strokeWidth={1.5} />
@@ -252,7 +252,7 @@ export default function AdminUsersTab() {
         )
       })}
 
-      {users.length === 0 && <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>Aucun utilisateur</p>}
+      {users.length === 0 && <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>{t('admin.no_user')}</p>}
     </div>
   )
 }

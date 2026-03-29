@@ -171,10 +171,10 @@ export default function AddressesPage() {
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <div>
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx,margin:'0 0 2px' }}>{t('settings.addresses')}</h1>
-            <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length} adresse{addresses.length !== 1 ? 's' : ''} sauvegardée{addresses.length !== 1 ? 's' : ''}</p>
+            <p style={{ fontSize:12,color:S.tx3,margin:0 }}>{addresses.length === 1 ? t('addresses.count', { count: addresses.length }) : t('addresses.count_plural', { count: addresses.length })}</p>
           </div>
           <button onClick={openCreate} className='btn-shimmer' style={{ width:36,height:36,borderRadius:10,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>
-            <Plus size={18} style={{ color:'#fff' }} />
+            <Plus size={18} style={{ color: S.tx }} />
           </button>
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function AddressesPage() {
                   <p style={{ fontSize:13,color:S.tx,fontWeight:600,margin:'12px 0 4px' }}>{addr.exact_address}</p>
                   {addr.directions.length > 0 && (
                     <div style={{ marginTop:8 }}>
-                      <p style={{ fontSize:11,fontWeight:700,color:S.tx3,margin:'0 0 6px' }}>ÉTAPES D'ACCÈS</p>
+                      <p style={{ fontSize:11,fontWeight:700,color:S.tx3,margin:'0 0 6px' }}>{t('addresses.steps_label').replace(/ \(.*\)/, '')}</p>
                       {addr.directions.map((step, i) => (
                         <div key={i} style={{ display:'flex',gap:8,marginBottom:8,alignItems:'flex-start' }}>
                           <span style={{ fontSize:12,fontWeight:700,color:S.p,minWidth:20 }}>{i+1}.</span>
@@ -268,11 +268,11 @@ export default function AddressesPage() {
 
               {/* Directions */}
               <div>
-                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8,display:'block' }}>ÉTAPES D'ACCÈS (optionnel)</label>
+                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:8,display:'block' }}>{t('addresses.steps_label')}</label>
                 {directions.map((step, i) => (
                   <div key={i} style={{ marginBottom:10,padding:12,background:S.bg,borderRadius:12,border:'1px solid '+S.rule }}>
                     <div style={{ display:'flex',alignItems:'center',gap:8,marginBottom:6 }}>
-                      <span style={{ fontSize:12,fontWeight:700,color:S.p }}>Étape {i+1}</span>
+                      <span style={{ fontSize:12,fontWeight:700,color:S.p }}>{t('addresses.step_n', { n: i + 1 })}</span>
                       {directions.length > 1 && <button onClick={() => removeStep(i)} style={{ marginLeft:'auto',background:'none',border:'none',color:S.red,cursor:'pointer',padding:2,opacity:0.6 }}><Trash2 size={12} /></button>}
                     </div>
                     <input value={step.text} onChange={e => updateStep(i, e.target.value)} placeholder={t('placeholders.address_step')} maxLength={150} style={{ ...inp,fontSize:13 }} />
@@ -280,7 +280,7 @@ export default function AddressesPage() {
                       {step.photo_url ? (
                         <div style={{ position:'relative' }}>
                           <img src={step.photo_url} alt="" loading="lazy" style={{ width:60,height:60,borderRadius:8,objectFit:'cover',border:'1px solid '+S.rule }} />
-                          <button onClick={() => setDirections(prev => prev.map((d,j) => j === i ? { ...d, photo_url: undefined } : d))} style={{ position:'absolute',top:-4,right:-4,width:18,height:18,borderRadius:'50%',background:S.red,border:'none',color:'#fff',fontSize:10,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>×</button>
+                          <button onClick={() => setDirections(prev => prev.map((d,j) => j === i ? { ...d, photo_url: undefined } : d))} style={{ position:'absolute',top:-4,right:-4,width:18,height:18,borderRadius:'50%',background:S.red,border:'none',color: S.tx,fontSize:10,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center' }}>×</button>
                         </div>
                       ) : (
                         <label style={{ display:'flex',alignItems:'center',gap:4,padding:'6px 10px',borderRadius:8,border:'1px solid '+S.rule,background:S.bg2,color:S.tx3,fontSize:11,fontWeight:600,cursor:'pointer' }}>
@@ -292,12 +292,12 @@ export default function AddressesPage() {
                   </div>
                 ))}
                 <button onClick={addStep} style={{ width:'100%',padding:'8px',borderRadius:10,fontSize:12,fontWeight:600,color:S.tx3,border:'1px dashed '+S.rule,background:'transparent',cursor:'pointer' }}>
-                  + Ajouter une étape
+                  {t('addresses.add_step')}
                 </button>
               </div>
 
               <button onClick={save} disabled={saving || !label.trim() || (!streetAddress.trim() && !exactAddress.trim())} className='btn-shimmer' style={{
-                width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
+                width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color: S.tx,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
                 cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || (!streetAddress.trim() && !exactAddress.trim()) ? 0.6 : 1,
               }}>
                 {saving ? t('common.saving') : editId ? t('common.save') : t('common.save')}

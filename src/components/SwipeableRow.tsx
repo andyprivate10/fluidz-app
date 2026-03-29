@@ -53,7 +53,7 @@ export default function SwipeableRow({ children, onDelete }: Props) {
         borderRadius: '0 12px 12px 0',
         opacity: Math.min(Math.abs(offset) / threshold, 1),
       }}>
-        <Trash2 size={18} style={{ color: '#fff' }} />
+        <Trash2 size={18} style={{ color: S.tx }} />
       </div>
       {/* Content */}
       <div

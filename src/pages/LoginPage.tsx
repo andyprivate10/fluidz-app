@@ -331,7 +331,7 @@ export default function LoginPage() {
                     disabled={!!devLoading}
                     style={{
                       flex: 1, padding: '10px 6px', borderRadius: R.chip,
-                      ...typeStyle('label'), fontSize: 12, color: '#fff', background: S.p,
+                      ...typeStyle('label'), fontSize: 12, color: S.tx, background: S.p,
                       border: 'none', cursor: devLoading ? 'not-allowed' : 'pointer',
                       opacity: devLoading && devLoading !== a.name ? 0.5 : 1,
                     }}
@@ -384,7 +384,7 @@ export default function LoginPage() {
               <button onClick={handleEmailPassword} disabled={loading || !email.trim() || !password} style={{
                 position: 'relative', overflow: 'hidden',
                 width: '100%', padding: 16, borderRadius: R.btn, ...typeStyle('section'),
-                color: '#fff', background: S.p, border: 'none',
+                color: S.tx, background: S.p, border: 'none',
                 cursor: loading || !email.trim() || !password ? 'not-allowed' : 'pointer',
                 opacity: loading || !email.trim() || !password ? 0.5 : 1,
                 boxShadow: `0 4px 24px ${S.pbd}`,

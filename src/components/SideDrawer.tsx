@@ -62,7 +62,7 @@ export default function SideDrawer({ open, onClose }: Props) {
       <div style={{ width: 20, height: 20, color: S.tx2, flexShrink: 0 }}>{icon}</div>
       <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{label}</span>
       {badge && badge > 0 ? (
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#fff', background: S.p, borderRadius: 99, padding: '2px 8px', minWidth: 20, textAlign: 'center' }}>{badge}</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: S.tx, background: S.p, borderRadius: 99, padding: '2px 8px', minWidth: 20, textAlign: 'center' }}>{badge}</span>
       ) : (
         <ChevronRight size={14} strokeWidth={1.5} style={{ color: S.tx3 }} />
       )}
@@ -130,7 +130,7 @@ export default function SideDrawer({ open, onClose }: Props) {
             <GhostTimer createdAt={user.created_at} />
             <button onClick={() => { onClose(); setShowConvert(true) }} style={{
               width: '100%', marginTop: 8, padding: 10, borderRadius: 12,
-              background: S.p, border: 'none', color: '#fff',
+              background: S.p, border: 'none', color: S.tx,
               fontSize: 13, fontWeight: 700, cursor: 'pointer',
               fontFamily: fonts.body,
             }}>

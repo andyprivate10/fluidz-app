@@ -53,7 +53,7 @@ export default function PushPrompt() {
         <button onClick={dismiss} style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
           {t('push.later')}
         </button>
-        <button onClick={allow} style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: 'none', background: S.p, color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+        <button onClick={allow} style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: 'none', background: S.p, color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
           {t('push.allow')}
         </button>
       </div>

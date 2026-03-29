@@ -26,8 +26,8 @@ export default function GhostRecoverPage() {
 
   async function handleRecover() {
     const cleanCode = code.trim().toUpperCase()
-    if (cleanCode.length !== 6) { showToast('Le code fait 6 caractères', 'error'); return }
-    if (pin.length !== 4) { showToast('Le PIN fait 4 chiffres', 'error'); return }
+    if (cleanCode.length !== 6) { showToast(t('ghost_recover.code_6_chars'), 'error'); return }
+    if (pin.length !== 4) { showToast(t('ghost_recover.pin_4_digits'), 'error'); return }
 
     setLoading(true)
     const { data, error } = await supabase.from('ghost_sessions')
@@ -37,7 +37,7 @@ export default function GhostRecoverPage() {
       .maybeSingle()
 
     if (error || !data) {
-      showToast('Code ou PIN incorrect', 'error')
+      showToast(t('ghost_recover.wrong_code'), 'error')
       setLoading(false)
       return
     }
@@ -121,7 +121,7 @@ export default function GhostRecoverPage() {
         {!ghost ? (
           <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Code de session</label>
+              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('ghost_recover.session_code_label')}</label>
               <input
                 value={code}
                 onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
@@ -132,7 +132,7 @@ export default function GhostRecoverPage() {
               />
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Code secret</label>
+              <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('ghost_recover.secret_code_label')}</label>
               <input
                 value={pin}
                 onChange={e => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
@@ -145,7 +145,7 @@ export default function GhostRecoverPage() {
             <button
               onClick={handleRecover}
               disabled={loading || code.length !== 6 || pin.length !== 4}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || code.length !== 6 || pin.length !== 4 ? 0.7 : 1 }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || code.length !== 6 || pin.length !== 4 ? 0.7 : 1 }}
             >
               {loading ? t('common.searching_dots') : t('common.recover')}
             </button>
@@ -167,8 +167,8 @@ export default function GhostRecoverPage() {
               )}
             </div>
 
-            <button onClick={goToApply} style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              Continuer en ghost <ArrowRight size={18} />
+            <button onClick={goToApply} style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              {t('ghost_recover.continue_ghost')} <ArrowRight size={18} />
             </button>
 
             {!showConvert ? (
@@ -177,7 +177,7 @@ export default function GhostRecoverPage() {
               </button>
             ) : (
               <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 16, padding: 16, border: '1px solid ' + S.sagebd }}>
-                <p style={{ fontSize: 12, color: S.sage, fontWeight: 700, margin: '0 0 10px' }}>Convertir en compte permanent</p>
+                <p style={{ fontSize: 12, color: S.sage, fontWeight: 700, margin: '0 0 10px' }}>{t('ghost_recover.convert_title')}</p>
                 <input
                   value={convertEmail}
                   onChange={e => setConvertEmail(e.target.value)}
@@ -188,7 +188,7 @@ export default function GhostRecoverPage() {
                 <button
                   onClick={handleConvert}
                   disabled={converting || !convertEmail.trim()}
-                  style={{ width: '100%', padding: 12, borderRadius: 12, fontWeight: 700, fontSize: 14, color: '#fff', background: S.sage, border: 'none', cursor: converting ? 'not-allowed' : 'pointer', opacity: converting || !convertEmail.trim() ? 0.7 : 1 }}
+                  style={{ width: '100%', padding: 12, borderRadius: 12, fontWeight: 700, fontSize: 14, color: S.tx, background: S.sage, border: 'none', cursor: converting ? 'not-allowed' : 'pointer', opacity: converting || !convertEmail.trim() ? 0.7 : 1 }}
                 >
                   {converting ? t('ghost_recover.sending') : t('ghost_recover.send_confirmation')}
                 </button>

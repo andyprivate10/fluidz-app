@@ -122,7 +122,7 @@ export default function AdminTemplatesTab() {
     await loadTemplates()
   }
 
-  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>Chargement...</p>
+  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>{t('admin.loading')}</p>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -135,7 +135,7 @@ export default function AdminTemplatesTab() {
         </p>
         <button onClick={() => { setShowAdd(!showAdd); setEditingId(null) }} style={{ ...adminStyles.btnSecondary, padding: '4px 10px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
           <Plus size={11} strokeWidth={2} />
-          Ajouter
+          {t('admin.add')}
         </button>
       </div>
 
@@ -143,60 +143,60 @@ export default function AdminTemplatesTab() {
       {showAdd && (
         <div style={{ ...adminStyles.card, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div>
-            <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Label</label>
-            <input style={adminStyles.input} value={addData.label} onChange={e => setAddData(prev => ({ ...prev, label: e.target.value }))} placeholder="Nom du template" />
+            <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.label')}</label>
+            <input style={adminStyles.input} value={addData.label} onChange={e => setAddData(prev => ({ ...prev, label: e.target.value }))} placeholder={t('admin.template_name')} />
           </div>
           {addData.label && (
-            <div style={{ fontSize: 10, color: S.tx3 }}>Slug: {toSlug(addData.label)}</div>
+            <div style={{ fontSize: 10, color: S.tx3 }}>{t('admin.slug')} {toSlug(addData.label)}</div>
           )}
           <div>
-            <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Tags (virgule-sep)</label>
+            <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.tags_comma')}</label>
             <input style={adminStyles.input} value={addData.tags} onChange={e => setAddData(prev => ({ ...prev, tags: e.target.value }))} placeholder="tag1, tag2" />
           </div>
           <div>
-            <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Sort Order</label>
+            <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.sort_order')}</label>
             <input type="number" style={adminStyles.input} value={addData.sort_order} onChange={e => setAddData(prev => ({ ...prev, sort_order: Number(e.target.value) }))} />
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={addTemplate} disabled={saving || !addData.label.trim()} style={{ ...adminStyles.btnPrimary, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, opacity: saving || !addData.label.trim() ? 0.5 : 1 }}>
-              <Save size={12} strokeWidth={2} /> Creer
+              <Save size={12} strokeWidth={2} /> {t('admin.create')}
             </button>
-            <button onClick={() => setShowAdd(false)} style={adminStyles.btnSecondary}>Annuler</button>
+            <button onClick={() => setShowAdd(false)} style={adminStyles.btnSecondary}>{t('admin.cancel')}</button>
           </div>
         </div>
       )}
 
       {/* Template list */}
       {templates.length === 0 && !showAdd && (
-        <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>Aucun template</p>
+        <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>{t('admin.no_template')}</p>
       )}
 
-      {templates.map((t, idx) => {
-        const isEditing = editingId === t.id
+      {templates.map((tpl, idx) => {
+        const isEditing = editingId === tpl.id
         return (
-          <div key={t.id} style={{ ...adminStyles.card, padding: 0, overflow: 'hidden' }}>
+          <div key={tpl.id} style={{ ...adminStyles.card, padding: 0, overflow: 'hidden' }}>
             {/* Row header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 12 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <button onClick={() => moveOrder(t, -1)} disabled={idx === 0} style={{ background: 'none', border: 'none', cursor: idx === 0 ? 'default' : 'pointer', padding: 0, color: idx === 0 ? S.tx4 : S.tx3, lineHeight: 1 }}>
+                <button onClick={() => moveOrder(tpl, -1)} disabled={idx === 0} style={{ background: 'none', border: 'none', cursor: idx === 0 ? 'default' : 'pointer', padding: 0, color: idx === 0 ? S.tx4 : S.tx3, lineHeight: 1 }}>
                   <MoveUp size={12} strokeWidth={2} />
                 </button>
-                <button onClick={() => moveOrder(t, 1)} disabled={idx === templates.length - 1} style={{ background: 'none', border: 'none', cursor: idx === templates.length - 1 ? 'default' : 'pointer', padding: 0, color: idx === templates.length - 1 ? S.tx4 : S.tx3, lineHeight: 1 }}>
+                <button onClick={() => moveOrder(tpl, 1)} disabled={idx === templates.length - 1} style={{ background: 'none', border: 'none', cursor: idx === templates.length - 1 ? 'default' : 'pointer', padding: 0, color: idx === templates.length - 1 ? S.tx4 : S.tx3, lineHeight: 1 }}>
                   <MoveDown size={12} strokeWidth={2} />
                 </button>
               </div>
-              <div style={{ flex: 1, minWidth: 0, cursor: 'pointer' }} onClick={() => startEdit(t)}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero }}>{t.label}</div>
+              <div style={{ flex: 1, minWidth: 0, cursor: 'pointer' }} onClick={() => startEdit(tpl)}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero }}>{tpl.label}</div>
                 <div style={{ fontSize: 10, color: S.tx3, marginTop: 2 }}>
-                  {t.tags && <span>{t.tags}</span>}
-                  {t.tags && ' · '}
-                  order: {t.sort_order}
+                  {tpl.tags && <span>{tpl.tags}</span>}
+                  {tpl.tags && ' · '}
+                  order: {tpl.sort_order}
                 </div>
               </div>
-              <button onClick={() => toggleActive(t)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: t.is_active ? S.sage : S.tx3, lineHeight: 1 }}>
-                {t.is_active ? <ToggleRight size={22} strokeWidth={1.5} /> : <ToggleLeft size={22} strokeWidth={1.5} />}
+              <button onClick={() => toggleActive(tpl)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: tpl.is_active ? S.sage : S.tx3, lineHeight: 1 }}>
+                {tpl.is_active ? <ToggleRight size={22} strokeWidth={1.5} /> : <ToggleLeft size={22} strokeWidth={1.5} />}
               </button>
-              <button onClick={() => deleteTemplate(t.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: S.red, lineHeight: 1 }}>
+              <button onClick={() => deleteTemplate(tpl.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: S.red, lineHeight: 1 }}>
                 <Trash2 size={14} strokeWidth={1.5} />
               </button>
             </div>
@@ -205,25 +205,25 @@ export default function AdminTemplatesTab() {
             {isEditing && (
               <div style={{ padding: '0 12px 12px', display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px solid ' + S.rule }}>
                 <div style={{ paddingTop: 10 }}>
-                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Label</label>
+                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.label')}</label>
                   <input style={adminStyles.input} value={editData.label} onChange={e => setEditData(prev => ({ ...prev, label: e.target.value }))} />
                 </div>
                 {editData.label && (
-                  <div style={{ fontSize: 10, color: S.tx3 }}>Slug: {toSlug(editData.label)}</div>
+                  <div style={{ fontSize: 10, color: S.tx3 }}>{t('admin.slug')} {toSlug(editData.label)}</div>
                 )}
                 <div>
-                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Tags (virgule-sep)</label>
+                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.tags_comma')}</label>
                   <input style={adminStyles.input} value={editData.tags} onChange={e => setEditData(prev => ({ ...prev, tags: e.target.value }))} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>Sort Order</label>
+                  <label style={{ fontSize: 10, color: S.tx3, fontWeight: 600, marginBottom: 4, display: 'block' }}>{t('admin.sort_order')}</label>
                   <input type="number" style={adminStyles.input} value={editData.sort_order} onChange={e => setEditData(prev => ({ ...prev, sort_order: Number(e.target.value) }))} />
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={saveEdit} disabled={saving} style={{ ...adminStyles.btnPrimary, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}>
-                    <Save size={12} strokeWidth={2} /> Sauvegarder
+                    <Save size={12} strokeWidth={2} /> {t('admin.save')}
                   </button>
-                  <button onClick={() => setEditingId(null)} style={adminStyles.btnSecondary}>Annuler</button>
+                  <button onClick={() => setEditingId(null)} style={adminStyles.btnSecondary}>{t('admin.cancel')}</button>
                 </div>
               </div>
             )}

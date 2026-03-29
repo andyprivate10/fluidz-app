@@ -540,6 +540,7 @@
     "tag_respectful": "Respectful",
     "tag_hot": "Hot",
     "tag_welcoming": "Welcoming",
+    "tag_awkward": "Awkward",
     "would_you_recross": "Would you like to see {{name}} again?",
     "yes_interested": "Yes, I'd be down",
     "no_not_really": "No, not really",
@@ -564,7 +565,8 @@
     "vibe_tags_label": "Vibes",
     "summary": "All done!",
     "people_reviewed": "You reviewed {{count}} people.",
-    "added_to_book": "{{count}} added to NaughtyBook."
+    "added_to_book": "{{count}} added to NaughtyBook.",
+    "rate_required": "Please give at least one star"
   },
   "notifications": {
     "title": "Notifications",
@@ -816,7 +818,8 @@
     "no_groups": "No groups created",
     "sub_pending": "Pending",
     "sub_accepted": "Accepted",
-    "sub_rejected": "Rejected"
+    "sub_rejected": "Rejected",
+    "no_votes_yet": "No votes yet"
   },
   "contacts": {
     "title": "Naughty Book",
@@ -956,7 +959,12 @@
     "empty": "No addresses",
     "edit": "Edit",
     "new_address": "New address",
-    "save_hint": "Save your addresses to reuse them"
+    "save_hint": "Save your addresses to reuse them",
+    "steps_label": "ACCESS STEPS (optional)",
+    "step_n": "Step {{n}}",
+    "add_step": "+ Add a step",
+    "count": "{{count}} saved address",
+    "count_plural": "{{count}} saved addresses"
   },
   "apply": {
     "sending": "Sending...",
@@ -992,7 +1000,14 @@
   },
   "ghost_recover": {
     "sending": "Sending...",
-    "send_confirmation": "Send confirmation link"
+    "send_confirmation": "Send confirmation link",
+    "code_6_chars": "Code must be 6 characters",
+    "pin_4_digits": "PIN must be 4 digits",
+    "wrong_code": "Incorrect code or PIN",
+    "session_code_label": "SESSION CODE",
+    "secret_code_label": "SECRET CODE",
+    "continue_ghost": "Continue as ghost",
+    "convert_title": "Convert to permanent account"
   },
   "groups": {
     "saving": "Saving...",
@@ -1563,6 +1578,47 @@
     "confirm_delete_epic": "Delete this epic and all its stories?",
     "confirm_delete_session": "Delete this session? This action is irreversible.",
     "confirm_delete_template": "Delete this template?",
-    "confirm_reset_profile": "Reset profile? Only the display_name will be kept."
+    "confirm_reset_profile": "Reset profile? Only the display_name will be kept.",
+    "add": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "no_template": "No template",
+    "no_session": "No session",
+    "no_user": "No user",
+    "unknown": "(unknown)",
+    "no_title": "(no title)",
+    "no_name": "(no name)",
+    "template_name": "Template name",
+    "slug": "Slug:",
+    "tags_comma": "Tags (comma-sep)",
+    "sort_order": "Sort Order",
+    "create": "Create",
+    "label": "Label",
+    "new_category": "New category name...",
+    "add_new": "+ New",
+    "enable_all": "Enable all",
+    "disable_all": "Disable all",
+    "element": "element",
+    "elements": "elements",
+    "profile": "profile",
+    "profiles": "profiles",
+    "member": "member",
+    "members": "members",
+    "no_category": "Uncategorized",
+    "title": "Title",
+    "description": "Description",
+    "view_profile": "View profile",
+    "no_epic": "No epic in this filter",
+    "epic_placeholder": "Epic title...",
+    "story_placeholder": "New story...",
+    "status_in_progress": "In progress",
+    "status_done": "Done",
+    "status_cancelled": "Cancelled",
+    "filter_all": "All",
+    "filter_active": "Active",
+    "filter_done": "Done",
+    "status_backlog": "Backlog",
+    "status_todo": "To Do"
   }
 }

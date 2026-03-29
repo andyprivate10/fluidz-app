@@ -63,7 +63,7 @@ export default function ImageCropModal({ imageSrc, aspect = 1, onConfirm, onCanc
         <button
           onClick={handleConfirm}
           disabled={processing}
-          style={{ flex: 1, padding: 14, borderRadius: 14, border: 'none', background: S.p, color: '#fff', fontSize: 15, fontWeight: 700, cursor: processing ? 'wait' : 'pointer', opacity: processing ? 0.7 : 1 }}
+          style={{ flex: 1, padding: 14, borderRadius: 14, border: 'none', background: S.p, color: S.tx, fontSize: 15, fontWeight: 700, cursor: processing ? 'wait' : 'pointer', opacity: processing ? 0.7 : 1 }}
         >
           {processing ? t('crop.processing') : t('crop.confirm')}
         </button>
