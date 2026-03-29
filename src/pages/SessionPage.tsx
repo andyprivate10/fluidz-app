@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { Users } from 'lucide-react'
 import { colors, fonts } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
@@ -332,7 +333,12 @@ export default function SessionPage() {
           {/* Empty state */}
           {d.members.length === 0 && d.pendingApps.length === 0 && (!d.checkInRequests || d.checkInRequests.length === 0) && (
             <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
-              <p style={{ fontSize: 14 }}>{t('host.no_pending')}</p>
+              <Users size={32} strokeWidth={1.5} style={{ color: S.tx4, display: 'block', margin: '0 auto 12px' }} />
+              <p style={{ fontSize: 15, fontWeight: 700, color: S.tx2, margin: '0 0 6px' }}>{t('host.no_candidates_title')}</p>
+              <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 20px', lineHeight: 1.5 }}>{t('host.no_candidates_desc')}</p>
+              <button onClick={() => handleTabChange('share')} style={{ padding: '12px 24px', borderRadius: 14, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                {t('host.share_session')}
+              </button>
             </div>
           )}
         </div>

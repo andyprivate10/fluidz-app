@@ -1,3 +1,4 @@
+import PageFadeIn from '../components/PageFadeIn'
 import { colors, fonts, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
@@ -43,6 +44,7 @@ export default function HomePage() {
   if (loading) return <SkeletonHomePage />
 
   return (
+    <PageFadeIn>
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
       <OrbLayer />
       {pullIndicator}
@@ -352,5 +354,6 @@ export default function HomePage() {
         )}
       </div>
     </div>
+    </PageFadeIn>
   )
 }

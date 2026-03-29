@@ -1,3 +1,4 @@
+import PageFadeIn from '../components/PageFadeIn'
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -140,6 +141,7 @@ export default function ChatsHubPage() {
   ]
 
   return (
+    <PageFadeIn>
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
       <OrbLayer />
       {pullIndicator}
@@ -276,6 +278,7 @@ export default function ChatsHubPage() {
         })}
       </div>
     </div>
+    </PageFadeIn>
   )
 }
 

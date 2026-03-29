@@ -1,3 +1,4 @@
+import PageFadeIn from '../components/PageFadeIn'
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -111,6 +112,7 @@ export default function ContactsPage() {
   const { pullHandlers, pullIndicator } = usePullToRefresh(loadContacts)
 
   return (
+    <PageFadeIn>
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', position: 'relative' as const, maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
       {pullIndicator}
       <OrbLayer />
@@ -165,9 +167,12 @@ export default function ContactsPage() {
           <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
             {contacts.length === 0 ? (
               <>
-                <Users size={40} style={{ color: S.tx4, marginBottom: 12 }} />
-                <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>{t('contacts.no_contacts')}</p>
-                <p style={{ fontSize: 13 }}>{t('contacts.no_contacts_desc')}</p>
+                <Users size={36} style={{ color: S.p, marginBottom: 12 }} />
+                <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('contacts.empty_title')}</p>
+                <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 20px', lineHeight: 1.5 }}>{t('contacts.empty_desc')}</p>
+                <button onClick={() => navigate('/explore')} style={{ padding: '12px 24px', borderRadius: 14, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                  {t('contacts.empty_cta')}
+                </button>
               </>
             ) : (
               <p style={{ fontSize: 14 }}>{t('contacts.empty_filter')}</p>
@@ -215,5 +220,6 @@ export default function ContactsPage() {
         })}
       </div>
     </div>
+    </PageFadeIn>
   )
 }

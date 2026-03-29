@@ -1,3 +1,4 @@
+import PageFadeIn from '../components/PageFadeIn'
 import { Link } from 'react-router-dom'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -94,6 +95,7 @@ export default function MePage() {
 
   // ── Connecté ─────────────────────────────────────────────────────────────
   return (
+    <PageFadeIn>
     <div style={{ minHeight:'100vh', background:S.bg, paddingBottom:96, position:'relative', maxWidth:480, margin:'0 auto' }}>
       <OrbLayer />
 
@@ -390,5 +392,6 @@ export default function MePage() {
         />
       )}
     </div>
+    </PageFadeIn>
   )
 }

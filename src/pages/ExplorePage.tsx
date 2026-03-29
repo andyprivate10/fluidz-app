@@ -1,3 +1,4 @@
+import PageFadeIn from '../components/PageFadeIn'
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -221,6 +222,7 @@ export default function ExplorePage() {
   const { pullHandlers, pullIndicator } = usePullToRefresh(async () => { if (myLat && myLng) await loadNearby(myLat, myLng) })
 
   return (
+    <PageFadeIn>
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', paddingBottom: 96 }}>
       {pullIndicator}
       <OrbLayer />
@@ -305,9 +307,13 @@ export default function ExplorePage() {
         )}
 
         {!loading && !geoError && filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
-            <p style={{ fontSize: 15, fontWeight: 600, margin: '0 0 6px' }}>{t('explore.nobody')}</p>
-            <p style={{ fontSize: 12 }}>{t('explore.nobody_desc')}</p>
+          <div style={{ textAlign: 'center', padding: '48px 20px', color: S.tx3 }}>
+            <MapPin size={32} strokeWidth={1.5} style={{ color: S.p, display: 'block', margin: '0 auto 12px' }} />
+            <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('explore.nobody')}</p>
+            <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 20px', lineHeight: 1.5 }}>{t('explore.nobody_desc')}</p>
+            <button onClick={() => setViewMode('map')} style={{ padding: '12px 24px', borderRadius: 14, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              {t('explore.try_map')}
+            </button>
           </div>
         )}
 
@@ -409,5 +415,6 @@ export default function ExplorePage() {
       </>
       </div>
     </div>
+    </PageFadeIn>
   )
 }

@@ -1,3 +1,4 @@
+import PageFadeIn from '../components/PageFadeIn'
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
@@ -124,6 +125,7 @@ export default function SessionsPage() {
   }
 
   return (
+    <PageFadeIn>
     <div {...pullHandlers} style={{ background: S.bg, minHeight: '100vh', maxWidth: 480, margin: '0 auto', position: 'relative' }}>
       <OrbLayer />
       {pullIndicator}
@@ -167,9 +169,12 @@ export default function SessionsPage() {
             {/* Empty state */}
             {!loading && !hasPinnedSessions && publicSessions.length === 0 && activeRejected.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
-                <Zap size={28} strokeWidth={1.5} style={{ color: S.tx3, display: 'block', margin: '0 auto 10px' }} />
-                <p style={{ ...typeStyle('section'), margin: '0 0 6px', color: S.tx2 }}>{t('sessions.empty_hosted')}</p>
-                <p style={{ ...typeStyle('body'), color: S.tx3, margin: 0 }}>{t('sessions.empty_applied')}</p>
+                <Zap size={32} strokeWidth={1.5} style={{ color: S.p, marginBottom: 12, display: 'block', margin: '0 auto 12px' }} />
+                <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('sessions.empty_title')}</p>
+                <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 20px', lineHeight: 1.5 }}>{t('sessions.empty_desc')}</p>
+                <button onClick={() => navigate('/session/create')} style={{ padding: '12px 24px', borderRadius: 14, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                  {t('sessions.empty_cta')}
+                </button>
               </div>
             )}
 
@@ -264,5 +269,6 @@ export default function SessionsPage() {
         )}
       </div>
     </div>
+    </PageFadeIn>
   )
 }
