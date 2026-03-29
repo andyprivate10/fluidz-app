@@ -161,7 +161,7 @@ export default function EditSessionPage() {
               {step.photo_url ? (
                 <div style={{ marginTop:6, position:'relative', display:'inline-block' }}>
                   <img src={step.photo_url} alt="" loading="lazy" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.rule }} />
-                  <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-4, right:-4, width:16, height:16, borderRadius:'50%', background:S.red, border:'none', color:'#fff', fontSize:10, cursor:'pointer' }}>×</button>
+                  <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-4, right:-4, width:16, height:16, borderRadius:'50%', background:S.red, border:'none', color: S.tx, fontSize:10, cursor:'pointer' }}>×</button>
                 </div>
               ) : (
                 <label style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:6, padding:'4px 8px', borderRadius:6, border:'1px solid '+S.rule, background:S.bg2, color:S.tx4, fontSize:10, fontWeight:600, cursor:'pointer' }}>
@@ -207,7 +207,7 @@ export default function EditSessionPage() {
         {/* Save */}
         <button onClick={handleSave} disabled={saving} style={{
           width:'100%', padding:16, background:S.grad, border:'none', borderRadius:14,
-          color:'#fff', fontSize:16, fontWeight:700, cursor: saving ? 'not-allowed' : 'pointer',
+          color: S.tx, fontSize:16, fontWeight:700, cursor: saving ? 'not-allowed' : 'pointer',
           boxShadow:'0 4px 20px '+S.pbd, opacity: saving ? 0.7 : 1, marginTop:8,
         }}>
           {saving ? t('edit.saving') : t('edit.save_changes')}

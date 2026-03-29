@@ -52,7 +52,7 @@ export default function AddressShareSheet({ open, onClose, onSelect, userId }: P
         {!loading && addresses.length === 0 && (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
             <p style={{ fontSize: 14, color: S.tx3, margin: '0 0 12px' }}>{t('address.no_saved')}</p>
-            <button onClick={() => { onClose(); navigate('/addresses') }} style={{ padding: '10px 20px', borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => { onClose(); navigate('/addresses') }} style={{ padding: '10px 20px', borderRadius: 10, background: S.p, border: 'none', color: S.tx, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               {t('settings.addresses')}
             </button>
           </div>

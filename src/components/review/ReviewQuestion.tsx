@@ -46,7 +46,7 @@ export default function ReviewQuestion({
           <div style={{
             width: 100, height: 100, borderRadius: '50%', background: S.grad,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 36, fontWeight: 800, color: '#fff', margin: '0 auto 16px',
+            fontSize: 36, fontWeight: 800, color: S.tx, margin: '0 auto 16px',
           }}>
             {name[0]?.toUpperCase()}
           </div>
@@ -68,7 +68,7 @@ export default function ReviewQuestion({
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
         <button onClick={onYes} style={{
           width: '100%', padding: 16, borderRadius: 14,
-          background: S.p, border: 'none', color: '#fff',
+          background: S.p, border: 'none', color: S.tx,
           fontSize: 16, fontWeight: 700, cursor: 'pointer',
           transition: 'opacity 0.15s',
         }}>

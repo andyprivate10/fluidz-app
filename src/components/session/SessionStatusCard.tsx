@@ -136,7 +136,7 @@ export default function SessionStatusCard({
                   {avatar ? (
                     <img src={avatar} alt="" style={{ width: 20, height: 20, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: 20, height: 20, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{name[0].toUpperCase()}</div>
+                    <div style={{ width: 20, height: 20, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: S.tx }}>{name[0].toUpperCase()}</div>
                   )}
                   <span style={{ fontSize: 12, color: S.tx2, fontWeight: 600 }}>{name}</span>
                 </button>

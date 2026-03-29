@@ -95,7 +95,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
           {targetAvatar ? (
             <img src={targetAvatar} alt="" style={{ width: 40, height: 40, borderRadius: '28%', objectFit: 'cover', border: '1px solid ' + S.rule }} />
           ) : (
-            <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>{targetName[0]?.toUpperCase()}</div>
+            <div style={{ width: 40, height: 40, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: S.tx }}>{targetName[0]?.toUpperCase()}</div>
           )}
           <div>
             <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{targetName}</p>
@@ -151,7 +151,7 @@ export default function DmRequestSheet({ open, onClose, targetUserId, targetName
         />
 
         <button onClick={sendRequest} disabled={sending} style={{
-          width: '100%', padding: 14, borderRadius: 14, background: S.p, border: 'none', color: '#fff',
+          width: '100%', padding: 14, borderRadius: 14, background: S.p, border: 'none', color: S.tx,
           fontSize: 15, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer', opacity: sending ? 0.6 : 1,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
         }}>

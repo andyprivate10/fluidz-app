@@ -157,7 +157,7 @@ export default function OnboardingPage() {
           </div>
 
           <button onClick={() => { if (!displayName.trim()) { showToast(t('onboarding.pseudo_required'), 'error'); return }; setStep(2) }}
-            style={{ width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            style={{ width: '100%', padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             {t('onboarding.next')} <ChevronRight size={18} />
           </button>
         </div>
@@ -180,7 +180,7 @@ export default function OnboardingPage() {
                   padding: '10px 20px', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer',
                   border: role === r.label ? 'none' : '1px solid ' + S.rule,
                   background: role === r.label ? S.grad : S.bg2,
-                  color: role === r.label ? '#fff' : S.tx3,
+                  color: role === r.label ? S.tx : S.tx3,
                 }}>{r.label}</button>
               ))}
             </div>
@@ -202,7 +202,7 @@ export default function OnboardingPage() {
 
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => setStep(1)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
-            <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <button onClick={() => setStep(3)} style={{ flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               {t('onboarding.next')} <ChevronRight size={18} />
             </button>
           </div>
@@ -232,7 +232,7 @@ export default function OnboardingPage() {
               </div>
             )}
             <label style={{ position: 'absolute', bottom: -4, right: -4, width: 40, height: 40, borderRadius: '50%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-              <Camera size={18} style={{ color: '#fff' }} />
+              <Camera size={18} style={{ color: S.tx }} />
               <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: 'none' }} />
             </label>
           </div>
@@ -242,7 +242,7 @@ export default function OnboardingPage() {
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setStep(2)} style={{ padding: '14px 20px', borderRadius: 14, fontWeight: 600, fontSize: 14, color: S.tx3, background: S.bg2, border: '1px solid ' + S.rule, cursor: 'pointer' }}><ArrowLeft size={16} strokeWidth={1.5} /></button>
               <button onClick={save} disabled={saving || !displayName.trim()} style={{
-                flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
+                flex: 1, padding: 16, borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx,
                 background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: saving ? 'not-allowed' : 'pointer',
                 opacity: saving || !displayName.trim() ? 0.6 : 1,
                 boxShadow: '0 4px 20px ' + S.pbd,

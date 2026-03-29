@@ -111,7 +111,7 @@ function ReviewIntentsStateful({
           <div style={{
             width: 80, height: 80, borderRadius: '50%', background: S.grad,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 28, fontWeight: 800, color: '#fff', margin: '0 auto 12px',
+            fontSize: 28, fontWeight: 800, color: S.tx, margin: '0 auto 12px',
           }}>
             {name[0]?.toUpperCase()}
           </div>
@@ -135,7 +135,7 @@ function ReviewIntentsStateful({
       <div style={{ display: 'flex', gap: 12, width: '100%' }}>
         <button onClick={() => answer(true)} style={{
           flex: 1, padding: 16, borderRadius: 14,
-          background: S.p, border: 'none', color: '#fff',
+          background: S.p, border: 'none', color: S.tx,
           fontSize: 15, fontWeight: 700, cursor: 'pointer',
         }}>
           {t('common.yes')}

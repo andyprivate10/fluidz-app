@@ -195,7 +195,7 @@ export default function JoinPage() {
           </div>
           <p style={{color:S.tx,fontWeight:700,fontSize:20,marginBottom:8}}>{t('session.invalid_link')}</p>
           <p style={{color:S.tx3,fontSize:14,marginBottom:24,lineHeight:1.5}}>{t('session.invalid_link_desc')}</p>
-          <button onClick={()=>navigate('/')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>{t('common.back')}</button>
+          <button onClick={()=>navigate('/')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color: S.tx,border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>{t('common.back')}</button>
         </div>
       )}
 
@@ -207,7 +207,7 @@ export default function JoinPage() {
           <p style={{color:S.tx,fontWeight:700,fontSize:20,marginBottom:4}}>{t('session.session_ended_title')}</p>
           <p style={{color:S.tx2,fontSize:16,fontWeight:600,marginBottom:8}}>{session.title}</p>
           <p style={{color:S.tx3,fontSize:14,marginBottom:24}}>{t('session.session_ended_desc')}</p>
-          <button onClick={()=>navigate('/explore')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>{t('session.explore_others')}</button>
+          <button onClick={()=>navigate('/explore')} style={{padding:'12px 28px',borderRadius:14,background:S.grad,color: S.tx,border:'none',fontWeight:700,cursor:'pointer',fontSize:15}}>{t('session.explore_others')}</button>
         </div>
       )}
 
@@ -337,7 +337,7 @@ export default function JoinPage() {
                 <>
                   <button onClick={() => navigate('/login?next=/join/' + code)} className="btn-shimmer" style={{
                     width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                    color:'#fff',background:S.grad,border:'none',cursor:'pointer',
+                    color: S.tx,background:S.grad,border:'none',cursor:'pointer',
                     boxShadow:'0 4px 24px '+S.pbd, position:'relative', overflow:'hidden',
                   }}>
                     {t('session.apply')}
@@ -363,7 +363,7 @@ export default function JoinPage() {
                 <>
                   <button onClick={quickApply} disabled={quickApplying} className="btn-shimmer" style={{
                     width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                    color:'#fff',background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
+                    color: S.tx,background:S.grad,border:'none',cursor:quickApplying?'not-allowed':'pointer',
                     boxShadow:'0 4px 24px '+S.pbd,opacity:quickApplying?0.7:1,
                     position:'relative', overflow:'hidden',
                   }}>
@@ -381,7 +381,7 @@ export default function JoinPage() {
                 <>
                   <button onClick={() => navigate('/session/' + session.id + '/apply')} className="btn-shimmer" style={{
                     width:'100%',padding:'16px',borderRadius:16,fontWeight:700,fontSize:16,
-                    color:'#fff',background:S.grad,border:'none',cursor:'pointer',
+                    color: S.tx,background:S.grad,border:'none',cursor:'pointer',
                     boxShadow:'0 4px 24px '+S.pbd,
                     position:'relative', overflow:'hidden',
                   }}>

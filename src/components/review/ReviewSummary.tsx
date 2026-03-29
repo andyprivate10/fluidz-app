@@ -42,7 +42,7 @@ export default function ReviewSummary({ reviewedCount, addedToBookCount, onFinis
 
         <button onClick={onFinish} style={{
           padding: '14px 32px', borderRadius: 14,
-          background: S.p, border: 'none', color: '#fff',
+          background: S.p, border: 'none', color: S.tx,
           fontSize: 15, fontWeight: 700, cursor: 'pointer',
         }}>
           {t('common.back_home')}

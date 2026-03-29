@@ -68,14 +68,14 @@ export default function NoteStep({
                 <>
                   <video src={url} style={{width:'100%',height:'100%',objectFit:'cover'}} />
                   <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.3)'}}>
-                    <Play size={16} fill="#fff" color="#fff" />
+                    <Play size={16} fill={S.tx} color={S.tx} />
                   </div>
                 </>
               ) : (
                 <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}} />
               )}
               <button onClick={() => setOccasionPhotos(occasionPhotos.filter((_, j) => j !== i))} style={{position:'absolute',top:2,right:2,background:'rgba(0,0,0,0.6)',border:'none',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}}>
-                <X size={10} color="#fff" />
+                <X size={10} color={S.tx} />
               </button>
             </div>
           ))}

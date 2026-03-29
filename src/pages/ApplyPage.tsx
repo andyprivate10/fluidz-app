@@ -14,7 +14,7 @@ export default function ApplyPage() {
     <div style={{minHeight:'100vh',background:S.bg,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{textAlign:'center',padding:24}}>
         <p style={{color:S.tx3,marginBottom:16}}>{d.t('session.login_to_apply')}</p>
-        <button onClick={() => d.navigate('/login?next=' + encodeURIComponent('/session/' + d.id + '/apply'))} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:'#fff',border:'none',fontWeight:700,cursor:'pointer'}}>{d.t('home.login')}</button>
+        <button onClick={() => d.navigate('/login?next=' + encodeURIComponent('/session/' + d.id + '/apply'))} style={{padding:'12px 24px',borderRadius:12,background:S.grad,color:S.tx,border:'none',fontWeight:700,cursor:'pointer'}}>{d.t('home.login')}</button>
       </div>
     </div>
   )

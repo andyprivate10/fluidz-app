@@ -114,7 +114,7 @@ export default function LinkedProfiles({ linkedProfiles, onChange, readOnly }: P
             <button onClick={add} disabled={!platform || !handle.trim()} style={{
               flex: 1, padding: '10px', borderRadius: 12, fontSize: 13, fontWeight: 600,
               background: platform && handle.trim() ? S.grad : S.bg2,
-              color: platform && handle.trim() ? '#fff' : S.tx4,
+              color: platform && handle.trim() ? S.tx : S.tx4,
               border: 'none', cursor: platform && handle.trim() ? 'pointer' : 'not-allowed',
             }}>
               {t('common.save')}

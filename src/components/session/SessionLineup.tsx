@@ -146,7 +146,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
                 {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').length > 120 ? '…' : ''}
               </p>
             )}
-            <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.p, border: 'none', cursor: 'pointer' }}>
+            <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx, background: S.p, border: 'none', cursor: 'pointer' }}>
               {t('session.view_full_profile')}
             </button>
           </div>

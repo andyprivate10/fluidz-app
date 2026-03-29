@@ -183,7 +183,7 @@ export default function ContactDetailPage() {
           {pj.avatar_url ? (
             <img src={pj.avatar_url as string} alt="" loading="lazy" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
-            <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: '#fff' }}>
+            <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: S.tx }}>
               {profile.display_name[0]?.toUpperCase()}
             </div>
           )}

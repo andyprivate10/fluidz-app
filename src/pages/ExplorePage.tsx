@@ -286,7 +286,7 @@ export default function ExplorePage() {
             <MapPin size={32} style={{ color: S.tx4, marginBottom: 8 }} />
             <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>{t('explore.geo_needed')}</p>
             <p style={{ fontSize: 12, margin: '0 0 16px' }}>{t('explore.geo_desc')}</p>
-            <button onClick={requestLocation} style={{ padding: '10px 20px', borderRadius: 12, background: S.p, color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+            <button onClick={requestLocation} style={{ padding: '10px 20px', borderRadius: 12, background: S.p, color: S.tx, border: 'none', fontWeight: 700, cursor: 'pointer' }}>
               {t('explore.enable_geo')}
             </button>
           </div>
@@ -356,7 +356,7 @@ export default function ExplorePage() {
                 {p.avatar_url ? (
                   <img src={p.avatar_url} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff' }}>
+                  <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: S.tx }}>
                     {p.display_name[0]?.toUpperCase()}
                   </div>
                 )}

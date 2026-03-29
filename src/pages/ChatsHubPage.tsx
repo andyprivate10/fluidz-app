@@ -289,7 +289,7 @@ function GroupThreadAvatar({ templateSlug, coverUrl }: { templateSlug?: string; 
       <div style={{ width: 42, height: 42, borderRadius: radius.avatar, overflow: 'hidden', border: `1px solid ${colors.pbd}`, position: 'relative' }}>
         <img src={cover.coverImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,4,10,0.3)' }} />
-        <Users size={14} strokeWidth={1.5} style={{ color: '#fff', position: 'absolute', bottom: 3, right: 3, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
+        <Users size={14} strokeWidth={1.5} style={{ color: S.tx, position: 'absolute', bottom: 3, right: 3, filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
       </div>
     )
   }

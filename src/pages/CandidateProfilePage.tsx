@@ -201,7 +201,7 @@ export default function CandidateProfilePage() {
                 {videosAdulte.map((url: string, i: number) => (
                   <div key={'va' + i} style={{ position: 'relative', flexShrink: 0 }}>
                     <video src={url} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
-                    <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
+                    <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: S.tx, fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
                   </div>
                 ))}
               </div>
@@ -216,7 +216,7 @@ export default function CandidateProfilePage() {
               {candidateVideos.map((url: string, i: number) => (
                 <div key={'v' + i} style={{ position: 'relative', flexShrink: 0 }}>
                   <video src={url} style={{ width: 140, height: 180, borderRadius: 20, objectFit: 'cover', border: '1px solid ' + S.rule }} />
-                  <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
+                  <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: S.tx, fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
                 </div>
               ))}
             </div>
@@ -244,7 +244,7 @@ export default function CandidateProfilePage() {
           {avatarUrl ? (
             <img src={avatarUrl} alt="" loading="lazy" style={{ width: 64, height: 64, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
-            <div style={{ width: 64, height: 64, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#fff' }}>
+            <div style={{ width: 64, height: 64, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: S.tx }}>
               {displayName[0]?.toUpperCase()}
             </div>
           )}
@@ -258,7 +258,7 @@ export default function CandidateProfilePage() {
               {location && <span style={{ fontSize: 13, color: S.tx3 }}>· {location}</span>}
             </div>
             {role && (
-              <span style={{ display: 'inline-block', marginTop: 6, padding: '3px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: '#fff', background: S.grad }}>{role}</span>
+              <span style={{ display: 'inline-block', marginTop: 6, padding: '3px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600, color: S.tx, background: S.grad }}>{role}</span>
             )}
             {orientation && (
               <span style={{ display: 'inline-block', marginTop: 6, marginLeft: role ? 6 : 0, padding: '3px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.lav, background: 'rgba(184,178,204,0.12)', border: '1px solid rgba(184,178,204,0.25)' }}>{orientation}</span>
@@ -283,7 +283,7 @@ export default function CandidateProfilePage() {
           }}>
             {t('status.' + (app.status || 'pending'))}
           </span>
-          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{t('profile.story')}</button>
+          <button onClick={() => setShowStory(true)} style={{ padding: '4px 10px', borderRadius: 8, background: S.p, border: 'none', color: S.tx, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{t('profile.story')}</button>
           {eps.is_phantom && <span style={{ marginLeft: 8, fontSize: 11, color: S.tx3, padding: '2px 8px', borderRadius: 99, background: S.bg3 }}>{t('common.ghost')}</span>}
           {!eps.is_phantom && <AddContactButton targetUserId={app.applicant_id} />}
         </div>
@@ -438,7 +438,7 @@ export default function CandidateProfilePage() {
                     return isVid ? (
                       <div key={i} style={{ position: 'relative', flexShrink: 0 }}>
                         <video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
-                        <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
+                        <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: S.tx, fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
                       </div>
                     ) : (
                       <img key={i} src={url} alt="" loading="lazy" onClick={() => setLightbox({ images: occasionPhotos.filter(u => !/\.(mp4|mov|webm|avi)/i.test(u)), index: occasionPhotos.filter(u => !/\.(mp4|mov|webm|avi)/i.test(u)).indexOf(url) })} style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd, cursor: 'zoom-in' }} />
@@ -473,7 +473,7 @@ export default function CandidateProfilePage() {
           </button>
           <button onClick={() => handleDecision('accepted')} disabled={actioning} style={{
             flex: 2, padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
-            color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer',
+            color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer',
             boxShadow: '0 4px 16px ' + S.pbd,
           }}>
             {actioning ? '...' : t('host.accept')}

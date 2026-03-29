@@ -21,6 +21,7 @@ DELETE FROM ghost_sessions;
 -- Marcus (admin/host)
 UPDATE user_profiles SET
   display_name = 'Marcus',
+  location_visible = true, approx_lat = 48.860, approx_lng = 2.378, location_updated_at = now(),
   profile_json = jsonb_build_object(
     'age', 32,
     'bio', 'Host régulier, ambiance safe et respectueuse. Sportif, ouvert d''esprit.',
@@ -36,6 +37,7 @@ WHERE id = (SELECT id FROM auth.users WHERE email = 'marcus@fluidz.test');
 -- Karim
 UPDATE user_profiles SET
   display_name = 'Karim',
+  location_visible = true, approx_lat = 48.840, approx_lng = 2.387, location_updated_at = now(),
   profile_json = jsonb_build_object(
     'age', 29,
     'bio', 'Chill et curieux. J''aime les plans détendus entre mecs cool.',
@@ -51,6 +53,7 @@ WHERE id = (SELECT id FROM auth.users WHERE email = 'karim@fluidz.test');
 -- Yann
 UPDATE user_profiles SET
   display_name = 'Yann',
+  location_visible = true, approx_lat = 48.865, approx_lng = 2.360, location_updated_at = now(),
   profile_json = jsonb_build_object(
     'age', 27,
     'bio', 'Parisien, plutôt discret. Top attentionné.',
@@ -65,27 +68,31 @@ WHERE id = (SELECT id FROM auth.users WHERE email = 'yann@fluidz.test');
 
 -- Step 3: Create 17 additional demo profiles via user_profiles
 -- These won't have auth users so they can't login, but appear in explore/contacts
-INSERT INTO user_profiles (id, display_name, profile_json) VALUES
-  ('aaaa0001-0001-0001-0001-000000000001', 'Alex', '{"age":25,"bio":"Étudiant en art, open-minded.","role":"Versatile","morphology":"Mince","location":"Paris 6e","kinks":["Câlins","Fétish léger"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000002', 'Romain', '{"age":34,"bio":"Ingé, sportif le week-end. Cherche des plans réguliers.","role":"Top","morphology":"Sportif","location":"Paris 9e","kinks":["Domination douce","Cuir"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000003', 'Samir', '{"age":28,"bio":"DJ le soir, développeur le jour.","role":"Bottom","morphology":"Athlétique","location":"Paris 18e","kinks":["Massage","Jeux"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000004', 'Kevin', '{"age":31,"bio":"Commercial, toujours partant.","role":"Versatile","morphology":"Moyen","location":"Paris 10e","kinks":["Câlins","Groupe"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000005', 'Hugo', '{"age":24,"bio":"Jeune archi, curieux de nouvelles expériences.","role":"Bottom","morphology":"Mince","location":"Paris 4e","kinks":["Câlins"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000006', 'Théo', '{"age":26,"bio":"Prof de yoga, très à l''écoute.","role":"Versatile","morphology":"Sportif","location":"Paris 5e","kinks":["Massage","Tantra"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000007', 'Lucas', '{"age":30,"bio":"Barman dans le Marais, sociable et fun.","role":"Top","morphology":"Musclé","location":"Paris 3e","kinks":["Domination douce","Cuir"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000008', 'Jordan', '{"age":22,"bio":"Nouveau sur Paris, ouvert à tout.","role":"Bottom","morphology":"Mince","location":"Paris 19e","kinks":["Câlins","Découverte"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000009', 'David', '{"age":38,"bio":"Expérimenté, bienveillant, sérieux.","role":"Top","morphology":"Costaud","location":"Paris 11e","kinks":["Cuir","Domination"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000010', 'Thomas', '{"age":33,"bio":"Photographe, sensible et créatif.","role":"Versatile","morphology":"Moyen","location":"Paris 2e","kinks":["Massage","Câlins"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000011', 'Nathan', '{"age":27,"bio":"Coach sportif, energy positive.","role":"Top","morphology":"Musclé","location":"Paris 16e","kinks":["Sport","Groupe"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000012', 'Antoine', '{"age":35,"bio":"Avocat, discret mais aventurier.","role":"Bottom","morphology":"Sportif","location":"Paris 8e","kinks":["Soumission","Cuir"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000013', 'Julien', '{"age":29,"bio":"Graphiste freelance, tattoos et sourire.","role":"Versatile","morphology":"Mince","location":"Paris 20e","kinks":["Fétish léger","Jeux"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000014', 'Maxime', '{"age":42,"bio":"Médecin, papa bear bienveillant.","role":"Top","morphology":"Costaud","location":"Paris 15e","kinks":["Câlins","Daddy"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000015', 'Enzo', '{"age":23,"bio":"Danseur, corps et esprit libres.","role":"Bottom","morphology":"Athlétique","location":"Paris 13e","kinks":["Tantra","Massage"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000016', 'Ibrahim', '{"age":30,"bio":"Cuisinier passionné, chaleureux.","role":"Versatile","morphology":"Moyen","location":"Paris 14e","kinks":["Groupe","Câlins"],"avatar_url":null}'::jsonb),
-  ('aaaa0001-0001-0001-0001-000000000017', 'Pierre', '{"age":36,"bio":"Architecte, amoureux de la nuit parisienne.","role":"Top","morphology":"Sportif","location":"Paris 7e","kinks":["Domination douce","Cuir"],"avatar_url":null}'::jsonb)
+INSERT INTO user_profiles (id, display_name, profile_json, location_visible, approx_lat, approx_lng, location_updated_at) VALUES
+  ('aaaa0001-0001-0001-0001-000000000001', 'Alex', '{"age":25,"bio":"Étudiant en art, open-minded.","role":"Versatile","morphology":"Mince","location":"Paris 6e","kinks":["Câlins","Fétish léger"],"avatar_url":null}'::jsonb, true, 48.849, 2.334, now()),
+  ('aaaa0001-0001-0001-0001-000000000002', 'Romain', '{"age":34,"bio":"Ingé, sportif le week-end. Cherche des plans réguliers.","role":"Top","morphology":"Sportif","location":"Paris 9e","kinks":["Domination douce","Cuir"],"avatar_url":null}'::jsonb, true, 48.876, 2.339, now()),
+  ('aaaa0001-0001-0001-0001-000000000003', 'Samir', '{"age":28,"bio":"DJ le soir, développeur le jour.","role":"Bottom","morphology":"Athlétique","location":"Paris 18e","kinks":["Massage","Jeux"],"avatar_url":null}'::jsonb, true, 48.891, 2.346, now()),
+  ('aaaa0001-0001-0001-0001-000000000004', 'Kevin', '{"age":31,"bio":"Commercial, toujours partant.","role":"Versatile","morphology":"Moyen","location":"Paris 10e","kinks":["Câlins","Groupe"],"avatar_url":null}'::jsonb, true, 48.872, 2.361, now()),
+  ('aaaa0001-0001-0001-0001-000000000005', 'Hugo', '{"age":24,"bio":"Jeune archi, curieux de nouvelles expériences.","role":"Bottom","morphology":"Mince","location":"Paris 4e","kinks":["Câlins"],"avatar_url":null}'::jsonb, true, 48.854, 2.358, now()),
+  ('aaaa0001-0001-0001-0001-000000000006', 'Théo', '{"age":26,"bio":"Prof de yoga, très à l''écoute.","role":"Versatile","morphology":"Sportif","location":"Paris 5e","kinks":["Massage","Tantra"],"avatar_url":null}'::jsonb, true, 48.846, 2.350, now()),
+  ('aaaa0001-0001-0001-0001-000000000007', 'Lucas', '{"age":30,"bio":"Barman dans le Marais, sociable et fun.","role":"Top","morphology":"Musclé","location":"Paris 3e","kinks":["Domination douce","Cuir"],"avatar_url":null}'::jsonb, true, 48.863, 2.362, now()),
+  ('aaaa0001-0001-0001-0001-000000000008', 'Jordan', '{"age":22,"bio":"Nouveau sur Paris, ouvert à tout.","role":"Bottom","morphology":"Mince","location":"Paris 19e","kinks":["Câlins","Découverte"],"avatar_url":null}'::jsonb, true, 48.884, 2.370, now()),
+  ('aaaa0001-0001-0001-0001-000000000009', 'David', '{"age":38,"bio":"Expérimenté, bienveillant, sérieux.","role":"Top","morphology":"Costaud","location":"Paris 11e","kinks":["Cuir","Domination"],"avatar_url":null}'::jsonb, true, 48.860, 2.380, now()),
+  ('aaaa0001-0001-0001-0001-000000000010', 'Thomas', '{"age":33,"bio":"Photographe, sensible et créatif.","role":"Versatile","morphology":"Moyen","location":"Paris 2e","kinks":["Massage","Câlins"],"avatar_url":null}'::jsonb, true, 48.868, 2.340, now()),
+  ('aaaa0001-0001-0001-0001-000000000011', 'Nathan', '{"age":27,"bio":"Coach sportif, energy positive.","role":"Top","morphology":"Musclé","location":"Paris 16e","kinks":["Sport","Groupe"],"avatar_url":null}'::jsonb, true, 48.862, 2.276, now()),
+  ('aaaa0001-0001-0001-0001-000000000012', 'Antoine', '{"age":35,"bio":"Avocat, discret mais aventurier.","role":"Bottom","morphology":"Sportif","location":"Paris 8e","kinks":["Soumission","Cuir"],"avatar_url":null}'::jsonb, true, 48.874, 2.312, now()),
+  ('aaaa0001-0001-0001-0001-000000000013', 'Julien', '{"age":29,"bio":"Graphiste freelance, tattoos et sourire.","role":"Versatile","morphology":"Mince","location":"Paris 20e","kinks":["Fétish léger","Jeux"],"avatar_url":null}'::jsonb, true, 48.864, 2.398, now()),
+  ('aaaa0001-0001-0001-0001-000000000014', 'Maxime', '{"age":42,"bio":"Médecin, papa bear bienveillant.","role":"Top","morphology":"Costaud","location":"Paris 15e","kinks":["Câlins","Daddy"],"avatar_url":null}'::jsonb, true, 48.841, 2.300, now()),
+  ('aaaa0001-0001-0001-0001-000000000015', 'Enzo', '{"age":23,"bio":"Danseur, corps et esprit libres.","role":"Bottom","morphology":"Athlétique","location":"Paris 13e","kinks":["Tantra","Massage"],"avatar_url":null}'::jsonb, true, 48.832, 2.355, now()),
+  ('aaaa0001-0001-0001-0001-000000000016', 'Ibrahim', '{"age":30,"bio":"Cuisinier passionné, chaleureux.","role":"Versatile","morphology":"Moyen","location":"Paris 14e","kinks":["Groupe","Câlins"],"avatar_url":null}'::jsonb, true, 48.833, 2.327, now()),
+  ('aaaa0001-0001-0001-0001-000000000017', 'Pierre', '{"age":36,"bio":"Architecte, amoureux de la nuit parisienne.","role":"Top","morphology":"Sportif","location":"Paris 7e","kinks":["Domination douce","Cuir"],"avatar_url":null}'::jsonb, true, 48.858, 2.313, now())
 ON CONFLICT (id) DO UPDATE SET
   display_name = EXCLUDED.display_name,
-  profile_json = EXCLUDED.profile_json;
+  profile_json = EXCLUDED.profile_json,
+  location_visible = EXCLUDED.location_visible,
+  approx_lat = EXCLUDED.approx_lat,
+  approx_lng = EXCLUDED.approx_lng,
+  location_updated_at = EXCLUDED.location_updated_at;
 
 -- Step 4: Create 3 demo sessions
 -- Session 1: "Plan ce soir" — Marcus host, dark_room template

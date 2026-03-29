@@ -80,8 +80,8 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
                         <button onClick={() => setBodyPartPhotos(prev => {
                           const arr = [...(prev[zone.id] || [])]; arr.splice(i, 1)
                           return { ...prev, [zone.id]: arr }
-                        })} style={{ position: 'absolute', top: 2, right: 2, width: 16, height: 16, borderRadius: 99, background: S.red, border: '1.5px solid ' + S.bg, color: '#fff', fontSize: 9, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>×</button>
-                        {isVideo && <div style={{ position: 'absolute', bottom: 2, right: 2, padding: '1px 4px', borderRadius: 4, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 8, fontWeight: 600 }}>vid</div>}
+                        })} style={{ position: 'absolute', top: 2, right: 2, width: 16, height: 16, borderRadius: 99, background: S.red, border: '1.5px solid ' + S.bg, color: S.tx, fontSize: 9, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>×</button>
+                        {isVideo && <div style={{ position: 'absolute', bottom: 2, right: 2, padding: '1px 4px', borderRadius: 4, background: 'rgba(0,0,0,0.7)', color: S.tx, fontSize: 8, fontWeight: 600 }}>vid</div>}
                       </div>
                     )
                   })}
@@ -140,8 +140,8 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
                 ) : (
                   <img src={url} alt="" loading="lazy" style={{ width: 80, height: 80, borderRadius: 12, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
                 )}
-                <button onClick={() => { removePhotoIntime(url); removeVideoIntime(url) }} style={{ position: 'absolute', top: -6, left: -6, width: 20, height: 20, borderRadius: 99, background: S.red, border: '2px solid ' + S.bg1, color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}>×</button>
-                {isVideo && <div style={{ position: 'absolute', bottom: 4, right: 4, padding: '2px 6px', borderRadius: 6, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 9, fontWeight: 600 }}>video</div>}
+                <button onClick={() => { removePhotoIntime(url); removeVideoIntime(url) }} style={{ position: 'absolute', top: -6, left: -6, width: 20, height: 20, borderRadius: 99, background: S.red, border: '2px solid ' + S.bg1, color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}>×</button>
+                {isVideo && <div style={{ position: 'absolute', bottom: 4, right: 4, padding: '2px 6px', borderRadius: 6, background: 'rgba(0,0,0,0.7)', color: S.tx, fontSize: 9, fontWeight: 600 }}>video</div>}
               </div>
             )
           })}

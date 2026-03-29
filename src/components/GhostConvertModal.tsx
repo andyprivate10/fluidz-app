@@ -99,7 +99,7 @@ export default function GhostConvertModal({ open, onClose, onConverted }: Props)
           </div>
           <button onClick={handleEmailConvert} disabled={loading || !email.trim() || !password.trim()} style={{
             width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15,
-            color: '#fff', background: S.p, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+            color: S.tx, background: S.p, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
             opacity: loading || !email.trim() || !password.trim() ? 0.6 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}>

@@ -11,7 +11,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
       padding: '6px 14px', borderRadius: 99, fontSize: 13, fontWeight: 600,
       border: active ? 'none' : `1px solid ${S.rule}`,
       background: active ? S.grad : S.bg2,
-      color: active ? '#fff' : S.tx3,
+      color: active ? S.tx : S.tx3,
       cursor: 'pointer', transition: 'all 0.15s',
       boxShadow: active ? `0 2px 12px ${S.p}44` : 'none',
     }}>

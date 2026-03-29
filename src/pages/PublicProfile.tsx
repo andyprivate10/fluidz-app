@@ -52,7 +52,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
     </button>
   )
   return (
-    <button onClick={sendRequest} disabled={sending} className="btn-shimmer" style={{ width: '100%', padding: '14px', borderRadius: 14, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: '#fff', fontSize: 15, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer', boxShadow: '0 4px 20px ' + S.pbd, opacity: sending ? 0.7 : 1, position: 'relative' as const, overflow: 'hidden' }}>
+    <button onClick={sendRequest} disabled={sending} className="btn-shimmer" style={{ width: '100%', padding: '14px', borderRadius: 14, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: S.tx, fontSize: 15, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer', boxShadow: '0 4px 20px ' + S.pbd, opacity: sending ? 0.7 : 1, position: 'relative' as const, overflow: 'hidden' }}>
       <Heart size={15} strokeWidth={2} fill="white" style={{ marginRight: 6, display: 'inline' }} />
       {sending ? t('profile.sending') : t('profile.interested')}
     </button>
@@ -176,7 +176,7 @@ export default function PublicProfile() {
           </div>
         )}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 200, background: `linear-gradient(to top, ${S.bg} 20%, transparent)`, zIndex: 2, pointerEvents: 'none' }} />
-        <button onClick={() => navigate(-1)} style={{ position: 'absolute', top: 14, left: 14, zIndex: 4, width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowLeft size={18} strokeWidth={2} /></button>
+        <button onClick={() => navigate(-1)} style={{ position: 'absolute', top: 14, left: 14, zIndex: 4, width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: 'none', color: S.tx, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowLeft size={18} strokeWidth={2} /></button>
         <div style={{ position: 'absolute', top: 14, right: 14, zIndex: 4 }}>
           <OptionsMenu options={[
             { label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: async () => {
@@ -198,7 +198,7 @@ export default function PublicProfile() {
         </div>
         <div style={{ position: 'absolute', bottom: 16, left: 20, right: 20, zIndex: 3 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: fonts.hero, color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
+            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
             <VibeScoreBadge userId={userId!} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
@@ -211,7 +211,7 @@ export default function PublicProfile() {
 
       {/* ═══ QUICK PILLS ═══ */}
       <div style={{ padding: '12px 20px 0', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        {p.role && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 13, fontWeight: 700, color: '#fff', background: `linear-gradient(135deg, ${S.p}, #c06868)` }}>{p.role}</span>}
+        {p.role && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 13, fontWeight: 700, color: S.tx, background: `linear-gradient(135deg, ${S.p}, #c06868)` }}>{p.role}</span>}
         {p.orientation && <span style={{ padding: '5px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.lav, background: S.lavbg || 'rgba(184,178,204,0.12)', border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)') }}>{p.orientation}</span>}
         {Array.isArray(p.tribes) && p.tribes.length > 0 && p.tribes.map((slug: string) => {
           const tr = TRIBES.find(t => t.slug === slug)

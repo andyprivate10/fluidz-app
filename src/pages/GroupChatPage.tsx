@@ -44,7 +44,7 @@ export default function GroupChatPage() {
     return (
       <div style={{ minHeight:'100vh', background:S.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12 }}>
         <p style={{ color:S.tx3, fontSize:14 }}>{t('session.not_found')}</p>
-        <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back')}</button>
+        <button onClick={() => navigate(-1)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color: S.tx, border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back')}</button>
       </div>
     )
   }
@@ -55,7 +55,7 @@ export default function GroupChatPage() {
         <Shield size={32} style={{ color:S.tx3 }} />
         <p style={{ color:S.tx, fontSize:16, fontWeight:600, textAlign:'center' }}>{t('chat.group_not_enabled')}</p>
         <p style={{ color:S.tx3, fontSize:13, textAlign:'center' }}>{t('chat.host_must_enable')}</p>
-        <button onClick={() => navigate('/session/' + id)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color:'#fff', border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back_to_session')}</button>
+        <button onClick={() => navigate('/session/' + id)} style={{ padding:'10px 20px', borderRadius:12, background:S.grad, color: S.tx, border:'none', fontWeight:600, cursor:'pointer' }}>{t('common.back_to_session')}</button>
       </div>
     )
   }
@@ -119,7 +119,7 @@ export default function GroupChatPage() {
                 {m.avatar_url ? (
                   <img src={m.avatar_url} alt="" loading="lazy" style={{ width:18, height:18, borderRadius:'50%', objectFit:'cover' }} />
                 ) : (
-                  <div style={{ width:18, height:18, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color:'#fff' }}>
+                  <div style={{ width:18, height:18, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color: S.tx }}>
                     {m.display_name[0]?.toUpperCase()}
                   </div>
                 )}
@@ -218,7 +218,7 @@ export default function GroupChatPage() {
             <Camera size={16} style={{ color:S.tx3 }} />
             <input type="file" accept="image/*,video/*" onChange={e => { const f=e.target.files?.[0]; if(f) sendPhoto(f); e.target.value='' }} style={{ display:'none' }} disabled={uploading} />
           </label>
-          <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width:38, height:38, borderRadius:10, border:'none', background: recording ? S.red : S.bg2, color: recording ? '#fff' : S.tx3, cursor:'pointer', fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', animation: recording ? 'pulse 1s infinite' : 'none' }}>
+          <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width:38, height:38, borderRadius:10, border:'none', background: recording ? S.red : S.bg2, color: recording ? S.tx : S.tx3, cursor:'pointer', fontSize:14, display:'flex', alignItems:'center', justifyContent:'center', animation: recording ? 'pulse 1s infinite' : 'none' }}>
             {recording ? '■' : '●'}
           </button>
           <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
@@ -247,7 +247,7 @@ export default function GroupChatPage() {
               flexShrink:0,
             }}
           >
-            <Send size={18} style={{ color:'#fff', marginLeft:2 }} />
+            <Send size={18} style={{ color: S.tx, marginLeft:2 }} />
           </button>
         </div>
       )}

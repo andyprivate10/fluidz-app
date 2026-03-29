@@ -75,7 +75,7 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                   {info?.avatar_url ? (
                     <img src={info.avatar_url} alt="" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff' }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: S.tx }}>
                       {(info?.display_name || '?')[0].toUpperCase()}
                     </div>
                   )}
@@ -110,7 +110,7 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                   <button key={lt} onClick={() => setSelectedType(lt)} style={{
                     padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, cursor: 'pointer',
                     background: selectedType === lt ? S.p : 'transparent',
-                    color: selectedType === lt ? '#fff' : S.tx3,
+                    color: selectedType === lt ? S.tx : S.tx3,
                     border: selectedType === lt ? 'none' : '1px solid ' + S.rule,
                   }}>
                     {t(`profile.link_type_${lt}`)}
@@ -135,7 +135,7 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                       {r.avatar_url ? (
                         <img src={r.avatar_url} alt="" style={{ width: 24, height: 24, borderRadius: '28%', objectFit: 'cover' }} />
                       ) : (
-                        <div style={{ width: 24, height: 24, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#fff' }}>{r.display_name[0]?.toUpperCase()}</div>
+                        <div style={{ width: 24, height: 24, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: S.tx }}>{r.display_name[0]?.toUpperCase()}</div>
                       )}
                       <span style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{r.display_name}</span>
                     </button>

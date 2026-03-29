@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'
+import { colors } from '../brand'
+
+const S = colors
 
 type Props = {
   images: string[]
@@ -41,10 +44,10 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
         </span>
         <div style={{ display: 'flex', gap: 12 }}>
           <button aria-label={zoomed ? 'Zoom out' : 'Zoom in'} onClick={() => setZoomed(!zoomed)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            {zoomed ? <ZoomOut size={18} style={{ color: '#fff' }} /> : <ZoomIn size={18} style={{ color: '#fff' }} />}
+            {zoomed ? <ZoomOut size={18} style={{ color: S.tx }} /> : <ZoomIn size={18} style={{ color: S.tx }} />}
           </button>
           <button aria-label="Close" onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <X size={18} style={{ color: '#fff' }} />
+            <X size={18} style={{ color: S.tx }} />
           </button>
         </div>
       </div>
@@ -77,7 +80,7 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
               background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99,
               width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
             }}>
-              <ChevronLeft size={24} style={{ color: '#fff' }} />
+              <ChevronLeft size={24} style={{ color: S.tx }} />
             </button>
           )}
           {index < images.length - 1 && (
@@ -86,7 +89,7 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
               background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 99,
               width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
             }}>
-              <ChevronRight size={24} style={{ color: '#fff' }} />
+              <ChevronRight size={24} style={{ color: S.tx }} />
             </button>
           )}
         </>

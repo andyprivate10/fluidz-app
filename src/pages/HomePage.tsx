@@ -165,7 +165,7 @@ export default function HomePage() {
                   {s.avatar ? (
                     <img src={s.avatar} alt="" style={{ width: 22, height: 22, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: 22, height: 22, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff' }}>{(s.name || '?')[0].toUpperCase()}</div>
+                    <div style={{ width: 22, height: 22, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: S.tx }}>{(s.name || '?')[0].toUpperCase()}</div>
                   )}
                   <span style={{ fontSize: 11, color: S.tx2, fontWeight: 600 }}>{s.name}</span>
                   <button onClick={(e) => {
@@ -260,7 +260,7 @@ export default function HomePage() {
             />
             <button onClick={handleJoinCode} style={{
               padding: '10px 16px', borderRadius: R.icon, background: S.p, border: 'none',
-              color: '#fff', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+              color: S.tx, fontWeight: 700, fontSize: 14, cursor: 'pointer',
               display: 'flex', alignItems: 'center',
             }}>
               <ArrowRight size={16} strokeWidth={2} />
@@ -284,7 +284,7 @@ export default function HomePage() {
           <>
             <button onClick={() => navigate('/session/create')} style={{
               position: 'relative', overflow: 'hidden', width: '100%', padding: 16,
-              background: S.p, border: 'none', borderRadius: R.btn, color: '#fff',
+              background: S.p, border: 'none', borderRadius: R.btn, color: S.tx,
               ...typeStyle('section'), cursor: 'pointer',
               boxShadow: `0 4px 24px ${S.pbd}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -326,7 +326,7 @@ export default function HomePage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <button onClick={() => navigate('/login')} style={{
               position: 'relative', overflow: 'hidden', width: '100%', padding: 16,
-              background: S.p, border: 'none', borderRadius: R.btn, color: '#fff',
+              background: S.p, border: 'none', borderRadius: R.btn, color: S.tx,
               ...typeStyle('section'), cursor: 'pointer', boxShadow: `0 4px 24px ${S.pbd}`,
             }}>
               {t('home.login')}

@@ -257,7 +257,7 @@ export default function DirectDMPage() {
         {dmBlocked.level === 'profile_required' ? t('dm_request.profile_required_desc') : t('dm_request.full_access_desc')}
       </p>
       {dmBlocked.status === 'need_request' && (
-        <button onClick={() => setShowDmRequest(true)} style={{ padding: '14px 28px', borderRadius: 14, background: S.p, border: 'none', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+        <button onClick={() => setShowDmRequest(true)} style={{ padding: '14px 28px', borderRadius: 14, background: S.p, border: 'none', color: S.tx, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
           {t('dm_request.send')}
         </button>
       )}
@@ -289,7 +289,7 @@ export default function DirectDMPage() {
         {peerProfile?.avatar ? (
           <img src={peerProfile.avatar} alt="" onClick={() => navigate('/profile/' + peerId)} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', cursor: 'pointer', border: '1px solid ' + S.rule }} />
         ) : (
-          <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
+          <div onClick={() => navigate('/profile/' + peerId)} style={{ width: 36, height: 36, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx, cursor: 'pointer' }}>
             {(peerProfile?.name || '?')[0].toUpperCase()}
           </div>
         )}
@@ -429,7 +429,7 @@ export default function DirectDMPage() {
           <Camera size={16} style={{ color: S.tx3 }} />
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} />
         </label>
-        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width: 40, height: 40, borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, animation: recording ? 'pulse 1s infinite' : 'none' }}>
+        <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width: 40, height: 40, borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? S.tx : S.tx3, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, animation: recording ? 'pulse 1s infinite' : 'none' }}>
           {recording ? '■' : '●'}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
@@ -442,7 +442,7 @@ export default function DirectDMPage() {
           placeholder={t('placeholders.message_dots')} style={{ flex: 1, padding: 12, background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12, color: S.tx, fontSize: 15, outline: 'none', fontFamily: fonts.body }}
         />
         <button onClick={handleSend} disabled={!newMessage.trim() || sending} style={{ width: 40, height: 40, borderRadius: 12, background: newMessage.trim() ? S.grad : S.bg2, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <Send size={16} style={{ color: newMessage.trim() ? '#fff' : S.tx4 }} />
+          <Send size={16} style={{ color: newMessage.trim() ? S.tx : S.tx4 }} />
         </button>
       </div>
       {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}

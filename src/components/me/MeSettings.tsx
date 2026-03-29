@@ -150,7 +150,7 @@ export default function MeSettings({
                   await supabase.auth.signOut()
                   navigate('/landing')
                 }}
-                style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: deleteInput === 'DELETE' ? S.red : S.bg3, color: '#fff', fontSize: 13, fontWeight: 700, cursor: deleteInput === 'DELETE' && !deleting ? 'pointer' : 'not-allowed', opacity: deleteInput === 'DELETE' && !deleting ? 1 : 0.5 }}
+                style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', background: deleteInput === 'DELETE' ? S.red : S.bg3, color: S.tx, fontSize: 13, fontWeight: 700, cursor: deleteInput === 'DELETE' && !deleting ? 'pointer' : 'not-allowed', opacity: deleteInput === 'DELETE' && !deleting ? 1 : 0.5 }}
               >
                 {deleting ? t('common.loading') : t('settings.delete_button')}
               </button>

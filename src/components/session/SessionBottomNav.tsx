@@ -103,7 +103,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
               <div style={{ position: 'relative' }}>
                 <div style={{
                   width: 20, height: 20,
-                  color: isAccent ? '#fff' : isActive ? S.p : S.tx3,
+                  color: isAccent ? S.tx : isActive ? S.p : S.tx3,
                   transition: 'color 0.2s',
                 }}>
                   {tab.icon}
@@ -114,7 +114,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
                     minWidth: 16, height: 16, borderRadius: 8,
                     background: S.red, border: '2px solid rgba(5,4,10,0.92)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 9, fontWeight: 700, color: '#fff', padding: '0 3px',
+                    fontSize: 9, fontWeight: 700, color: S.tx, padding: '0 3px',
                   }}>
                     {tab.badge}
                   </div>

@@ -159,7 +159,7 @@ export default function GroupsPage() {
           <p style={{ fontSize:12, color:S.tx3, margin:'2px 0 0' }}>{groups.length} groupe{groups.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={openCreate} style={{ width:40, height:40, borderRadius:12, background:S.grad, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <Plus size={20} style={{ color:'#fff' }} />
+          <Plus size={20} style={{ color: S.tx }} />
         </button>
       </div>
 
@@ -271,7 +271,7 @@ export default function GroupsPage() {
                           {c.avatar_url ? (
                             <img src={c.avatar_url} alt="" style={{ width:28, height:28, borderRadius:'50%', objectFit:'cover' }} />
                           ) : (
-                            <div style={{ width:28, height:28, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff' }}>{c.display_name[0]?.toUpperCase()}</div>
+                            <div style={{ width:28, height:28, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color: S.tx }}>{c.display_name[0]?.toUpperCase()}</div>
                           )}
                           <span style={{ fontSize:13, fontWeight:600, color: on ? S.tx : S.tx3 }}>{c.display_name}</span>
                           {on && <span style={{ marginLeft:'auto', fontSize:14, color:newColor }}>●</span>}
@@ -283,7 +283,7 @@ export default function GroupsPage() {
               </div>
 
               <button onClick={saveGroup} disabled={saving || !newName.trim()} style={{
-                width:'100%', padding:14, borderRadius:14, fontWeight:700, fontSize:15, color:'#fff', background:S.grad, border:'none',
+                width:'100%', padding:14, borderRadius:14, fontWeight:700, fontSize:15, color: S.tx, background:S.grad, border:'none',
                 cursor: saving || !newName.trim() ? 'not-allowed' : 'pointer', opacity: saving || !newName.trim() ? 0.6 : 1,
               }}>
                 {saving ? t('groups.saving') : editGroup ? t('groups.update') : t('groups.create_group')}

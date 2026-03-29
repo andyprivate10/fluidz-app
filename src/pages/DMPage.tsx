@@ -30,7 +30,7 @@ export default function DMPage() {
           {d.peerAvatar ? (
             <img src={d.peerAvatar} alt="" style={{ width: 32, height: 32, borderRadius: '28%', objectFit: 'cover', border: '1px solid '+S.rule, flexShrink: 0 }} />
           ) : d.peerName ? (
-            <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{d.peerName[0].toUpperCase()}</div>
+            <div style={{ width: 32, height: 32, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: S.tx, flexShrink: 0 }}>{d.peerName[0].toUpperCase()}</div>
           ) : null}
           <div>
             <h1 style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0 }}>
@@ -179,7 +179,7 @@ export default function DMPage() {
               <Camera size={18} style={{ color: S.tx3 }} />
               <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) d.handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={d.uploading} />
             </label>
-            <button type="button" onClick={d.recording ? d.stopRecording : d.startRecording} disabled={d.uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: d.recording ? S.red : S.bg2, color: d.recording ? '#fff' : S.tx3, cursor: 'pointer', fontSize: 16, animation: d.recording ? 'pulse 1s infinite' : 'none' }}>
+            <button type="button" onClick={d.recording ? d.stopRecording : d.startRecording} disabled={d.uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: d.recording ? S.red : S.bg2, color: d.recording ? S.tx : S.tx3, cursor: 'pointer', fontSize: 16, animation: d.recording ? 'pulse 1s infinite' : 'none' }}>
               {d.recording ? '\u25A0' : '\u25CF'}
             </button>
             <button type="button" onClick={d.shareLocation} style={{ padding: '10px', borderRadius: 12, background: d.sharingLocation ? S.sagebg : S.bg2, color: d.sharingLocation ? S.sage : S.tx3, cursor: 'pointer', fontSize: 14, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, border: d.sharingLocation ? '1px solid '+S.sagebd : '1px solid ' + S.rule }}>

@@ -123,7 +123,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
           borderRadius: '50%', padding: 8, cursor: 'pointer',
         }}
       >
-        <X size={20} style={{ color: '#fff' }} />
+        <X size={20} style={{ color: S.tx }} />
       </button>
 
       {/* Tap zones */}
@@ -159,7 +159,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
         {sl.type === 'role' && (
           <div style={{ textAlign: 'center', animation: 'sfu 0.4s ease' }}>
             <div style={{ display: 'inline-block', padding: '12px 32px', borderRadius: 99, background: S.grad, marginBottom: 20 }}>
-              <span style={{ fontSize: 28, fontWeight: 800, color: '#fff' }}>{v(d.role)}</span>
+              <span style={{ fontSize: 28, fontWeight: 800, color: S.tx }}>{v(d.role)}</span>
             </div>
             {d.bio ? <p style={{ fontSize: 16, color: S.tx2, lineHeight: 1.6, maxWidth: 320, margin: '0 auto' }}>{v(d.bio)}</p> : null}
           </div>
@@ -197,7 +197,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
         background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
         padding: '40px 20px 24px', pointerEvents: 'none',
       }}>
-        <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', margin: '0 0 2px' }}>
+        <p style={{ fontSize: 16, fontWeight: 800, color: S.tx, margin: '0 0 2px' }}>
           {name}{age ? `, ${age}` : ''}
         </p>
         {role && <p style={{ fontSize: 13, fontWeight: 600, color: S.p, margin: '0 0 4px' }}>{role}</p>}

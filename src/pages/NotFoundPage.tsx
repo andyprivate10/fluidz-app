@@ -18,7 +18,7 @@ export default function NotFoundPage() {
         <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 24px' }}>{t('common.not_found_desc')}</p>
         <button onClick={() => navigate('/')} style={{
           padding: '12px 24px', borderRadius: radius.btn, background: S.p, border: 'none',
-          color: '#fff', ...typeStyle('label'), cursor: 'pointer',
+          color: S.tx, ...typeStyle('label'), cursor: 'pointer',
           display: 'inline-flex', alignItems: 'center', gap: 6,
           boxShadow: `0 4px 24px ${S.pbd}`,
         }}>

@@ -39,7 +39,7 @@ export default function CyclingAvatar({ photos, size, fallbackLetter, border }: 
         width: size, height: size, borderRadius: R.avatar,
         background: S.p,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: size * 0.38, fontWeight: 700, color: '#fff',
+        fontSize: size * 0.38, fontWeight: 700, color: S.tx,
         border: brd, flexShrink: 0,
       }}>
         {(fallbackLetter || '?')[0].toUpperCase()}

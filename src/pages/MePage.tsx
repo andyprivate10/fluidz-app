@@ -27,7 +27,7 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
       padding:'6px 14px', borderRadius:99, fontSize:13, fontWeight:600,
       border: active ? 'none' : `1px solid ${S.rule}`,
       background: active ? S.grad : S.bg2,
-      color: active ? '#fff' : S.tx3,
+      color: active ? S.tx : S.tx3,
       cursor:'pointer', transition:'all 0.15s',
       boxShadow: active ? `0 2px 12px ${S.p}44` : 'none',
     }}>
@@ -153,11 +153,11 @@ export default function MePage() {
                 <div key={url} style={{ position:'relative', width:80, height:80 }}>
                   <img src={url} alt="" loading="lazy" style={{ width:80, height:80, borderRadius:12, objectFit:'cover', border: avatarUrl === url ? '2px solid ' + S.p : '1px solid ' + S.rule }} />
                   {avatarUrl === url && (
-                    <div style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#fff', fontWeight:700, border:'2px solid ' + S.bg1 }}>1</div>
+                    <div style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color: S.tx, fontWeight:700, border:'2px solid ' + S.bg1 }}>1</div>
                   )}
-                  <button onClick={() => removePhotoProfil(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
+                  <button onClick={() => removePhotoProfil(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color: S.tx, fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
                   {avatarUrl !== url && (
-                    <button onClick={() => setAsAvatar(url)} style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color:'#fff', fontSize:9, fontWeight:600, cursor:'pointer', border:'none' }}>avatar</button>
+                    <button onClick={() => setAsAvatar(url)} style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color: S.tx, fontSize:9, fontWeight:600, cursor:'pointer', border:'none' }}>avatar</button>
                   )}
                 </div>
               ))}

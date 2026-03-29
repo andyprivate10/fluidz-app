@@ -41,7 +41,7 @@ type TabId = typeof TABS[number]['id']
 export const adminStyles = {
   card: { background: S.bg1, borderRadius: R.card, border: '1px solid ' + S.rule, padding: 16 } as React.CSSProperties,
   input: { width: '100%', background: S.bg2, color: S.tx, borderRadius: 12, padding: '10px 14px', border: '1px solid ' + S.rule, outline: 'none', fontSize: 13, fontFamily: fonts.body, boxSizing: 'border-box' as const } as React.CSSProperties,
-  btnPrimary: { padding: '10px 16px', borderRadius: 12, fontWeight: 700, fontSize: 13, border: 'none', background: S.grad, color: '#fff', cursor: 'pointer', position: 'relative' as const, overflow: 'hidden' as const } as React.CSSProperties,
+  btnPrimary: { padding: '10px 16px', borderRadius: 12, fontWeight: 700, fontSize: 13, border: 'none', background: S.grad, color: S.tx, cursor: 'pointer', position: 'relative' as const, overflow: 'hidden' as const } as React.CSSProperties,
   btnSecondary: { padding: '10px 16px', borderRadius: 12, fontWeight: 600, fontSize: 13, border: '1px solid ' + S.rule, background: S.bg2, color: S.tx2, cursor: 'pointer' } as React.CSSProperties,
   btnDanger: { padding: '10px 16px', borderRadius: 12, fontWeight: 600, fontSize: 13, border: '1px solid ' + S.redbd, background: S.redbg, color: S.red, cursor: 'pointer' } as React.CSSProperties,
   sectionLabel: (color: string) => ({ fontSize: 10, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.08em', color, margin: '0 0 8px' } as React.CSSProperties),

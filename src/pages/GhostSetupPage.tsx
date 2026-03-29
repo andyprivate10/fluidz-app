@@ -179,7 +179,7 @@ export default function GhostSetupPage() {
                 if (!displayName.trim()) { showToast(t('ghost.choose_pseudo'), 'error'); return }
                 setStep('pin')
               }}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)' }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)' }}
             >
               {t('ghost.next_button')}
             </button>
@@ -209,7 +209,7 @@ export default function GhostSetupPage() {
             <button
               onClick={handleCreate}
               disabled={loading || pin.length !== 4}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || pin.length !== 4 ? 0.7 : 1 }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading || pin.length !== 4 ? 0.7 : 1 }}
             >
               {loading ? t('ghost_setup.creating') : t('ghost_setup.create_ghost')}
             </button>
@@ -264,7 +264,7 @@ export default function GhostSetupPage() {
 
             <button
               onClick={goToApply}
-              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: '#fff', background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              style={{ width: '100%', padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16, color: S.tx, background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 4px 24px rgba(244,114,114,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               {t('session.continue_button')} <ArrowRight size={18} />
             </button>

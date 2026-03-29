@@ -213,7 +213,7 @@ export default function SessionPage() {
                     <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{req.display_name || t('common.anonymous')}</p>
                     <p style={{ fontSize: 11, color: S.sage, margin: '2px 0 0' }}>{t('session.check_in_requested')}</p>
                   </div>
-                  <button onClick={() => d.confirmCheckIn(req.applicant_id)} style={{ padding: '8px 16px', borderRadius: 12, fontWeight: 700, fontSize: 13, color: '#fff', background: S.sage, border: 'none', cursor: 'pointer' }}>
+                  <button onClick={() => d.confirmCheckIn(req.applicant_id)} style={{ padding: '8px 16px', borderRadius: 12, fontWeight: 700, fontSize: 13, color: S.tx, background: S.sage, border: 'none', cursor: 'pointer' }}>
                     {t('session.confirm_check_in')}
                   </button>
                 </div>
@@ -283,7 +283,7 @@ export default function SessionPage() {
                       <button onClick={() => handleDecide(app.id, 'rejected')} disabled={actionLoading === app.id} style={{ flex: 1, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: S.red, border: '1px solid ' + S.redbd, background: S.redbg, cursor: 'pointer' }}>
                         {t('host.refuse')}
                       </button>
-                      <button onClick={() => handleDecide(app.id, 'accepted')} disabled={actionLoading === app.id} style={{ flex: 2, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: '#fff', background: S.p, border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px ' + S.pbd }}>
+                      <button onClick={() => handleDecide(app.id, 'accepted')} disabled={actionLoading === app.id} style={{ flex: 2, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: S.tx, background: S.p, border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px ' + S.pbd }}>
                         {actionLoading === app.id ? '...' : t('host_actions.accept')}
                       </button>
                     </div>
@@ -367,7 +367,7 @@ export default function SessionPage() {
               <p style={{ color: S.tx2, fontSize: 14, marginBottom: 20 }}>{t('session.no_application_yet')}</p>
               <button onClick={() => navigate('/session/' + d.id + '/apply')} style={{
                 padding: '14px 32px', borderRadius: 16, background: S.p, border: 'none',
-                color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                color: S.tx, fontSize: 15, fontWeight: 700, cursor: 'pointer',
                 boxShadow: '0 4px 20px ' + S.pbd,
               }}>{t('session.apply_cta')}</button>
             </div>

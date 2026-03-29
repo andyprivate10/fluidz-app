@@ -113,7 +113,7 @@ export default function SessionsPage() {
           flex: 1, padding: '9px 0', border: 'none', cursor: 'pointer',
           borderRadius: R.chip,
           background: active ? S.p : 'transparent',
-          color: active ? '#fff' : S.tx3,
+          color: active ? S.tx : S.tx3,
           ...typeStyle('label'),
           fontSize: 13, fontWeight: active ? 700 : 500,
           transition: 'all 0.2s ease',
@@ -148,7 +148,7 @@ export default function SessionsPage() {
         {/* ═══ New session CTA (always visible) ═══ */}
         <button onClick={() => navigate('/session/create')} style={{
           width: '100%', padding: 14, marginTop: 8, background: S.p, border: 'none', borderRadius: R.btn,
-          color: '#fff', ...typeStyle('section'), cursor: 'pointer', boxShadow: `0 4px 24px ${S.pbd}`,
+          color: S.tx, ...typeStyle('section'), cursor: 'pointer', boxShadow: `0 4px 24px ${S.pbd}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, position: 'relative', overflow: 'hidden',
         }}>
           <Plus size={16} strokeWidth={2.5} />
