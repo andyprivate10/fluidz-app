@@ -18,9 +18,9 @@ export function useApplyData() {
   const guestTokenParam = searchParams.get('guest_token')
   const ghostIdParam = searchParams.get('ghost_id') || (typeof localStorage !== 'undefined' ? localStorage.getItem('ghost_id') : null)
 
-  const [user, setUser] = useState<any>(null)
-  const [session, setSession] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; email?: string; is_anonymous?: boolean } | null>(null)
+  const [session, setSession] = useState<{ id?: string; title?: string; approx_area?: string; max_capacity?: number; template_slug?: string; cover_url?: string; status?: string; host_id?: string; lineup_json?: Record<string, unknown>; tags?: string[] } | null>(null)
+  const [profile, setProfile] = useState<{ display_name?: string; profile_json?: Record<string, unknown> } | null>(null)
   const [enabled, setEnabled] = useState<string[]>(() => [...BLOC_PROFIL, ...BLOC_ADULTE, SECTION_OCCASION].map(s => s.id))
   const [selectedPhotosProfil, setSelectedPhotosProfil] = useState<string[]>([])
   const [selectedPhotosAdulte, setSelectedPhotosAdulte] = useState<string[]>([])
@@ -47,7 +47,9 @@ export function useApplyData() {
   const sessionEnded = session?.status === 'ended'
 
   useEffect(() => {
+    let mounted = true
     supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return
       const u = data.session?.user ?? null
       setUser(u)
       if (u) {
@@ -62,6 +64,7 @@ export function useApplyData() {
           supabase.from('ghost_sessions').select('display_name, profile_json').eq('id', ghostIdParam).maybeSingle(),
           supabase.from('sessions').select('title,approx_area,max_capacity,template_slug,cover_url,status').eq('id', id).maybeSingle(),
         ]).then(async ([{ data: ghost }, { data: sess }]) => {
+          if (!mounted) return
           if (ghost) {
             setGuestDisplayName(ghost.display_name || '')
             const pj = ghost.profile_json || {}
@@ -97,6 +100,7 @@ export function useApplyData() {
             setEnabled(['basics', 'role', 'occasion'])
             setDataLoading(true)
             supabase.from('sessions').select('title,approx_area,max_capacity,template_slug,cover_url,status').eq('id', id).maybeSingle().then(async ({ data: sess }) => {
+              if (!mounted) return
               setSession(sess ?? null)
               if (sess?.max_capacity) {
                 const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
@@ -110,6 +114,7 @@ export function useApplyData() {
         }
       }
     })
+    return () => { mounted = false }
   }, [id, guestTokenParam, ghostIdParam])
 
   async function load(uid: string) {

@@ -111,8 +111,9 @@ export function useDMData() {
           if (pid) {
             const { data: peerProf } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', pid).maybeSingle()
             if (peerProf?.display_name) setPeerName(peerProf.display_name)
-            if ((peerProf as any)?.profile_json?.avatar_url) setPeerAvatar((peerProf as any).profile_json.avatar_url)
-            if ((peerProf as any)?.profile_json?.role) setPeerRole((peerProf as any).profile_json.role)
+            const peerPj = peerProf?.profile_json as Record<string, unknown> | undefined
+            if (peerPj?.avatar_url) setPeerAvatar(peerPj.avatar_url as string)
+            if (peerPj?.role) setPeerRole(peerPj.role as string)
           }
         }
 
@@ -120,7 +121,7 @@ export function useDMData() {
         const effectivePeerId = peerIdParam || (sess?.host_id !== user?.id ? sess?.host_id : null)
         let query = supabase
           .from('messages')
-          .select('*')
+          .select('id, text, sender_id, created_at, sender_name, has_media, media_urls')
           .eq('session_id', id)
           .eq('room_type', 'dm')
           .order('created_at')

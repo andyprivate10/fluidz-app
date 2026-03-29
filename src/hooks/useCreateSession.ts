@@ -26,7 +26,7 @@ export function useCreateSession() {
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
   const inviteParam = searchParams.get('invite')
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [_template, setTemplate] = useState('custom')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -40,7 +40,7 @@ export function useCreateSession() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<StepName>('basics')
-  const [savedAddresses, setSavedAddresses] = useState<{ id?: string; label?: string; approx_area?: string; exact_address?: string; directions?: { text: string; photo_url?: string }[]; last_used?: string }[]>([])
+  const [savedAddresses, setSavedAddresses] = useState<{ id?: string; label?: string; approx_area?: string; exact_address?: string; directions?: { text: string; photo_url?: string }[]; last_used?: string; street_address?: string; postal_code?: string; city?: string; country?: string }[]>([])
   const [savingAddress, setSavingAddress] = useState(false)
   const [directions, setDirections] = useState<{ text: string; photo_url?: string }[]>([{ text: '' }])
   const [rolesWanted, setRolesWanted] = useState<Record<string, number>>({})
@@ -57,8 +57,8 @@ export function useCreateSession() {
     if (tplParam && sessionTemplates.length > 0) {
       const tpl = sessionTemplates.find(t => t.slug === tplParam || t.slug === tplParam.replace(/-/g, '_'))
       if (tpl) {
-        const meta = tpl.meta as any
-        setTitle(tpl.label); setDescription(meta?.description || ''); setSelectedTags(meta?.tags || [])
+        const meta = tpl.meta as Record<string, unknown>
+        setTitle(tpl.label); setDescription((meta?.description as string) || ''); setSelectedTags((meta?.tags as string[]) || [])
         setRolesWanted({}); setDirections([{ text: '' }])
         setTemplate(tpl.slug); setStep('rules')
       }
@@ -66,19 +66,22 @@ export function useCreateSession() {
   }, [tplParam, sessionTemplates])
 
   useEffect(() => {
+    let mounted = true
     supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return
       const u = data.session?.user ?? null
       setUser(u)
       if (!u) { navigate('/login?next=/session/create'); return }
       else {
         supabase.from('user_profiles').select('profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
-          const pj = prof?.profile_json as any
+          if (!mounted) return
+          const pj = prof?.profile_json as Record<string, unknown>
           const addrs = pj?.saved_addresses
           const addrList = Array.isArray(addrs) ? addrs : []
           setSavedAddresses(addrList)
           // Pre-select last used address
           if (addrList.length > 0) {
-            const sorted = [...addrList].sort((a: any, b: any) => {
+            const sorted = [...addrList].sort((a: { last_used?: string }, b: { last_used?: string }) => {
               const ta = a.last_used ? new Date(a.last_used).getTime() : 0
               const tb = b.last_used ? new Date(b.last_used).getTime() : 0
               return tb - ta
@@ -87,15 +90,16 @@ export function useCreateSession() {
             if (lastAddr.approx_area) setApproxArea(lastAddr.approx_area)
             if (lastAddr.exact_address) setExactAddress(lastAddr.exact_address)
             if (lastAddr.directions && lastAddr.directions.length > 0) {
-              setDirections(lastAddr.directions.map((d: any) => typeof d === 'string' ? { text: d } : d))
+              setDirections(lastAddr.directions.map((d: string | { text: string; photo_url?: string }) => typeof d === 'string' ? { text: d } : d))
             }
             setAddressMode('last')
           }
-          const tpls = pj?.saved_templates
+          const tpls = (pj as Record<string, unknown>)?.saved_templates
           setSavedTemplates(Array.isArray(tpls) ? tpls : [])
         })
       }
     })
+    return () => { mounted = false }
   }, [])
 
   async function saveAsTemplate() {
@@ -109,20 +113,20 @@ export function useCreateSession() {
     const updated = [...savedTemplates, tpl]
     setSavedTemplates(updated)
     const { data: prof } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
-    const pj = (prof?.profile_json as any) || {}
+    const pj = (prof?.profile_json as Record<string, unknown>) || {}
     await supabase.from('user_profiles').update({ profile_json: { ...pj, saved_templates: updated } }).eq('id', user.id)
     showToast(t('session.template_saved'), 'success')
   }
 
   function pickTemplate(tpl: { slug: string; label: string; meta?: Record<string, unknown> | null }) {
-    const meta = tpl.meta as any
+    const meta = (tpl.meta as Record<string, unknown> | null) ?? {}
     setTemplate(tpl.slug)
-    setSelectedTags(meta?.tags || [])
+    setSelectedTags((meta?.tags as string[]) || [])
     if (tpl.slug !== 'custom') {
       setTitle(tpl.label)
-      setDescription(meta?.description || '')
+      setDescription((meta?.description as string) || '')
     }
-    if (meta?.host_rules) setHostRules(meta.host_rules)
+    if (meta?.host_rules) setHostRules(meta.host_rules as string)
     setStep('rules')
   }
 
@@ -189,9 +193,9 @@ export function useCreateSession() {
       // Mark address as last used
       if (approxArea || exactAddress) {
         const { data: profRow } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
-        const pj = (profRow?.profile_json as any) || {}
+        const pj = (profRow?.profile_json as Record<string, unknown>) || {}
         const addrs = Array.isArray(pj.saved_addresses) ? [...pj.saved_addresses] : []
-        const existing = addrs.findIndex((a: any) => a.approx_area === approxArea && a.exact_address === exactAddress)
+        const existing = addrs.findIndex((a: { approx_area?: string; exact_address?: string }) => a.approx_area === approxArea && a.exact_address === exactAddress)
         if (existing >= 0) {
           addrs[existing] = { ...addrs[existing], last_used: new Date().toISOString() }
         }
@@ -227,7 +231,7 @@ export function useCreateSession() {
     if (!user || (!approxArea && !exactAddress)) return
     setSavingAddress(true)
     const { data: row } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
-    const pj = (row?.profile_json as any) || {}
+    const pj = (row?.profile_json as Record<string, unknown>) || {}
     const addrs = Array.isArray(pj.saved_addresses) ? [...pj.saved_addresses] : []
     addrs.push({ approx_area: approxArea || undefined, exact_address: exactAddress || undefined, last_used: new Date().toISOString() })
     await supabase.from('user_profiles').upsert({
@@ -242,10 +246,10 @@ export function useCreateSession() {
   function pickSavedAddress(addr: typeof savedAddresses[0]) {
     if (addr.approx_area) setApproxArea(addr.approx_area)
     if (addr.exact_address) setExactAddress(addr.exact_address)
-    if ((addr as any).street_address) setStreetAddress((addr as any).street_address)
-    if ((addr as any).postal_code) setPostalCode((addr as any).postal_code)
-    if ((addr as any).city) setCity((addr as any).city)
-    if ((addr as any).country) setCountry((addr as any).country)
+    if (addr.street_address) setStreetAddress(addr.street_address)
+    if (addr.postal_code) setPostalCode(addr.postal_code)
+    if (addr.city) setCity(addr.city)
+    if (addr.country) setCountry(addr.country)
     if (addr.directions && addr.directions.length > 0) {
       setDirections(addr.directions.map(d => typeof d === 'string' ? { text: d } : d))
     }

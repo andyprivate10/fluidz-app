@@ -144,7 +144,7 @@ export default function ShareToContact({ open, onClose, shareType, shareId, shar
         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {loading && <p style={{ fontSize: 13, color: S.tx3, textAlign: 'center', padding: 20 }}>...</p>}
           {!loading && filtered.length === 0 && (
-            <p style={{ fontSize: 13, color: S.tx3, textAlign: 'center', padding: 20 }}>{t('share.no_contacts')}</p>
+            <p style={{ color: S.tx3, fontSize: 13, textAlign: 'center', padding: 24 }}>{search ? t('contacts.no_results') : t('share.no_contacts')}</p>
           )}
           {filtered.map(c => {
             const on = selected.has(c.contact_user_id)

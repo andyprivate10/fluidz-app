@@ -84,7 +84,7 @@ export function useSessionData() {
       const { data: { user } } = await supabase.auth.getUser()
       setCurrentUser(user ?? null)
 
-      const { data: sess, error: sessErr } = await supabase.from('sessions').select('*').eq('id', id).single()
+      const { data: sess, error: sessErr } = await supabase.from('sessions').select('id, title, description, approx_area, exact_address, status, host_id, invite_code, created_at, starts_at, ends_at, max_capacity, tags, cover_url, template_slug, lineup_json, is_public').eq('id', id).single()
       if (sessErr) throw sessErr
       // Auto-end if ends_at has passed
       if (sess.status === 'open' && sess.ends_at && new Date(sess.ends_at) < new Date()) {
@@ -104,7 +104,7 @@ export function useSessionData() {
       // Fetch host profile
       if (sess?.host_id) {
         const { data: hp } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', sess.host_id).maybeSingle()
-        if (hp) setHostProfile({ name: hp.display_name || 'Host', avatar: (hp.profile_json as any)?.avatar_url })
+        if (hp) setHostProfile({ name: hp.display_name || 'Host', avatar: (hp.profile_json as Record<string, unknown>)?.avatar_url as string | undefined })
       }
 
       const { data: accepted } = await supabase
@@ -171,7 +171,7 @@ export function useSessionData() {
           const rejIds = rejected.map(r => r.applicant_id)
           const { data: rejProfiles } = await supabase.from('user_profiles').select('id, display_name').in('id', rejIds)
           const rejMap: Record<string, string> = {}
-          ;(rejProfiles ?? []).forEach((r: any) => { if (r.display_name) rejMap[r.id] = r.display_name })
+          ;(rejProfiles ?? []).forEach((r: { id: string; display_name?: string | null }) => { if (r.display_name) rejMap[r.id] = r.display_name })
           setRejectedApps(rejected.map(r => ({ id: r.id, applicant_id: r.applicant_id, display_name: rejMap[r.applicant_id] ?? null, avatar_url: null })))
         } else { setRejectedApps([]) }
       }
@@ -188,8 +188,8 @@ export function useSessionData() {
           const ciIds = ciReqs.map(r => r.applicant_id)
           const { data: ciProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ciIds)
           const ciMap: Record<string, { display_name?: string | null; avatar_url?: string | null }> = {}
-          ;(ciProfiles ?? []).forEach((r: any) => {
-            ciMap[r.id] = { display_name: r.display_name, avatar_url: r.profile_json?.avatar_url }
+          ;(ciProfiles ?? []).forEach((r: { id: string; display_name?: string | null; profile_json?: Record<string, unknown> }) => {
+            ciMap[r.id] = { display_name: r.display_name, avatar_url: (r.profile_json?.avatar_url as string | null) ?? null }
           })
           setCheckInRequests(ciReqs.map(r => ({
             id: r.id, applicant_id: r.applicant_id,

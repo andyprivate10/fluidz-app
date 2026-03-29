@@ -20,7 +20,7 @@ export function useTypingIndicator(channelName: string, userId: string | undefin
       const state = channel.presenceState<{ typing: boolean; name: string }>()
       const names: string[] = []
       for (const [uid, entries] of Object.entries(state)) {
-        if (uid !== userId && entries.some((e: any) => e.typing)) {
+        if (uid !== userId && entries.some((e: { typing: boolean }) => e.typing)) {
           const name = entries[0]?.name || 'Quelqu\'un'
           names.push(name)
         }

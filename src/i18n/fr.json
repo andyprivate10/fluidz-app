@@ -835,6 +835,7 @@
     "groups": "Groupes",
     "interactions": "Interactions",
     "empty_filter": "Aucun contact dans ce filtre",
+    "no_results": "Aucun contact trouvé",
     "no_notes": "Aucune note",
     "send_dm": "Envoyer un DM",
     "dm_sent": "DM envoyé",

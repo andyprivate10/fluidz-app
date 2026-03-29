@@ -33,12 +33,14 @@ export function useAdminConfig() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let mounted = true
     supabase
       .from('admin_config')
-      .select('*')
+      .select('id, type, slug, label, category, sort_order, active, meta')
       .eq('active', true)
       .order('sort_order')
       .then(({ data, error }) => {
+        if (!mounted) return
         if (error || !data || data.length === 0) {
           setLoading(false)
           return
@@ -56,6 +58,7 @@ export function useAdminConfig() {
         if (t.length > 0) setSessionTemplates(t)
         setLoading(false)
       })
+    return () => { mounted = false }
   }, [])
 
   return { kinks, morphologies, roles, sessionTags, sessionTemplates, loading }

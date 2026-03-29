@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Star, Check } from 'lucide-react'
@@ -17,6 +17,56 @@ type Props = {
   hostId: string
   isMobile: boolean
 }
+
+/* ── Memoized avatar button (used in the compact avatar row) ── */
+const MemberAvatar = React.memo(function MemberAvatar({ member, avatarUrl, index, onClick }: {
+  member: Member; avatarUrl: string | undefined; index: number; onClick: () => void
+}) {
+  const nameChar = ((member.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()
+  return (
+    <button type="button" onClick={onClick} style={{ marginLeft: index === 0 ? 0 : -8, display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid '+S.bg1, boxSizing: 'border-box' }} />
+      ) : (
+        <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid '+S.bg1, boxSizing: 'border-box' }}>
+          {nameChar}
+        </div>
+      )}
+    </button>
+  )
+})
+
+/* ── Memoized name link (used in the compact name row) ── */
+const MemberNameLink = React.memo(function MemberNameLink({ member, name, role, onClick }: {
+  member: Member; name: string; role: string | undefined; onClick: () => void
+}) {
+  return (
+    <button type="button" onClick={onClick} style={{ fontSize: 13, color: S.tx2, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{member.status === 'checked_in' && <Check size={10} strokeWidth={2.5} style={{ color: S.sage, display: 'inline', marginLeft: 2 }} />}{role && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{role}</span>}</button>
+  )
+})
+
+/* ── Memoized full member row ── */
+const MemberRow = React.memo(function MemberRow({ member, avatarUrl, name, role, onClick }: {
+  member: Member; avatarUrl: string | undefined; name: string; role: string | undefined; onClick: () => void
+}) {
+  const eps = member.eps_json || {}
+  return (
+    <button type="button" onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer', width: '100%', textAlign: 'left' }}>
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+      ) : (
+        <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+          {(name || '?')[0].toUpperCase()}
+        </div>
+      )}
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
+        {role && <div style={{ fontSize: 11, color: S.tx2 }}>{role}</div>}
+      </div>
+      {member.status === 'checked_in' && <div style={{ fontSize: 11, color: S.sage, fontWeight: 600 }}>Check-in</div>}
+    </button>
+  )
+})
 
 export default function SessionLineup({ members, memberAvatars, memberNames, memberRoles, hostProfile, hostId, isMobile }: Props) {
   const navigate = useNavigate()
@@ -43,30 +93,16 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
               <span style={{ position: 'absolute', top: -4, right: -4 }}><Star size={10} strokeWidth={1.5} fill={S.p} color={S.p} /></span>
             </button>
           )}
-          {members.slice(0, 5).map((m, i) => {
-            const avatarUrl = memberAvatars[m.applicant_id]
-            return (
-              <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ marginLeft: i === 0 ? 0 : -8, display: 'block', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid '+S.bg1, boxSizing: 'border-box' }} />
-                ) : (
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', border: '2px solid '+S.bg1, boxSizing: 'border-box' }}>
-                    {(memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || '?')[0].toUpperCase()}
-                  </div>
-                )}
-              </button>
-            )
-          })}
+          {members.slice(0, 5).map((m, i) => (
+            <MemberAvatar key={m.applicant_id} member={m} avatarUrl={memberAvatars[m.applicant_id]} index={i} onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} />
+          ))}
           {members.length > 5 && <span style={{ marginLeft: 6, fontSize: 13, fontWeight: 600, color: S.tx2 }}>+{members.length - 5}</span>}
         </div>
         {/* Name links */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-          {members.slice(0, 5).map(m => {
-            const name = memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'
-            return (
-              <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ fontSize: 13, color: S.tx2, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 3 }}>{name}{m.status === 'checked_in' && <Check size={10} strokeWidth={2.5} style={{ color: S.sage, display: 'inline', marginLeft: 2 }} />}{memberRoles[m.applicant_id] && <span style={{ fontSize: 10, color: S.p, marginLeft: 2 }}>{memberRoles[m.applicant_id]}</span>}</button>
-            )
-          })}
+          {members.slice(0, 5).map(m => (
+            <MemberNameLink key={m.applicant_id} member={m} name={memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'} role={memberRoles[m.applicant_id]} onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} />
+          ))}
           {members.length > 5 && <span style={{ fontSize: 12, color: S.tx2 }}>+{members.length - 5}</span>}
         </div>
       </div>
@@ -74,24 +110,10 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
         {members.map(m => {
           const eps = m.eps_json || {}
-          const avatarUrl = memberAvatars[m.applicant_id]
           const role = memberRoles[m.applicant_id] || eps.role
           const name = memberNames[m.applicant_id] || (eps as any).profile_snapshot?.display_name || eps.displayName || 'Anonyme'
           return (
-            <button key={m.applicant_id} type="button" onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer', width: '100%', textAlign: 'left' }}>
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-              ) : (
-                <div style={{ width: 32, height: 32, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>
-                  {(name || '?')[0].toUpperCase()}
-                </div>
-              )}
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: S.tx }}>{name}{(eps as any).age ? ', ' + (eps as any).age : ''}</div>
-                {role && <div style={{ fontSize: 11, color: S.tx2 }}>{role}</div>}
-              </div>
-              {m.status === 'checked_in' && <div style={{ fontSize: 11, color: S.sage, fontWeight: 600 }}>Check-in</div>}
-            </button>
+            <MemberRow key={m.applicant_id} member={m} avatarUrl={memberAvatars[m.applicant_id]} name={name} role={role} onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} />
           )
         })}
       </div>

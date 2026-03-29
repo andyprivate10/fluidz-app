@@ -45,7 +45,7 @@ export function useHomeData() {
     if (profData?.display_name) {
       setDisplayName(profData.display_name)
       const pj = (profData.profile_json || {}) as Record<string, unknown>
-      const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!((pj as any).kinks && (pj as any).kinks.length > 0), !!profData.display_name && profData.display_name !== 'Anonymous']
+      const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!(pj.kinks && (pj.kinks as string[]).length > 0), !!profData.display_name && profData.display_name !== 'Anonymous']
       setProfilePct(Math.round((checks.filter(Boolean).length / checks.length) * 100))
       const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
       if (isNewUser) {
@@ -62,32 +62,32 @@ export function useHomeData() {
       const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).eq('status', 'pending')
       setHostPendingCount(count ?? 0)
       const { count: mc } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).in('status', ['accepted', 'checked_in'])
-      if (hostSession) (hostSession as any).member_count = (mc || 0) + 1
+      if (hostSession) (hostSession as QuickSession).member_count = (mc || 0) + 1
     }
 
     const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
       .eq('applicant_id', user.id).eq('status', 'pending')
-    setPendingApps((pending || []).map((a: any) => ({ session_id: a.session_id, title: a.sessions?.title || 'Session' })))
+    setPendingApps((pending || []).map(a => ({ session_id: a.session_id, title: (a.sessions as any)?.title || 'Session' })))
 
     const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
       .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
-    setActiveApps((active || []).map((a: any) => ({ session_id: a.session_id, status: a.status, title: a.sessions?.title || 'Session' })))
+    setActiveApps((active || []).map(a => ({ session_id: a.session_id, status: a.status || '', title: (a.sessions as any)?.title || 'Session' })))
 
     // Recent contacts
     const { data: contacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).order('created_at', { ascending: false }).limit(8)
     if (contacts && contacts.length > 0) {
-      const cIds = contacts.map((c: any) => c.contact_user_id)
+      const cIds = contacts.map((c: { contact_user_id: string }) => c.contact_user_id)
       const { data: cProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', cIds)
       const ordered = cIds.map(cid => {
-        const p = (cProfiles || []).find((pr: any) => pr.id === cid)
-        return { id: cid, name: p?.display_name || '?', avatar: (p?.profile_json as any)?.avatar_url }
+        const p = (cProfiles || []).find((pr: { id: string; display_name?: string; profile_json?: Record<string, unknown> }) => pr.id === cid)
+        return { id: cid, name: p?.display_name || '?', avatar: (p?.profile_json as Record<string, unknown> | undefined)?.avatar_url as string | undefined }
       })
       setRecentContacts(ordered)
     } else { setRecentContacts([]) }
 
     // Pending reviews
     const { data: reviewQueue } = await supabase.from('review_queue').select('session_id, sessions!inner(title)').eq('user_id', user.id).eq('status', 'pending').gte('expires_at', new Date().toISOString())
-    setPendingReviews((reviewQueue || []).map((r: any) => ({ session_id: r.session_id, title: r.sessions?.title || 'Session' })))
+    setPendingReviews((reviewQueue || []).map(r => ({ session_id: r.session_id, title: (r.sessions as any)?.title || 'Session' })))
 
     // Recent notifications
     const { data: notifs } = await supabase.from('notifications').select('id, type, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
@@ -105,17 +105,17 @@ export function useHomeData() {
     const { data: endedApps } = await supabase.from('applications').select('session_id, sessions!inner(status, ends_at)')
       .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
     const recentSessionIds = (endedApps || [])
-      .filter((a: any) => a.sessions?.status === 'ended' && a.sessions?.ends_at && a.sessions.ends_at > cutoff48h)
-      .map((a: any) => a.session_id)
+      .filter(a => (a.sessions as any)?.status === 'ended' && (a.sessions as any)?.ends_at && (a.sessions as any).ends_at > cutoff48h)
+      .map(a => a.session_id)
     if (recentSessionIds.length > 0) {
       const { data: coParticipants } = await supabase.from('applications').select('applicant_id')
         .in('session_id', recentSessionIds).in('status', ['accepted', 'checked_in']).neq('applicant_id', user.id)
       const { data: myContacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id)
-      const contactSet = new Set((myContacts || []).map((c: any) => c.contact_user_id))
-      const suggestions = [...new Set((coParticipants || []).map((c: any) => c.applicant_id))].filter(id => !contactSet.has(id))
+      const contactSet = new Set((myContacts || []).map((c: { contact_user_id: string }) => c.contact_user_id))
+      const suggestions = [...new Set((coParticipants || []).map((c: { applicant_id: string }) => c.applicant_id))].filter(id => !contactSet.has(id))
       if (suggestions.length > 0) {
         const { data: sProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', suggestions.slice(0, 6))
-        setSessionSuggestions((sProfiles || []).map((p: any) => ({ id: p.id, name: p.display_name || '?', avatar: p.profile_json?.avatar_url })))
+        setSessionSuggestions((sProfiles || []).map((p: { id: string; display_name?: string; profile_json?: Record<string, unknown> }) => ({ id: p.id, name: p.display_name || '?', avatar: (p.profile_json?.avatar_url as string | undefined) })))
       }
     }
     setLoading(false)
