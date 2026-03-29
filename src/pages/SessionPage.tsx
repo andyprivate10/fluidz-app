@@ -188,7 +188,7 @@ export default function SessionPage() {
 
       {/* ═══ TAB: participants (HOST + MEMBER) ═══ */}
       {activeTab === 'participants' && (effectiveRole === 'host' || effectiveRole === 'member') && (
-        <div style={{ padding: '16px' }}>
+        <div className="tab-content" style={{ padding: '16px' }}>
           <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.participants')}
           </h2>
@@ -340,7 +340,7 @@ export default function SessionPage() {
 
       {/* ═══ TAB: share (HOST) ═══ */}
       {activeTab === 'share' && effectiveRole === 'host' && d.session && (
-        <div style={{ padding: '16px' }}>
+        <div className="tab-content" style={{ padding: '16px' }}>
           <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.share')}
           </h2>
@@ -352,7 +352,7 @@ export default function SessionPage() {
 
       {/* ═══ TAB: application (CANDIDATE) ═══ */}
       {activeTab === 'application' && effectiveRole === 'candidate' && (
-        <div style={{ padding: '16px' }}>
+        <div className="tab-content" style={{ padding: '16px' }}>
           <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
             {t('session_nav.application')}
           </h2>
@@ -392,7 +392,7 @@ export default function SessionPage() {
 
       {/* ═══ TAB: chat ═══ */}
       {activeTab === 'chat' && (
-        <div style={{ padding: '16px' }}>
+        <div className="tab-content" style={{ padding: '16px' }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
             <ChatSubTab
               label={t('session_nav.dm_host')}

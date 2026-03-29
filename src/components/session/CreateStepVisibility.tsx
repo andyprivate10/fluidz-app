@@ -50,7 +50,7 @@ export default function CreateStepVisibility({ h }: Props) {
         disabled={h.loading || !h.title || !h.approxArea}
         className="btn-shimmer"
         style={{
-          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
+          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx,
           background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden',
           cursor: h.loading || !h.title || !h.approxArea ? 'not-allowed' : 'pointer',
           opacity: h.loading || !h.title || !h.approxArea ? 0.5 : 1,

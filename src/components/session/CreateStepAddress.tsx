@@ -103,7 +103,7 @@ export default function CreateStepAddress({ h }: Props) {
             {step.photo_url ? (
               <div style={{ marginTop: 6, position: 'relative', display: 'inline-block' }}>
                 <img src={step.photo_url} alt="" loading="lazy" style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid ' + S.rule }} />
-                <button type="button" onClick={() => { const next = [...h.directions]; next[i] = { ...next[i], photo_url: undefined }; h.setDirections(next) }} style={{ position: 'absolute', top: -4, right: -4, width: 16, height: 16, borderRadius: '50%', background: S.red, border: 'none', color: '#fff', fontSize: 10, cursor: 'pointer' }}>×</button>
+                <button type="button" onClick={() => { const next = [...h.directions]; next[i] = { ...next[i], photo_url: undefined }; h.setDirections(next) }} style={{ position: 'absolute', top: -4, right: -4, width: 16, height: 16, borderRadius: '50%', background: S.red, border: 'none', color: S.tx, fontSize: 10, cursor: 'pointer' }}>×</button>
               </div>
             ) : (
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 6, padding: '4px 8px', borderRadius: 6, border: '1px solid ' + S.rule, background: S.bg2, color: S.tx4, fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>
@@ -146,7 +146,7 @@ export default function CreateStepAddress({ h }: Props) {
         onClick={() => h.setStep('timing')}
         disabled={!h.approxArea}
         style={{
-          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
+          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx,
           background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden',
           cursor: !h.approxArea ? 'not-allowed' : 'pointer', opacity: !h.approxArea ? 0.5 : 1,
           boxShadow: '0 4px 20px ' + S.pbd, marginTop: 4,

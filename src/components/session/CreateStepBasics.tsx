@@ -95,7 +95,7 @@ export default function CreateStepBasics({ h }: Props) {
               <button key={tag.label} onClick={() => h.toggleTag(tag.label)} style={{
                 padding: '6px 14px', borderRadius: 99, fontSize: 13, fontWeight: 600,
                 border: on ? 'none' : '1px solid ' + S.rule,
-                background: on ? S.grad : S.bg2, color: on ? '#fff' : S.tx3, cursor: 'pointer',
+                background: on ? S.grad : S.bg2, color: on ? S.tx : S.tx3, cursor: 'pointer',
               }}>{tag.label}</button>
             )
           })}
@@ -106,7 +106,7 @@ export default function CreateStepBasics({ h }: Props) {
         onClick={() => h.setStep('rules')}
         disabled={!h.title}
         style={{
-          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
+          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx,
           background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden',
           cursor: !h.title ? 'not-allowed' : 'pointer', opacity: !h.title ? 0.5 : 1,
           boxShadow: '0 4px 20px ' + S.pbd, marginTop: 4,

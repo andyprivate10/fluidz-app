@@ -186,7 +186,7 @@ export default function AdminDevTab() {
           <input value={newEpicTitle} onChange={e => setNewEpicTitle(e.target.value)} placeholder={t('admin.epic_placeholder')} onKeyDown={e => e.key === 'Enter' && addEpic()}
             style={{ width: '100%', padding: 10, borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx, fontSize: 13, marginBottom: 8, boxSizing: 'border-box' }} />
           <div style={{ display: 'flex', gap: 6 }}>
-            <button onClick={addEpic} style={{ flex: 1, padding: 8, borderRadius: 10, background: S.p, border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('admin.add')}</button>
+            <button onClick={addEpic} style={{ flex: 1, padding: 8, borderRadius: 10, background: S.p, border: 'none', color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('admin.add')}</button>
             <button onClick={() => setShowAddEpic(false)} style={{ padding: 8, borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, cursor: 'pointer' }}>{t('admin.cancel')}</button>
           </div>
         </div>
@@ -302,7 +302,7 @@ export default function AdminDevTab() {
                     <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
                       <input value={newStoryTitle} onChange={e => setNewStoryTitle(e.target.value)} placeholder={t('admin.story_placeholder')} onKeyDown={e => e.key === 'Enter' && addStory(epic.id)}
                         style={{ flex: 1, padding: 8, borderRadius: 8, background: S.bg, border: '1px solid ' + S.rule, color: S.tx, fontSize: 12, boxSizing: 'border-box' }} autoFocus />
-                      <button onClick={() => addStory(epic.id)} style={{ padding: '6px 12px', borderRadius: 8, background: S.p, border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{t('admin.add')}</button>
+                      <button onClick={() => addStory(epic.id)} style={{ padding: '6px 12px', borderRadius: 8, background: S.p, border: 'none', color: S.tx, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>{t('admin.add')}</button>
                       <button onClick={() => { setShowAddStory(null); setNewStoryTitle('') }} style={{ padding: '6px 8px', borderRadius: 8, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 11, cursor: 'pointer' }}><X size={12} /></button>
                     </div>
                   ) : (

@@ -69,8 +69,8 @@ export default function CreateSessionSharing({
               border: '1px solid '+(isPublic ? S.sage : S.rule2),
               boxShadow: isPublic ? '0 4px 20px rgba(74,222,128,0.2)' : 'none',
             }}>
-              <Eye size={20} strokeWidth={1.5} style={{color: isPublic ? '#fff' : S.tx3, margin:'0 auto 6px', display:'block'}} />
-              <p style={{fontSize:14,fontWeight:700,color: isPublic ? '#fff' : S.tx2,margin:0}}>{t('session.publish_in_app')}</p>
+              <Eye size={20} strokeWidth={1.5} style={{color: isPublic ? S.tx : S.tx3, margin:'0 auto 6px', display:'block'}} />
+              <p style={{fontSize:14,fontWeight:700,color: isPublic ? S.tx : S.tx2,margin:0}}>{t('session.publish_in_app')}</p>
               <p style={{fontSize:11,color: isPublic ? 'rgba(255,255,255,0.7)' : S.tx3,margin:'4px 0 0'}}>{t('session.publish_in_app_desc')}</p>
             </button>
             <button onClick={async () => { setIsPublic(false); await supabase.from('sessions').update({ is_public: false }).eq('id', createdSession.id) }} style={{
@@ -218,7 +218,7 @@ export default function CreateSessionSharing({
           {templateSaved ? <><Check size={14} strokeWidth={2.5} /> {t('session.template_saved')}</> : <><Bookmark size={14} strokeWidth={1.5} /> {t('session.save_as_template')}</>}
         </button>
 
-        <button onClick={() => navigate('/session/' + createdSession.id)} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
+        <button onClick={() => navigate('/session/' + createdSession.id)} className="btn-shimmer" style={{width:'100%',padding:'14px',borderRadius:14,fontWeight:700,fontSize:15,color:S.tx,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:'pointer',boxShadow:'0 4px 20px '+S.pbd}}>
           {t('session.go_to_session')}
         </button>
       </div>

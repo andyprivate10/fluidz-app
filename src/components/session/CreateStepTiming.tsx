@@ -18,7 +18,7 @@ export default function CreateStepTiming({ h }: Props) {
             flex: 1, padding: '10px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             border: h.startsNow ? 'none' : '1px solid ' + S.rule,
-            background: h.startsNow ? S.grad : S.bg2, color: h.startsNow ? '#fff' : S.tx3,
+            background: h.startsNow ? S.grad : S.bg2, color: h.startsNow ? S.tx : S.tx3,
           }}>
             <Zap size={14} /> {h.t('session.start_now')}
           </button>
@@ -34,7 +34,7 @@ export default function CreateStepTiming({ h }: Props) {
             flex: 1, padding: '10px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             border: !h.startsNow ? 'none' : '1px solid ' + S.rule,
-            background: !h.startsNow ? S.grad : S.bg2, color: !h.startsNow ? '#fff' : S.tx3,
+            background: !h.startsNow ? S.grad : S.bg2, color: !h.startsNow ? S.tx : S.tx3,
           }}>
             <Clock size={14} /> {h.t('session.start_later')}
           </button>
@@ -72,9 +72,9 @@ export default function CreateStepTiming({ h }: Props) {
               <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 12, background: count > 0 ? S.p2 : S.bg2, border: '1px solid ' + (count > 0 ? S.pbd : S.rule) }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: count > 0 ? S.p : S.tx3 }}>{r.label}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <button onClick={() => h.setRolesWanted(prev => { const n = { ...prev }; if ((n[r.label] || 0) > 0) n[r.label] = (n[r.label] || 0) - 1; if (n[r.label] === 0) delete n[r.label]; return n })} style={{ width: 22, height: 22, borderRadius: 6, border: '1px solid ' + S.rule, background: S.bg, color: S.tx3, cursor: 'pointer', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>-</button>
+                  <button onClick={() => h.setRolesWanted(prev => { const n = { ...prev }; if ((n[r.label] || 0) > 0) n[r.label] = (n[r.label] || 0) - 1; if (n[r.label] === 0) delete n[r.label]; return n })} style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid ' + S.rule, background: S.bg, color: S.tx3, cursor: 'pointer', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>-</button>
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx, minWidth: 16, textAlign: 'center' }}>{count}</span>
-                  <button onClick={() => h.setRolesWanted(prev => ({ ...prev, [r.label]: (prev[r.label] || 0) + 1 }))} style={{ width: 22, height: 22, borderRadius: 6, border: '1px solid ' + S.pbd, background: S.p2, color: S.p, cursor: 'pointer', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>+</button>
+                  <button onClick={() => h.setRolesWanted(prev => ({ ...prev, [r.label]: (prev[r.label] || 0) + 1 }))} style={{ width: 36, height: 36, borderRadius: 6, border: '1px solid ' + S.pbd, background: S.p2, color: S.p, cursor: 'pointer', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>+</button>
                 </div>
               </div>
             )
@@ -90,7 +90,7 @@ export default function CreateStepTiming({ h }: Props) {
       <button
         onClick={() => h.setStep('visibility')}
         style={{
-          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
+          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx,
           background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden',
           cursor: 'pointer', boxShadow: '0 4px 20px ' + S.pbd, marginTop: 4,
         }}

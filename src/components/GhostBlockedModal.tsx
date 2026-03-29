@@ -86,7 +86,7 @@ export default function GhostBlockedModal({ open, onClose, onConverted }: Props)
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <button onClick={() => setShowForm(true)} style={{
               width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 14,
-              color: '#fff', background: S.p, border: 'none', cursor: 'pointer',
+              color: S.tx, background: S.p, border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>
               <Mail size={16} /> {t('ghost_convert.blocked_email_btn')}
@@ -106,7 +106,7 @@ export default function GhostBlockedModal({ open, onClose, onConverted }: Props)
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t('ghost_convert.password_label')} style={inp} />
             <button onClick={handleEmailConvert} disabled={loading || !email.trim() || !password.trim()} style={{
               width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 14,
-              color: '#fff', background: S.p, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+              color: S.tx, background: S.p, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading || !email.trim() || !password.trim() ? 0.6 : 1,
             }}>
               {t('ghost_convert.create_btn')}

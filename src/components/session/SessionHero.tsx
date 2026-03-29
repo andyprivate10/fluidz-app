@@ -35,7 +35,7 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
       {cover.coverImage ? (
         <>
           <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${cover.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,4,10,0.35)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(5,4,10,0.15) 0%, rgba(5,4,10,0.5) 60%, rgba(5,4,10,0.85) 100%)' }} />
         </>
       ) : (
         <div style={{ position: 'absolute', inset: 0, background: cover.bg }} />

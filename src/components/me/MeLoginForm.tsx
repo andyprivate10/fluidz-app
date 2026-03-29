@@ -29,7 +29,7 @@ export default function MeLoginForm({ email, setEmail, loading, msg, hasGuestTok
         <p style={{ color: S.tx3, fontSize: 14 }}>{t('me.login_prompt')}</p>
       </div>
       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t('profile.placeholder_email')} style={{ ...inputStyle, maxWidth: 360, marginBottom: 12 }} onKeyDown={e => e.key === 'Enter' && sendMagicLink()} />
-      <button onClick={sendMagicLink} disabled={loading} style={{ width: '100%', maxWidth: 360, padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff', background: S.grad, border: 'none', cursor: 'pointer', opacity: loading ? 0.7 : 1, boxShadow: `0 4px 20px ${S.p}44` }}>
+      <button onClick={sendMagicLink} disabled={loading} style={{ width: '100%', maxWidth: 360, padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx, background: S.grad, border: 'none', cursor: 'pointer', opacity: loading ? 0.7 : 1, boxShadow: `0 4px 20px ${S.p}44` }}>
         {loading ? t('me.sending') : hasGuestToken ? t('me.create_account') : <><Mail size={16} strokeWidth={2} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />{t('me.send_magic_link')}</>}
       </button>
       {msg && <p style={{ marginTop: 16, fontSize: 13, color: S.tx2, textAlign: 'center' }}>{msg}</p>}

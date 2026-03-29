@@ -28,7 +28,7 @@ export default function CreateStepRules({ h }: Props) {
       <button
         onClick={() => h.setStep('address')}
         style={{
-          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: '#fff',
+          padding: '14px', borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx,
           background: S.grad, border: 'none', position: 'relative' as const, overflow: 'hidden',
           cursor: 'pointer', boxShadow: '0 4px 20px ' + S.pbd, marginTop: 4,
         }}

@@ -124,7 +124,7 @@ export default function AdminSeedTab() {
           }}
         >
           {seeding ? (
-            <div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            <div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: S.tx, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
           ) : (
             <Play size={14} strokeWidth={2} />
           )}
@@ -173,7 +173,7 @@ export default function AdminSeedTab() {
           }}
         >
           {seedingDemo ? (
-            <div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            <div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: S.tx, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
           ) : (
             <Users size={14} strokeWidth={2} />
           )}
