@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { showToast } from '../components/Toast'
 import { supabase } from '../lib/supabase'
 import { useAdminConfig } from './useAdminConfig'
 import { useTranslation } from 'react-i18next'
 import { sendPushToUser } from '../lib/pushSender'
+import { compressImage, isVideo } from '../lib/media'
 import { getSections, GUEST_TOKEN_KEY, GUEST_SESSION_KEY, RATE_LIMIT_MIN } from '../components/apply/applySections'
 
 export function useApplyData() {
@@ -37,6 +38,9 @@ export function useApplyData() {
   const [guestMode, setGuestMode] = useState(false)
   const [guestDisplayName, setGuestDisplayName] = useState('')
   const [ghostSessionId, setGhostSessionId] = useState<string | null>(null)
+  const [occasionPhotos, setOccasionPhotos] = useState<string[]>([])
+  const [mediaUploading, setMediaUploading] = useState(false)
+  const occasionFileRef = useRef<HTMLInputElement | null>(null)
 
   const isRateLimited = rateLimitedUntil ? new Date() < rateLimitedUntil : false
   const invalidPseudo = guestMode ? (guestDisplayName.trim().length < 2) : (!profile?.display_name || (profile.display_name as string).trim().length < 2)
@@ -164,6 +168,35 @@ export function useApplyData() {
     }
   }
 
+  function onPickOccasionFile() {
+    occasionFileRef.current?.click()
+  }
+
+  async function onOccasionFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (occasionPhotos.length >= 3) return
+    const uid = user?.id || ghostSessionId || 'anon'
+    setMediaUploading(true)
+    try {
+      let toUpload = file
+      if (!isVideo(file)) {
+        toUpload = await compressImage(file)
+      }
+      const ext = file.name.split('.').pop() || (isVideo(file) ? 'mp4' : 'jpg')
+      const path = `${uid}/occasion_${id}_${Date.now()}.${ext}`
+      const { error } = await supabase.storage.from('avatars').upload(path, toUpload, { upsert: true })
+      if (error) { console.error('[occasion] upload error', error); setMediaUploading(false); return }
+      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path)
+      setOccasionPhotos(prev => [...prev, urlData.publicUrl])
+    } catch (err) {
+      console.error('[occasion] upload failed', err)
+    } finally {
+      setMediaUploading(false)
+      if (occasionFileRef.current) occasionFileRef.current.value = ''
+    }
+  }
+
   function toggle(sid: string) {
     setEnabled(prev => prev.includes(sid) ? prev.filter(x => x !== sid) : [...prev, sid])
   }
@@ -210,6 +243,7 @@ export function useApplyData() {
           selected_body_part_photos: enabled.includes('body_part_photos') ? selectedBodyParts : {},
           selected_photos: [...(enabled.includes('photos_profil') ? selectedPhotosProfil : []), ...(enabled.includes('photos_adulte') ? selectedPhotosAdulte : [])],
           selected_videos: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+          occasion_photos: occasionPhotos.length > 0 ? occasionPhotos : undefined,
         },
       })
       try { localStorage.removeItem(GUEST_TOKEN_KEY); localStorage.removeItem(GUEST_SESSION_KEY) } catch (_) {}
@@ -233,6 +267,7 @@ export function useApplyData() {
         selected_body_part_photos: enabled.includes('body_part_photos') ? selectedBodyParts : {},
         selected_photos: [...(enabled.includes('photos_profil') ? selectedPhotosProfil : []), ...(enabled.includes('photos_adulte') ? selectedPhotosAdulte : [])],
         selected_videos: enabled.includes('photos_adulte') ? selectedVideosAdulte : [],
+        occasion_photos: occasionPhotos.length > 0 ? occasionPhotos : undefined,
       }
     })
     setLoading(false)
@@ -273,6 +308,8 @@ export function useApplyData() {
     isRateLimited, rateLimitedUntil,
     capacityFull, invalidPseudo, sessionEnded,
     guestMode, guestDisplayName, setGuestDisplayName,
+    occasionPhotos, setOccasionPhotos, mediaUploading,
+    onPickOccasionFile, occasionFileRef, onOccasionFileChange,
     submit,
   }
 }

@@ -169,6 +169,7 @@ export default function CandidateProfilePage() {
     ? videosAdulte
     : (eps.selected_videos || (Array.isArray(pj.videos) ? pj.videos : []))
   const hasAdulteMedia = photosAdulte.length > 0 || videosAdulte.length > 0
+  const occasionPhotos: string[] = Array.isArray(eps.occasion_photos) ? eps.occasion_photos : []
 
 
   return (
@@ -407,7 +408,7 @@ export default function CandidateProfilePage() {
         )}
 
         {/* ── BLOC 3: SESSION ── */}
-        {(messageText || eps.occasion_note) && (
+        {(messageText || eps.occasion_note || occasionPhotos.length > 0) && (
           <div style={{ marginBottom: 6 }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px', paddingLeft: 4 }}>{t('nav.sessions')}</p>
 
@@ -424,6 +425,26 @@ export default function CandidateProfilePage() {
               <div style={{ ...glassCard, borderColor: S.pbd }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('host.session_note')}</p>
                 <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
+              </div>
+            )}
+
+            {/* Occasion photos/videos */}
+            {occasionPhotos.length > 0 && (
+              <div style={{ ...glassCard, borderColor: S.pbd, marginTop: 12 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>{t('candidate.occasion_title')}</p>
+                <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+                  {occasionPhotos.map((url: string, i: number) => {
+                    const isVid = /\.(mp4|mov|webm|avi)/i.test(url)
+                    return isVid ? (
+                      <div key={i} style={{ position: 'relative', flexShrink: 0 }}>
+                        <video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
+                        <div style={{ position: 'absolute', bottom: 8, right: 8, padding: '2px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 10, fontWeight: 600 }}>{t('chat.video')}</div>
+                      </div>
+                    ) : (
+                      <img key={i} src={url} alt="" loading="lazy" onClick={() => setLightbox({ images: occasionPhotos.filter(u => !/\.(mp4|mov|webm|avi)/i.test(u)), index: occasionPhotos.filter(u => !/\.(mp4|mov|webm|avi)/i.test(u)).indexOf(url) })} style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', flexShrink: 0, border: '1px solid ' + S.pbd, cursor: 'zoom-in' }} />
+                    )
+                  })}
+                </div>
               </div>
             )}
           </div>

@@ -1,4 +1,5 @@
-import { ArrowLeft } from 'lucide-react'
+import { useRef } from 'react'
+import { ArrowLeft, Plus, X, Play, Loader } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 import { useTranslation } from 'react-i18next'
 import type { Section } from './applySections'
@@ -21,12 +22,20 @@ interface NoteStepProps {
   isRateLimited: boolean
   onBack: () => void
   onSubmit: () => void
+  occasionPhotos: string[]
+  setOccasionPhotos: (v: string[]) => void
+  mediaUploading: boolean
+  onPickOccasionFile: () => void
+  occasionFileRef: React.RefObject<HTMLInputElement | null>
+  onOccasionFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function NoteStep({
   profile, guestMode, guestDisplayName, enabled, selectedRole,
   selectedPhotosProfil, note, setNote, messageToHost, setMessageToHost,
   ALL_SECTIONS, loading, isRateLimited, onBack, onSubmit,
+  occasionPhotos, setOccasionPhotos, mediaUploading,
+  onPickOccasionFile, occasionFileRef, onOccasionFileChange,
 }: NoteStepProps) {
   const { t } = useTranslation()
   const disabled = loading || isRateLimited || (guestMode && guestDisplayName.trim().length < 2)
@@ -36,6 +45,8 @@ export default function NoteStep({
   const hasRole = enabled.includes('role') && !!selectedRole
   const hasKinks = enabled.includes('pratiques') && (profile?.profile_json?.kinks?.length > 0)
 
+  const isVideoUrl = (url: string) => /\.(mp4|mov|webm|avi)/i.test(url)
+
   return (
     <div style={{padding:'16px 20px'}}>
       <h2 style={{fontSize:16,fontWeight:700,color:S.tx,margin:'0 0 4px'}}>{t('session.for_this_session')}</h2>
@@ -44,6 +55,42 @@ export default function NoteStep({
       <div style={{marginBottom:12}}>
         <p style={{fontSize:11,fontWeight:700,color:S.tx3,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 6px'}}>{t('session.message_to_host')}</p>
         <textarea value={messageToHost} onChange={e => setMessageToHost(e.target.value)} placeholder={t('apply.message_placeholder')} rows={2} style={{width:'100%',background:S.bg2,color:S.tx,borderRadius:14,padding:'12px 16px',border:'1px solid '+S.rule,outline:'none',fontSize:14,fontFamily:fonts.body,resize:'none',boxSizing:'border-box',lineHeight:1.5}} />
+      </div>
+
+      {/* Occasion photo/video upload */}
+      <div style={{marginBottom:12}}>
+        <p style={{fontSize:11,fontWeight:700,color:S.p,textTransform:'uppercase',letterSpacing:'0.06em',margin:'0 0 4px'}}>{t('apply.occasion_media')}</p>
+        <p style={{fontSize:12,color:S.tx3,margin:'0 0 8px'}}>{t('apply.occasion_media_desc')}</p>
+        <input ref={occasionFileRef} type="file" accept="image/*,video/*" style={{display:'none'}} onChange={onOccasionFileChange} />
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          {occasionPhotos.map((url, i) => (
+            <div key={i} style={{position:'relative',width:56,height:72,borderRadius:10,overflow:'hidden',border:'1px solid '+S.rule,flexShrink:0}}>
+              {isVideoUrl(url) ? (
+                <>
+                  <video src={url} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                  <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.3)'}}>
+                    <Play size={16} fill="#fff" color="#fff" />
+                  </div>
+                </>
+              ) : (
+                <img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}} />
+              )}
+              <button onClick={() => setOccasionPhotos(occasionPhotos.filter((_, j) => j !== i))} style={{position:'absolute',top:2,right:2,background:'rgba(0,0,0,0.6)',border:'none',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}}>
+                <X size={10} color="#fff" />
+              </button>
+            </div>
+          ))}
+          {occasionPhotos.length < 3 && (
+            <button onClick={onPickOccasionFile} disabled={mediaUploading} style={{width:56,height:72,borderRadius:10,border:'1px dashed '+S.rule,background:S.bg2,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',cursor:mediaUploading?'wait':'pointer',gap:2}}>
+              {mediaUploading ? (
+                <Loader size={16} color={S.tx3} style={{animation:'spin 0.8s linear infinite'}} />
+              ) : (
+                <Plus size={18} color={S.tx3} />
+              )}
+            </button>
+          )}
+        </div>
+        <p style={{fontSize:10,color:S.tx4,margin:'4px 0 0'}}>{mediaUploading ? t('apply.occasion_uploading') : t('apply.occasion_max')}</p>
       </div>
 
       {/* Visual preview */}
@@ -106,4 +153,3 @@ export default function NoteStep({
     </div>
   )
 }
-

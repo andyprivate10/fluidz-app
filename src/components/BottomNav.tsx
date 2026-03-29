@@ -220,7 +220,7 @@ export default function BottomNav() {
               transition: 'color 0.2s',
               fontFamily: fonts.body,
             }}>
-              Menu
+              {t('nav.menu')}
             </span>
           </button>
         </div>

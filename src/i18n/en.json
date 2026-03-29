@@ -971,7 +971,11 @@
     "your_role": "your role",
     "your_kinks": "your kinks",
     "modify": "Modify",
-    "send": "Send"
+    "send": "Send",
+    "occasion_media": "For this session",
+    "occasion_media_desc": "Add a photo or video specific to this plan",
+    "occasion_max": "3 files max",
+    "occasion_uploading": "Uploading..."
   },
   "ghost_setup": {
     "creating": "Creating...",
@@ -1138,7 +1142,8 @@
   },
   "candidate": {
     "not_found": "Application not found",
-    "sections_shared_date": "{{count}} section{{plural}} shared — Application received on {{date}}"
+    "sections_shared_date": "{{count}} section{{plural}} shared — Application received on {{date}}",
+    "occasion_title": "For this session"
   },
   "edit": {
     "saving": "Saving...",

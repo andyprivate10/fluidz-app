@@ -122,6 +122,11 @@ export default function ApplyPage() {
           ALL_SECTIONS={d.ALL_SECTIONS}
           loading={d.loading} isRateLimited={d.isRateLimited}
           onBack={() => d.setStep('pack')} onSubmit={d.submit}
+          occasionPhotos={d.occasionPhotos} setOccasionPhotos={d.setOccasionPhotos}
+          mediaUploading={d.mediaUploading}
+          onPickOccasionFile={d.onPickOccasionFile}
+          occasionFileRef={d.occasionFileRef}
+          onOccasionFileChange={d.onOccasionFileChange}
         />
       )}
     </div>

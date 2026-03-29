@@ -971,7 +971,11 @@
     "your_role": "ton rôle",
     "your_kinks": "tes pratiques",
     "modify": "Modifier",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "occasion_media": "Pour cette session",
+    "occasion_media_desc": "Ajoute une photo ou vidéo pour ce plan",
+    "occasion_max": "3 fichiers max",
+    "occasion_uploading": "Envoi en cours..."
   },
   "ghost_setup": {
     "creating": "Creation...",
@@ -1138,7 +1142,8 @@
   },
   "candidate": {
     "not_found": "Candidature introuvable",
-    "sections_shared_date": "{{count}} section{{plural}} partagée{{plural}} — Candidature reçue le {{date}}"
+    "sections_shared_date": "{{count}} section{{plural}} partagée{{plural}} — Candidature reçue le {{date}}",
+    "occasion_title": "Pour cette session"
   },
   "edit": {
     "saving": "Enregistrement...",
