@@ -33,6 +33,10 @@ export function useCreateSession() {
   const [description, setDescription] = useState('')
   const [approxArea, setApproxArea] = useState('')
   const [exactAddress, setExactAddress] = useState('')
+  const [streetAddress, setStreetAddress] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+  const [city, setCity] = useState('')
+  const [country, setCountry] = useState('France')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -130,6 +134,10 @@ export function useCreateSession() {
   function clearAddress() {
     setApproxArea('')
     setExactAddress('')
+    setStreetAddress('')
+    setPostalCode('')
+    setCity('')
+    setCountry('France')
     setDirections([{ text: '' }])
   }
 
@@ -142,6 +150,10 @@ export function useCreateSession() {
     if (!user || !title || !approxArea) return
     setError('')
     setLoading(true)
+    // Combine structured address fields into exact_address
+    const combinedExact = [streetAddress, postalCode && city ? `${postalCode} ${city}` : city, country].filter(Boolean).join(', ')
+    if (combinedExact && !exactAddress) setExactAddress(combinedExact)
+    const finalExactAddress = exactAddress || combinedExact
     const directionsFiltered = directions.filter(d => d.text.trim().length > 0 || d.photo_url)
     const now = new Date()
     const start = startsNow ? now : (startsAt ? new Date(startsAt) : now)
@@ -152,7 +164,7 @@ export function useCreateSession() {
       title,
       description,
       approx_area: approxArea,
-      exact_address: exactAddress,
+      exact_address: finalExactAddress,
       status: 'open',
       tags: selectedTags,
       invite_code: Math.random().toString(36).slice(2, 10),
@@ -231,6 +243,10 @@ export function useCreateSession() {
   function pickSavedAddress(addr: typeof savedAddresses[0]) {
     if (addr.approx_area) setApproxArea(addr.approx_area)
     if (addr.exact_address) setExactAddress(addr.exact_address)
+    if ((addr as any).street_address) setStreetAddress((addr as any).street_address)
+    if ((addr as any).postal_code) setPostalCode((addr as any).postal_code)
+    if ((addr as any).city) setCity((addr as any).city)
+    if ((addr as any).country) setCountry((addr as any).country)
     if (addr.directions && addr.directions.length > 0) {
       setDirections(addr.directions.map(d => typeof d === 'string' ? { text: d } : d))
     }
@@ -249,6 +265,10 @@ export function useCreateSession() {
     description, setDescription,
     approxArea, setApproxArea,
     exactAddress, setExactAddress,
+    streetAddress, setStreetAddress,
+    postalCode, setPostalCode,
+    city, setCity,
+    country, setCountry,
     selectedTags,
     loading,
     error,

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Home, Users, MessageCircle, CheckCircle, ClipboardList, Eye, Send } from 'lucide-react'
+import { ArrowLeft, Home, Users, MessageCircle, ClipboardList, Eye, Send, Share2 } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 
 const S = colors
@@ -13,7 +13,7 @@ interface Props {
   role: Role
   activeTab: string
   onTabChange: (tab: string) => void
-  badges?: { candidates?: number; votes?: number; chat?: number }
+  badges?: { candidates?: number; chat?: number }
   sessionStatus?: string
 }
 
@@ -33,13 +33,14 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
     host: [
       backTab,
       { id: 'session', label: t('session_nav.session'), icon: <Home size={20} strokeWidth={1.5} /> },
-      { id: 'candidates', label: t('session_nav.candidates'), icon: <Users size={20} strokeWidth={1.5} />, badge: badges?.candidates },
+      { id: 'participants', label: t('session_nav.participants'), icon: <Users size={20} strokeWidth={1.5} />, badge: badges?.candidates },
+      { id: 'share', label: t('session_nav.share'), icon: <Share2 size={20} strokeWidth={1.5} /> },
       { id: 'chat', label: t('session_nav.chat'), icon: <MessageCircle size={20} strokeWidth={1.5} /> },
     ],
     member: [
       backTab,
       { id: 'session', label: t('session_nav.session'), icon: <Home size={20} strokeWidth={1.5} /> },
-      { id: 'vote', label: t('session_nav.vote'), icon: <CheckCircle size={20} strokeWidth={1.5} />, badge: badges?.votes },
+      { id: 'participants', label: t('session_nav.participants'), icon: <Users size={20} strokeWidth={1.5} /> },
       { id: 'chat', label: t('session_nav.chat'), icon: <MessageCircle size={20} strokeWidth={1.5} /> },
     ],
     candidate: [

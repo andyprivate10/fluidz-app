@@ -38,6 +38,10 @@ const TAG_GRADIENTS: Record<string, { bg: string; overlay: string }> = {
     bg: 'linear-gradient(135deg, #0a1014 0%, #0f2028 40%, #0a0f14 100%)',
     overlay: 'rgba(14,165,233,0.08)',
   },
+  'Intimacy': {
+    bg: 'linear-gradient(135deg, #F9A8A8 0%, #C4B5FD 100%)',
+    overlay: 'rgba(249,168,168,0.15)',
+  },
 }
 
 // Template slug → gradient (for templates without a matching tag)
@@ -61,6 +65,7 @@ const TEMPLATE_GRADIENTS: Record<string, { bg: string; overlay: string }> = {
   secret_garden:  { bg: 'linear-gradient(135deg, #0a140a 0%, #0f280f 40%, #0a140a 100%)', overlay: 'rgba(16,185,129,0.10)' },
   spectrum:       { bg: 'linear-gradient(135deg, #100a18 0%, #1a1030 40%, #0a0a14 100%)', overlay: 'rgba(124,58,237,0.10)' },
   vinyl:          { bg: 'linear-gradient(135deg, #0a0a0f 0%, #14141a 40%, #0a0a0f 100%)', overlay: 'rgba(55,65,81,0.10)' },
+  cuddle:         { bg: 'linear-gradient(135deg, #1a0f14 0%, #2a1525 40%, #140a10 100%)', overlay: 'rgba(249,168,168,0.12)' },
 }
 
 // Default fallback
@@ -97,6 +102,7 @@ const COVER_IMAGES: Record<string, string> = {
   vinyl: `${SUPABASE_COVERS}/vinyl.jpg`,
   bears: `${SUPABASE_COVERS}/bears.jpg`,
   party: `${SUPABASE_COVERS}/party.jpg`,
+  cuddle: `${SUPABASE_COVERS}/cuddle.jpg`,
 }
 
 // Map template slugs to tag-based matching
@@ -106,6 +112,8 @@ const TAG_TO_TEMPLATE: Record<string, string> = {
   'Techno': 'techno',
   'Party': 'party',
   'Bears': 'bears',
+  'Intimacy': 'cuddle',
+  'Cuddle': 'cuddle',
 }
 
 export type SessionCoverResult = {

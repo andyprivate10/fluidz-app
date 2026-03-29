@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle, UserPlus } from 'lucide-react'
+import { Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle, UserPlus, Bookmark } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 import { getSessionCover } from '../../lib/sessionCover'
 import OptionsMenu from '../OptionsMenu'
@@ -20,9 +20,11 @@ type Props = {
   isHost: boolean
   hostProfile: { name: string; avatar?: string } | null
   onEndSession?: () => void
+  isBookmarked?: boolean
+  onToggleBookmark?: () => void
 }
 
-export default function SessionHero({ session, members, memberAvatars, memberNames, statusColor, statusLabel, elapsed, remaining, isHost, hostProfile, onEndSession }: Props) {
+export default function SessionHero({ session, members, memberAvatars, memberNames, statusColor, statusLabel, elapsed, remaining, isHost, hostProfile, onEndSession, isBookmarked, onToggleBookmark }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const cover = getSessionCover(session.tags, session.cover_url, session.template_slug)
@@ -52,6 +54,9 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
             if (isHost) {
               opts.push({ label: t('options.edit_session'), icon: <Settings size={15} strokeWidth={1.5} />, onClick: () => navigate('/session/' + session.id + '/edit') })
               opts.push({ label: t('options.end_session'), icon: <XCircle size={15} strokeWidth={1.5} />, onClick: () => { onEndSession?.() }, danger: true })
+            }
+            if (onToggleBookmark) {
+              opts.push({ label: isBookmarked ? t('session.bookmarked') : t('session.bookmark'), icon: <Bookmark size={15} strokeWidth={1.5} fill={isBookmarked ? 'currentColor' : 'none'} />, onClick: onToggleBookmark })
             }
             opts.push({ label: t('options.copy_link'), icon: <Link size={15} strokeWidth={1.5} />, onClick: () => { navigator.clipboard?.writeText(window.location.href); showToast(t('session.link_copied'), 'success') } })
             if (isHost && session.invite_code) {

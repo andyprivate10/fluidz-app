@@ -64,9 +64,22 @@ export default function CreateStepAddress({ h }: Props) {
         <p style={{ fontSize: 11, color: S.tx4, marginTop: 6 }}>{h.t('session.approx_area_note')}</p>
       </div>
       <div>
-        <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>{h.t('session.exact_address_label')}</p>
-        <input value={h.exactAddress} onChange={e => h.setExactAddress(e.target.value)} placeholder={h.t('session.exact_address_placeholder')} style={inp} />
-        <p style={{ fontSize: 11, color: S.tx4, marginTop: 6 }}>{h.t('session.exact_address_note')}</p>
+        <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>{h.t('session.street_address')}</p>
+        <input value={h.streetAddress} onChange={e => h.setStreetAddress(e.target.value)} placeholder={h.t('session.street_address_placeholder')} style={inp} />
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>{h.t('session.postal_code')}</p>
+          <input value={h.postalCode} onChange={e => h.setPostalCode(e.target.value)} placeholder="75011" style={inp} />
+        </div>
+        <div style={{ flex: 2 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>{h.t('session.city')}</p>
+          <input value={h.city} onChange={e => h.setCity(e.target.value)} placeholder="Paris" style={inp} />
+        </div>
+      </div>
+      <div>
+        <p style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>{h.t('session.country')}</p>
+        <input value={h.country} onChange={e => h.setCountry(e.target.value)} placeholder="France" style={inp} />
       </div>
 
       {/* Directions */}

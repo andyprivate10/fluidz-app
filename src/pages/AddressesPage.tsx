@@ -42,6 +42,10 @@ export default function AddressesPage() {
   const [label, setLabel] = useState('')
   const [approxArea, setApproxArea] = useState('')
   const [exactAddress, setExactAddress] = useState('')
+  const [streetAddress, setStreetAddress] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+  const [city, setCity] = useState('')
+  const [country, setCountry] = useState('France')
   const [directions, setDirections] = useState<DirectionStep[]>([{ text: '' }])
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState<number | null>(null)
@@ -70,16 +74,20 @@ export default function AddressesPage() {
   }
 
   function openCreate() {
-    setEditId(null); setLabel(''); setApproxArea(''); setExactAddress(''); setDirections([{ text: '' }]); setShowForm(true)
+    setEditId(null); setLabel(''); setApproxArea(''); setExactAddress('')
+    setStreetAddress(''); setPostalCode(''); setCity(''); setCountry('France')
+    setDirections([{ text: '' }]); setShowForm(true)
   }
 
   function openEdit(addr: SavedAddress) {
     setEditId(addr.id); setLabel(addr.label); setApproxArea(addr.approx_area); setExactAddress(addr.exact_address)
+    setStreetAddress((addr as any).street_address || ''); setPostalCode((addr as any).postal_code || '')
+    setCity((addr as any).city || ''); setCountry((addr as any).country || 'France')
     setDirections(addr.directions.length > 0 ? addr.directions : [{ text: '' }]); setShowForm(true)
   }
 
   async function save() {
-    if (!userId || !label.trim() || !exactAddress.trim()) { showToast('Nom et adresse requis', 'error'); return }
+    if (!userId || !label.trim() || (!streetAddress.trim() && !exactAddress.trim())) { showToast(t('errors.name_address_required'), 'error'); return }
     setSaving(true)
 
     const { data } = await supabase.from('user_profiles').select('profile_json').eq('id', userId).maybeSingle()
@@ -87,14 +95,22 @@ export default function AddressesPage() {
     const existing = Array.isArray(pj.saved_addresses) ? [...pj.saved_addresses as SavedAddress[]] : []
 
     const dirFiltered = directions.filter(d => d.text.trim() || d.photo_url)
+    // Combine structured fields into exact_address if not manually set
+    const combinedExact = [streetAddress, postalCode && city ? `${postalCode} ${city}` : city, country].filter(Boolean).join(', ')
+    const finalExact = exactAddress.trim() || combinedExact
+
     const newAddr: SavedAddress = {
       id: editId || `addr_${Date.now()}`,
       label: label.trim(),
-      approx_area: approxArea.trim(),
-      exact_address: exactAddress.trim(),
+      approx_area: approxArea.trim() || city.trim(),
+      exact_address: finalExact,
       directions: dirFiltered,
       created_at: editId ? (existing.find((a: any) => a.id === editId) as any)?.created_at || new Date().toISOString() : new Date().toISOString(),
-    }
+      ...(streetAddress ? { street_address: streetAddress.trim() } : {}),
+      ...(postalCode ? { postal_code: postalCode.trim() } : {}),
+      ...(city ? { city: city.trim() } : {}),
+      ...(country ? { country: country.trim() } : {}),
+    } as any
 
     let updated: SavedAddress[]
     if (editId) {
@@ -232,8 +248,22 @@ export default function AddressesPage() {
                 <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder={t('placeholders.address_area')} maxLength={60} style={inp} />
               </div>
               <div>
-                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>ADRESSE EXACTE</label>
-                <input value={exactAddress} onChange={e => setExactAddress(e.target.value)} placeholder="14 rue de la Roquette, code 4521" maxLength={100} style={inp} />
+                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>{t('session.street_address')}</label>
+                <input value={streetAddress} onChange={e => setStreetAddress(e.target.value)} placeholder="42 rue de la Roquette" maxLength={100} style={inp} />
+              </div>
+              <div style={{ display:'flex',gap:8 }}>
+                <div style={{ flex:1 }}>
+                  <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>{t('session.postal_code')}</label>
+                  <input value={postalCode} onChange={e => setPostalCode(e.target.value)} placeholder="75011" maxLength={10} style={inp} />
+                </div>
+                <div style={{ flex:2 }}>
+                  <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>{t('session.city')}</label>
+                  <input value={city} onChange={e => setCity(e.target.value)} placeholder="Paris" maxLength={60} style={inp} />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>{t('session.country')}</label>
+                <input value={country} onChange={e => setCountry(e.target.value)} placeholder="France" maxLength={60} style={inp} />
               </div>
 
               {/* Directions */}
@@ -266,9 +296,9 @@ export default function AddressesPage() {
                 </button>
               </div>
 
-              <button onClick={save} disabled={saving || !label.trim() || !exactAddress.trim()} className='btn-shimmer' style={{
+              <button onClick={save} disabled={saving || !label.trim() || (!streetAddress.trim() && !exactAddress.trim())} className='btn-shimmer' style={{
                 width:'100%',padding:14,borderRadius:14,fontWeight:700,fontSize:15,color:'#fff',background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',
-                cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || !exactAddress.trim() ? 0.6 : 1,
+                cursor: saving ? 'not-allowed' : 'pointer',opacity: saving || !label.trim() || (!streetAddress.trim() && !exactAddress.trim()) ? 0.6 : 1,
               }}>
                 {saving ? t('common.saving') : editId ? t('common.save') : t('common.save')}
               </button>

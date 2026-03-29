@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { colors, fonts } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -12,6 +12,7 @@ import SessionLineup from '../components/session/SessionLineup'
 import SessionVotes from '../components/session/SessionVotes'
 import SessionStatusCard from '../components/session/SessionStatusCard'
 import SessionEndedSection from '../components/session/SessionEndedSection'
+import SessionShareTab from '../components/session/SessionShareTab'
 import ShareToContact from '../components/ShareToContact'
 import { useSessionData } from '../hooks/useSessionData'
 import { useTranslation } from 'react-i18next'
@@ -28,6 +29,28 @@ export default function SessionPage() {
   const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'session')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [bookmarked, setBookmarked] = useState(false)
+
+  // Load bookmark state
+  useEffect(() => {
+    if (!d.currentUser) return
+    supabase.from('user_profiles').select('profile_json').eq('id', d.currentUser.id).maybeSingle().then(({ data }) => {
+      const bm = (data?.profile_json as any)?.bookmarked_sessions
+      if (Array.isArray(bm) && d.id && bm.includes(d.id)) setBookmarked(true)
+    })
+  }, [d.currentUser, d.id])
+
+  const toggleBookmark = useCallback(async () => {
+    if (!d.currentUser) return
+    const { data } = await supabase.from('user_profiles').select('profile_json').eq('id', d.currentUser.id).maybeSingle()
+    const pj = (data?.profile_json || {}) as Record<string, unknown>
+    const bm = Array.isArray(pj.bookmarked_sessions) ? [...pj.bookmarked_sessions] : []
+    const isNow = bm.includes(d.id)
+    const next = isNow ? bm.filter((id: string) => id !== d.id) : [...bm, d.id]
+    await supabase.from('user_profiles').update({ profile_json: { ...pj, bookmarked_sessions: next } }).eq('id', d.currentUser.id)
+    setBookmarked(!isNow)
+    showToast(isNow ? t('session.unbookmarked') : t('session.bookmarked'), isNow ? 'info' : 'success')
+  }, [d.currentUser, d.id, t])
 
   async function handleDecide(appId: string, status: 'accepted' | 'rejected') {
     setActionLoading(appId)
@@ -61,12 +84,6 @@ export default function SessionPage() {
   if (!d.session) return <div style={{ ...st, padding: 24, color: S.red }}>{d.t('session.not_found')}</div>
 
   const statusColor = d.session.status === 'open' ? S.sage : d.session.status === 'ended' ? S.red : S.tx2
-
-  // Count pending votes for member badge
-  const pendingVoteCount = d.pendingApps.filter(app => {
-    const { myVote } = d.getVoteStats(app.applicant_id)
-    return !myVote
-  }).length
 
   function handleTabChange(tab: string) {
     // Handle special tab actions
@@ -105,6 +122,8 @@ export default function SessionPage() {
             isHost={d.isHost}
             hostProfile={d.hostProfile}
             onEndSession={d.endSession}
+            isBookmarked={bookmarked}
+            onToggleBookmark={toggleBookmark}
           />
           {d.session.status !== 'ended' && (
             <SessionQuickActions
@@ -167,15 +186,15 @@ export default function SessionPage() {
         </>
       )}
 
-      {/* ═══ TAB: candidates (HOST) ═══ */}
-      {activeTab === 'candidates' && effectiveRole === 'host' && (
+      {/* ═══ TAB: participants (HOST + MEMBER) ═══ */}
+      {activeTab === 'participants' && (effectiveRole === 'host' || effectiveRole === 'member') && (
         <div style={{ padding: '16px' }}>
           <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
-            {t('session_nav.candidates')}
-            {d.pendingApps.length > 0 && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '2px 8px', borderRadius: 99 }}>{d.pendingApps.length}</span>}
+            {t('session_nav.participants')}
           </h2>
-          {/* Check-in requests */}
-          {d.checkInRequests.length > 0 && (
+
+          {/* Check-in requests (host only) */}
+          {effectiveRole === 'host' && d.checkInRequests.length > 0 && (
             <>
               <h3 style={{ fontSize: 14, fontWeight: 700, color: S.sage, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {t('session.check_in_requests')}
@@ -201,60 +220,132 @@ export default function SessionPage() {
               <div style={{ height: 12 }} />
             </>
           )}
-          {d.pendingApps.length === 0 && d.checkInRequests.length === 0 && (
+
+          {/* Members section */}
+          {d.members.length > 0 && (
+            <>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: S.tx2, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                {t('session.members_section')} ({d.members.length})
+              </h3>
+              {d.members.map(m => {
+                const avatar = d.memberAvatars[m.applicant_id]
+                const name = d.memberNames[m.applicant_id] || t('common.anonymous')
+                const isCheckedIn = m.status === 'checked_in'
+                return (
+                  <div key={m.applicant_id} onClick={() => navigate('/profile/' + m.applicant_id)} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 14, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+                    {avatar ? (
+                      <img src={avatar} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + (isCheckedIn ? S.sage : S.pbd) }} />
+                    ) : (
+                      <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.bg2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.tx2 }}>
+                        {name[0].toUpperCase()}
+                      </div>
+                    )}
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{name}</p>
+                      {isCheckedIn && <p style={{ fontSize: 11, color: S.sage, margin: '2px 0 0' }}>✓ {t('session.checked_in')}</p>}
+                    </div>
+                  </div>
+                )
+              })}
+              <div style={{ height: 12 }} />
+            </>
+          )}
+
+          {/* Pending candidates (host only) */}
+          {effectiveRole === 'host' && d.pendingApps.length > 0 && (
+            <>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: S.orange, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                {t('session.pending_candidates')} ({d.pendingApps.length})
+              </h3>
+              {d.pendingApps.map(app => {
+                const vs = d.getVoteStats(app.applicant_id)
+                return (
+                  <div key={app.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                      {app.avatar_url ? (
+                        <img src={app.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
+                      ) : (
+                        <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.p }}>
+                          {(app.display_name || '?')[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }} onClick={() => navigate('/session/' + d.id + '/candidate/' + app.applicant_id)}>
+                          {app.display_name || t('common.anonymous')}
+                        </p>
+                        <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>
+                          {vs.yesCount > 0 || vs.noCount > 0 ? `${vs.yesCount} ✓ · ${vs.noCount} ✗` : t('host.no_votes_yet')}
+                        </p>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => handleDecide(app.id, 'rejected')} disabled={actionLoading === app.id} style={{ flex: 1, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: S.red, border: '1px solid ' + S.redbd, background: S.redbg, cursor: 'pointer' }}>
+                        {t('host.refuse')}
+                      </button>
+                      <button onClick={() => handleDecide(app.id, 'accepted')} disabled={actionLoading === app.id} style={{ flex: 2, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: '#fff', background: S.p, border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px ' + S.pbd }}>
+                        {actionLoading === app.id ? '...' : t('host_actions.accept')}
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+              <div style={{ height: 12 }} />
+            </>
+          )}
+
+          {/* Vote section (member only, when pending apps exist) */}
+          {effectiveRole === 'member' && d.pendingApps.length > 0 && (
+            <>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: S.lav, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                {t('session_nav.vote')}
+              </h3>
+              <SessionVotes
+                memberCount={d.members.length}
+                pendingApps={d.pendingApps}
+                currentUserId={d.currentUser?.id}
+                getVoteStats={d.getVoteStats}
+                onVote={d.handleVote}
+                voteLoadingId={d.voteLoadingId}
+              />
+            </>
+          )}
+
+          {/* Rejected (host only, collapsed) */}
+          {effectiveRole === 'host' && d.rejectedApps && d.rejectedApps.length > 0 && (
+            <details style={{ marginTop: 8 }}>
+              <summary style={{ fontSize: 12, fontWeight: 700, color: S.tx4, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                {t('session.rejected_section')} ({d.rejectedApps.length})
+              </summary>
+              <div style={{ marginTop: 8 }}>
+                {d.rejectedApps.map(app => (
+                  <div key={app.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10, opacity: 0.6 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: S.tx3 }}>
+                      {(app.display_name || '?')[0].toUpperCase()}
+                    </div>
+                    <p style={{ fontSize: 13, color: S.tx3, margin: 0 }}>{app.display_name || t('common.anonymous')}</p>
+                  </div>
+                ))}
+              </div>
+            </details>
+          )}
+
+          {/* Empty state */}
+          {d.members.length === 0 && d.pendingApps.length === 0 && (!d.checkInRequests || d.checkInRequests.length === 0) && (
             <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
               <p style={{ fontSize: 14 }}>{t('host.no_pending')}</p>
             </div>
           )}
-          {d.pendingApps.map(app => {
-            const vs = d.getVoteStats(app.applicant_id)
-            return (
-              <div key={app.id} style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 16, marginBottom: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                  {app.avatar_url ? (
-                    <img src={app.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
-                  ) : (
-                    <div style={{ width: 36, height: 36, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: S.p }}>
-                      {(app.display_name || '?')[0].toUpperCase()}
-                    </div>
-                  )}
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }} onClick={() => navigate('/session/' + d.id + '/candidate/' + app.applicant_id)}>
-                      {app.display_name || t('common.anonymous')}
-                    </p>
-                    <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>
-                      {vs.yesCount > 0 || vs.noCount > 0 ? `${vs.yesCount} ✓ · ${vs.noCount} ✗` : t('host.no_votes_yet')}
-                    </p>
-                  </div>
-                </div>
-                {/* Accept / Reject buttons */}
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button onClick={() => handleDecide(app.id, 'rejected')} disabled={actionLoading === app.id} style={{ flex: 1, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: S.red, border: '1px solid ' + S.redbd, background: S.redbg, cursor: 'pointer' }}>
-                    {t('host.refuse')}
-                  </button>
-                  <button onClick={() => handleDecide(app.id, 'accepted')} disabled={actionLoading === app.id} style={{ flex: 2, padding: 10, borderRadius: 12, fontWeight: 700, fontSize: 13, color: '#fff', background: S.p, border: 'none', cursor: 'pointer', boxShadow: '0 4px 16px ' + S.pbd }}>
-                    {actionLoading === app.id ? '...' : t('host_actions.accept')}
-                  </button>
-                </div>
-              </div>
-            )
-          })}
         </div>
       )}
 
-      {/* ═══ TAB: vote (MEMBER) ═══ */}
-      {activeTab === 'vote' && effectiveRole === 'member' && (
+      {/* ═══ TAB: share (HOST) ═══ */}
+      {activeTab === 'share' && effectiveRole === 'host' && d.session && (
         <div style={{ padding: '16px' }}>
           <h2 style={{ fontSize: 18, fontWeight: 800, fontFamily: fonts.body, color: S.tx, margin: '0 0 16px' }}>
-            {t('session_nav.vote')}
+            {t('session_nav.share')}
           </h2>
-          <SessionVotes
-            memberCount={d.members.length}
-            pendingApps={d.pendingApps}
-            currentUserId={d.currentUser?.id}
-            getVoteStats={d.getVoteStats}
-            onVote={d.handleVote}
-            voteLoadingId={d.voteLoadingId}
+          <SessionShareTab
+            session={d.session}
           />
         </div>
       )}
@@ -324,7 +415,7 @@ export default function SessionPage() {
         role={effectiveRole}
         activeTab={activeTab}
         onTabChange={handleTabChange}
-        badges={{ candidates: d.pendingCount, votes: pendingVoteCount }}
+        badges={{ candidates: d.pendingCount }}
         sessionStatus={d.session.status}
       />
 

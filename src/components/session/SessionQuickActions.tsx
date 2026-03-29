@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { showToast } from '../Toast'
-import { Share2, Navigation, UserCheck, Star, Bookmark } from 'lucide-react'
+import { Share2, Navigation, UserCheck, Star } from 'lucide-react'
 import { colors, radius } from '../../brand'
-import { supabase } from '../../lib/supabase'
-import { useState, useEffect } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 
 const S = colors
@@ -27,30 +25,6 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { isGhost } = useAuth()
-  const [bookmarked, setBookmarked] = useState(false)
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
-      supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle().then(({ data }) => {
-        const bm = (data?.profile_json as any)?.bookmarked_sessions
-        if (Array.isArray(bm) && bm.includes(sessionId)) setBookmarked(true)
-      })
-    })
-  }, [sessionId])
-
-  async function toggleBookmark() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    const { data } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
-    const pj = (data?.profile_json || {}) as Record<string, unknown>
-    const bm = Array.isArray(pj.bookmarked_sessions) ? [...pj.bookmarked_sessions] : []
-    const isNow = bm.includes(sessionId)
-    const next = isNow ? bm.filter((id: string) => id !== sessionId) : [...bm, sessionId]
-    await supabase.from('user_profiles').update({ profile_json: { ...pj, bookmarked_sessions: next } }).eq('id', user.id)
-    setBookmarked(!isNow)
-    showToast(isNow ? t('session.unbookmarked') : t('session.bookmarked'), isNow ? 'info' : 'success')
-  }
 
   return (
     <div style={{ padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
@@ -82,10 +56,6 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
           <span style={{ ...qLabel, color: S.p }}>{t('session.apply_cta')}</span>
         </button>
       )}
-      <button onClick={toggleBookmark} style={{ ...qBtn, borderColor: bookmarked ? S.pbd : S.rule2, background: bookmarked ? S.p3 : 'rgba(22,20,31,0.85)' }}>
-        <Bookmark size={16} strokeWidth={1.5} fill={bookmarked ? S.p : 'none'} style={{ color: bookmarked ? S.p : S.tx3 }} />
-        <span style={{ ...qLabel, color: bookmarked ? S.p : S.tx2 }}>{bookmarked ? t('session.bookmarked') : t('session.bookmark')}</span>
-      </button>
     </div>
   )
 }

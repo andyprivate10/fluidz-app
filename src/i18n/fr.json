@@ -298,7 +298,16 @@
     "ends_soon": "Se termine dans {{min}} min",
     "direct_invite": "Invitation directe",
     "direct_invite_desc": "Ce lien ajoute directement la personne sans vote.",
-    "direct_link_copied": "Lien d'invitation directe copié"
+    "direct_link_copied": "Lien d'invitation directe copié",
+    "street_address": "Adresse",
+    "street_address_placeholder": "42 rue de la Roquette",
+    "postal_code": "Code postal",
+    "city": "Ville",
+    "country": "Pays",
+    "members_section": "Membres",
+    "pending_candidates": "Candidats en attente",
+    "rejected_section": "Rejetés",
+    "checked_in": "Arrivé"
   },
   "chat": {
     "title": "Messages",
@@ -1070,7 +1079,8 @@
     "upload_error": "Erreur upload",
     "error_prefix": "Erreur",
     "vote_error": "Erreur vote",
-    "checkin_error": "Erreur check-in"
+    "checkin_error": "Erreur check-in",
+    "name_address_required": "Nom et adresse requis"
   },
   "placeholders": {
     "address_label": "Ex: Chez moi, Le studio...",
@@ -1493,7 +1503,9 @@
     "title": "Mes templates",
     "reuse": "Reutiliser",
     "empty": "Aucun template",
-    "empty_desc": "Tes sessions passees apparaitront ici comme templates reutilisables"
+    "empty_desc": "Tes sessions passees apparaitront ici comme templates reutilisables",
+    "cuddle": "Câlins",
+    "cuddle_desc": "Câlins et tendresse, ambiance safe et douce"
   },
   "tooltip": {
     "session_apply": "Ton profil sera partagé avec le host. Tu choisis ce que tu montres.",
@@ -1509,6 +1521,8 @@
     "back": "Retour",
     "session": "Session",
     "candidates": "Candidats",
+    "participants": "Participants",
+    "share": "Partager",
     "chat": "Chat",
     "vote": "Vote",
     "application": "Candidature",

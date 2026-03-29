@@ -41,6 +41,7 @@ export function useSessionData() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [pendingApps, setPendingApps] = useState<PendingApplication[]>([])
+  const [rejectedApps, setRejectedApps] = useState<PendingApplication[]>([])
   const [votes, setVotes] = useState<VoteRow[]>([])
   const [voteLoadingId, setVoteLoadingId] = useState<string | null>(null)
   const [reviewSummary, setReviewSummary] = useState<{ avg: number; count: number; topVibes: string[] } | null>(null)
@@ -158,6 +159,22 @@ export function useSessionData() {
         }))
       }
       setPendingApps(pendingEnriched)
+
+      // Fetch rejected apps (for host)
+      if (user && sess?.host_id === user.id) {
+        const { data: rejected } = await supabase
+          .from('applications')
+          .select('id, applicant_id')
+          .eq('session_id', id)
+          .eq('status', 'rejected')
+        if (rejected && rejected.length > 0) {
+          const rejIds = rejected.map(r => r.applicant_id)
+          const { data: rejProfiles } = await supabase.from('user_profiles').select('id, display_name').in('id', rejIds)
+          const rejMap: Record<string, string> = {}
+          ;(rejProfiles ?? []).forEach((r: any) => { if (r.display_name) rejMap[r.id] = r.display_name })
+          setRejectedApps(rejected.map(r => ({ id: r.id, applicant_id: r.applicant_id, display_name: rejMap[r.applicant_id] ?? null, avatar_url: null })))
+        } else { setRejectedApps([]) }
+      }
 
       // Fetch check-in requests (for host)
       if (user && sess?.host_id === user.id) {
@@ -394,7 +411,7 @@ export function useSessionData() {
     copied, copyMessage, inviteLinkCopied, copyInviteLink, addressCopied, copyAddress,
     pendingCount, showPostulerSuccess, showShareSheet, setShowShareSheet,
     isRefreshing, isMobile,
-    pendingApps, voteLoadingId, reviewSummary,
+    pendingApps, rejectedApps, voteLoadingId, reviewSummary,
     elapsed, remaining,
     isHost, eventRole, statusLabel,
     handleTouchStart, handleTouchEnd,

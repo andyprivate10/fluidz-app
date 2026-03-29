@@ -298,7 +298,16 @@
     "ends_soon": "Ends in {{min}} min",
     "direct_invite": "Direct invite",
     "direct_invite_desc": "This link adds the person directly without vote.",
-    "direct_link_copied": "Direct invite link copied"
+    "direct_link_copied": "Direct invite link copied",
+    "street_address": "Street address",
+    "street_address_placeholder": "42 rue de la Roquette",
+    "postal_code": "Postal code",
+    "city": "City",
+    "country": "Country",
+    "members_section": "Members",
+    "pending_candidates": "Pending candidates",
+    "rejected_section": "Rejected",
+    "checked_in": "Checked in"
   },
   "chat": {
     "title": "Messages",
@@ -1070,7 +1079,8 @@
     "upload_error": "Upload error",
     "error_prefix": "Error",
     "vote_error": "Vote error",
-    "checkin_error": "Check-in error"
+    "checkin_error": "Check-in error",
+    "name_address_required": "Name and address are required"
   },
   "placeholders": {
     "address_label": "E.g.: My place, The studio...",
@@ -1493,7 +1503,9 @@
     "title": "My templates",
     "reuse": "Reuse",
     "empty": "No templates",
-    "empty_desc": "Your past sessions will appear here as reusable templates"
+    "empty_desc": "Your past sessions will appear here as reusable templates",
+    "cuddle": "Cuddle",
+    "cuddle_desc": "Cuddles and tenderness, safe and soft atmosphere"
   },
   "tooltip": {
     "session_apply": "Your profile will be shared with the host. You choose what to show.",
@@ -1509,6 +1521,8 @@
     "back": "Back",
     "session": "Session",
     "candidates": "Candidates",
+    "participants": "Participants",
+    "share": "Share",
     "chat": "Chat",
     "vote": "Vote",
     "application": "Application",
