@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { ArrowLeft, Plus, X, Play, Loader } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 import { useTranslation } from 'react-i18next'
