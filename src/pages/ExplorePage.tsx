@@ -173,13 +173,23 @@ export default function ExplorePage() {
     setLoading(true)
     // Approximate bounding box (~10km)
     const delta = 0.1
-    const { data } = await supabase.from('user_profiles')
+    let { data } = await supabase.from('user_profiles')
       .select('id, display_name, profile_json, approx_lat, approx_lng, location_updated_at')
       .eq('location_visible', true)
       .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
       .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
       .neq('id', userId)
       .limit(20)
+
+    // Fallback: if geo query returns few results, load any visible profiles
+    if (!data || data.length < 3) {
+      const { data: fallback } = await supabase.from('user_profiles')
+        .select('id, display_name, profile_json, approx_lat, approx_lng, location_updated_at')
+        .eq('location_visible', true)
+        .neq('id', userId)
+        .limit(20)
+      if (fallback && fallback.length > (data?.length || 0)) data = fallback
+    }
 
     const mapped: NearbyProfile[] = (data || []).map((p: any) => {
       const pj = p.profile_json || {}
