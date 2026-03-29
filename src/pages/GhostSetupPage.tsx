@@ -83,7 +83,7 @@ export default function GhostSetupPage() {
     // Create anonymous auth session so AuthContext.user is set
     const { data: anonData, error: anonErr } = await supabase.auth.signInAnonymously()
     if (anonErr) {
-      console.error('Anonymous auth failed:', anonErr.message)
+      console.warn('Anonymous auth failed:', anonErr.message)
       // Show fallback — ghost row exists but no auth session
       setAnonAuthFailed(true)
       setStep('done')

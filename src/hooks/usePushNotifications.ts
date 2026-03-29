@@ -70,7 +70,7 @@ export function usePushNotifications() {
       setStatus('subscribed')
       return true
     } catch (err) {
-      console.error('Push subscription failed:', err)
+      console.warn('Push subscription failed:', err)
       return false
     }
   }, [])
@@ -90,7 +90,7 @@ export function usePushNotifications() {
 
       setStatus('granted')
     } catch (err) {
-      console.error('Push unsubscribe failed:', err)
+      console.warn('Push unsubscribe failed:', err)
     }
   }, [])
 

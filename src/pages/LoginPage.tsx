@@ -79,7 +79,7 @@ export default function LoginPage() {
         const { data, error: err } = await withTimeout(supabase.auth.signUp({ email: trimmed, password }))
         if (err) {
           setLoading(false)
-          console.error('Signup error:', err.message)
+          console.warn('Signup error:', err.message)
           if (err.message.includes('already registered') || err.message.includes('already exists')) {
             setError(t('auth.error_account_exists'))
           } else if (err.message.includes('rate limit')) {
@@ -104,10 +104,10 @@ export default function LoginPage() {
       } catch (e: any) {
         setLoading(false)
         if (e?.message === 'AUTH_TIMEOUT') {
-          console.error('Signup timeout')
+          console.warn('Signup timeout')
           setError(t('auth.error_timeout'))
         } else {
-          console.error('Signup unexpected error:', e)
+          console.warn('Signup unexpected error:', e)
           setError(e?.message || 'Unknown error')
         }
         return
@@ -118,7 +118,7 @@ export default function LoginPage() {
         const { data, error: err } = await withTimeout(supabase.auth.signInWithPassword({ email: trimmed, password }))
         if (err) {
           setLoading(false)
-          console.error('Login error:', err.message)
+          console.warn('Login error:', err.message)
           if (err.message.includes('Invalid login') || err.message.includes('invalid')) {
             setError(t('auth.error_wrong_password'))
           } else if (err.message.includes('Email not confirmed')) {
@@ -140,10 +140,10 @@ export default function LoginPage() {
       } catch (e: any) {
         setLoading(false)
         if (e?.message === 'AUTH_TIMEOUT') {
-          console.error('Login timeout')
+          console.warn('Login timeout')
           setError(t('auth.error_timeout'))
         } else {
-          console.error('Login unexpected error:', e)
+          console.warn('Login unexpected error:', e)
           setError(e?.message || 'Unknown error')
         }
       }
@@ -163,7 +163,7 @@ export default function LoginPage() {
       }))
       if (err) {
         setLoading(false)
-        console.error('Magic link error:', err.message)
+        console.warn('Magic link error:', err.message)
         if (err.message.includes('rate limit')) setError(t('auth.error_rate_limit'))
         else setError(err.message)
         return
@@ -177,10 +177,10 @@ export default function LoginPage() {
     } catch (e: any) {
       setLoading(false)
       if (e?.message === 'AUTH_TIMEOUT') {
-        console.error('Magic link timeout')
+        console.warn('Magic link timeout')
         setError(t('auth.error_timeout'))
       } else {
-        console.error('Magic link unexpected error:', e)
+        console.warn('Magic link unexpected error:', e)
         setError(e?.message || 'Unknown error')
       }
     }
@@ -209,7 +209,7 @@ export default function LoginPage() {
       if (e?.message === 'AUTH_TIMEOUT') {
         showToast(t('auth.error_timeout'), 'error')
       } else {
-        console.error('Dev login error:', e)
+        console.warn('Dev login error:', e)
         showToast(e?.message || 'Unknown error', 'error')
       }
     }
