@@ -692,6 +692,8 @@
     "prefer_real_account": "Tu préfères un vrai compte ?",
     "real_account_benefit": "Garde ton profil pour toujours et débloque toutes les fonctionnalités",
     "create_account_cta": "Créer un compte",
+    "create_account_title": "Sauvegarde ton compte",
+    "create_account_desc": "Crée un vrai compte pour garder ton profil et tes messages",
     "pin_help": "Pour retrouver ton profil si tu fermes l'app",
     "have_code_recover": "J'ai déjà un code → Récupérer mon profil",
     "code_length": "Le code fait 6 caractères",

@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import PageFadeIn from '../components/PageFadeIn'
 import { colors, fonts, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
 import { useHomeData } from '../hooks/useHomeData'
+import { useAuth } from '../contexts/AuthContext'
+import GhostConvertModal from '../components/GhostConvertModal'
 import SessionInfoCard from '../components/SessionInfoCard'
 import CyclingAvatar from '../components/CyclingAvatar'
 import { SkeletonHomePage } from '../components/Skeleton'
@@ -37,6 +40,9 @@ export default function HomePage() {
     dismissTip,
     timeAgo,
   } = useHomeData()
+
+  const { isGhost } = useAuth()
+  const [showConvert, setShowConvert] = useState(false)
 
   // ─── Shared styles ────────────────────────────────────
   const card = glassCard
@@ -180,6 +186,20 @@ export default function HomePage() {
           </div>
         )}
 
+        {/* Ghost → create real account CTA */}
+        {userId && isGhost && (
+          <div style={{ ...card, border: '1px solid ' + S.lavbd, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Ghost size={20} strokeWidth={1.5} style={{ color: S.lav, flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{t('ghost.create_account_title')}</p>
+              <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '2px 0 0' }}>{t('ghost.create_account_desc')}</p>
+            </div>
+            <button onClick={() => setShowConvert(true)} style={{ padding: '6px 12px', borderRadius: 8, background: S.lavbg, border: '1px solid ' + S.lavbd, color: S.lav, fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+              {t('common.go')}
+            </button>
+          </div>
+        )}
+
         {/* Feature discovery tips */}
         {userId && showTips && (() => {
           const tips = [
@@ -187,6 +207,7 @@ export default function HomePage() {
             { id: 'naughtybook', icon: <BookOpen size={18} strokeWidth={1.5} style={{ color: S.sage }} />, title: t('tips.naughtybook_title'), desc: t('tips.naughtybook_desc'), href: '/contacts' },
             { id: 'ghost', icon: <Ghost size={18} strokeWidth={1.5} style={{ color: S.lav }} />, title: t('tips.ghost_title'), desc: t('tips.ghost_desc'), href: '/ghost/setup' },
           ].filter(tip => !dismissedTips.includes(tip.id))
+          .filter(tip => !(tip.id === 'ghost' && isGhost))
           if (tips.length === 0) return null
           return tips.map(tip => (
             <div key={tip.id} style={{ ...card, display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
@@ -354,6 +375,7 @@ export default function HomePage() {
         )}
       </div>
     </div>
+    <GhostConvertModal open={showConvert} onClose={() => setShowConvert(false)} />
     </PageFadeIn>
   )
 }

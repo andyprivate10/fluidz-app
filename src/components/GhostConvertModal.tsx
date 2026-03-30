@@ -29,6 +29,7 @@ export default function GhostConvertModal({ open, onClose, onConverted }: Props)
       if (error) {
         showToast(error.message, 'error')
       } else {
+        await supabase.auth.refreshSession()
         showToast(t('ghost_convert.success'), 'success')
         onConverted?.()
         onClose()

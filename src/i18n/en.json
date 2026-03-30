@@ -692,6 +692,8 @@
     "prefer_real_account": "Prefer a real account?",
     "real_account_benefit": "Keep your profile forever and unlock all features",
     "create_account_cta": "Create an account",
+    "create_account_title": "Save your account",
+    "create_account_desc": "Create a real account to keep your profile and messages",
     "pin_help": "To recover your profile if you close the app",
     "have_code_recover": "I already have a code → Recover my profile",
     "code_length": "Code must be 6 characters",

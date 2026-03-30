@@ -217,7 +217,11 @@ export default function SideDrawer({ open, onClose }: Props) {
         </div>
       </div>
 
-      <GhostConvertModal open={showConvert} onClose={() => setShowConvert(false)} />
+      <GhostConvertModal open={showConvert} onClose={() => setShowConvert(false)} onConverted={() => {
+        supabase.auth.getUser().then(({ data: { user: u } }) => {
+          if (u) setUser({ id: u.id, email: u.email, created_at: u.created_at })
+        })
+      }} />
     </>
   )
 }
