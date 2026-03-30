@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart} from 'lucide-react'
+import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart, Ban} from 'lucide-react'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { timeAgo } from '../lib/timing'
@@ -54,6 +54,7 @@ export default function ContactDetailPage() {
   const [myIntents, setMyIntents] = useState<string[]>([])
   const [matchedIntents, setMatchedIntents] = useState<string[]>([])
   const [isFavorite, setIsFavorite] = useState(false)
+  const [isBlocked, setIsBlocked] = useState(false)
   const [myUserId, setMyUserId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -110,6 +111,10 @@ export default function ContactDetailPage() {
     const { data: favRow } = await supabase.from('favorites').select('id').eq('user_id', user.id).eq('target_user_id', contactUserId).maybeSingle()
     setIsFavorite(!!favRow)
 
+    // Load block status
+    const { data: blockRow } = await supabase.from('user_blocks').select('id').eq('blocker_id', user.id).eq('blocked_id', contactUserId).maybeSingle()
+    setIsBlocked(!!blockRow)
+
     setLoading(false)
   }
 
@@ -154,6 +159,20 @@ export default function ContactDetailPage() {
     if (!contact || !await confirm({ title: t('host.confirm_remove_contact'), danger: true })) return
     await supabase.from('contacts').delete().eq('id', contact.id)
     navigate('/contacts')
+  }
+
+  async function toggleBlock() {
+    if (!myUserId || !contactUserId) return
+    if (isBlocked) {
+      await supabase.from('user_blocks').delete().eq('blocker_id', myUserId).eq('blocked_id', contactUserId)
+      setIsBlocked(false)
+      showToast(t('profile.unblocked_toast'), 'info')
+    } else {
+      if (!await confirm({ title: t('profile.block_confirm'), danger: true })) return
+      await supabase.from('user_blocks').insert({ blocker_id: myUserId, blocked_id: contactUserId })
+      setIsBlocked(true)
+      showToast(t('profile.blocked_toast'), 'info')
+    }
   }
 
   if (loading) return (
@@ -410,6 +429,19 @@ export default function ContactDetailPage() {
         {contact && (
           <button onClick={removeContact} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12, borderRadius: 12, background: 'transparent', border: '1px solid ' + S.redbd, color: S.red, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: 0.7 }}>
             <Trash2 size={14} /> {t('contacts.remove_contact')}
+          </button>
+        )}
+
+        {/* Block / Unblock */}
+        {myUserId && myUserId !== contactUserId && (
+          <button onClick={toggleBlock} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            padding: 12, borderRadius: 12, background: isBlocked ? S.redbg : 'transparent',
+            border: '1px solid ' + (isBlocked ? S.redbd : S.rule),
+            color: isBlocked ? S.red : S.tx4,
+            fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          }}>
+            <Ban size={14} /> {isBlocked ? t('profile.unblock') : t('profile.block_user')}
           </button>
         )}
       </div>

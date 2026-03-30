@@ -391,6 +391,9 @@ export function useSessionData() {
     if (!await confirm({ title: t('options.end_session'), description: t('options.end_confirm'), danger: true, confirmLabel: t('options.end_session') })) return
     const { error } = await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
     if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error'); return }
+    // PR5: Expire ephemeral media after 24h
+    const expiryTs = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    await supabase.from('ephemeral_media').update({ expires_at: expiryTs }).eq('context_id', id!).gt('expires_at', expiryTs)
     // Create review queue for all participants
     const { data: endedApps } = await supabase.from('applications').select('applicant_id').eq('session_id', id!).in('status', ['accepted', 'checked_in'])
     if (endedApps && endedApps.length > 0 && session) {

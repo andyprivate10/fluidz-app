@@ -46,7 +46,7 @@ export default function ShareToContact({ open, onClose, shareType, shareId, shar
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
 
-    const { data: raw } = await supabase.from('contacts').select('id, contact_user_id, relation_level').eq('owner_id', user.id).order('relation_level')
+    const { data: raw } = await supabase.from('contacts').select('id, contact_user_id, relation_level').eq('user_id', user.id).order('relation_level')
     if (!raw || raw.length === 0) { setContacts([]); setLoading(false); return }
 
     const ids = raw.map(c => c.contact_user_id)
