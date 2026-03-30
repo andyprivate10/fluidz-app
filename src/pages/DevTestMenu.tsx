@@ -161,7 +161,7 @@ export default function DevTestMenu() {
     : null;
 
   return (
-    <div style={{ padding: 24, color: "white", fontFamily: "monospace", maxWidth: 400, margin: "0 auto" }}>
+    <div style={{ padding: 24, color: "white", fontFamily: "monospace", maxWidth: 400, margin: "0 auto", minHeight: '100dvh' }}>
       <h2 style={{ marginBottom: 4 }}>Dev Test Menu</h2>
       <p style={{ color: "#7e7694", marginBottom: 16 }}>Jour {dayNumber} / {TOTAL_DAYS}</p>
 

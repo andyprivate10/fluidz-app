@@ -298,8 +298,8 @@ export default function DirectDMPage() {
           {peerProfile?.role && <span style={{ fontSize: 11, color: S.p }}>{peerProfile.role}</span>}
         </div>
         <div style={{ position: 'relative' }}>
-          <button onClick={() => setShowActions(v => !v)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Plus size={16} strokeWidth={2} />
+          <button onClick={() => setShowActions(v => !v)} style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Plus size={18} strokeWidth={2} />
           </button>
           {showActions && (
             <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 6, background: S.bg1, border: '1px solid '+S.rule, borderRadius: 12, overflow: 'hidden', zIndex: 60, minWidth: 220, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>

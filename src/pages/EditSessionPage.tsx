@@ -161,7 +161,7 @@ export default function EditSessionPage() {
               {step.photo_url ? (
                 <div style={{ marginTop:6, position:'relative', display:'inline-block' }}>
                   <img src={step.photo_url} alt="" loading="lazy" style={{ width:80, height:60, objectFit:'cover', borderRadius:8, border:'1px solid '+S.rule }} />
-                  <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-4, right:-4, width:16, height:16, borderRadius:'50%', background:S.red, border:'none', color: S.tx, fontSize:10, cursor:'pointer' }}>×</button>
+                  <button type="button" onClick={() => { const next=[...directions]; next[i]={...next[i],photo_url:undefined}; setDirections(next) }} style={{ position:'absolute', top:-12, right:-12, width:44, height:44, borderRadius:'50%', background:'transparent', border:'none', color: S.tx, fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}><span style={{ width:16, height:16, borderRadius:'50%', background:S.red, display:'flex', alignItems:'center', justifyContent:'center' }}>×</span></button>
                 </div>
               ) : (
                 <label style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:6, padding:'4px 8px', borderRadius:6, border:'1px solid '+S.rule, background:S.bg2, color:S.tx4, fontSize:10, fontWeight:600, cursor:'pointer' }}>

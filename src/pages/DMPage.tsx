@@ -19,7 +19,7 @@ export default function DMPage() {
 
   return (
     <div style={{
-      background: S.bg, height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column',
+      background: S.bg, minHeight: '100dvh', height: '100vh', position: 'relative' as const, display: 'flex', flexDirection: 'column',
       padding: 0, maxWidth: 480, margin: '0 auto',
     }}>
       <OrbLayer />
@@ -44,8 +44,8 @@ export default function DMPage() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
-          <button onClick={() => d.setShowActions(v => !v)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Plus size={16} strokeWidth={2} />
+          <button onClick={() => d.setShowActions(v => !v)} style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid '+S.rule, background: 'transparent', color: S.tx2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Plus size={18} strokeWidth={2} />
           </button>
           {d.peerId && (
             <button onClick={() => d.navigate(d.isHost ? '/session/' + d.id + '/candidate/' + d.peerId : '/profile/' + d.peerId)} style={{ padding: '8px 12px', borderRadius: 12, fontSize: 12, fontWeight: 600, color: S.tx2, border: '1px solid '+S.rule, background: 'transparent', cursor: 'pointer' }}>

@@ -107,9 +107,9 @@ export default function AdminProfilesTab() {
         {urls.map(url => (
           <div key={url} style={{ position: 'relative', width: 56, height: 56 }}>
             <img src={url} alt="" loading="lazy" style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', border: '1px solid ' + S.rule }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
-            <button onClick={() => removeMedia(userId, category, url)} style={{ position: 'absolute', top: -4, right: -4, width: 16, height: 16, borderRadius: 99, background: S.red, border: '1px solid ' + S.bg, color: S.tx, fontSize: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}>
+            <button onClick={() => removeMedia(userId, category, url)} style={{ position: 'absolute', top: -12, right: -12, width: 44, height: 44, borderRadius: 99, background: 'transparent', border: 'none', color: S.tx, fontSize: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}><span style={{ width: 16, height: 16, borderRadius: 99, background: S.red, border: '1px solid ' + S.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {deleting === url ? '!' : '×'}
-            </button>
+            </span></button>
           </div>
         ))}
       </div>

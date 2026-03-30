@@ -155,7 +155,7 @@ export default function MePage() {
                   {avatarUrl === url && (
                     <div style={{ position:'absolute', top:-4, right:-4, width:18, height:18, borderRadius:99, background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color: S.tx, fontWeight:700, border:'2px solid ' + S.bg1 }}>1</div>
                   )}
-                  <button onClick={() => removePhotoProfil(url)} style={{ position:'absolute', top:-6, left:-6, width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, color: S.tx, fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}>×</button>
+                  <button onClick={() => removePhotoProfil(url)} style={{ position:'absolute', top:-16, left:-16, width:44, height:44, borderRadius:99, background:'transparent', border:'none', color: S.tx, fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}><span style={{ width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, display:'flex', alignItems:'center', justifyContent:'center' }}>×</span></button>
                   {avatarUrl !== url && (
                     <button onClick={() => setAsAvatar(url)} style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color: S.tx, fontSize:9, fontWeight:600, cursor:'pointer', border:'none' }}>avatar</button>
                   )}

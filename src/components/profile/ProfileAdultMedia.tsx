@@ -140,7 +140,7 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
                 ) : (
                   <img src={url} alt="" loading="lazy" style={{ width: 80, height: 80, borderRadius: 12, objectFit: 'cover', border: '1px solid ' + S.pbd }} />
                 )}
-                <button onClick={() => { removePhotoIntime(url); removeVideoIntime(url) }} style={{ position: 'absolute', top: -6, left: -6, width: 20, height: 20, borderRadius: 99, background: S.red, border: '2px solid ' + S.bg1, color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}>×</button>
+                <button onClick={() => { removePhotoIntime(url); removeVideoIntime(url) }} style={{ position: 'absolute', top: -16, left: -16, width: 44, height: 44, borderRadius: 99, background: 'transparent', border: 'none', color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, lineHeight: 1 }}><span style={{ width: 20, height: 20, borderRadius: 99, background: S.red, border: '2px solid ' + S.bg1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</span></button>
                 {isVideo && <div style={{ position: 'absolute', bottom: 4, right: 4, padding: '2px 6px', borderRadius: 6, background: 'rgba(0,0,0,0.7)', color: S.tx, fontSize: 9, fontWeight: 600 }}>video</div>}
               </div>
             )
