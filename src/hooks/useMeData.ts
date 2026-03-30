@@ -53,6 +53,7 @@ export function useMeData() {
   const [prep, setPrep] = useState('')
   const [dernierTest, setDernierTest] = useState('')
   const [seroStatus, setSeroStatus] = useState('')
+  const [healthTests, setHealthTests] = useState<Record<string, { status: string; date?: string }>>({})
   const [limits, setLimits] = useState('')
   const [dmPrivacy, setDmPrivacy] = useState<'open' | 'profile_required' | 'full_access'>('open')
   const [savedMsgs, setSavedMsgs] = useState<{ id: string; label: string; text: string }[]>([])
@@ -200,6 +201,7 @@ export function useMeData() {
       setPrep(h.prep_status || p.prep || '')
       setDernierTest(h.dernier_test || '')
       setSeroStatus(h.sero_status || '')
+      setHealthTests(h.tests || {})
       setLimits(p.limits || '')
       setLinkedProfiles(Array.isArray(p.linked_profiles) ? p.linked_profiles : [])
       setPlatformProfiles(Array.isArray(p.platform_profiles) ? p.platform_profiles : [])
@@ -249,7 +251,7 @@ export function useMeData() {
       photos: [...photosProfil, ...photosIntime],
       videos: videosIntime,
       body_part_photos: bodyPartPhotos,
-      health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined },
+      health: { prep_status: prep || undefined, dernier_test: dernierTest || undefined, sero_status: seroStatus || undefined, tests: Object.keys(healthTests).length > 0 ? healthTests : undefined },
       preferences: { roles: prefRoles, age_min: prefAgeMin || undefined, age_max: prefAgeMax || undefined, kinks: prefKinks, morphologies: prefMorphologies },
     }
     await supabase.from('user_profiles').upsert({
@@ -259,7 +261,7 @@ export function useMeData() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, linkedProfiles, platformProfiles, dernierTest, seroStatus, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos, prefRoles, prefAgeMin, prefAgeMax, prefKinks, prefMorphologies])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, linkedProfiles, platformProfiles, dernierTest, seroStatus, healthTests, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos, prefRoles, prefAgeMin, prefAgeMax, prefKinks, prefMorphologies])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -364,6 +366,7 @@ export function useMeData() {
     prep, setPrep,
     dernierTest, setDernierTest,
     seroStatus, setSeroStatus,
+    healthTests, setHealthTests,
     limits, setLimits,
     // dm privacy
     dmPrivacy, setDmPrivacy,

@@ -6,7 +6,7 @@ import OrbLayer from '../components/OrbLayer'
 import { Eye, Share2 } from 'lucide-react'
 import { showToast } from '../components/Toast'
 import ImageCropModal from '../components/ImageCropModal'
-import { VibeScoreCard } from '../components/VibeScoreBadge'
+import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import ProfileAdultMedia from '../components/profile/ProfileAdultMedia'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -15,8 +15,7 @@ import { TRIBES, TRIBE_CATEGORIES } from '../lib/tribeTypes'
 import { ETHNICITIES, ETHNICITY_REGIONS } from '../lib/ethnicityTypes'
 import { useMeData, PREP_OPTIONS, inputStyleResolved as inputStyle } from '../hooks/useMeData'
 import { monthsAgoCount } from '../lib/timing'
-import MeSettings from '../components/me/MeSettings'
-import MePreferences from '../components/me/MePreferences'
+// MeSettings and MePreferences relocated — removed from profile
 import MeProfileCompleteness from '../components/me/MeProfileCompleteness'
 import MeLoginForm from '../components/me/MeLoginForm'
 
@@ -67,7 +66,7 @@ export default function MePage() {
     languages, setLanguages, role, setRole, orientation, setOrientation,
     height, setHeight, weight, setWeight, morphology, setMorphology,
     tribes, setTribes, ethnicities, setEthnicities,
-    kinks, prep, setPrep, dernierTest, setDernierTest, seroStatus, setSeroStatus,
+    kinks, prep, setPrep, dernierTest, setDernierTest, seroStatus, setSeroStatus, healthTests, setHealthTests,
     limits, setLimits,
     dmPrivacy, setDmPrivacy, savedMsgs, setSavedMsgs, newMsgText, setNewMsgText,
     linkedProfiles, setLinkedProfiles, platformProfiles, setPlatformProfiles,
@@ -139,7 +138,7 @@ export default function MePage() {
       <div style={{ padding:'12px 20px' }}>
         {user && (
           <div style={{ marginBottom: 12 }}>
-            <VibeScoreCard userId={user.id} />
+            <VibeScoreBadge userId={user.id} size="md" />
           </div>
         )}
         <MeProfileCompleteness
@@ -253,12 +252,11 @@ export default function MePage() {
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_morphology')}</label>
-                <select value={morphology} onChange={e => setMorphology(e.target.value)} style={inputStyle}>
-                  <option value="">{t('profile.label_choose')}</option>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                   {morphologies.map(m => (
-                    <option key={m.label} value={m.label}>{m.label}</option>
+                    <Chip key={m.label} label={m.label} active={morphology===m.label} onClick={() => setMorphology(morphology===m.label?'':m.label)} />
                   ))}
-                </select>
+                </div>
               </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.lav, display:'block', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t('ethnicities.title')}</label>
@@ -302,28 +300,6 @@ export default function MePage() {
             </div>
           </Section>
 
-          {/* Preferences section — collapsed by default */}
-          <MePreferences
-            roles={roles}
-            kinkOptions={kinkOptions}
-            morphologies={morphologies}
-            prefRoles={prefRoles} setPrefRoles={setPrefRoles}
-            prefAgeMin={prefAgeMin} setPrefAgeMin={setPrefAgeMin}
-            prefAgeMax={prefAgeMax} setPrefAgeMax={setPrefAgeMax}
-            prefKinks={prefKinks} setPrefKinks={setPrefKinks}
-            prefMorphologies={prefMorphologies} setPrefMorphologies={setPrefMorphologies}
-          />
-
-          <MeSettings
-            user={user}
-            dmPrivacy={dmPrivacy} setDmPrivacy={setDmPrivacy}
-            savedMsgs={savedMsgs} setSavedMsgs={setSavedMsgs}
-            newMsgText={newMsgText} setNewMsgText={setNewMsgText}
-            showDeleteConfirm={showDeleteConfirm} setShowDeleteConfirm={setShowDeleteConfirm}
-            deleteInput={deleteInput} setDeleteInput={setDeleteInput}
-            deleting={deleting} setDeleting={setDeleting}
-          />
-
           {devMode && (
             <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
           )}
@@ -355,22 +331,43 @@ export default function MePage() {
           </Section>
 
           <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:12 }}>
-              {prep === 'Actif' && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.sagebg, color:S.sage, border:'1px solid '+S.sagebd }}>{t('profile.prep_active_badge')}</span>}
-              {dernierTest && <span style={{ fontSize:12, fontWeight:600, padding:'4px 10px', borderRadius:99, background:S.bluebg, color:S.blue, border:'1px solid '+S.bluebd }}>{d.t('profile.test_ago', { count: monthsAgoCount(dernierTest) ?? 0 })}</span>}
-            </div>
-            <div style={{ display:'flex', gap:8, marginBottom:10 }}>
+            {/* PrEP */}
+            <div style={{ display:'flex', gap:8, marginBottom:12 }}>
               {PREP_OPTIONS.map(p => (
                 <Chip key={p} label={p} active={prep===p} onClick={() => setPrep(prep===p?'':p)} />
               ))}
             </div>
-            <div style={{ marginBottom:10 }}>
-              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{d.t('profile.last_test_date')}</label>
+
+            {/* Test date */}
+            <div style={{ marginBottom:12 }}>
+              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.health_test_date')}</label>
               <input type="date" value={dernierTest} onChange={e => setDernierTest(e.target.value)} style={inputStyle} />
             </div>
-            <div>
-              <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{d.t('profile.sero_status')}</label>
-              <input value={seroStatus} onChange={e => setSeroStatus(e.target.value)} placeholder={t('placeholders.optional')} style={inputStyle} />
+
+            {/* Disease test results */}
+            <label style={{ fontSize:11, fontWeight:600, color:S.sage, display:'block', marginBottom:8, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t('profile.health_add_test')}</label>
+            <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+              {['vih','chlamydia','syphilis','gonorrhee','hepatite_b','hepatite_c','hpv'].map(disease => {
+                const current = healthTests[disease]?.status || ''
+                const statuses = ['negatif','positif','en_attente'] as const
+                return (
+                  <div key={disease} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 12px', borderRadius:12, background:S.bg2, border:'1px solid '+S.rule }}>
+                    <span style={{ flex:1, fontSize:12, fontWeight:600, color:S.tx2 }}>{t('profile.health_disease_'+disease)}</span>
+                    <div style={{ display:'flex', gap:4 }}>
+                      {statuses.map(s => (
+                        <button key={s} onClick={() => setHealthTests(prev => ({...prev, [disease]: { ...prev[disease], status: prev[disease]?.status === s ? '' : s, date: dernierTest || undefined }}))} style={{
+                          padding:'3px 8px', borderRadius:8, fontSize:10, fontWeight:600, cursor:'pointer',
+                          border:'1px solid '+(current===s ? (s==='negatif'?S.sagebd:s==='positif'?S.redbd:S.lavbd) : S.rule),
+                          background: current===s ? (s==='negatif'?S.sagebg:s==='positif'?S.redbg:S.lavbg) : 'transparent',
+                          color: current===s ? (s==='negatif'?S.sage:s==='positif'?S.red:S.lav) : S.tx4,
+                        }}>
+                          {t('profile.health_status_'+s)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </Section>
 

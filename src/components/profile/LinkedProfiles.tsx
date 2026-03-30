@@ -6,12 +6,10 @@ import { Plus, X, ExternalLink } from 'lucide-react'
 const S = colors
 
 const PLATFORMS = [
-  { key: 'grindr', label: 'Grindr', color: '#FCC419' },
-  { key: 'scruff', label: 'Scruff', color: '#F06543' },
-  { key: 'recon', label: 'Recon', color: '#E03131' },
-  { key: 'twitter', label: 'X / Twitter', color: '#1D9BF0' },
-  { key: 'telegram', label: 'Telegram', color: '#26A5E4' },
   { key: 'instagram', label: 'Instagram', color: '#E1306C' },
+  { key: 'tiktok', label: 'TikTok', color: '#FF0050' },
+  { key: 'twitter', label: 'X / Twitter', color: '#1D9BF0' },
+  { key: 'onlyfans', label: 'OnlyFans', color: '#00AFF0' },
   { key: 'other', label: 'Autre', color: S.tx3 },
 ]
 
@@ -103,7 +101,7 @@ export default function LinkedProfiles({ linkedProfiles, onChange, readOnly }: P
           </select>
           <input
             value={handle} onChange={e => setHandle(e.target.value)}
-            placeholder={t('profile.linked_handle_placeholder')}
+            placeholder={t('profile.linked_url_placeholder')}
             style={{
               width: '100%', background: S.bg2, color: S.tx, borderRadius: 12,
               padding: '10px 14px', border: `1px solid ${S.rule}`, outline: 'none',
