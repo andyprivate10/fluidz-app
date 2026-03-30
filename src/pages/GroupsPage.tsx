@@ -118,7 +118,7 @@ export default function GroupsPage() {
     } else {
       // Create
       const { data: newGroup, error } = await supabase.from('contact_groups').insert({ owner_id: user.id, name: newName.trim(), description: newDesc.trim() || null, color: newColor }).select('id').single()
-      if (error) { showToast('Erreur: ' + error.message, 'error'); setSaving(false); return }
+      if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error'); setSaving(false); return }
       if (selectedMembers.length > 0) {
         await supabase.from('contact_group_members').insert(selectedMembers.map(uid => ({ group_id: newGroup.id, contact_user_id: uid })))
       }
@@ -244,7 +244,7 @@ export default function GroupsPage() {
                 <div style={{ display:'flex', gap:8 }}>
                   {GROUP_COLORS.map(c => (
                     <button key={c} onClick={() => setNewColor(c)} style={{
-                      width:28, height:28, borderRadius:8, background:c, border: newColor === c ? '2px solid #fff' : '2px solid transparent', cursor:'pointer',
+                      width:28, height:28, borderRadius:8, background:c, border: newColor === c ? `2px solid ${S.white}` : '2px solid transparent', cursor:'pointer',
                     }} />
                   ))}
                 </div>

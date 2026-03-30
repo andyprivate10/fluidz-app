@@ -105,7 +105,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
             borderRadius: 2, overflow: 'hidden',
           }}>
             <div style={{
-              height: '100%', borderRadius: 2, background: '#fff',
+              height: '100%', borderRadius: 2, background: S.white,
               width: i < cur ? '100%' : i === cur ? `${progress}%` : '0%',
               transition: i === cur ? 'width 0.05s linear' : 'none',
             }} />

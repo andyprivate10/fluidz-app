@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import { seedAll, clearAll, TEST_INVITE_CODE } from "../lib/seedTestData";
 import { seedDemoData, clearDemoData } from "../lib/seedDemoData";
 import type { User } from "@supabase/supabase-js";
+import { useTranslation } from 'react-i18next';
 
 const PROJECT_START = new Date("2026-03-07T00:00:00");
 const TOTAL_DAYS = 91;
@@ -22,6 +23,7 @@ const btn: React.CSSProperties = {
 };
 
 export default function DevTestMenu() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
@@ -53,7 +55,7 @@ export default function DevTestMenu() {
   }, []);
 
   const login = async (email: string) => {
-    setMsg("Connexion en cours...");
+    setMsg(t('common.connecting'));
     // Force sign out with global scope to clear all sessions
     await supabase.auth.signOut({ scope: 'global' }).catch(() => {});
     // Clear all Supabase auth storage

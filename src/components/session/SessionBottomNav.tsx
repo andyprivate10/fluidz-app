@@ -123,7 +123,7 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
               <span style={{
                 fontSize: 10, fontWeight: isActive ? 700 : 600,
                 letterSpacing: '-0.01em',
-                color: isAccent ? '#fff' : isActive ? S.p : S.tx3,
+                color: isAccent ? S.white : isActive ? S.p : S.tx3,
                 transition: 'color 0.2s',
                 fontFamily: fonts.body,
               }}>

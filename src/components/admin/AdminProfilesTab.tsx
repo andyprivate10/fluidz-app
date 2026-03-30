@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { ChevronDown, ChevronUp, Upload, Trash2, Image } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -21,6 +22,7 @@ interface UserRow {
 }
 
 export default function AdminProfilesTab() {
+  const { t } = useTranslation()
   const [users, setUsers] = useState<UserRow[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -99,7 +101,7 @@ export default function AdminProfilesTab() {
   }
 
   function MediaGrid({ urls, userId, category }: { urls: string[]; userId: string; category: string }) {
-    if (urls.length === 0) return <span style={{ fontSize: 10, color: S.tx4 }}>Aucun</span>
+    if (urls.length === 0) return <span style={{ fontSize: 10, color: S.tx4 }}>{t('common.none')}</span>
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {urls.map(url => (
@@ -128,7 +130,7 @@ export default function AdminProfilesTab() {
     )
   }
 
-  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>Chargement...</p>
+  if (loading) return <p style={{ color: S.tx3, fontSize: 12 }}>{t('common.loading')}</p>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -174,7 +176,7 @@ export default function AdminProfilesTab() {
                         <Trash2 size={10} strokeWidth={1.5} /> {deleting === pj.avatar_url ? 'Confirm' : 'Delete'}
                       </button>
                     </div>
-                  ) : <span style={{ fontSize: 10, color: S.tx4 }}>Aucun</span>}
+                  ) : <span style={{ fontSize: 10, color: S.tx4 }}>{t('common.none')}</span>}
                   <div style={{ marginTop: 6 }}><UploadBtn userId={u.id} category="avatar" label="Upload avatar" /></div>
                 </div>
 
@@ -211,7 +213,7 @@ export default function AdminProfilesTab() {
         )
       })}
 
-      {users.length === 0 && <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>Aucun utilisateur</p>}
+      {users.length === 0 && <p style={{ color: S.tx3, fontSize: 12, textAlign: 'center', padding: 24 }}>{t('common.no_user')}</p>}
     </div>
   )
 }

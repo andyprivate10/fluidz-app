@@ -101,7 +101,7 @@ export default function ImageLightbox({ images, startIndex = 0, onClose }: Props
           {images.map((_, i) => (
             <button key={i} onClick={() => setIndex(i)} style={{
               width: i === index ? 16 : 6, height: 6, borderRadius: 3,
-              background: i === index ? '#fff' : 'rgba(255,255,255,0.3)',
+              background: i === index ? S.white : 'rgba(255,255,255,0.3)',
               border: 'none', cursor: 'pointer', transition: 'width 0.2s, background 0.2s',
               padding: 0,
             }} />

@@ -164,7 +164,7 @@ export default function PublicProfile() {
           <>
             <LazyImage src={allPhotos[photoIdx]} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             {allPhotos.length > 1 && <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 4, zIndex: 3 }}>
-              {allPhotos.map((_, i) => <div key={i} style={{ width: i === photoIdx ? 18 : 6, height: 6, borderRadius: 3, background: i === photoIdx ? '#fff' : 'rgba(255,255,255,0.4)', transition: 'width 0.2s' }} />)}
+              {allPhotos.map((_, i) => <div key={i} style={{ width: i === photoIdx ? 18 : 6, height: 6, borderRadius: 3, background: i === photoIdx ? S.white : 'rgba(255,255,255,0.4)', transition: 'width 0.2s' }} />)}
             </div>}
             {photoIdx > 0 && <div onClick={() => navPhoto(-1)} style={{ position: 'absolute', left: 0, top: 0, width: '25%', height: '100%', zIndex: 2, cursor: 'pointer' }} />}
             <div onClick={() => setLightbox({ images: allPhotos, index: photoIdx })} style={{ position: 'absolute', left: '25%', top: 0, width: '50%', height: '100%', zIndex: 2, cursor: 'zoom-in' }} />

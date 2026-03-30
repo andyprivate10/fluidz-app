@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { FolderOpen, ArrowLeft, Trash2, Image, HardDrive } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -20,6 +21,7 @@ function formatBytes(bytes: number): string {
 }
 
 export default function AdminMediaTab() {
+  const { t } = useTranslation()
   const [folders, setFolders] = useState<string[]>([])
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
   const [files, setFiles] = useState<StorageFile[]>([])
@@ -93,7 +95,7 @@ export default function AdminMediaTab() {
             onClick={() => { setSelectedFolder(null); setFiles([]) }}
             style={{ ...adminStyles.btnSecondary, display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}
           >
-            <ArrowLeft size={13} strokeWidth={1.5} /> Retour
+            <ArrowLeft size={13} strokeWidth={1.5} /> {t('common.back')}
           </button>
           <span style={{ fontSize: 13, fontWeight: 700, color: S.tx, fontFamily: fonts.hero }}>
             {selectedFolder}
@@ -113,12 +115,12 @@ export default function AdminMediaTab() {
       )}
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: 24, color: S.tx3, fontSize: 12 }}>Chargement...</div>
+        <div style={{ textAlign: 'center', padding: 24, color: S.tx3, fontSize: 12 }}>{t('common.loading')}</div>
       ) : selectedFolder ? (
         /* File grid */
         files.length === 0 ? (
           <div style={{ ...adminStyles.card, textAlign: 'center', color: S.tx3, fontSize: 12 }}>
-            Aucun fichier dans ce dossier.
+            {t('common.no_files')}
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>

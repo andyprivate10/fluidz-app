@@ -64,8 +64,8 @@ export default function SessionShareTab({ session }: Props) {
       {/* QR Code */}
       <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid ' + S.rule2, borderRadius: 16, padding: 20, textAlign: 'center' }}>
         <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>QR Code</p>
-        <div style={{ background: '#fff', borderRadius: 12, padding: 16, display: 'inline-block' }}>
-          <QRCodeSVG value={shareUrl} size={160} level="M" fgColor="#0C0A14" bgColor="#ffffff" />
+        <div style={{ background: S.white, borderRadius: 12, padding: 16, display: 'inline-block' }}>
+          <QRCodeSVG value={shareUrl} size={160} level="M" fgColor="#0C0A14" bgColor={S.white} />
         </div>
         <p style={{ fontSize: 11, color: S.tx3, margin: '10px 0 0' }}>{t('session.qr_hint')}</p>
       </div>

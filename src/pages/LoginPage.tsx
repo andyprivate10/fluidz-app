@@ -413,7 +413,7 @@ export default function LoginPage() {
           {/* Google OAuth */}
           <button onClick={handleGoogle} style={{
             width: '100%', padding: 14, borderRadius: R.btn, fontSize: 15, fontWeight: 600,
-            background: '#fff', color: '#333', border: '1px solid #ddd', cursor: 'pointer',
+            background: S.white, color: '#333', border: '1px solid #ddd', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
             fontFamily: fonts.body,
           }}>

@@ -57,6 +57,9 @@ export const colors = {
   bluebd: 'rgba(125,211,252,0.25)',
   grad:   '#E0887A',
 
+  // Pure white (toggles, indicators, QR)
+  white: '#fff',
+
   // Spinner / pull-to-refresh
   spinner:   '#F9A8A8',
   spinnerbg: 'rgba(249,168,168,0.13)',

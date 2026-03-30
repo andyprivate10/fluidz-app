@@ -146,7 +146,7 @@ export default function NoteStep({
       <div style={{display:'flex',gap:10,marginTop:8}}>
         <button onClick={onBack} style={{flex:1,padding:'13px',borderRadius:14,fontWeight:600,fontSize:14,color:S.tx2,border:'1px solid '+S.rule,background:S.bg2,cursor:'pointer'}}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('apply.modify')}</button>
         <button onClick={onSubmit} disabled={disabled} className='btn-shimmer' style={{flex:2,padding:'13px',borderRadius:14,fontWeight:700,fontSize:14,color: S.tx,background:S.grad,border:'none',position:'relative' as const,overflow:'hidden',cursor:disabled?'not-allowed':'pointer',opacity:disabled?0.7:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
-          {loading ? <><span style={{display:'inline-block',width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.8s linear infinite'}} /> {t('apply.sending')}</> : isRateLimited ? t('apply.rate_limited') : t('apply.send')}
+          {loading ? <><span style={{display:'inline-block',width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTopColor: S.white,borderRadius:'50%',animation:'spin 0.8s linear infinite'}} /> {t('apply.sending')}</> : isRateLimited ? t('apply.rate_limited') : t('apply.send')}
         </button>
       </div>
     </div>

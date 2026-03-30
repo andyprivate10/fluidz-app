@@ -928,7 +928,13 @@
     "next": "Next",
     "on": "ON",
     "off": "OFF",
-    "ghost": "Ghost"
+    "ghost": "Ghost",
+    "none": "None",
+    "connecting": "Connecting...",
+    "no_files": "No files in this folder.",
+    "no_user": "No user",
+    "no_action": "No action taken.",
+    "no_active_session": "No active session."
   },
   "drawer": {
     "my_space": "My space",

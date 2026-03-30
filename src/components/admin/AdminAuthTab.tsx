@@ -4,6 +4,7 @@ import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import type { User } from '@supabase/supabase-js'
 import { Zap, LogOut, UserCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -19,8 +20,10 @@ interface Props {
 }
 
 export default function AdminAuthTab({ user, setUser }: Props) {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<string | null>(null)
+  const [isError, setIsError] = useState(false)
 
   async function loginAs(email: string) {
     setLoading(email)
@@ -28,9 +31,11 @@ export default function AdminAuthTab({ user, setUser }: Props) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: 'testpass123' })
     setLoading(null)
     if (error) {
-      setFeedback('Erreur: ' + error.message)
+      setIsError(true)
+      setFeedback(t('errors.error_prefix') + ': ' + error.message)
     } else if (data.user) {
       setUser(data.user)
+      setIsError(false)
       setFeedback('Connecte: ' + email)
       setTimeout(() => setFeedback(null), 3000)
     }
@@ -74,9 +79,9 @@ export default function AdminAuthTab({ user, setUser }: Props) {
       {feedback && (
         <div style={{
           ...adminStyles.card,
-          borderColor: feedback.startsWith('Erreur') ? S.redbd : S.sagebd,
-          background: feedback.startsWith('Erreur') ? S.redbg : S.sagebg,
-          color: feedback.startsWith('Erreur') ? S.red : S.sage,
+          borderColor: isError ? S.redbd : S.sagebd,
+          background: isError ? S.redbg : S.sagebg,
+          color: isError ? S.red : S.sage,
           fontSize: 12,
           fontWeight: 600,
           padding: 12,

@@ -928,7 +928,13 @@
     "next": "Suivant",
     "on": "ON",
     "off": "OFF",
-    "ghost": "Ghost"
+    "ghost": "Ghost",
+    "none": "Aucun",
+    "connecting": "Connexion en cours...",
+    "no_files": "Aucun fichier dans ce dossier.",
+    "no_user": "Aucun utilisateur",
+    "no_action": "Aucune action effectuée.",
+    "no_active_session": "Aucune session active."
   },
   "drawer": {
     "my_space": "Mon espace",

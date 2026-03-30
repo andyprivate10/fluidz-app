@@ -129,7 +129,7 @@ export default function ReviewVibeScore({
           position: 'relative', transition: 'background 0.2s',
         }}>
           <div style={{
-            width: 18, height: 18, borderRadius: '50%', background: '#fff',
+            width: 18, height: 18, borderRadius: '50%', background: S.white,
             position: 'absolute', top: 2, left: addToBook ? 20 : 2,
             transition: 'left 0.2s',
           }} />

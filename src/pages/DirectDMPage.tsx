@@ -294,7 +294,7 @@ export default function DirectDMPage() {
           </div>
         )}
         <div style={{ flex: 1 }} onClick={() => navigate('/profile/' + peerId)}>
-          <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }}>{peerProfile?.name || 'Chargement...'}</p>
+          <p style={{ fontSize: 15, fontWeight: 700, color: S.tx, margin: 0, cursor: 'pointer' }}>{peerProfile?.name || t('common.loading')}</p>
           {peerProfile?.role && <span style={{ fontSize: 11, color: S.p }}>{peerProfile.role}</span>}
         </div>
         <div style={{ position: 'relative' }}>

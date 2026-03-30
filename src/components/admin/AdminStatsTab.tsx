@@ -4,6 +4,7 @@ import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { formatElapsed } from '../../lib/timing'
 import { Calendar, Users, FileText, MessageSquare, Star, Clock } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const S = colors
 
@@ -20,6 +21,7 @@ type DayCount = { date: string; count: number }
 type ActiveSession = { id: string; title: string; created_at: string; starts_at: string | null }
 
 export default function AdminStatsTab() {
+  const { t } = useTranslation()
   const [stats, setStats] = useState<StatCard[]>([])
   const [dailyCandidatures, setDailyCandidatures] = useState<DayCount[]>([])
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([])
@@ -93,7 +95,7 @@ export default function AdminStatsTab() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <p style={adminStyles.sectionLabel(S.emerald)}>STATISTIQUES</p>
-        <div style={{ textAlign: 'center', padding: 32, color: S.tx3, fontSize: 12 }}>Chargement...</div>
+        <div style={{ textAlign: 'center', padding: 32, color: S.tx3, fontSize: 12 }}>{t('common.loading')}</div>
       </div>
     )
   }
@@ -184,7 +186,7 @@ export default function AdminStatsTab() {
           <span style={{ fontSize: 10, fontWeight: 600, color: S.tx3, marginLeft: 4 }}>({activeSessions.length})</span>
         </div>
         {activeSessions.length === 0 ? (
-          <div style={{ fontSize: 12, color: S.tx3, padding: '8px 0' }}>Aucune session active.</div>
+          <div style={{ fontSize: 12, color: S.tx3, padding: '8px 0' }}>{t('common.no_active_session')}</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {activeSessions.map(sess => (

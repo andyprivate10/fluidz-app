@@ -174,7 +174,7 @@ export default function SideDrawer({ open, onClose }: Props) {
               transition: 'background 0.2s', cursor: 'pointer',
             }}>
               <div style={{
-                width: 16, height: 16, borderRadius: '50%', background: '#fff',
+                width: 16, height: 16, borderRadius: '50%', background: S.white,
                 transform: profile?.location_visible ? 'translateX(16px)' : 'translateX(0)',
                 transition: 'transform 0.2s',
               }} />

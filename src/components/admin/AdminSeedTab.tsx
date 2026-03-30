@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { colors, fonts } from '../../brand'
 import { adminStyles } from '../../pages/AdminPage'
 import { seedAll, clearAll } from '../../lib/seedTestData'
@@ -8,6 +9,7 @@ import { Database, Trash2, AlertTriangle, Play, Users } from 'lucide-react'
 const S = colors
 
 export default function AdminSeedTab() {
+  const { t } = useTranslation()
   const [seeding, setSeeding] = useState(false)
   const [resetting, setResetting] = useState(false)
   const [resetConfirm, setResetConfirm] = useState(false)
@@ -244,7 +246,7 @@ export default function AdminSeedTab() {
           color: S.tx2,
         }}>
           {log.length === 0 ? (
-            <span style={{ color: S.tx3 }}>Aucune action effectuee.</span>
+            <span style={{ color: S.tx3 }}>{t('common.no_action')}</span>
           ) : (
             log.map((entry, i) => (
               <div key={i} style={{ color: entry.includes('ERREUR') ? S.red : entry.includes('succes') ? S.sage : S.tx2 }}>
