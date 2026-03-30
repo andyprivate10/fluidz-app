@@ -78,11 +78,17 @@ export default function SessionPage() {
 
   if (d.loading) return <SkeletonSessionPage />
   if (d.loadError) return (
-    <div style={{ ...st, display: 'flex', justifyContent: 'center', paddingTop: 80 }}>
-      <p style={{ color: S.red, textAlign: 'center' }}>{d.t('common.load_error')}</p>
+    <div style={{ ...st, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 80 }}>
+      <p style={{ color: S.red, textAlign: 'center', marginBottom: 16 }}>{d.t('common.load_error')}</p>
+      <button onClick={() => navigate('/')} style={{ padding: '10px 24px', borderRadius: 12, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{d.t('common.back')}</button>
     </div>
   )
-  if (!d.session) return <div style={{ ...st, padding: 24, color: S.red }}>{d.t('session.not_found')}</div>
+  if (!d.session) return (
+    <div style={{ ...st, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 80 }}>
+      <p style={{ color: S.red, textAlign: 'center', marginBottom: 16 }}>{d.t('session.not_found')}</p>
+      <button onClick={() => navigate('/')} style={{ padding: '10px 24px', borderRadius: 12, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{d.t('common.back')}</button>
+    </div>
+  )
 
   const statusColor = d.session.status === 'open' ? S.sage : d.session.status === 'ended' ? S.red : S.tx2
 

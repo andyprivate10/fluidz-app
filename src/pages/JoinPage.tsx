@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { MapPin, Lock, Ghost } from 'lucide-react'
+import { ArrowLeft, MapPin, Lock, Ghost } from 'lucide-react'
 import JoinLineup from '../components/join/JoinLineup'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -213,6 +213,15 @@ export default function JoinPage() {
 
       {status === 'found' && session && session.status !== 'ended' && session.status !== 'closed' && (
         <div className="animate-slide-up" style={{width:'100%',maxWidth:420,position:'relative',zIndex:1}}>
+          {/* Back button */}
+          <button
+            onClick={() => navigate(-1 as any)}
+            aria-label={t('common.back')}
+            style={{ background: 'rgba(5,4,10,0.6)', border: 'none', color: S.tx, cursor: 'pointer', padding: '6px 10px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, marginBottom: 12, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+          >
+            <ArrowLeft size={16} strokeWidth={1.5} />
+            {t('common.back')}
+          </button>
           {/* Cover gradient */}
           <div style={{position:'absolute',top:0,left:0,right:0,height:180,borderRadius:'24px 24px 0 0',overflow:'hidden',zIndex:0}}>
             <div style={{position:'absolute',inset:0,background:getSessionCover(session.tags, session.cover_url, session.template_slug).bg}} />

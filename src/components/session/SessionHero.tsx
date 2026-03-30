@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle, UserPlus, Bookmark } from 'lucide-react'
+import { ArrowLeft, Clock, Users, MapPin, Flag, Ban, Link, Share2 as Share2Icon, Settings, XCircle, UserPlus, Bookmark } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 import { getSessionCover } from '../../lib/sessionCover'
 import OptionsMenu from '../OptionsMenu'
@@ -44,6 +44,14 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: `linear-gradient(to top, ${S.bg} 5%, transparent)` }} />
 
       <div style={{ position: 'relative', zIndex: 1, padding: '16px 24px 20px' }}>
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1 as any)}
+          aria-label={t('common.back')}
+          style={{ background: 'rgba(5,4,10,0.6)', border: 'none', color: S.tx, cursor: 'pointer', padding: '6px 10px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, marginBottom: 10, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+        >
+          <ArrowLeft size={16} strokeWidth={1.5} />
+        </button>
         <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
           <OptionsMenu options={(() => {
             const opts: { label: string; icon?: React.ReactNode; onClick: () => void; danger?: boolean }[] = []

@@ -258,7 +258,7 @@ export function useApplyData() {
     }
     if (!user) return
     setLoading(true)
-    await supabase.from('applications').upsert({
+    const { error: upsertError } = await supabase.from('applications').upsert({
       session_id: id, applicant_id: user.id, status: 'pending',
       eps_json: {
         shared_sections: enabled,
@@ -275,6 +275,11 @@ export function useApplyData() {
         occasion_photos: occasionPhotos.length > 0 ? occasionPhotos : undefined,
       }
     })
+    if (upsertError) {
+      setLoading(false)
+      showToast(t('errors.error_prefix') + ': ' + upsertError.message, 'error')
+      return
+    }
     setLoading(false)
     // Notify the host
     if (id) {
