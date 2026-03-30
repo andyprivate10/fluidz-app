@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
-import { Mail, Ghost, ArrowRight, Eye, EyeOff, Zap } from 'lucide-react'
+import { Mail, Ghost, ArrowRight, Eye, EyeOff, Zap, UserPlus } from 'lucide-react'
 import { colors, fonts, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 
@@ -223,14 +223,6 @@ export default function LoginPage() {
     boxSizing: 'border-box',
   }
 
-  const divider = (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0' }}>
-      <div style={{ flex: 1, height: 1, background: S.rule }} />
-      <span style={{ fontSize: 12, color: S.tx4, fontWeight: 600 }}>{t('auth.or')}</span>
-      <div style={{ flex: 1, height: 1, background: S.rule }} />
-    </div>
-  )
-
   if (signupNeedsConfirm) {
     return (
       <div style={{ background: S.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', maxWidth: 480, margin: '0 auto' }}>
@@ -304,15 +296,15 @@ export default function LoginPage() {
       <OrbLayer />
       <div style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}>
 
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        {/* 1) Logo + subtitle */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <h1 style={{ ...typeStyle('hero'), color: S.p, margin: '0 0 10px', fontSize: 32, fontFamily: fonts.hero }}>fluidz</h1>
           <p style={{ ...typeStyle('body'), color: S.tx2, margin: 0 }}>{t('auth.subtitle')}</p>
         </div>
 
         <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-          {/* DEV Quick Login */}
+          {/* 2) DEV Quick Login (unchanged, dev only) */}
           {isDev && (
             <div style={{ background: S.p2, borderRadius: R.card, padding: 14, border: `1px solid ${S.pbd}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
@@ -343,7 +335,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* METHOD 1: Email + Password */}
+          {/* 3) Glass card: email + password + login button */}
           <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: R.card, padding: 24, border: `1px solid ${S.rule2}`, boxShadow: '0 2px 16px rgba(0,0,0,0.2)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <input
@@ -355,7 +347,7 @@ export default function LoginPage() {
                 <input
                   value={password} onChange={e => { setPassword(e.target.value); setError('') }}
                   placeholder={t('auth.password')} type={showPassword ? 'text' : 'password'}
-                  onKeyDown={e => e.key === 'Enter' && mode === 'login' && handleEmailPassword()}
+                  onKeyDown={e => e.key === 'Enter' && handleEmailPassword()}
                   style={{ ...inp, paddingRight: 44 }}
                 />
                 <button onClick={() => setShowPassword(!showPassword)} style={{
@@ -368,6 +360,7 @@ export default function LoginPage() {
                 </button>
               </div>
 
+              {/* Confirm password field (signup mode only) */}
               {mode === 'signup' && (
                 <input
                   value={confirmPassword} onChange={e => { setConfirmPassword(e.target.value); setError('') }}
@@ -381,6 +374,7 @@ export default function LoginPage() {
                 <p style={{ ...typeStyle('label'), color: S.red, margin: 0 }}>{error}</p>
               )}
 
+              {/* Login / Signup button */}
               <button onClick={handleEmailPassword} disabled={loading || !email.trim() || !password} style={{
                 position: 'relative', overflow: 'hidden',
                 width: '100%', padding: 16, borderRadius: R.btn, ...typeStyle('section'),
@@ -402,15 +396,42 @@ export default function LoginPage() {
                 </p>
               )}
 
-              <button onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setConfirmPassword('') }} style={{
-                background: 'none', border: 'none', ...typeStyle('label'), color: S.p, cursor: 'pointer', textAlign: 'center', padding: 4,
-              }}>
-                {mode === 'login' ? t('auth.switch_to_signup') : t('auth.switch_to_login')}
-              </button>
+              {/* Small text: magic link (login mode) / back to login (signup mode) */}
+              {mode === 'login' ? (
+                <button onClick={handleMagicLink} disabled={loading || !email.trim() || cooldown > 0} style={{
+                  background: 'none', border: 'none', ...typeStyle('meta'), color: S.tx3,
+                  cursor: loading || !email.trim() || cooldown > 0 ? 'not-allowed' : 'pointer',
+                  textAlign: 'center', padding: 4, textDecoration: 'underline', textUnderlineOffset: 3,
+                  opacity: loading || !email.trim() || cooldown > 0 ? 0.5 : 1,
+                }}>
+                  {cooldown > 0 ? t('auth.cooldown', { seconds: cooldown }) : t('auth.or_magic_link')}
+                </button>
+              ) : (
+                <button onClick={() => { setMode('login'); setError(''); setConfirmPassword('') }} style={{
+                  background: 'none', border: 'none', ...typeStyle('meta'), color: S.tx3,
+                  cursor: 'pointer', textAlign: 'center', padding: 4,
+                }}>
+                  {t('auth.switch_to_login')}
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Google OAuth */}
+          {/* 4) Creer un compte — prominent CTA for new users */}
+          {mode === 'login' && (
+            <button onClick={() => { setMode('signup'); setError(''); setConfirmPassword('') }} style={{
+              width: '100%', padding: 16, borderRadius: R.btn, ...typeStyle('section'),
+              color: S.p, background: `${S.p}18`, border: `1.5px solid ${S.pbd}`,
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              boxShadow: `0 2px 12px ${S.pbd}`,
+            }}>
+              <UserPlus size={18} strokeWidth={2} />
+              {t('auth.create_account_cta')}
+            </button>
+          )}
+
+          {/* 5) Google OAuth */}
           <button onClick={handleGoogle} style={{
             width: '100%', padding: 14, borderRadius: R.btn, fontSize: 15, fontWeight: 600,
             background: S.white, color: '#333', border: '1px solid #ddd', cursor: 'pointer',
@@ -421,23 +442,12 @@ export default function LoginPage() {
             {t('auth.google')}
           </button>
 
-          {divider}
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '2px 0' }}>
+            <div style={{ flex: 1, height: 1, background: S.rule }} />
+          </div>
 
-          {/* METHOD 2: Magic Link */}
-          <button onClick={handleMagicLink} disabled={loading || !email.trim() || cooldown > 0} style={{
-            width: '100%', padding: 14, borderRadius: R.btn, ...typeStyle('label'),
-            color: S.tx, border: `1px solid ${S.rule2}`, background: S.bg2,
-            cursor: loading || !email.trim() || cooldown > 0 ? 'not-allowed' : 'pointer',
-            opacity: loading || !email.trim() || cooldown > 0 ? 0.5 : 1,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          }}>
-            <Mail size={15} strokeWidth={1.5} style={{ color: S.p }} />
-            {cooldown > 0 ? t('auth.cooldown', { seconds: cooldown }) : t('auth.magic_link')}
-          </button>
-
-          {divider}
-
-          {/* METHOD 3: Ghost Mode */}
+          {/* Ghost Mode */}
           <div style={{ background: S.lavbg, borderRadius: R.card, padding: 20, border: `1px solid ${S.lavbd}` }}>
             <p style={{ ...typeStyle('label'), color: S.lav, margin: '0 0 6px' }}>{t('auth.ghost_title')}</p>
             <p style={{ ...typeStyle('meta'), color: S.tx2, margin: '0 0 14px', lineHeight: 1.5 }}>{t('auth.ghost_desc')}</p>
@@ -450,11 +460,23 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <button onClick={() => navigate('/ghost/recover')} style={{
-            background: 'none', border: 'none', ...typeStyle('meta'), color: S.tx3, cursor: 'pointer', textAlign: 'center', padding: 8,
-          }}>
-            {t('auth.ghost_recover')}
-          </button>
+          {/* 6) Bottom links: ghost recover + magic link */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <button onClick={() => navigate('/ghost/recover')} style={{
+              background: 'none', border: 'none', ...typeStyle('meta'), color: S.tx3, cursor: 'pointer', textAlign: 'center', padding: 4,
+            }}>
+              {t('auth.ghost_recover')}
+            </button>
+            <button onClick={handleMagicLink} disabled={loading || !email.trim() || cooldown > 0} style={{
+              background: 'none', border: 'none', ...typeStyle('meta'), color: S.tx4,
+              cursor: loading || !email.trim() || cooldown > 0 ? 'not-allowed' : 'pointer',
+              textAlign: 'center', padding: 4, textDecoration: 'underline', textUnderlineOffset: 3,
+              opacity: loading || !email.trim() || cooldown > 0 ? 0.5 : 1,
+            }}>
+              <Mail size={12} strokeWidth={1.5} style={{ marginRight: 4, verticalAlign: 'middle' }} />
+              {cooldown > 0 ? t('auth.cooldown', { seconds: cooldown }) : t('auth.magic_link')}
+            </button>
+          </div>
 
         </div>
 

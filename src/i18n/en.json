@@ -636,7 +636,9 @@
     "or_email": "or with email",
     "signup_success_title": "Account created!",
     "signup_confirm_instructions": "Check your email ({{email}}) to confirm your account, then come back and log in.",
-    "back_to_login": "← Back to login"
+    "back_to_login": "← Back to login",
+    "or_magic_link": "or get a link by email",
+    "create_account_cta": "Create an account"
   },
   "onboarding": {
     "step_label": "Step {{step}}/3",

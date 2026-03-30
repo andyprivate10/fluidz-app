@@ -636,7 +636,9 @@
     "or_email": "ou par email",
     "signup_success_title": "Compte créé !",
     "signup_confirm_instructions": "Vérifie tes emails ({{email}}) pour confirmer ton compte, puis reviens te connecter.",
-    "back_to_login": "← Retour à la connexion"
+    "back_to_login": "← Retour à la connexion",
+    "or_magic_link": "ou recevoir un lien par email",
+    "create_account_cta": "Créer un compte"
   },
   "onboarding": {
     "step_label": "Etape {{step}}/3",
