@@ -102,7 +102,7 @@ const COVER_IMAGES: Record<string, string> = {
   vinyl: `${SUPABASE_COVERS}/vinyl.jpg`,
   bears: `${SUPABASE_COVERS}/bears.jpg`,
   party: `${SUPABASE_COVERS}/party.jpg`,
-  cuddle: `${SUPABASE_COVERS}/cuddle.jpg`,
+  cuddle: `${SUPABASE_COVERS}/cuddles.jpg`,
 }
 
 // Map template slugs to tag-based matching
