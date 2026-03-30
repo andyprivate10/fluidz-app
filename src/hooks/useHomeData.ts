@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useAdminConfig } from './useAdminConfig'
 import { timeAgo } from '../lib/timing'
 
-type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number; cover_url?: string; template_slug?: string }
+type QuickSession = { id: string; title: string; approx_area: string; status: string; tags?: string[]; member_count?: number; cover_url?: string; template_slug?: string; starts_at?: string; ends_at?: string; created_at: string }
 
 export function useHomeData() {
   const navigate = useNavigate()
@@ -53,7 +53,7 @@ export function useHomeData() {
       }
     }
 
-    const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status, tags, cover_url, template_slug')
+    const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status, tags, cover_url, template_slug, starts_at, ends_at, created_at')
       .eq('host_id', user.id).eq('status', 'open').neq('title', DM_DIRECT_TITLE)
       .order('created_at', { ascending: false }).limit(1)
     const hostSession = Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null

@@ -29,6 +29,7 @@ export default function SessionsPage() {
   const [myPending, setMyPending] = useState<AppSession[]>([])
   const [myRejected, setMyRejected] = useState<AppSession[]>([])
   const [publicSessions, setPublicSessions] = useState<Session[]>([])
+  const [memberCounts, setMemberCounts] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(true)
 
   const loadData = useCallback(async () => {
@@ -36,6 +37,16 @@ export default function SessionsPage() {
 
     const { data: h } = await supabase.from('sessions').select('*').eq('host_id', user.id).neq('title', DM_DIRECT_TITLE).order('created_at', { ascending: false })
     setMyHosted(h || [])
+
+    // Fetch member counts for hosted sessions
+    if (h && h.length > 0) {
+      const { data: allApps } = await supabase.from('applications').select('session_id').in('session_id', h.map(s => s.id)).in('status', ['accepted', 'checked_in'])
+      const counts: Record<string, number> = {}
+      for (const a of allApps || []) {
+        counts[a.session_id] = (counts[a.session_id] || 0) + 1
+      }
+      setMemberCounts(counts)
+    }
 
     const { data: apps } = await supabase.from('applications').select('session_id, status, sessions(title, approx_area, tags, cover_url, template_slug, status, created_at, starts_at, ends_at)').eq('applicant_id', user.id).order('created_at', { ascending: false })
     const mapped = (apps || []).map((a: any) => ({
@@ -70,6 +81,7 @@ export default function SessionsPage() {
     <SessionInfoCard
       key={sess.id}
       session={sess}
+      memberCount={memberCounts[sess.id]}
       onClick={onClick}
       timing={sessionTiming(sess)}
       endedCta={sess.status === 'ended' ? `${t('sessions.review_session')} →` : undefined}

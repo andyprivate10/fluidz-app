@@ -79,7 +79,7 @@ const SUPABASE_COVERS = 'https://kxbrfjqxufvskcxmliak.supabase.co/storage/v1/obj
 
 const COVER_IMAGES: Record<string, string> = {
   dark_room: `${SUPABASE_COVERS}/dark-room.jpg`,
-  powder_room: `${SUPABASE_COVERS}/powder-room.jpg`,
+  // powder_room: not yet uploaded to Supabase
   techno: `${SUPABASE_COVERS}/techno.jpg`,
   after: `${SUPABASE_COVERS}/after.jpg`,
   artsy: `${SUPABASE_COVERS}/artsy.jpg`,
@@ -100,8 +100,8 @@ const COVER_IMAGES: Record<string, string> = {
   secret_garden: `${SUPABASE_COVERS}/secret-garden.jpg`,
   spectrum: `${SUPABASE_COVERS}/spectrum.jpg`,
   vinyl: `${SUPABASE_COVERS}/vinyl.jpg`,
-  bears: `${SUPABASE_COVERS}/bears.jpg`,
-  party: `${SUPABASE_COVERS}/party.jpg`,
+  // bears: not yet uploaded to Supabase
+  // party: not yet uploaded to Supabase
   cuddle: `${SUPABASE_COVERS}/cuddles.jpg`,
 }
 

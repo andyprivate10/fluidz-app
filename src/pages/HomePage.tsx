@@ -9,6 +9,7 @@ import GhostConvertModal from '../components/GhostConvertModal'
 import SessionInfoCard from '../components/SessionInfoCard'
 import CyclingAvatar from '../components/CyclingAvatar'
 import { SkeletonHomePage } from '../components/Skeleton'
+import { sessionTiming } from '../lib/timing'
 
 const S = colors
 const R = radius
@@ -93,9 +94,9 @@ export default function HomePage() {
             <span style={{ ...typeStyle('micro'), color: S.p }}>{t('home.naughty_book')}</span>
             <span onClick={() => navigate('/contacts')} style={{ ...typeStyle('meta'), color: S.tx3, cursor: 'pointer' }}>{t('home.see_all_contacts')}</span>
           </div>
-          <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+          <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4, scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
             {recentContacts.map(c => (
-              <div key={c.id} onClick={() => navigate('/contacts/' + c.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer', flexShrink: 0, width: 52 }}>
+              <div key={c.id} onClick={() => navigate('/contacts/' + c.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer', flexShrink: 0, width: 52, scrollSnapAlign: 'start' }}>
                 <CyclingAvatar
                   photos={c.avatar ? [c.avatar] : []}
                   size={40}
@@ -233,6 +234,7 @@ export default function HomePage() {
           <SessionInfoCard
             session={{ id: latestHost.id, title: latestHost.title, status: latestHost.status, approx_area: latestHost.approx_area, tags: latestHost.tags, cover_url: latestHost.cover_url, template_slug: latestHost.template_slug }}
             memberCount={latestHost.member_count ? latestHost.member_count - 1 : undefined}
+            timing={sessionTiming(latestHost)}
             onClick={() => navigate('/session/' + latestHost.id)}
             label={t('home.your_session')}
             labelColor={S.p}
