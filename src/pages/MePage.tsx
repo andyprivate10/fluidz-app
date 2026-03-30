@@ -66,21 +66,16 @@ export default function MePage() {
     languages, setLanguages, role, setRole, orientation, setOrientation,
     height, setHeight, weight, setWeight, morphology, setMorphology,
     tribes, setTribes, ethnicities, setEthnicities,
-    kinks, prep, setPrep, dernierTest, setDernierTest, seroStatus, setSeroStatus, healthTests, setHealthTests,
+    kinks, prep, setPrep, dernierTest, setDernierTest, healthTests, setHealthTests,
     limits, setLimits,
-    dmPrivacy, setDmPrivacy, savedMsgs, setSavedMsgs, newMsgText, setNewMsgText,
     linkedProfiles, setLinkedProfiles, platformProfiles, setPlatformProfiles,
     avatarUrl, photosProfil, photosIntime, videosIntime,
     mediaUploading, cropSrc, setCropSrc, cropCallback, setCropCallback, cropAspect, setCropAspect,
     bodyPartPhotos, setBodyPartPhotos,
     profileViews, contactRequests,
-    showDeleteConfirm, setShowDeleteConfirm, deleteInput, setDeleteInput, deleting, setDeleting,
     autoSaveStatus,
     toggleKink, uploadMedia, removePhotoProfil, removePhotoIntime, removeVideoIntime, setAsAvatar,
     readFileAsDataUrl,
-    prefRoles, setPrefRoles, prefAgeMin, setPrefAgeMin,
-    prefAgeMax, setPrefAgeMax, prefKinks, setPrefKinks,
-    prefMorphologies, setPrefMorphologies,
   } = d
 
   const [activeTab, setActiveTab] = useState<'profil' | 'adulte'>('profil')
