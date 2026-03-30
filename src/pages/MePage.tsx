@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import PageFadeIn from '../components/PageFadeIn'
 import { Link } from 'react-router-dom'
 import { colors, fonts } from '../brand'
@@ -83,6 +84,8 @@ export default function MePage() {
     prefMorphologies, setPrefMorphologies,
   } = d
 
+  const [activeTab, setActiveTab] = useState<'profil' | 'adulte'>('profil')
+
   // ── Non connecté ─────────────────────────────────────────────────────────
   if (!user) {
     return (
@@ -122,28 +125,49 @@ export default function MePage() {
         </div>
       </div>
 
-      {/* ── Profil ── */}
-      <div style={{ padding:'16px 20px' }}>
+      {/* ── Pseudo (prominent, always visible) ── */}
+      <div style={{ padding:'16px 20px 0' }}>
+        <label style={{ fontSize:13, fontWeight:700, color:S.p, display:'block', marginBottom:8 }}>{t('me.pseudo_headline')}</label>
+        <input
+          value={displayName} onChange={e => setDisplayName(e.target.value)}
+          placeholder={t('me.pseudo_placeholder')}
+          style={{ ...inputStyle, fontSize:18, fontWeight:700, padding:'14px 16px', borderColor: displayName ? S.rule : S.p, borderWidth: displayName ? 1 : 2 }}
+        />
+      </div>
 
-          {/* Vibe Score */}
-          {user && (
-            <div style={{ marginBottom: 16 }}>
-              <VibeScoreCard userId={user.id} />
-            </div>
-          )}
-
-
-          <MeProfileCompleteness
-            displayName={displayName} avatarUrl={avatarUrl}
-            age={age} role={role} bio={bio} height={height} weight={weight}
-            morphology={morphology} kinks={kinks}
-            profileViews={profileViews} contactRequests={contactRequests}
-          />
-
-          {/* Profile section header — peach */}
-          <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 14, background: S.p3, border: '1px solid ' + S.pbd }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('me.my_profile')}</span>
+      {/* ── Vibe Score + Completeness ── */}
+      <div style={{ padding:'12px 20px' }}>
+        {user && (
+          <div style={{ marginBottom: 12 }}>
+            <VibeScoreCard userId={user.id} />
           </div>
+        )}
+        <MeProfileCompleteness
+          displayName={displayName} avatarUrl={avatarUrl}
+          age={age} role={role} bio={bio} height={height} weight={weight}
+          morphology={morphology} kinks={kinks}
+          profileViews={profileViews} contactRequests={contactRequests}
+        />
+      </div>
+
+      {/* ── Tab Switcher ── */}
+      <div style={{ display:'flex', gap:0, margin:'0 20px 12px', borderRadius:14, overflow:'hidden', border:'1px solid '+S.rule }}>
+        {(['profil', 'adulte'] as const).map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)} style={{
+            flex:1, padding:'12px 0', fontSize:13, fontWeight:700,
+            background: activeTab === tab ? S.p : 'transparent',
+            color: activeTab === tab ? '#fff' : S.tx3,
+            border:'none', cursor:'pointer', transition:'all 0.2s',
+            letterSpacing:'0.04em',
+          }}>
+            {t('me.tab_' + tab)}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Profil Tab ── */}
+      {activeTab === 'profil' && (
+      <div style={{ padding:'0 20px' }}>
 
           <Section title={t('profile.public_photos')} color={S.sage}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 4px' }}>{t('profile.public_photos_desc')}</p>
@@ -184,10 +208,6 @@ export default function MePage() {
 
           <Section title={t('profile.infos')} color={S.lav}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              <div>
-                <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_pseudo')}</label>
-                <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder={t('profile.placeholder_pseudo')} style={inputStyle} />
-              </div>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_bio')}</label>
                 <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder={t('profile.placeholder_bio')} rows={3} style={{ ...inputStyle, resize:'none', lineHeight:1.5 }} />
@@ -307,10 +327,12 @@ export default function MePage() {
           {devMode && (
             <Link to="/dev/test?dev=1" style={{ display: 'block', marginTop: 24, fontSize: 12, color: S.tx3, textDecoration: 'none' }}>Test menu</Link>
           )}
-        </div>
+      </div>
+      )}
 
-      {/* ── MÉDIAS ADULTES ── */}
-        <div style={{ padding:'16px 20px' }}>
+      {/* ── Adulte Tab ── */}
+      {activeTab === 'adulte' && (
+        <div style={{ padding:'0 20px' }}>
 
           <ProfileAdultMedia
             userId={user.id}
@@ -372,16 +394,17 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.platform_desc')}</p>
             <PlatformProfiles userId={user.id} linkedProfiles={platformProfiles} onChange={setPlatformProfiles} />
           </Section>
+      </div>
+      )}
 
-          {/* Auto-save status */}
-          <div style={{
-            textAlign:'center', padding:'12px 0', fontSize:12, fontWeight:600,
-            color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
-            transition:'color 0.3s',
-          }}>
-            {autoSaveStatus === 'saving' ? t('profile.autosave_saving') : autoSaveStatus === 'saved' ? t('profile.autosave_saved') : t('profile.autosave_active')}
-          </div>
-        </div>
+      {/* Auto-save status (always visible) */}
+      <div style={{
+        textAlign:'center', padding:'12px 20px', fontSize:12, fontWeight:600,
+        color: autoSaveStatus === 'saving' ? S.p : autoSaveStatus === 'saved' ? S.sage : S.tx4,
+        transition:'color 0.3s',
+      }}>
+        {autoSaveStatus === 'saving' ? t('profile.autosave_saving') : autoSaveStatus === 'saved' ? t('profile.autosave_saved') : t('profile.autosave_active')}
+      </div>
 
       {cropSrc && cropCallback && (
         <ImageCropModal

@@ -130,6 +130,23 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* ─── Create Session CTA (top) ────────────────── */}
+      {userId && !isGhost && (
+        <div style={{ position: 'relative', zIndex: 1, padding: '0 24px 4px' }}>
+          <button onClick={() => navigate('/session/create')} style={{
+            width: '100%', padding: '14px 20px',
+            background: `linear-gradient(135deg, ${S.p}, ${S.grad})`,
+            border: 'none', borderRadius: R.btn, color: '#fff',
+            ...typeStyle('section'), cursor: 'pointer',
+            boxShadow: `0 4px 20px ${S.pbd}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}>
+            <Plus size={18} strokeWidth={2.5} />
+            {t('home.create_session')}
+          </button>
+        </div>
+      )}
+
       {/* ─── Content ─────────────────────────────────── */}
       <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 96 }}>
 
