@@ -10,8 +10,9 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 import BottomNav from './components/BottomNav'
 import RequireAuth from './components/RequireAuth'
-import InstallPrompt from './components/InstallPrompt'
-import PushPrompt from './components/PushPrompt'
+// InstallPrompt and PushPrompt disabled for now
+// import InstallPrompt from './components/InstallPrompt'
+// import PushPrompt from './components/PushPrompt'
 
 // Lazy-loaded pages
 const SessionPage = lazy(() => import('./pages/SessionPage'))
@@ -129,8 +130,9 @@ export default function App() {
           <ToastProvider />
           <Suspense fallback={<LazyFallback />}><AnimatedRoutes /></Suspense>
           <BottomNav />
-          <InstallPrompt />
-          <PushPrompt />
+          {/* InstallPrompt and PushPrompt disabled — too early in user journey */}
+          {/* <InstallPrompt /> */}
+          {/* <PushPrompt /> */}
         </BrowserRouter>
       </AuthProvider>
     </ErrorBoundary>
