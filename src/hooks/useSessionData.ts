@@ -77,7 +77,7 @@ export function useSessionData() {
     : (myApp?.status === 'accepted' || myApp?.status === 'checked_in') ? 'member'
     : 'candidate'
 
-  const statusLabel = session ? (session.status === 'open' ? t('session.status_open') : session.status === 'ended' ? t('session.status_ended') : t('session.status_draft')) : ''
+  const statusLabel = session ? (session.status === 'open' ? t('session.status_open') : session.status === 'ending_soon' ? t('session.ending_soon_title') : session.status === 'ended' ? t('session.status_ended') : t('session.status_draft')) : ''
 
   const loadData = useCallback(async () => {
     try {
@@ -389,16 +389,8 @@ export function useSessionData() {
 
   const endSession = async () => {
     if (!await confirm({ title: t('options.end_session'), description: t('options.end_confirm'), danger: true, confirmLabel: t('options.end_session') })) return
-    const { error } = await supabase.from('sessions').update({ status: 'ended' }).eq('id', id)
+    const { error } = await supabase.rpc('rpc_end_session', { p_session_id: id })
     if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error'); return }
-    // Create review queue for all participants
-    const { data: endedApps } = await supabase.from('applications').select('applicant_id').eq('session_id', id!).in('status', ['accepted', 'checked_in'])
-    if (endedApps && endedApps.length > 0 && session) {
-      const queueEntries = [...endedApps.map(a => a.applicant_id), session.host_id].filter(Boolean).map(uid => ({
-        user_id: uid, session_id: id, status: 'pending',
-      }))
-      await supabase.from('review_queue').upsert(queueEntries, { onConflict: 'user_id,session_id' })
-    }
     showToast(t('options.session_ended'), 'success')
     loadData()
   }
@@ -416,7 +408,7 @@ export function useSessionData() {
     isHost, eventRole, statusLabel,
     handleTouchStart, handleTouchEnd,
     getVoteStats, handleVote, handleCheckIn,
-    cancelApplication, leaveSession, endSession, confirmCheckIn, loadData,
+    cancelApplication, leaveSession, endSession, confirmCheckIn, loadData, refresh: loadData,
     checkInRequests,
     confirmDialogProps,
   }

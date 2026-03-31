@@ -90,7 +90,7 @@ export default function SessionPage() {
     </div>
   )
 
-  const statusColor = d.session.status === 'open' ? S.sage : d.session.status === 'ended' ? S.red : S.tx2
+  const statusColor = d.session.status === 'open' ? S.sage : d.session.status === 'ending_soon' ? S.amber : d.session.status === 'ended' ? S.red : S.tx2
 
   function handleTabChange(tab: string) {
     // Handle special tab actions
@@ -132,6 +132,22 @@ export default function SessionPage() {
             isBookmarked={bookmarked}
             onToggleBookmark={toggleBookmark}
           />
+          {/* Ending soon banner */}
+          {d.session.status === 'ending_soon' && d.isHost && (
+            <div style={{ margin: '0 16px 8px', padding: '12px 16px', borderRadius: 14, background: S.amberbg, border: '1px solid ' + S.amberbd, display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ flex: 1 }}>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: S.amber }}>{d.t('session.ending_soon_title')}</p>
+                <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx3 }}>{d.t('session.ending_soon_desc')}</p>
+              </div>
+              <button onClick={async () => {
+                const newEnd = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
+                await supabase.rpc('rpc_extend_session', { p_session_id: d.id, p_new_ends_at: newEnd })
+                d.refresh()
+              }} style={{ padding: '8px 14px', borderRadius: 10, background: S.sage, border: 'none', color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+                {d.t('session.extend_2h')}
+              </button>
+            </div>
+          )}
           {d.session.status !== 'ended' && (
             <SessionQuickActions
               sessionId={d.id!}
