@@ -57,10 +57,12 @@ export default function LoginPage() {
       .select('id, display_name, profile_json')
       .eq('id', userId)
       .maybeSingle()
-    const pj = profile?.profile_json
-    const isOnboarded = pj?.onboarding_done || pj?.avatar_url || pj?.role || (profile?.display_name && profile.display_name !== 'Anonymous')
+    const pj = (profile?.profile_json || {}) as Record<string, unknown>
+    const isOnboarded = pj.onboarding_done || pj.avatar_url || pj.role || (profile?.display_name && profile.display_name !== 'Anonymous')
     if (!profile || !isOnboarded) {
       navigate('/onboarding')
+    } else if (!pj.onboarding_complete) {
+      navigate('/welcome')
     } else {
       navigate(next)
     }

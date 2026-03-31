@@ -32,6 +32,7 @@ const EditSessionPage = lazy(() => import('./pages/EditSessionPage'))
 const GhostSetupPage = lazy(() => import('./pages/GhostSetupPage'))
 const GhostRecoverPage = lazy(() => import('./pages/GhostRecoverPage'))
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'))
+const WelcomeTutorial = lazy(() => import('./pages/WelcomeTutorial'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const GroupsPage = lazy(() => import('./pages/GroupsPage'))
 const ContactDetailPage = lazy(() => import('./pages/ContactDetailPage'))
@@ -69,6 +70,7 @@ const routes = [
   { path: '/ghost/recover', element: <GhostRecoverPage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/onboarding', element: <OnboardingPage /> },
+  { path: '/welcome', element: <WelcomeTutorial /> },
   { path: '/me', element: <RequireAuth><MePage /></RequireAuth> },
   { path: '/contacts', element: <RequireAuth><ContactsPage /></RequireAuth> },
   { path: '/explore', element: <ExplorePage /> },

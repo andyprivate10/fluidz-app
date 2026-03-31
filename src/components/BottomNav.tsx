@@ -59,6 +59,7 @@ export default function BottomNav() {
   const [unreadChatCount, setUnreadChatCount] = useState(0)
   const [hasNewApplication, setHasNewApplication] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [profilePct, setProfilePct] = useState(100)
 
   // Hide logic moved AFTER all hooks (see below) to respect React rules of hooks
 
@@ -71,6 +72,14 @@ export default function BottomNav() {
       supabase.from('notifications').select('*', { count: 'exact', head: true })
         .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
         .then(({ count }) => setUnreadChatCount(count ?? 0))
+      // Profile completion for pastille
+      supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
+        .then(({ data: prof }) => {
+          if (!prof) return
+          const pj = (prof.profile_json || {}) as Record<string, unknown>
+          const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!(pj.kinks && (pj.kinks as string[]).length > 0), !!prof.display_name && prof.display_name !== 'Anonymous']
+          setProfilePct(Math.round((checks.filter(Boolean).length / checks.length) * 100))
+        })
       supabase.from('sessions').select('id').eq('host_id', user.id).eq('status', 'open')
         .then(({ data: sessions }) => {
           if (!sessions || sessions.length === 0) return
@@ -105,7 +114,7 @@ export default function BottomNav() {
   }, [unreadNotifCount])
 
   // Hide on certain paths (all conditional returns MUST be after all hooks)
-  const hidePaths = ['/login', '/onboarding', '/ghost/setup', '/landing', '/auth/callback']
+  const hidePaths = ['/login', '/onboarding', '/welcome', '/ghost/setup', '/landing', '/auth/callback']
   if (hidePaths.some(p => location.pathname.startsWith(p))) return null
   if (/\/(dm|chat)/.test(location.pathname) && !location.pathname.startsWith('/chats')) return null
   if (/^\/session\/[a-f0-9-]+/.test(location.pathname)) return null
@@ -235,13 +244,23 @@ export default function BottomNav() {
                   <line x1="3" y1="18" x2="21" y2="18"/>
                 </svg>
               </div>
-              {showMenuDot && (
+              {profilePct < 80 ? (
+                <div style={{
+                  position: 'absolute', top: -6, right: -8,
+                  minWidth: 18, height: 18, borderRadius: 99,
+                  background: S.amber, border: `2px solid ${S.bg}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 8, fontWeight: 800, color: S.bg,
+                }}>
+                  {profilePct}%
+                </div>
+              ) : showMenuDot ? (
                 <div style={{
                   position: 'absolute', top: -2, right: -4,
                   width: 7, height: 7, borderRadius: '50%',
                   background: S.p, border: `2px solid ${S.bg}`,
                 }} />
-              )}
+              ) : null}
             </div>
             <span style={{
               fontSize: 10, fontWeight: 600,
