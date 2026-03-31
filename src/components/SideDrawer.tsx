@@ -154,7 +154,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           {menuItem(<MapPin size={18} strokeWidth={1.5} />, t('shortcuts.addresses'), '/me/addresses')}
           {menuItem(<FileText size={18} strokeWidth={1.5} />, t('shortcuts.templates'), '/me/templates')}
           {menuItem(<MessageSquare size={18} strokeWidth={1.5} />, t('shortcuts.message_types'), '/me/messages')}
-          {menuItem(<Settings size={18} strokeWidth={1.5} />, t('shortcuts.preferences'), '/me/preferences')}
+          {menuItem(<Settings size={18} strokeWidth={1.5} />, t('settings_page.title'), '/settings')}
 
           {/* Section: Settings */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('drawer.settings')}</p>

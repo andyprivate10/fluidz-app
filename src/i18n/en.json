@@ -95,7 +95,11 @@
     "filter_age": "Age",
     "filter_tribes": "Types",
     "filter_kinks": "Kinks",
-    "visitor": "Visitor"
+    "visitor": "Visitor",
+    "save_filters": "Save",
+    "load_filters": "Load my filters",
+    "filters_saved": "Filters saved",
+    "filters_loaded": "Filters loaded"
   },
   "session": {
     "live": "Live",
@@ -903,6 +907,12 @@
     "delete_button": "Delete my account permanently",
     "deleted_success": "Account deleted"
   },
+  "settings_page": {
+    "title": "Settings",
+    "visibility": "Visibility",
+    "visibility_desc": "Your profile appears in the Explore gallery",
+    "privacy_settings": "Privacy & account"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",
@@ -1420,6 +1430,16 @@
     "placeholder": "New message template...",
     "max_reached": "Maximum 5 messages",
     "deleted": "Message deleted"
+  },
+  "msg_templates": {
+    "title": "Message templates",
+    "desc": "Prepare reusable messages for your applications",
+    "placeholder": "Write your template message here...",
+    "add": "Add a message",
+    "added": "Message added",
+    "empty": "No message templates",
+    "empty_desc": "Create messages to reuse them quickly",
+    "max_reached": "Maximum 10 message templates"
   },
   "tips": {
     "explore_title": "Explore profiles nearby",

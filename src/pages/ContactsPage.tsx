@@ -12,6 +12,7 @@ import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import CyclingAvatar from '../components/CyclingAvatar'
 import { useTranslation } from 'react-i18next'
+import LinkedProfiles from '../components/LinkedProfiles'
 
 
 const S = colors
@@ -46,9 +47,17 @@ export default function ContactsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori'>('all')
+  const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
+
 
   useEffect(() => {
-    if (user) loadContacts()
+    if (user) {
+      loadContacts()
+      supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle().then(({ data }) => {
+        const pj = (data?.profile_json || {}) as Record<string, unknown>
+        if (Array.isArray(pj.linked_profiles)) setLinkedProfiles(pj.linked_profiles as { user_id: string; type: string }[])
+      })
+    }
   }, [user])
 
   const loadContacts = useCallback(async () => {
@@ -219,6 +228,22 @@ export default function ContactsPage() {
           )
         })}
       </div>
+
+      {/* Linked profiles (couples, groups) */}
+      {user && (
+        <div style={{ padding: '12px 20px 20px' }}>
+          <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 20, padding: 16, border: '1px solid ' + S.rule2 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 10 }}>{t('profile.linked_profiles')}</div>
+            <p style={{ fontSize: 11, color: S.tx3, margin: '0 0 10px' }}>{t('profile.linked_desc')}</p>
+            <LinkedProfiles userId={user.id} linkedProfiles={linkedProfiles} onChange={async (profiles) => {
+              setLinkedProfiles(profiles)
+              const { data: current } = await supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle()
+              const pj = { ...((current?.profile_json || {}) as Record<string, unknown>), linked_profiles: profiles }
+              await supabase.from('user_profiles').update({ profile_json: pj }).eq('id', user.id)
+            }} />
+          </div>
+        </div>
+      )}
     </div>
     </PageFadeIn>
   )

@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, UserPlus, CheckCircle2 } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, UserPlus, CheckCircle2, Save, Download } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -68,6 +68,7 @@ export default function ExplorePage() {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [myHomeCountry, setMyHomeCountry] = useState<string | null>(null)
   const [myContactIds, setMyContactIds] = useState<Set<string>>(new Set())
+  const [savedFilters, setSavedFilters] = useState<{ role?: string } | null>(null)
 
   useEffect(() => {
     if (!authUser) { navigate('/login?next=/explore'); return }
@@ -94,6 +95,7 @@ export default function ExplorePage() {
         if (data.approx_lat && data.approx_lng) { setMyLat(data.approx_lat); setMyLng(data.approx_lng) }
         const pj = (data as any).profile_json || {}
         if (pj.home_country) setMyHomeCountry(pj.home_country)
+        if (pj.search_filters) setSavedFilters(pj.search_filters)
       }
     })
   }, [authUser])
@@ -216,6 +218,23 @@ export default function ExplorePage() {
     setLoading(false)
   }
 
+  async function saveCurrentFilters() {
+    if (!userId) return
+    const filters = { role: roleFilter !== t('common.all') ? roleFilter : undefined }
+    const { data: current } = await supabase.from('user_profiles').select('profile_json').eq('id', userId).maybeSingle()
+    const pj = { ...((current?.profile_json || {}) as Record<string, unknown>), search_filters: filters }
+    await supabase.from('user_profiles').update({ profile_json: pj }).eq('id', userId)
+    setSavedFilters(filters)
+    showToast(t('explore.filters_saved'), 'success')
+  }
+
+  function loadSavedFilters() {
+    if (!savedFilters) return
+    if (savedFilters.role) setRoleFilter(savedFilters.role)
+    else setRoleFilter(t('common.all'))
+    showToast(t('explore.filters_loaded'), 'success')
+  }
+
   async function toggleVisibility() {
     if (!userId) return
     const newVal = !visible
@@ -260,7 +279,7 @@ export default function ExplorePage() {
         </div>
 
         {/* Filters */}
-        {showFilters && (
+        {showFilters && (<>
           <div style={{ display: 'flex', gap: 6, marginTop: 10, overflowX: 'auto' }}>
             {roleFilters.map(r => (
               <button key={r} onClick={() => setRoleFilter(r)} style={{
@@ -271,6 +290,16 @@ export default function ExplorePage() {
               }}>{r}</button>
             ))}
           </div>
+          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+            <button onClick={saveCurrentFilters} style={{ padding: '5px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + S.lavbd, background: S.lavbg, color: S.lav, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Save size={12} /> {t('explore.save_filters')}
+            </button>
+            {savedFilters && (
+              <button onClick={loadSavedFilters} style={{ padding: '5px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + S.sagebd, background: S.sagebg, color: S.sage, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Download size={12} /> {t('explore.load_filters')}
+              </button>
+            )}
+          </div></>
         )}
       </div>
 

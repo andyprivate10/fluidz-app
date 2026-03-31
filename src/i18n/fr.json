@@ -95,7 +95,11 @@
     "filter_age": "Age",
     "filter_tribes": "Types",
     "filter_kinks": "Kinks",
-    "visitor": "Visitor"
+    "visitor": "Visitor",
+    "save_filters": "Sauvegarder",
+    "load_filters": "Charger mes filtres",
+    "filters_saved": "Filtres sauvegard\u00e9s",
+    "filters_loaded": "Filtres charg\u00e9s"
   },
   "session": {
     "live": "Live",
@@ -901,7 +905,13 @@
     "delete_warning": "Cela supprimera définitivement ton profil, tes photos, messages et toutes les données associées. Cette action est irréversible.",
     "delete_confirm": "Tape SUPPRIMER pour confirmer",
     "delete_button": "Supprimer mon compte définitivement",
-    "deleted_success": "Compte supprimé"
+    "deleted_success": "Compte supprim\u00e9"
+  },
+  "settings_page": {
+    "title": "R\u00e9glages",
+    "visibility": "Visibilit\u00e9",
+    "visibility_desc": "Ton profil appara\u00eet dans la galerie Explore",
+    "privacy_settings": "Confidentialit\u00e9 & compte"
   },
   "common": {
     "loading": "Chargement...",
@@ -1420,6 +1430,16 @@
     "placeholder": "Nouveau message type...",
     "max_reached": "Maximum 5 messages",
     "deleted": "Message supprimé"
+  },
+  "msg_templates": {
+    "title": "Messages types",
+    "desc": "Prépare des messages réutilisables pour tes candidatures",
+    "placeholder": "Écris ton message type ici...",
+    "add": "Ajouter un message",
+    "added": "Message ajouté",
+    "empty": "Aucun message type",
+    "empty_desc": "Crée des messages pour les réutiliser rapidement",
+    "max_reached": "Maximum 10 messages types"
   },
   "tips": {
     "explore_title": "Explore les profils autour de toi",

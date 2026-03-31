@@ -8,7 +8,6 @@ import { showToast } from '../components/Toast'
 import ImageCropModal from '../components/ImageCropModal'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import ProfileAdultMedia from '../components/profile/ProfileAdultMedia'
-import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
 import MultiChipSelector from '../components/MultiChipSelector'
 import { TRIBES, TRIBE_CATEGORIES } from '../lib/tribeTypes'
@@ -86,7 +85,7 @@ export default function MePage() {
     kinks, prep, setPrep, dernierTest, setDernierTest, healthTests, setHealthTests,
     limits, setLimits,
     sectionVisibility, setSectionVisibility,
-    linkedProfiles, setLinkedProfiles, platformProfiles, setPlatformProfiles,
+    platformProfiles, setPlatformProfiles,
     avatarUrl, photosProfil, photosIntime, videosIntime,
     mediaUploading, cropSrc, setCropSrc, cropCallback, setCropCallback, cropAspect, setCropAspect,
     bodyPartPhotos, setBodyPartPhotos,
@@ -397,11 +396,6 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.red, marginTop:6, opacity:0.7 }}>
               {t('profile.visible_host_voters')}
             </p>
-          </Section>
-
-          <Section title={t('profile.linked_profiles')} color={S.p} sectionKey="linked_profiles" visibility={sectionVisibility.linked_profiles} onVisibilityChange={handleVisibilityChange}>
-            <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.linked_desc')}</p>
-            <LinkedProfiles userId={user.id} linkedProfiles={linkedProfiles} onChange={setLinkedProfiles} />
           </Section>
 
           <Section title={t('profile.platform_profiles')} color={S.p} sectionKey="platform_profiles" visibility={sectionVisibility.platform_profiles} onVisibilityChange={handleVisibilityChange}>
