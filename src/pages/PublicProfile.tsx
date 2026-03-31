@@ -15,6 +15,9 @@ import OrbLayer from '../components/OrbLayer'
 import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, BookOpen, Clock, Link2 } from 'lucide-react'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
+import DmPrivacyBadge from '../components/DmPrivacyBadge'
+import InterestPopup from '../components/InterestPopup'
+import NaughtyBookButton from '../components/NaughtyBookButton'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -80,6 +83,9 @@ export default function PublicProfile() {
   const [dmStatus, setDmStatus] = useState<'direct' | 'need_request' | 'pending' | 'blocked'>('direct')
   const [peerPrivacy, setPeerPrivacy] = useState<DmPrivacyLevel>('open')
   const [showDmRequest, setShowDmRequest] = useState(false)
+  const [showInterestPopup, setShowInterestPopup] = useState(false)
+  const [interestSent, setInterestSent] = useState(false)
+  const [isMutualNb, setIsMutualNb] = useState(false)
   const { confirm, dialogProps } = useConfirmDialog()
 
   useEffect(() => {
@@ -99,7 +105,9 @@ export default function PublicProfile() {
         supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: userId, type: 'profile_view' as any, meta: {} }).then(() => {})
         supabase.from('favorites').select('id').eq('user_id', user.id).eq('target_user_id', userId).maybeSingle().then(({ data }) => setIsFavorite(!!data))
         // Check NaughtyBook contact
-        supabase.from('contacts').select('id').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(({ data }) => setIsInNaughtyBook(!!data))
+        supabase.from('contacts').select('id, mutual').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(({ data }) => { setIsInNaughtyBook(!!data); if (data?.mutual) setIsMutualNb(true) })
+        // Check existing interest request
+        supabase.from('interest_requests').select('id').eq('sender_id', user.id).eq('receiver_id', userId).maybeSingle().then(({ data }) => { if (data) setInterestSent(true) })
         // Check DM privacy for this peer
         const peerPj = (prof?.profile_json || {}) as Record<string, unknown>
         const privacy = (peerPj.dm_privacy as DmPrivacyLevel) || 'open'
@@ -255,30 +263,49 @@ export default function PublicProfile() {
 
       {/* ═══ ACTIONS ═══ */}
       <div style={{ padding: '16px 20px 0' }}>
-        {/* NaughtyBook badge */}
-        {isInNaughtyBook && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, marginBottom: 10 }}>
-            <BookOpen size={12} strokeWidth={1.5} style={{ color: S.sage }} />
-            <span style={{ fontSize: 11, fontWeight: 700, color: S.sage }}>{t('profile.in_naughtybook_badge')}</span>
-          </div>
+        {/* Badges row: DM privacy + NaughtyBook */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+          <DmPrivacyBadge level={peerPrivacy} />
+          {isMutualNb && (
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd }}>
+              <BookOpen size={11} strokeWidth={1.5} style={{ color: S.sage }} />
+              <span style={{ fontSize: 11, fontWeight: 700, color: S.sage }}>{t('naughtybook.mutual_badge')}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Interest button */}
+        {!isMutualNb && (
+          interestSent ? (
+            <button onClick={() => navigate('/dm/' + userId)} style={{ width: '100%', padding: '14px', borderRadius: 14, background: S.sagebg, border: '1px solid '+S.sagebd, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: S.sage }}>{t('interest.already_sent')}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: S.blue }}>→ DM</span>
+            </button>
+          ) : (
+            <button onClick={() => setShowInterestPopup(true)} className="btn-shimmer" style={{ width: '100%', padding: '14px', borderRadius: 14, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: S.tx, fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 20px ' + S.pbd, position: 'relative' as const, overflow: 'hidden' }}>
+              <Heart size={15} strokeWidth={2} fill="white" style={{ marginRight: 6, display: 'inline' }} />
+              {t('interest.button')}
+            </button>
+          )
         )}
 
-        <ContactRequestButton targetUserId={userId!} myProfile={myProfile} />
-
-        {/* DM + Story + Favorite row */}
+        {/* DM + Story row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          {/* Smart DM button */}
-          {dmStatus === 'direct' || isInNaughtyBook ? (
+          {dmStatus === 'direct' || isMutualNb ? (
             <button onClick={() => navigate('/dm/' + userId)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <MessageCircle size={13} strokeWidth={1.5} /> {t('profile.dm_direct')}
+              <MessageCircle size={13} strokeWidth={1.5} /> {isMutualNb ? t('naughtybook.send_message') : t('profile.dm_direct')}
             </button>
           ) : dmStatus === 'pending' ? (
             <button disabled style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, opacity: 0.6 }}>
               <Clock size={13} strokeWidth={1.5} /> {t('profile.dm_pending')}
             </button>
-          ) : (
+          ) : peerPrivacy !== 'open' ? (
             <button onClick={() => setShowDmRequest(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.lavbd, color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
               <MessageCircle size={13} strokeWidth={1.5} /> {t('profile.dm_request')}
+            </button>
+          ) : (
+            <button onClick={() => navigate('/dm/' + userId)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+              <MessageCircle size={13} strokeWidth={1.5} /> {t('profile.dm_direct')}
             </button>
           )}
           <button onClick={() => setShowStory(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
@@ -286,8 +313,9 @@ export default function PublicProfile() {
           </button>
         </div>
 
-        {/* Favorite + NaughtyBook row */}
+        {/* NaughtyBook + Favorite + Contact row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
+          <NaughtyBookButton targetUserId={userId!} isMutual={isMutualNb} onStatusChange={s => { if (s === 'mutual') setIsMutualNb(true); else setIsMutualNb(false) }} />
           <div style={{ flex: 1 }}><AddContactButton targetUserId={userId!} /></div>
           {myUserId && myUserId !== userId && (
             <button onClick={async () => {
@@ -408,6 +436,13 @@ export default function PublicProfile() {
       />
       {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
       <ConfirmDialog {...dialogProps} />
+      <InterestPopup
+        open={showInterestPopup}
+        onClose={() => setShowInterestPopup(false)}
+        targetUserId={userId!}
+        targetName={displayName}
+        onSent={() => { setInterestSent(true); setShowInterestPopup(false) }}
+      />
       {userId && myUserId && myUserId !== userId && (
         <DmRequestSheet
           open={showDmRequest}
