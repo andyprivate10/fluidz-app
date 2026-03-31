@@ -326,17 +326,19 @@ export default function MePage() {
       {activeTab === 'adulte' && (
         <div style={{ padding:'0 20px' }}>
 
-          <ProfileAdultMedia
-            userId={user.id}
-            bodyPartPhotos={bodyPartPhotos}
-            setBodyPartPhotos={setBodyPartPhotos}
-            photosIntime={photosIntime}
-            videosIntime={videosIntime}
-            removePhotoIntime={removePhotoIntime}
-            removeVideoIntime={removeVideoIntime}
-            uploadMedia={uploadMedia}
-            mediaUploading={mediaUploading}
-          />
+          <Section title={t('profile.intimate_media')} color={S.p} sectionKey="adult_zones" visibility={sectionVisibility.adult_zones} onVisibilityChange={handleVisibilityChange}>
+            <ProfileAdultMedia
+              userId={user.id}
+              bodyPartPhotos={bodyPartPhotos}
+              setBodyPartPhotos={setBodyPartPhotos}
+              photosIntime={photosIntime}
+              videosIntime={videosIntime}
+              removePhotoIntime={removePhotoIntime}
+              removeVideoIntime={removeVideoIntime}
+              uploadMedia={uploadMedia}
+              mediaUploading={mediaUploading}
+            />
+          </Section>
 
           <Section title={t('profile.kinks')} color={S.p} badge={kinks.length > 0 ? t('profile.kinks_badge', { count: kinks.length }) : undefined} sectionKey="kinks" visibility={sectionVisibility.kinks} onVisibilityChange={handleVisibilityChange}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>

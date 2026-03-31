@@ -129,6 +129,8 @@ export default function PublicProfile() {
   if (!profile) return (<div style={{ minHeight: '100vh', background: S.bg, padding: 24, maxWidth: 480, margin: '0 auto' }}><button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: S.tx3, fontSize: 13, cursor: 'pointer', padding: 0 }}><ArrowLeft size={16} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4 }} />{t('common.back_label')}</button><p style={{ color: S.red, marginTop: 16 }}>{t('profile.not_found')}</p></div>)
 
   const p = profile.profile_json || {}
+  const sv = (p.section_visibility || {}) as Record<string, string>
+  const canSee = (key: string) => !sv[key] || sv[key] === 'all' || isInNaughtyBook
   const kinkNorm: Record<string, string> = { 'SM leger': 'SM léger', 'Fetichisme': 'Fétichisme', 'Jeux de role': 'Jeux de rôle' }
   const kinks: string[] = Array.from(new Set((p.kinks || []).map((k: string) => kinkNorm[k] || k))) as string[]
   const allPhotos: string[] = [...(Array.isArray(p.photos_profil) ? p.photos_profil : []), ...(Array.isArray(p.photos_intime) ? p.photos_intime : []), ...(Array.isArray(p.photos) ? p.photos : []), ...(!Array.isArray(p.photos_profil) && !Array.isArray(p.photos) && p.avatar_url ? [p.avatar_url] : [])].filter((v, i, a) => a.indexOf(v) === i)
@@ -326,7 +328,7 @@ export default function PublicProfile() {
         )}
 
         {/* Zones intimes */}
-        {p.body_part_photos && Object.keys(p.body_part_photos).length > 0 && (() => {
+        {canSee('adult_zones') && p.body_part_photos && Object.keys(p.body_part_photos).length > 0 && (() => {
           const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
           const zones = Object.entries(p.body_part_photos as Record<string, string | string[]>).filter(([, val]) => {
             const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
@@ -359,16 +361,16 @@ export default function PublicProfile() {
           ) : null
         })()}
 
-        {kinks.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>{t('profile.pratiques_count', { count: kinks.length })}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}</div></div>}
+        {canSee('kinks') && kinks.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>{t('profile.pratiques_count', { count: kinks.length })}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}</div></div>}
 
-        {(p.health?.prep_status || p.health?.dernier_test || p.prep) && (
+        {canSee('health') && (p.health?.prep_status || p.health?.dernier_test || p.prep) && (
           <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.sage)}>{t('profile.section_sante')}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '5px 14px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={12} strokeWidth={2} />{t('profile.prep_active_badge')}</span>}
             {p.health?.dernier_test && <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '5px 14px', borderRadius: 99, background: S.bluebg, border: '1px solid ' + S.bluebd }}>Testé il y a {monthsAgoCount(p.health.dernier_test)} mois</span>}
           </div></div>
         )}
 
-        {p.limits && <div style={{ ...glassCard, borderColor: S.redbd }}><div style={sLabel(S.red)}>{t('profile.section_limits')}</div><p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p></div>}
+        {canSee('limits') && p.limits && <div style={{ ...glassCard, borderColor: S.redbd }}><div style={sLabel(S.red)}>{t('profile.section_limits')}</div><p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.6, margin: 0 }}>{p.limits}</p></div>}
 
         {allVideos.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.lav)}>{t('profile.videos_label')} · {allVideos.length}</div><div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>{allVideos.map((url: string, i: number) => <div key={i} style={{ flexShrink: 0 }}><video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} /></div>)}</div></div>}
 
