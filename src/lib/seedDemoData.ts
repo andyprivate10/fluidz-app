@@ -757,6 +757,44 @@ export async function seedDemoData(onProgress?: SeedProgress): Promise<void> {
   }
   log('✅ DM messages created')
 
+  // ════════════════════════════════════════
+  // TASK 12: NaughtyBook requests + Interest requests
+  // ════════════════════════════════════════
+  log('Creating social interaction requests...')
+
+  // Marcus ↔ Karim: accepted NB request (mutual already set in contacts)
+  await signIn('marcus@fluidz.test')
+  await supabase.from('naughtybook_requests').upsert({
+    sender_id: ids.marcus, receiver_id: ids.karim, status: 'accepted', created_at: daysAgo(10),
+  }, { onConflict: 'sender_id,receiver_id' })
+
+  // Marcus → Yann: pending NB request
+  await supabase.from('naughtybook_requests').upsert({
+    sender_id: ids.marcus, receiver_id: ids.yann, status: 'pending', created_at: daysAgo(1),
+  }, { onConflict: 'sender_id,receiver_id' })
+
+  // Theo → Marcus: pending interest request with locked DM
+  await signIn('theo@fluidz.test')
+  await supabase.from('interest_requests').upsert({
+    sender_id: ids.theo, receiver_id: ids.marcus,
+    shared_sections: ['photos_profil', 'basics', 'role', 'physique'],
+    profile_snapshot: PROFILES.theo.profile_json,
+    status: 'pending', created_at: hoursAgo(2),
+  }, { onConflict: 'sender_id,receiver_id' })
+
+  // Create locked system message in Theo→Marcus DM
+  const dmSidTheoMarcus = directDmSessionId(ids.theo, ids.marcus)
+  await supabase.from('sessions').upsert({
+    id: dmSidTheoMarcus, host_id: ids.theo, title: 'DM', status: 'active',
+  }, { onConflict: 'id' })
+  await supabase.from('messages').insert({
+    session_id: dmSidTheoMarcus, sender_id: ids.theo,
+    text: '[INTEREST_SHARED]' + JSON.stringify(['photos_profil', 'basics', 'role', 'physique']),
+    sender_name: 'Theo', room_type: 'dm', dm_peer_id: ids.marcus,
+    locked: true, created_at: hoursAgo(2),
+  })
+  log('✅ Social interaction requests created')
+
   // Done
   await signIn('marcus@fluidz.test')
   log('🎉 All demo data seeded successfully!')
@@ -801,6 +839,8 @@ export async function clearDemoData(): Promise<void> {
   // Clean per-user data
   for (const uid of userIds) {
     await signIn(testEmails[userIds.indexOf(uid)])
+    await supabase.from('naughtybook_requests').delete().or(`sender_id.eq.${uid},receiver_id.eq.${uid}`)
+    await supabase.from('interest_requests').delete().or(`sender_id.eq.${uid},receiver_id.eq.${uid}`)
     await supabase.from('contacts').delete().eq('user_id', uid)
     await supabase.from('contact_group_members').delete().in('group_id',
       (await supabase.from('contact_groups').select('id').eq('owner_id', uid)).data?.map(g => g.id) || []
