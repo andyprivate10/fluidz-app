@@ -1,10 +1,18 @@
 import { useTranslation } from 'react-i18next'
+import React from 'react'
 import {
   Link2, Shield, Eye, Users, BookOpen, Clock, Star,
 } from 'lucide-react'
 import { colors, fonts, glassCard, typeStyle, radius } from '../../brand'
 
 const S = colors
+
+/** Safe renderer: only allows <em> tags, strips everything else */
+function safeEmph(text: string): React.ReactNode[] {
+  return text.split(/<em>(.*?)<\/em>/g).map((part, i) =>
+    i % 2 === 1 ? React.createElement('em', { key: i }, part) : part
+  )
+}
 const R = radius
 const MAX = 960
 
@@ -32,7 +40,7 @@ export default function LandingFeatures({ rv }: { rv: RevealRef }) {
         <blockquote style={{
           fontFamily: fonts.hero, fontSize: 'clamp(20px,4vw,32px)', fontWeight: 800,
           letterSpacing: '-0.03em', lineHeight: 1.25, maxWidth: 640, margin: '0 auto 24px',
-        }} dangerouslySetInnerHTML={{ __html: t('landing.philosophy_quote') }} />
+        }} >{safeEmph(t('landing.philosophy_quote'))}</blockquote>
         <p style={{ fontSize: 14, color: S.tx2, maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
           {t('landing.philosophy_body')}
         </p>
@@ -49,7 +57,7 @@ export default function LandingFeatures({ rv }: { rv: RevealRef }) {
           <h2 style={{
             fontFamily: fonts.hero, fontSize: 'clamp(22px,4vw,30px)', fontWeight: 800,
             letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 20,
-          }} dangerouslySetInnerHTML={{ __html: t('landing.problem_title') }} />
+          }} >{safeEmph(t('landing.problem_title'))}</h2>
           <p style={{ fontSize: 14, color: S.tx2, lineHeight: 1.7, marginBottom: 24 }}>
             {t('landing.problem_desc')}
           </p>
