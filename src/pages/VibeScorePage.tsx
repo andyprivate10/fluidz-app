@@ -48,7 +48,7 @@ export default function VibeScorePage() {
               <ArrowLeft size={20} strokeWidth={1.5} />
             </button>
             <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: 0 }}>
-              Vibe Score
+              {t('vibe.menu_label')}
             </h1>
           </div>
         </div>

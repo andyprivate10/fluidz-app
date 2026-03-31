@@ -7,7 +7,9 @@
   "nav": {
     "home": "Home",
     "sessions": "Sessions",
+    "explore": "Explore",
     "chats": "Chats",
+    "navigation": "Navigation",
     "profiles": "Profiles",
     "menu": "Menu",
     "infos": "Info",

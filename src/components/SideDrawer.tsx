@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { colors, fonts } from '../brand'
 import GhostTimer from './GhostTimer'
 import GhostConvertModal from './GhostConvertModal'
-import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings, Zap } from 'lucide-react'
+import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings, Zap, Home, Calendar, Search, MessageCircle } from 'lucide-react'
 
 const S = colors
 
@@ -23,24 +23,21 @@ export default function SideDrawer({ open, onClose }: Props) {
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
-    if (!open) return
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
-      if (!u) return
-      setUser({ id: u.id, email: u.email, created_at: u.created_at })
-      supabase.from('user_profiles').select('display_name, profile_json, is_admin, location_visible').eq('id', u.id).maybeSingle()
-        .then(({ data }) => {
-          if (data) setProfile({
-            display_name: data.display_name,
-            avatar_url: (data.profile_json as any)?.photos_profil?.[0] || (data.profile_json as any)?.avatar_url,
-            is_admin: data.is_admin,
-            location_visible: data.location_visible,
-          })
+    if (!open || !authUser) return
+    setUser({ id: authUser.id, email: authUser.email, created_at: authUser.created_at })
+    supabase.from('user_profiles').select('display_name, profile_json, is_admin, location_visible').eq('id', authUser.id).maybeSingle()
+      .then(({ data }) => {
+        if (data) setProfile({
+          display_name: data.display_name,
+          avatar_url: (data.profile_json as any)?.photos_profil?.[0] || (data.profile_json as any)?.avatar_url,
+          is_admin: data.is_admin,
+          location_visible: data.location_visible,
         })
-      supabase.from('notifications').select('*', { count: 'exact', head: true })
-        .eq('user_id', u.id).is('read_at', null)
-        .then(({ count }) => setUnreadCount(count ?? 0))
-    })
-  }, [open])
+      })
+    supabase.from('notifications').select('*', { count: 'exact', head: true })
+      .eq('user_id', authUser.id).is('read_at', null)
+      .then(({ count }) => setUnreadCount(count ?? 0))
+  }, [open, authUser])
 
   function go(path: string) { onClose(); navigate(path) }
   async function logout() { await supabase.auth.signOut(); onClose(); navigate('/login') }
@@ -141,6 +138,13 @@ export default function SideDrawer({ open, onClose }: Props) {
 
         {/* Menu items */}
         <div style={{ padding: '8px 20px', flex: 1 }}>
+          {/* Section: Navigation */}
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>{t('nav.navigation')}</p>
+          {menuItem(<Home size={18} strokeWidth={1.5} />, t('nav.home'), '/')}
+          {menuItem(<Calendar size={18} strokeWidth={1.5} />, t('nav.sessions'), '/sessions')}
+          {menuItem(<Search size={18} strokeWidth={1.5} />, t('nav.explore'), '/explore')}
+          {menuItem(<MessageCircle size={18} strokeWidth={1.5} />, t('nav.chats'), '/chats')}
+
           {/* Section: Mon espace */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>{t('drawer.my_space')}</p>
           {menuItem(<User size={18} strokeWidth={1.5} />, t('drawer.my_profile'), '/me')}
@@ -219,9 +223,7 @@ export default function SideDrawer({ open, onClose }: Props) {
       </div>
 
       <GhostConvertModal open={showConvert} onClose={() => setShowConvert(false)} onConverted={() => {
-        supabase.auth.getUser().then(({ data: { user: u } }) => {
-          if (u) setUser({ id: u.id, email: u.email, created_at: u.created_at })
-        })
+        if (authUser) setUser({ id: authUser.id, email: authUser.email, created_at: authUser.created_at })
       }} />
     </>
   )
