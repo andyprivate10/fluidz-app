@@ -256,6 +256,12 @@ export function useSessionData() {
       .channel('session-page-' + id)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'applications', filter: `session_id=eq.${id}` }, () => { loadData() })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'applications', filter: `session_id=eq.${id}` }, () => { loadData() })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'votes', filter: `session_id=eq.${id}` }, (payload: any) => {
+        const newVote = payload.new as VoteRow
+        if (newVote && newVote.voter_id !== currentUser?.id) {
+          setVotes(prev => [...prev.filter(v => !(v.applicant_id === newVote.applicant_id && v.voter_id === newVote.voter_id)), newVote])
+        }
+      })
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }

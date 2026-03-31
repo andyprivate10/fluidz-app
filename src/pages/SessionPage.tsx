@@ -300,6 +300,9 @@ export default function SessionPage() {
                         <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>
                           {vs.yesCount > 0 || vs.noCount > 0 ? `${vs.yesCount} ✓ · ${vs.noCount} ✗` : t('host.no_votes_yet')}
                         </p>
+                        {vs.noCount > vs.yesCount && vs.noCount > 0 && (
+                          <p style={{ fontSize: 10, fontWeight: 700, color: S.amber, margin: '2px 0 0' }}>⚠ {t('session.vote_majority_warning')}</p>
+                        )}
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: 8 }}>
