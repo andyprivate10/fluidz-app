@@ -4,6 +4,10 @@
     "tagline": "Organize your private parties",
     "install": "Install"
   },
+  "error": {
+    "something_went_wrong": "Something went wrong.",
+    "back_home": "Back to home"
+  },
   "nav": {
     "home": "Home",
     "sessions": "Sessions",

@@ -102,9 +102,9 @@ export default function SettingsPage() {
           <Section title={t('dm_privacy.title')} color={S.p}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {([
-                { level: 'open' as const, label: t('dm_privacy.open'), desc: t('dm_privacy.open_desc'), color: '#4ADE80' },
-                { level: 'profile_required' as const, label: t('dm_privacy.profile_required'), desc: t('dm_privacy.profile_required_desc'), color: '#7DD3FC' },
-                { level: 'full_access' as const, label: t('dm_privacy.full_access'), desc: t('dm_privacy.full_access_desc'), color: '#F9A8A8' },
+                { level: 'open' as const, label: t('dm_privacy.open'), desc: t('dm_privacy.open_desc'), color: S.sage },
+                { level: 'profile_required' as const, label: t('dm_privacy.profile_required'), desc: t('dm_privacy.profile_required_desc'), color: S.blue },
+                { level: 'full_access' as const, label: t('dm_privacy.full_access'), desc: t('dm_privacy.full_access_desc'), color: S.p },
               ]).map(opt => {
                 const on = dmPrivacy === opt.level
                 return (

@@ -93,7 +93,7 @@ const MessageBubble = React.memo(function MessageBubble({ message, isMine, isSee
       <span style={{ color: S.tx3, fontSize: 10, marginTop: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
         {formatMessageTime(message.created_at)}
         {isMine && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 2, color: isSeen ? '#7DD3FC' : S.tx4 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 2, color: isSeen ? S.blue : S.tx4 }}>
             {isSeen ? '\u2713\u2713' : '\u2713'}
           </span>
         )}

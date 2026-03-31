@@ -410,7 +410,7 @@ export default function DirectDMPage() {
                   const peerMsgs = messages.filter(m => !isMe(m.sender_id))
                   const lastPeerTime = peerMsgs.length > 0 ? new Date(peerMsgs[peerMsgs.length - 1].created_at).getTime() : 0
                   const isSeen = lastPeerTime > new Date(msg.created_at).getTime()
-                  return <span style={{ color: isSeen ? '#7DD3FC' : S.tx4, marginLeft: 3 }}>{isSeen ? '✓✓' : '✓'}</span>
+                  return <span style={{ color: isSeen ? S.blue : S.tx4, marginLeft: 3 }}>{isSeen ? '✓✓' : '✓'}</span>
                 })()}</span>
               </div>
             </div>

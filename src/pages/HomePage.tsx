@@ -137,7 +137,7 @@ export default function HomePage() {
           <button onClick={() => navigate('/session/create')} style={{
             width: '100%', padding: '14px 20px',
             background: `linear-gradient(135deg, ${S.p}, ${S.grad})`,
-            border: 'none', borderRadius: R.btn, color: '#fff',
+            border: 'none', borderRadius: R.btn, color: S.tx,
             ...typeStyle('section'), cursor: 'pointer',
             boxShadow: `0 4px 20px ${S.pbd}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,

@@ -4,6 +4,10 @@
     "tagline": "Organise tes soirees privees",
     "install": "Installer"
   },
+  "error": {
+    "something_went_wrong": "Quelque chose s'est mal passé.",
+    "back_home": "Retour à l'accueil"
+  },
   "nav": {
     "home": "Home",
     "sessions": "Sessions",

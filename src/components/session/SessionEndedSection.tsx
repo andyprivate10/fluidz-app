@@ -79,7 +79,7 @@ export default function SessionEndedSection({ session, sessionId, isHost, curren
                   owner_id: currentUser!.id,
                   name: session.title || 'Session group',
                   description: session.approx_area || '',
-                  color: '#F9A8A8',
+                  color: S.p,
                 }).select('id').single()
                 if (error || !newGroup) { showToast('Error', 'error'); return }
                 await supabase.from('contact_group_members').insert(

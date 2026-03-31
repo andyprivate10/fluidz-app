@@ -171,7 +171,7 @@ export default function MePage() {
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             flex:1, padding:'12px 0', fontSize:13, fontWeight:700,
             background: activeTab === tab ? S.p : 'transparent',
-            color: activeTab === tab ? '#fff' : S.tx3,
+            color: activeTab === tab ? S.tx : S.tx3,
             border:'none', cursor:'pointer', transition:'all 0.2s',
             letterSpacing:'0.04em',
           }}>

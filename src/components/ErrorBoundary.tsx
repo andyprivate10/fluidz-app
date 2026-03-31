@@ -2,6 +2,7 @@ import { colors } from '../brand'
 const S = colors
 import { Component } from 'react'
 import type { ReactNode, ErrorInfo } from 'react'
+import i18n from '../i18n'
 
 type Props = { children: ReactNode }
 type State = { hasError: boolean }
@@ -19,7 +20,6 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      const isFr = typeof navigator !== 'undefined' && navigator.language?.startsWith('fr')
       return (
         <div
           style={{
@@ -36,7 +36,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           }}
         >
           <p style={{ color: S.red, fontSize: 16, margin: 0, textAlign: 'center' }}>
-            {isFr ? 'Quelque chose s\'est mal passé.' : 'Something went wrong.'}
+            {i18n.t('error.something_went_wrong')}
           </p>
           <button
             type="button"
@@ -44,7 +44,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             style={{ padding: 14, borderRadius: 12 }}
             onClick={() => { this.setState({ hasError: false }); window.location.href = '/' }}
           >
-            {isFr ? 'Retour à l\'accueil' : 'Back to home'}
+            {i18n.t('error.back_home')}
           </button>
         </div>
       )
