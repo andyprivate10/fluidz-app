@@ -214,6 +214,25 @@ export default function ExplorePage() {
       }
     })
     mapped.sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
+
+    // Pad with demo profiles when fewer than 9 results
+    if (mapped.length < 9) {
+      const demoNames = ['Alex', 'Jordan', 'Sam', 'Chris', 'Morgan', 'Riley', 'Taylor', 'Casey', 'Jamie', 'Avery', 'Quinn']
+      const demoRoles = ['Top', 'Bottom', 'Versa', 'Power bottom', 'Switch']
+      const needed = 9 - mapped.length
+      const existingIds = new Set(mapped.map(p => p.id))
+      for (let i = 0; i < needed; i++) {
+        const demoId = `demo-${i}`
+        if (existingIds.has(demoId)) continue
+        mapped.push({
+          id: demoId,
+          display_name: demoNames[i % demoNames.length],
+          role: demoRoles[i % demoRoles.length],
+          age: 25 + (i * 3) % 15,
+        })
+      }
+    }
+
     setProfiles(mapped)
     setLoading(false)
   }
@@ -385,7 +404,7 @@ export default function ExplorePage() {
 
         {/* Grid */}
         {!loading && filtered.length > 0 && viewMode === 'grid' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
             {filtered.map(p => (
               <div
                 key={p.id}
