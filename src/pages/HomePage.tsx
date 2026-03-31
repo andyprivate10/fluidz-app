@@ -10,6 +10,7 @@ import SessionInfoCard from '../components/SessionInfoCard'
 import CyclingAvatar from '../components/CyclingAvatar'
 import { SkeletonHomePage } from '../components/Skeleton'
 import { sessionTiming } from '../lib/timing'
+import { getSessionCover } from '../lib/sessionCover'
 
 const S = colors
 const R = radius
@@ -260,29 +261,45 @@ export default function HomePage() {
 
         {/* Pending applications */}
         {pendingApps.length > 0 && (
-          <div style={{ ...card, border: `1px solid ${S.lavbd}` }}>
+          <div>
             <p style={{ ...typeStyle('micro'), color: S.lav, margin: '0 0 10px' }}>{t('home.pending_apps')}</p>
-            {pendingApps.map(app => (
-              <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: `1px solid ${S.rule}` }}>
-                <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{app.title}</p>
-                <Clock size={14} style={{ color: S.lav }} />
-              </div>
-            ))}
+            {pendingApps.map(app => {
+              const cover = getSessionCover(app.tags, app.cover_url, app.template_slug)
+              return (
+                <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
+                  style={{ ...card, cursor: 'pointer', marginBottom: 8, padding: 0, overflow: 'hidden', border: `1px solid ${S.lavbd}` }}>
+                  <div style={{ height: 56, background: cover.coverImage ? `url(${cover.coverImage}) center/cover` : cover.bg, position: 'relative' }}>
+                    {cover.overlay && <div style={{ position: 'absolute', inset: 0, background: cover.overlay }} />}
+                  </div>
+                  <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{app.title}</p>
+                    <Clock size={14} style={{ color: S.lav }} />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
 
         {/* Active sessions */}
         {activeApps.length > 0 && (
-          <div style={{ ...card, border: `1px solid ${S.sagebd}` }}>
+          <div>
             <p style={{ ...typeStyle('micro'), color: S.sage, margin: '0 0 10px' }}>{t('home.active_sessions')}</p>
-            {activeApps.map(app => (
-              <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer', borderBottom: `1px solid ${S.rule}` }}>
-                <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{app.title}</p>
-                <CheckCircle2 size={14} style={{ color: app.status === 'checked_in' ? S.sage : S.tx3 }} />
-              </div>
-            ))}
+            {activeApps.map(app => {
+              const cover = getSessionCover(app.tags, app.cover_url, app.template_slug)
+              return (
+                <div key={app.session_id} onClick={() => navigate('/session/' + app.session_id)}
+                  style={{ ...card, cursor: 'pointer', marginBottom: 8, padding: 0, overflow: 'hidden', border: `1px solid ${S.sagebd}` }}>
+                  <div style={{ height: 56, background: cover.coverImage ? `url(${cover.coverImage}) center/cover` : cover.bg, position: 'relative' }}>
+                    {cover.overlay && <div style={{ position: 'absolute', inset: 0, background: cover.overlay }} />}
+                  </div>
+                  <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{app.title}</p>
+                    <CheckCircle2 size={14} style={{ color: app.status === 'checked_in' ? S.sage : S.tx3 }} />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
 
@@ -326,7 +343,7 @@ export default function HomePage() {
           <>
             <button onClick={() => navigate('/session/create')} style={{
               position: 'relative', overflow: 'hidden', width: '100%', padding: 16,
-              background: S.p, border: 'none', borderRadius: R.btn, color: S.tx,
+              background: `linear-gradient(135deg, ${S.p}, ${S.grad})`, border: 'none', borderRadius: R.btn, color: '#fff',
               ...typeStyle('section'), cursor: 'pointer',
               boxShadow: `0 4px 24px ${S.pbd}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,

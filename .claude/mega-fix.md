@@ -1,107 +1,171 @@
-# FLUIDZ — MEGA UX FEEDBACK (30 Mars user testing)
-# Execute ALL items. Read .claude/CLAUDE.md first for project rules.
+# FLUIDZ — AUTONOMOUS MEGA PASS
+# Read .claude/CLAUDE.md first. Execute ALL items. Build 0 errors after each batch. Push.
+# This is meant to run unattended. Fix everything, verify, push.
 
-## ═══ A. HOME PAGE ═══
+## ═══ BATCH 1: CRITICAL BUG FIXES ═══
 
-### A1. Add "Créer une session" button on HomePage
-- Prominent CTA button, gradient peach, always visible
-- Should be near the top or floating at bottom
-- Navigate to /sessions/create
+### 1.1 Fix any remaining TS build errors
+- Run tsc --noEmit, fix ALL errors
+- Run npm run build, fix ALL errors
+- Remove any unused imports or variables
 
-### A2. Restore "Activity" section showing recent interactions
-- Show recent notifications/activity summary
-- Not just "Nouvelle candidature" repeated — use i18n type keys
+### 1.2 Verify all 37+ routes load
+- Check App.tsx — every lazy import must match an actual file
+- Verify no circular dependencies
+- Verify RequireAuth wrapper on protected routes
 
-### A3. "Compléter mon profil" → navigate directly to editable profile
-- Should go to /me in EDIT mode, not a read-only view
-- No need to re-click "voir mon profil" — land directly on editable sections
+### 1.3 Fix navigation dead-ends
+- Every page must have a back button or way to navigate away
+- SessionPage, CandidateProfilePage, DirectDMPage, JoinPage, ApplyPage
+- VibeScorePage, SettingsPage, MessageTemplatesPage need back buttons
 
-## ═══ B. PROFILE (MePage) — MAJOR RESTRUCTURE ═══
+## ═══ BATCH 2: HOMEPAGE POLISH ═══
 
-### B1. Two tabs: "Profil" (non-adult) and "Adulte" (adult/intimate)
-- Add tab switcher at top of MePage
-- Non-adult tab: Basics, Physique, Morphologie, Ethnicité, Profils liés
-- Adult tab: Rôle, Pratiques/Kinks, Photos intimes, Santé, Limites
+### 2.1 HomePage layout
+- CTA "Créer une session" button must be prominent (gradient peach)
+- NaughtyBook horizontal scroll with contact avatars
+- Session cards with cover images from sessionCover.ts
+- Activity feed with i18n notification translations
+- Ghost card when isGhost (create real account CTA)
 
-### B2. Remove sections from profile → relocate
-- "Mes types" + "Mes préférences" → become SAVED FILTERS in Explore search
-- "Confidentialité DM" → move to new Settings/Privacy page (with "visible dans galerie")
-- "Messages sauvegardés" → move to a "Templates" page/menu
-- "Supprimer mon compte" → move to Settings/Privacy page
-- "Profils liés" → move to NaughtyBook page
-- VibeScore detail → move to its own page in menu (explanations + how to improve)
+### 2.2 Session cards on HomePage
+- Each card shows: cover image, title, time, member count, status badge
+- Clicking navigates to /session/:id
+- If no sessions, show welcoming empty state
 
-### B3. VibeScore at top of profile
-- Show ONLY the final score number at top (no breakdown)
-- VibeScore detail becomes a separate page accessible from menu
+## ═══ BATCH 3: SESSION FLOW E2E ═══
 
-### B4. Pseudo appears FIRST
-- display_name is the minimum required field
-- Show it prominently at top before any other section
+### 3.1 Create Session flow
+- Template selection (Cuddle cover loads from cuddles.jpg)
+- All form fields work: title, description, tags, address, timing
+- Submit creates session in Supabase and navigates to session detail
 
-### B5. Section visibility slider
-- Each section gets a toggle: "Visible par tous" vs "NaughtyBook seulement"
-- Visual slider/switch on each section header
+### 3.2 Session detail page
+- Hero with cover image + gradient overlay
+- Back button in hero
+- SessionBottomNav tabs: Session / Participants / Share / Chat
+- Each tab renders correct content
+- OptionsMenu (⋮) works
 
-## ═══ C. SPECIFIC SECTION FIXES ═══
+### 3.3 Apply flow (as non-host user)
+- Pack selection (toggle sections to share)
+- Note step (optional message)
+- Submit creates application in Supabase
+- Shows confirmation
 
-### C1. Morphologie: buttons with icons instead of dropdown
-- Replace select/dropdown with clickable button grid
-- Each morphology option has an icon: Mince, Sportif, Athlétique, Moyen, Costaud, Musclé
-- Single select (only one active at a time)
+### 3.4 Share tab
+- Invite link generation works
+- Copy to clipboard
+- QR code if implemented
 
-### C2. Ethnicités: multi-select with ALL ethnicities
-- Make clear visually that multiple can be selected (checkboxes or multi-select pills)
-- Ensure comprehensive list of ethnicities is represented
-- Show "Plusieurs choix possibles" hint
+## ═══ BATCH 4: PROFILE E2E ═══
 
-### C3. Kinks: remove 3-max limit
-- Allow unlimited kink selection
-- No cap on number of selected kinks
+### 4.1 MePage tabs verification
+- Profil tab: avatar, display_name, bio, age, location, physique, morphologie (pills), ethnicités (multi-select), orientation
+- Adulte tab: rôle, kinks (unlimited), photos intimes (6 zones with Dos), santé (disease list), limites
+- Section visibility toggles on each section header
+- Auto-save works (debounced)
 
-### C4. Santé section redesign
-- "Ajouter un test récent" CTA button
-- Upload photo of test result as proof
-- Date picker for test date
-- Multi-select list of diseases tested: Chlamydia, VIH/HIV, Syphilis, Gonorrhée, Hépatite B, Hépatite C, HPV, etc.
-- Status per pathology: Négatif / Positif / En attente
-- PrEP status remains
+### 4.2 Profile view (other users)
+- PublicProfile and CandidateProfilePage render correctly
+- Show only sections the user has toggled visible
+- VibeScore badge at top (just the number)
 
-### C5. Photos intimes (adult zone) redesign
-- Add "Dos" (back) body part — currently missing
-- Add icons in the middle of each body zone section
-- Drop zone for photo should fill the ENTIRE card/case
-- All expected body parts: Face, Torse, Dos, Fesses, Pénis, Corps entier
+## ═══ BATCH 5: CONTACTS & EXPLORE ═══
 
-### C6. Limites section → moves to Adult tab
-- Currently in general profile, should be in Adult tab
+### 5.1 ContactsPage (NaughtyBook)
+- List of contacts with avatars, names, relation level
+- Linked profiles section (Instagram, TikTok, X, OnlyFans)
+- Tap navigates to contact detail
+- Filters work (if implemented)
 
-### C7. Profils liés redesign
-- REMOVE: Grindr, Scruff, and all gay-specific apps
-- KEEP ONLY: Instagram, TikTok, X/Twitter, OnlyFans, Autre
-- Include platform LOGOS (use lucide-react icons or SVG)
-- Include URL input field for each platform linking to user's profile page
-- This section moves to NaughtyBook (not profile)
+### 5.2 ExplorePage
+- Grid of profile cards (2 columns)
+- Each card: avatar/initial, name, role badge, vibe score
+- Tap navigates to profile
+- Search/filter bar
+- Saved filters (save/load from profile_json)
+- Shows 9+ demo profiles (fallback when geo < 3)
 
-## ═══ EXECUTION ORDER ═══
-1. Fix HomePage (A1, A2, A3)
-2. Add profile tabs (B1)
-3. Relocate sections (B2)
-4. Fix VibeScore display (B3)
-5. Fix pseudo first (B4)
-6. Add visibility toggles (B5)
-7. Fix morphologie buttons (C1)
-8. Fix ethnicités multi-select (C2)
-9. Remove kinks limit (C3)
-10. Redesign santé (C4)
-11. Redesign photos intimes (C5)
-12. Move limites (C6)
-13. Redesign profils liés (C7)
-14. Build with 0 errors
-15. Push
+## ═══ BATCH 6: CHATS ═══
+
+### 6.1 ChatsHubPage
+- List of chat threads
+- Each thread: avatar, name, last message, time, unread badge
+- Tap navigates to DM
+- Empty state when no chats
+
+### 6.2 DM pages
+- DMPage and DirectDMPage render messages
+- Send message works
+- Safety tip shown on first DM
+- Back button to chats
+
+## ═══ BATCH 7: MENU & SETTINGS ═══
+
+### 7.1 SideDrawer menu
+- All links work: Home, Sessions, Explore, Contacts, Chats
+- VibeScore link → /vibe-score
+- Settings link → /settings
+- Templates link → /me/messages
+- Notifications, Addresses, Preferences links
+- Ghost convert card when isGhost
+- Sign out button
+
+### 7.2 SettingsPage
+- DM privacy toggle (3 levels)
+- Visible in gallery toggle
+- Delete account with confirmation
+- Back button
+
+### 7.3 MessageTemplatesPage
+- Add/edit/delete message templates
+- Max 10 templates
+- Back button
+
+### 7.4 VibeScorePage
+- Score display with breakdown
+- Tips to improve score
+- Back button
+
+## ═══ BATCH 8: FINAL QUALITY ═══
+
+### 8.1 i18n completeness
+- Run: grep -rn 'hardcoded French' across all tsx files
+- ALL user-facing text must use t() from i18n
+- EN and FR keys must be synced (same count)
+
+### 8.2 Design tokens
+- No inline #fff — use S.tx or S.white
+- No inline colors — use S.xxx tokens
+- All fonts use brand tokens
+
+### 8.3 Mobile optimization
+- viewport meta: maximum-scale=1, user-scalable=no
+- Touch targets minimum 44px
+- Safe area insets on BottomNav and SessionBottomNav
+- -webkit-tap-highlight-color: transparent
+- -webkit-overflow-scrolling: touch
+
+### 8.4 Performance
+- All pages use React.lazy
+- Images have loading="lazy"
+- No console.log in production code
+
+## ═══ EXECUTION ═══
+1. Fix batch 1 (bugs), build, push
+2. Fix batch 2 (home), build, push
+3. Fix batch 3 (sessions), build, push
+4. Fix batch 4 (profile), build, push
+5. Fix batch 5 (contacts/explore), build, push
+6. Fix batch 6 (chats), build, push
+7. Fix batch 7 (menu/settings), build, push
+8. Fix batch 8 (quality), build, push
 
 ## RULES
 - Use i18n for ALL text
-- Use S.xxx color tokens from brand.ts
-- Mobile-first (390px width)
+- Use S.xxx tokens from brand.ts
+- Mobile-first (390px)
 - Don't break existing functionality
+- Build must pass with 0 errors after each batch
+- Push after each batch

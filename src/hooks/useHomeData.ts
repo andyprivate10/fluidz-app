@@ -18,9 +18,9 @@ export function useHomeData() {
   const [userId, setUserId] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [latestHost, setLatestHost] = useState<QuickSession | null>(null)
-  const [pendingApps, setPendingApps] = useState<{ session_id: string; title: string }[]>([])
+  const [pendingApps, setPendingApps] = useState<{ session_id: string; title: string; tags?: string[]; cover_url?: string; template_slug?: string }[]>([])
   const [inviteCode, setInviteCode] = useState('')
-  const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string }[]>([])
+  const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string; tags?: string[]; cover_url?: string; template_slug?: string }[]>([])
   const [hostPendingCount, setHostPendingCount] = useState(0)
   const [profilePct, setProfilePct] = useState(100)
   const [recentContacts, setRecentContacts] = useState<{ id: string; name: string; avatar?: string }[]>([])
@@ -65,13 +65,13 @@ export function useHomeData() {
       if (hostSession) (hostSession as QuickSession).member_count = (mc || 0) + 1
     }
 
-    const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
+    const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url, tags)')
       .eq('applicant_id', user.id).eq('status', 'pending')
-    setPendingApps((pending || []).map(a => ({ session_id: a.session_id, title: (a.sessions as any)?.title || 'Session' })))
+    setPendingApps((pending || []).map(a => ({ session_id: a.session_id, title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
 
     const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
       .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
-    setActiveApps((active || []).map(a => ({ session_id: a.session_id, status: a.status || '', title: (a.sessions as any)?.title || 'Session' })))
+    setActiveApps((active || []).map(a => ({ session_id: a.session_id, status: a.status || '', title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
 
     // Recent contacts
     const { data: contacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).order('created_at', { ascending: false }).limit(8)
