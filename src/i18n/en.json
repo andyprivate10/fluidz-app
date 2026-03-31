@@ -1541,11 +1541,7 @@
     "title": "Something went wrong.",
     "back_home": "Back to home"
   },
-  "naughtybook": {
-    "mutual": "Mutual",
-    "added_you_notif": "added you to their NaughtyBook",
-    "one_sided": "One-sided"
-  },
+  "_naughtybook_legacy": "merged into main naughtybook section below",
   "favorites": {
     "title": "Favorites",
     "count": "favorites",
@@ -1676,6 +1672,8 @@
     "dm_badge_closed": "DM closed"
   },
   "naughtybook": {
+    "mutual": "Mutual",
+    "one_sided": "One-sided",
     "request_button": "Add to NaughtyBook",
     "request_sent": "Request sent",
     "request_pending": "Pending...",

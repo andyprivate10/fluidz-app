@@ -29,6 +29,10 @@ type Contact = {
   avatar_url?: string
   role?: string
   last_event?: string
+  tribes?: string[]
+  kinks?: string[]
+  last_seen?: string
+  shared_sessions?: number
 }
 
 export default function ContactsPage() {
@@ -49,6 +53,7 @@ export default function ContactsPage() {
   const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori'>('all')
   const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
   const [pendingNbRequests, setPendingNbRequests] = useState<{ id: string; sender_id: string; display_name: string; avatar_url?: string; role?: string; created_at: string }[]>([])
+  const [roleFilter, setRoleFilter] = useState<string>('')
 
 
   useEffect(() => {
@@ -91,21 +96,31 @@ export default function ContactsPage() {
       .select('id, display_name, profile_json')
       .in('id', ids)
 
-    const profileMap = new Map<string, { display_name: string; avatar_url?: string; role?: string }>()
+    const profileMap = new Map<string, { display_name: string; avatar_url?: string; role?: string; tribes?: string[]; kinks?: string[]; last_seen?: string }>()
     ;(profiles || []).forEach((p: any) => {
+      const pj = p.profile_json || {}
       profileMap.set(p.id, {
         display_name: p.display_name || t('common.anonymous'),
-        avatar_url: p.profile_json?.avatar_url,
-        role: p.profile_json?.role,
+        avatar_url: pj.avatar_url || (Array.isArray(pj.photos_profil) ? pj.photos_profil[0] : undefined),
+        role: pj.role,
+        tribes: Array.isArray(pj.tribes) ? pj.tribes : [],
+        kinks: Array.isArray(pj.kinks) ? pj.kinks : [],
+        last_seen: pj.last_seen,
       })
     })
 
-    const enriched: Contact[] = raw.map(c => ({
-      ...c,
-      display_name: profileMap.get(c.contact_user_id)?.display_name || t('common.anonymous'),
-      avatar_url: profileMap.get(c.contact_user_id)?.avatar_url,
-      role: profileMap.get(c.contact_user_id)?.role,
-    }))
+    const enriched: Contact[] = raw.map(c => {
+      const prof = profileMap.get(c.contact_user_id)
+      return {
+        ...c,
+        display_name: prof?.display_name || t('common.anonymous'),
+        avatar_url: prof?.avatar_url,
+        role: prof?.role,
+        tribes: prof?.tribes,
+        kinks: prof?.kinks,
+        last_seen: prof?.last_seen,
+      }
+    })
 
     setContacts(enriched)
     setLoading(false)
@@ -137,6 +152,9 @@ export default function ContactsPage() {
   const filtered = contacts
     .filter(c => filter === 'all' ? true : filter === 'mutual' ? c.mutual : c.relation_level === filter)
     .filter(c => !search || (c.display_name || '').toLowerCase().includes(search.toLowerCase()))
+    .filter(c => !roleFilter || c.role === roleFilter)
+
+  const availableRoles = [...new Set(contacts.map(c => c.role).filter(Boolean))] as string[]
 
   const counts = {
     all: contacts.length,
@@ -194,6 +212,26 @@ export default function ContactsPage() {
             )
           })}
         </div>
+
+        {/* Role filter */}
+        {availableRoles.length > 1 && (
+          <div style={{ display: 'flex', gap: 4, marginTop: 8, flexWrap: 'wrap' }}>
+            <button onClick={() => setRoleFilter('')} style={{
+              padding: '4px 10px', borderRadius: 99, fontSize: 10, fontWeight: 600, cursor: 'pointer',
+              border: '1px solid ' + (!roleFilter ? S.pbd : S.rule),
+              background: !roleFilter ? S.p2 : 'transparent',
+              color: !roleFilter ? S.p : S.tx3,
+            }}>{t('common.all')}</button>
+            {availableRoles.map(r => (
+              <button key={r} onClick={() => setRoleFilter(roleFilter === r ? '' : r)} style={{
+                padding: '4px 10px', borderRadius: 99, fontSize: 10, fontWeight: 600, cursor: 'pointer',
+                border: '1px solid ' + (roleFilter === r ? S.pbd : S.rule),
+                background: roleFilter === r ? S.p2 : 'transparent',
+                color: roleFilter === r ? S.p : S.tx3,
+              }}>{r}</button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Pending NaughtyBook requests */}

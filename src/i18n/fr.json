@@ -1541,11 +1541,7 @@
     "title": "Quelque chose s'est mal passé.",
     "back_home": "Retour à l'accueil"
   },
-  "naughtybook": {
-    "mutual": "Mutuel",
-    "added_you_notif": "t'a ajouté à son NaughtyBook",
-    "one_sided": "Unilatéral"
-  },
+  "_naughtybook_legacy": "merged into main naughtybook section below",
   "favorites": {
     "title": "Favoris",
     "count": "favoris",
@@ -1676,6 +1672,8 @@
     "dm_badge_closed": "DM fermé"
   },
   "naughtybook": {
+    "mutual": "Mutuel",
+    "one_sided": "Unilatéral",
     "request_button": "Ajouter au NaughtyBook",
     "request_sent": "Demande envoyée",
     "request_pending": "En attente...",
