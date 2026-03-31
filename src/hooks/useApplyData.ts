@@ -7,11 +7,13 @@ import { useTranslation } from 'react-i18next'
 import { sendPushToUser } from '../lib/pushSender'
 import { compressImage, isVideo } from '../lib/media'
 import { getSections, GUEST_TOKEN_KEY, GUEST_SESSION_KEY, RATE_LIMIT_MIN } from '../components/apply/applySections'
+import { useAuth } from '../contexts/AuthContext'
 
 export function useApplyData() {
   const { t } = useTranslation()
   const { BLOC_PROFIL, BLOC_ADULTE, SECTION_OCCASION, ALL_SECTIONS } = getSections(t)
   const { roles } = useAdminConfig()
+  const { user: authUser } = useAuth()
   const { id } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -48,14 +50,12 @@ export function useApplyData() {
 
   useEffect(() => {
     let mounted = true
-    supabase.auth.getSession().then(({ data }) => {
-      if (!mounted) return
-      const u = data.session?.user ?? null
-      setUser(u)
-      if (u) {
-        setDataLoading(true)
-        load(u.id)
-      } else if (ghostIdParam) {
+    const u = authUser ?? null
+    setUser(u)
+    if (u) {
+      setDataLoading(true)
+      load(u.id)
+    } else if (ghostIdParam) {
         // Ghost 24h mode — load profile from ghost_sessions
         setGuestMode(true)
         setGhostSessionId(ghostIdParam)
@@ -113,9 +113,8 @@ export function useApplyData() {
           setDataLoading(false)
         }
       }
-    })
     return () => { mounted = false }
-  }, [id, guestTokenParam, ghostIdParam])
+  }, [id, guestTokenParam, ghostIdParam, authUser])
 
   async function load(uid: string) {
     setLoadError(false)

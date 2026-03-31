@@ -6,6 +6,7 @@ import { useAdminConfig } from './useAdminConfig'
 import { getSessionCover, getTemplateCoverImage } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
 import { colors, fonts } from '../brand'
+import { useAuth } from '../contexts/AuthContext'
 
 const S = colors
 
@@ -26,6 +27,7 @@ export function useCreateSession() {
   const [searchParams] = useSearchParams()
   const tplParam = searchParams.get('tpl')
   const inviteParam = searchParams.get('invite')
+  const { user: authUser } = useAuth()
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [_template, setTemplate] = useState('custom')
   const [title, setTitle] = useState('')
@@ -66,41 +68,35 @@ export function useCreateSession() {
   }, [tplParam, sessionTemplates])
 
   useEffect(() => {
+    if (!authUser) { navigate('/login?next=/session/create'); return }
+    setUser({ id: authUser.id, email: authUser.email })
     let mounted = true
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.from('user_profiles').select('profile_json').eq('id', authUser.id).maybeSingle().then(({ data: prof }) => {
       if (!mounted) return
-      const u = data.session?.user ?? null
-      setUser(u)
-      if (!u) { navigate('/login?next=/session/create'); return }
-      else {
-        supabase.from('user_profiles').select('profile_json').eq('id', u.id).maybeSingle().then(({ data: prof }) => {
-          if (!mounted) return
-          const pj = prof?.profile_json as Record<string, unknown>
-          const addrs = pj?.saved_addresses
-          const addrList = Array.isArray(addrs) ? addrs : []
-          setSavedAddresses(addrList)
-          // Pre-select last used address
-          if (addrList.length > 0) {
-            const sorted = [...addrList].sort((a: { last_used?: string }, b: { last_used?: string }) => {
-              const ta = a.last_used ? new Date(a.last_used).getTime() : 0
-              const tb = b.last_used ? new Date(b.last_used).getTime() : 0
-              return tb - ta
-            })
-            const lastAddr = sorted[0]
-            if (lastAddr.approx_area) setApproxArea(lastAddr.approx_area)
-            if (lastAddr.exact_address) setExactAddress(lastAddr.exact_address)
-            if (lastAddr.directions && lastAddr.directions.length > 0) {
-              setDirections(lastAddr.directions.map((d: string | { text: string; photo_url?: string }) => typeof d === 'string' ? { text: d } : d))
-            }
-            setAddressMode('last')
-          }
-          const tpls = (pj as Record<string, unknown>)?.saved_templates
-          setSavedTemplates(Array.isArray(tpls) ? tpls : [])
+      const pj = prof?.profile_json as Record<string, unknown>
+      const addrs = pj?.saved_addresses
+      const addrList = Array.isArray(addrs) ? addrs : []
+      setSavedAddresses(addrList)
+      // Pre-select last used address
+      if (addrList.length > 0) {
+        const sorted = [...addrList].sort((a: { last_used?: string }, b: { last_used?: string }) => {
+          const ta = a.last_used ? new Date(a.last_used).getTime() : 0
+          const tb = b.last_used ? new Date(b.last_used).getTime() : 0
+          return tb - ta
         })
+        const lastAddr = sorted[0]
+        if (lastAddr.approx_area) setApproxArea(lastAddr.approx_area)
+        if (lastAddr.exact_address) setExactAddress(lastAddr.exact_address)
+        if (lastAddr.directions && lastAddr.directions.length > 0) {
+          setDirections(lastAddr.directions.map((d: string | { text: string; photo_url?: string }) => typeof d === 'string' ? { text: d } : d))
+        }
+        setAddressMode('last')
       }
+      const tpls = (pj as Record<string, unknown>)?.saved_templates
+      setSavedTemplates(Array.isArray(tpls) ? tpls : [])
     })
     return () => { mounted = false }
-  }, [])
+  }, [authUser])
 
   async function saveAsTemplate() {
     if (!user || !title) return

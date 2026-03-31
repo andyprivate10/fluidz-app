@@ -52,6 +52,12 @@ export default function CreateSessionPage() {
         ))}
       </div>
 
+      {h.error && (
+        <div style={{ margin: '12px 20px 0', padding: '10px 14px', borderRadius: 10, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, fontSize: 13 }}>
+          {h.error}
+        </div>
+      )}
+
       {h.step === 'basics' && <CreateStepBasics h={h} />}
       {h.step === 'rules' && <CreateStepRules h={h} />}
       {h.step === 'address' && <CreateStepAddress h={h} />}
