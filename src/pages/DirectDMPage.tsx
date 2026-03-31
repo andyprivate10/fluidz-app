@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat } from 'lucide-react'
+import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat, Shield } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -77,7 +77,9 @@ export default function DirectDMPage() {
 
   useEffect(() => {
     if (!peerId) return
-    init()
+    let cleanup: (() => void) | undefined
+    init().then(fn => { cleanup = fn })
+    return () => { cleanup?.() }
   }, [peerId])
 
   async function init() {
@@ -320,10 +322,19 @@ export default function DirectDMPage() {
       {/* Messages */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {messages.length === 0 && (
-          <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
-            <p style={{ fontSize: 14, fontWeight: 600 }}>{t('chat.new_dm')}</p>
-            <p style={{ fontSize: 12 }}>{t('chat.send_first')}</p>
-          </div>
+          <>
+            <div style={{ display: 'flex', gap: 10, padding: '12px 14px', borderRadius: 14, background: S.bluebg, border: '1px solid ' + S.bluebd, marginBottom: 12 }}>
+              <Shield size={18} strokeWidth={1.5} style={{ color: S.blue, flexShrink: 0, marginTop: 1 }} />
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: S.blue, marginBottom: 3 }}>{t('dm.safety_tip_title')}</div>
+                <div style={{ fontSize: 12, color: S.blue, lineHeight: 1.5, opacity: 0.85 }}>{t('dm.safety_tip_body')}</div>
+              </div>
+            </div>
+            <div style={{ textAlign: 'center', padding: 40, color: S.tx3 }}>
+              <p style={{ fontSize: 14, fontWeight: 600 }}>{t('chat.new_dm')}</p>
+              <p style={{ fontSize: 12 }}>{t('chat.send_first')}</p>
+            </div>
+          </>
         )}
         {messages.map(msg => (
           <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name })} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
