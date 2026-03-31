@@ -112,7 +112,7 @@ export default function ContactsPage() {
   }, [navigate])
 
 
-  async function acceptNbRequest(requestId: string, senderId: string) {
+  async function acceptNbRequest(requestId: string, _senderId: string) {
     const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'accepted' })
     if (error) { showToast(error.message, 'error'); return }
     setPendingNbRequests(prev => prev.filter(r => r.id !== requestId))

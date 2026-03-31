@@ -33,7 +33,7 @@ interface InterestPopupProps {
   onSent: () => void
 }
 
-export default function InterestPopup({ open, onClose, targetUserId, targetName, onSent }: InterestPopupProps) {
+export default function InterestPopup({ open, onClose, targetUserId, targetName: _targetName, onSent }: InterestPopupProps) {
   const { t } = useTranslation()
   const { user } = useAuth()
   const [enabled, setEnabled] = useState<string[]>(DEFAULT_ENABLED)

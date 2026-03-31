@@ -31,6 +31,7 @@ const sLabel = (c: string): React.CSSProperties => ({ fontSize: 10, fontWeight: 
 
 /* ═══ Sub-components ═══ */
 
+// @ts-ignore — reserved for social interactions v2
 function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: string; myProfile: Record<string,unknown> | null }) {
   const nav = useNavigate()
   const { t } = useTranslation()
@@ -74,7 +75,7 @@ export default function PublicProfile() {
   const [showStory, setShowStory] = useState(false)
   const [showShareSheet, setShowShareSheet] = useState(false)
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null)
-  const [myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
+  const [_myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
   const [allowed, setAllowed] = useState<boolean>(false)
   const [photoIdx, setPhotoIdx] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
