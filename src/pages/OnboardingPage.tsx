@@ -40,7 +40,7 @@ const ctaBtn: React.CSSProperties = {
 
 export default function OnboardingPage() {
   const { t } = useTranslation()
-  const { roles: roleOptions, morphologies: morphoOptions, kinkOptions } = useAdminConfig()
+  const { roles: roleOptions, morphologies: morphoOptions, kinks: kinkOptions } = useAdminConfig()
   const navigate = useNavigate()
   const { user: authUser } = useAuth()
 
@@ -336,7 +336,7 @@ export default function OnboardingPage() {
           <div>
             <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>{t('onboarding.kinks_label')}</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {kinkOptions.map(k => (
+              {kinkOptions.map((k: { label: string; slug: string }) => (
                 <button key={k.label} onClick={() => toggleKink(k.label)}
                   style={kinks.includes(k.label) ? pillActive : pillInactive}>{k.label}</button>
               ))}

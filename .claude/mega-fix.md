@@ -1,171 +1,108 @@
-# FLUIDZ — AUTONOMOUS MEGA PASS
-# Read .claude/CLAUDE.md first. Execute ALL items. Build 0 errors after each batch. Push.
-# This is meant to run unattended. Fix everything, verify, push.
+# FLUIDZ — MEGA IMPLEMENTATION: Social flows + Seed + E2E
+# Read .claude/CLAUDE.md, .claude/ux-social-spec.md, .claude/social-interactions.md
 
-## ═══ BATCH 1: CRITICAL BUG FIXES ═══
+## ═══ PHASE 1: SEED COMPLETE TEST DATA ═══
 
-### 1.1 Fix any remaining TS build errors
-- Run tsc --noEmit, fix ALL errors
-- Run npm run build, fix ALL errors
-- Remove any unused imports or variables
+### Create 10 test users with complete profiles via Node script:
+- Marcus (Host, Versatile, 32) — ALREADY SEEDED
+- Karim (Bottom, 28) — ALREADY SEEDED  
+- Yann (Top, 25) — ALREADY SEEDED
+- Create 7 more auth users: lucas@, amine@, theo@, romain@, samir@, alex@, jules@fluidz.test
+- All password: testpass123
+- Each with: role, bio, photos (picsum), kinks, health, dm_privacy
 
-### 1.2 Verify all 37+ routes load
-- Check App.tsx — every lazy import must match an actual file
-- Verify no circular dependencies
-- Verify RequireAuth wrapper on protected routes
+### Create test sessions in various states:
+- Session 1: "Plan ce soir" by Marcus — status OPEN, 3 members accepted, 2 pending candidates
+- Session 2: "After chill" by Marcus — status ENDED, 4 members, reviews pending
+- Session 3: "Session Cuddle" by Karim — status OPEN, 1 member, template cuddle
 
-### 1.3 Fix navigation dead-ends
-- Every page must have a back button or way to navigate away
-- SessionPage, CandidateProfilePage, DirectDMPage, JoinPage, ApplyPage
-- VibeScorePage, SettingsPage, MessageTemplatesPage need back buttons
+### Create test applications in all statuses:
+- pending, under_review, accepted, rejected, checked_in
 
-## ═══ BATCH 2: HOMEPAGE POLISH ═══
+### Create test contacts (NaughtyBook):
+- Marcus ↔ Karim: mutual (NaughtyBook bidirectionnel)
+- Marcus → Yann: pending NB request
+- Karim has notes on Marcus: "Super host, toujours safe"
 
-### 2.1 HomePage layout
-- CTA "Créer une session" button must be prominent (gradient peach)
-- NaughtyBook horizontal scroll with contact avatars
-- Session cards with cover images from sessionCover.ts
-- Activity feed with i18n notification translations
-- Ghost card when isGhost (create real account CTA)
+### Create test notifications:
+- Marcus: 3 unread (new application, check-in, DM)
+- Karim: 2 unread (accepted, NB request)
 
-### 2.2 Session cards on HomePage
-- Each card shows: cover image, title, time, member count, status badge
-- Clicking navigates to /session/:id
-- If no sessions, show welcoming empty state
+### Create test DM threads:
+- Marcus ↔ Karim: 5 messages (with safety tip)
+- Marcus ↔ Yann: 2 messages (locked — interest sent but not accepted)
 
-## ═══ BATCH 3: SESSION FLOW E2E ═══
+## ═══ PHASE 2: SESSION LIFECYCLE ═══
 
-### 3.1 Create Session flow
-- Template selection (Cuddle cover loads from cuddles.jpg)
-- All form fields work: title, description, tags, address, timing
-- Submit creates session in Supabase and navigates to session detail
+### Session end_time field:
+- Add end_time timestamptz to sessions table if missing
+- Host can modify end_time (extend session)
+- 30min before end: create notification for host "Prolonger ou terminer ?"
+- Auto-close at end_time if no action
+- Status transitions: open → ending_soon → ended
 
-### 3.2 Session detail page
-- Hero with cover image + gradient overlay
-- Back button in hero
-- SessionBottomNav tabs: Session / Participants / Share / Chat
-- Each tab renders correct content
-- OptionsMenu (⋮) works
+### Post-session review:
+- Create review_queue entries 15min after session ends
+- Review page: swipe through each member, rate VibeScore, select intents
+- Optional — can skip, notification reminder after 24h
 
-### 3.3 Apply flow (as non-host user)
-- Pack selection (toggle sections to share)
-- Note step (optional message)
-- Submit creates application in Supabase
-- Shows confirmation
+## ═══ PHASE 3: SESSION STORY ═══
 
-### 3.4 Share tab
-- Invite link generation works
-- Copy to clipboard
-- QR code if implemented
+### Story collection:
+- When member is accepted, their shared_sections content feeds into session story
+- Story = aggregation of all accepted members' Candidate Pack photos/videos
+- Invited candidates see Story automatically
+- Non-invited candidates: host grants access via DM toggle button
 
-## ═══ BATCH 4: PROFILE E2E ═══
+### UI:
+- Session page: "Story" tab in SessionBottomNav (between Participants and Share)
+- Gallery view: grid of all shared photos/videos from members
+- Each photo links to the member's profile
 
-### 4.1 MePage tabs verification
-- Profil tab: avatar, display_name, bio, age, location, physique, morphologie (pills), ethnicités (multi-select), orientation
-- Adulte tab: rôle, kinks (unlimited), photos intimes (6 zones with Dos), santé (disease list), limites
-- Section visibility toggles on each section header
-- Auto-save works (debounced)
+## ═══ PHASE 4: VOTE UX ═══
 
-### 4.2 Profile view (other users)
-- PublicProfile and CandidateProfilePage render correctly
-- Show only sections the user has toggled visible
-- VibeScore badge at top (just the number)
+### Vote flow for members:
+- New candidate notification → member sees Candidate Pack
+- Vote: thumbs up / thumbs down (no text, just vote)
+- Votes appear in real-time for host
+- Host sees vote tally: "3 ✓ / 1 ✗"
+- If host accepts against majority: orange warning "La majorité a voté contre"
+- Candidate NEVER sees individual votes — only final decision
 
-## ═══ BATCH 5: CONTACTS & EXPLORE ═══
+## ═══ PHASE 5: NOTIFICATION SYSTEM ═══
 
-### 5.1 ContactsPage (NaughtyBook)
-- List of contacts with avatars, names, relation level
-- Linked profiles section (Instagram, TikTok, X, OnlyFans)
-- Tap navigates to contact detail
-- Filters work (if implemented)
+### Header bell icon:
+- Add bell icon in top-right of all pages (next to menu hamburger)
+- Badge count of unread notifications
+- Tapping opens /notifications page
+- Grouped: "3 nouvelles candidatures sur Plan ce soir"
+- Individual: DMs, NB requests
 
-### 5.2 ExplorePage
-- Grid of profile cards (2 columns)
-- Each card: avatar/initial, name, role badge, vibe score
-- Tap navigates to profile
-- Search/filter bar
-- Saved filters (save/load from profile_json)
-- Shows 9+ demo profiles (fallback when geo < 3)
+### Badge on BottomNav Chats:
+- Count of unread DM messages
+- Red dot, not number (keep it subtle)
 
-## ═══ BATCH 6: CHATS ═══
+## ═══ PHASE 6: NAUGHTYBOOK COMPLETE ═══
 
-### 6.1 ChatsHubPage
-- List of chat threads
-- Each thread: avatar, name, last message, time, unread badge
-- Tap navigates to DM
-- Empty state when no chats
+### ContactsPage redesign:
+- Pending NB requests section at top (accept/reject)
+- Contact list with: avatar, name, role, last seen, mutual badge
+- Notes privées: tap to add/edit (textarea)
+- History: "2 sessions partagées · Dernier échange il y a 3j"
+- Filters: role, distance, tribes, kinks (same as Explore)
 
-### 6.2 DM pages
-- DMPage and DirectDMPage render messages
-- Send message works
-- Safety tip shown on first DM
-- Back button to chats
-
-## ═══ BATCH 7: MENU & SETTINGS ═══
-
-### 7.1 SideDrawer menu
-- All links work: Home, Sessions, Explore, Contacts, Chats
-- VibeScore link → /vibe-score
-- Settings link → /settings
-- Templates link → /me/messages
-- Notifications, Addresses, Preferences links
-- Ghost convert card when isGhost
-- Sign out button
-
-### 7.2 SettingsPage
-- DM privacy toggle (3 levels)
-- Visible in gallery toggle
-- Delete account with confirmation
-- Back button
-
-### 7.3 MessageTemplatesPage
-- Add/edit/delete message templates
-- Max 10 templates
-- Back button
-
-### 7.4 VibeScorePage
-- Score display with breakdown
-- Tips to improve score
-- Back button
-
-## ═══ BATCH 8: FINAL QUALITY ═══
-
-### 8.1 i18n completeness
-- Run: grep -rn 'hardcoded French' across all tsx files
-- ALL user-facing text must use t() from i18n
-- EN and FR keys must be synced (same count)
-
-### 8.2 Design tokens
-- No inline #fff — use S.tx or S.white
-- No inline colors — use S.xxx tokens
-- All fonts use brand tokens
-
-### 8.3 Mobile optimization
-- viewport meta: maximum-scale=1, user-scalable=no
-- Touch targets minimum 44px
-- Safe area insets on BottomNav and SessionBottomNav
-- -webkit-tap-highlight-color: transparent
-- -webkit-overflow-scrolling: touch
-
-### 8.4 Performance
-- All pages use React.lazy
-- Images have loading="lazy"
-- No console.log in production code
+### Interaction from NaughtyBook:
+- Tap contact → profile view with NB-only sections visible
+- "Envoyer un message" button (DM libre for mutual)
+- "Inviter en session" button → list open sessions
+- "Retirer du NaughtyBook" in menu ⋮
 
 ## ═══ EXECUTION ═══
-1. Fix batch 1 (bugs), build, push
-2. Fix batch 2 (home), build, push
-3. Fix batch 3 (sessions), build, push
-4. Fix batch 4 (profile), build, push
-5. Fix batch 5 (contacts/explore), build, push
-6. Fix batch 6 (chats), build, push
-7. Fix batch 7 (menu/settings), build, push
-8. Fix batch 8 (quality), build, push
+1. Phase 1 (Seed) — create Node script, run, verify
+2. Phase 2 (Session lifecycle) — end_time, auto-close, review
+3. Phase 3 (Story) — collection, UI tab, access control
+4. Phase 4 (Vote UX) — real-time, tally, warning
+5. Phase 5 (Notifications) — bell icon, badges, grouping
+6. Phase 6 (NaughtyBook) — pending requests, notes, filters, history
 
-## RULES
-- Use i18n for ALL text
-- Use S.xxx tokens from brand.ts
-- Mobile-first (390px)
-- Don't break existing functionality
-- Build must pass with 0 errors after each batch
-- Push after each batch
+Build and push after each phase. Go.
