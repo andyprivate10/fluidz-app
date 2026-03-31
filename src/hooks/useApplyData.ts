@@ -31,7 +31,9 @@ export function useApplyData() {
   const [selectedRole, setSelectedRole] = useState<string>('')
   const [note, setNote] = useState('')
   const [messageToHost, setMessageToHost] = useState('')
-  const [step, setStep] = useState<'pack'|'note'|'done'>('pack')
+  const [step, setStep] = useState<'pack'|'group'|'note'|'done'>('pack')
+  const [groupPartners, setGroupPartners] = useState<string[]>([])
+  const [mutualContacts, setMutualContacts] = useState<{id: string, name: string, avatar?: string}[]>([])
   const [loading, setLoading] = useState(false)
   const [dataLoading, setDataLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
@@ -47,6 +49,39 @@ export function useApplyData() {
   const isRateLimited = rateLimitedUntil ? new Date() < rateLimitedUntil : false
   const invalidPseudo = guestMode ? (guestDisplayName.trim().length < 2) : (!profile?.display_name || (profile.display_name as string).trim().length < 2)
   const sessionEnded = session?.status === 'ended'
+
+  // Load mutual NB contacts for group application
+  useEffect(() => {
+    if (!authUser) return
+    let cancelled = false
+    ;(async () => {
+      const { data: myContacts } = await supabase
+        .from('naughtybook_contacts')
+        .select('contact_id')
+        .eq('user_id', authUser.id)
+      if (cancelled || !myContacts?.length) return
+      const contactIds = myContacts.map(c => c.contact_id)
+      // Check which contacts also have me
+      const { data: mutual } = await supabase
+        .from('naughtybook_contacts')
+        .select('user_id')
+        .eq('contact_id', authUser.id)
+        .in('user_id', contactIds)
+      if (cancelled || !mutual?.length) return
+      const mutualIds = mutual.map(m => m.user_id)
+      const { data: profiles } = await supabase
+        .from('user_profiles')
+        .select('id, display_name, profile_json')
+        .in('id', mutualIds)
+      if (cancelled || !profiles) return
+      setMutualContacts(profiles.map(p => ({
+        id: p.id,
+        name: p.display_name || t('common.anonymous'),
+        avatar: (p.profile_json as Record<string, unknown>)?.avatar_url as string | undefined,
+      })))
+    })()
+    return () => { cancelled = true }
+  }, [authUser, t])
 
   useEffect(() => {
     let mounted = true
@@ -123,12 +158,23 @@ export function useApplyData() {
         supabase.from('user_profiles').select('display_name,profile_json').eq('id', uid).maybeSingle(),
         supabase.from('sessions').select('title,approx_area,max_capacity,template_slug,cover_url,status').eq('id', id).maybeSingle(),
         supabase.from('applications').select('created_at').eq('applicant_id', uid).order('created_at', { ascending: false }).limit(1),
-        supabase.from('applications').select('status').eq('applicant_id', uid).eq('session_id', id).maybeSingle(),
+        supabase.from('applications').select('status, created_at').eq('applicant_id', uid).eq('session_id', id).maybeSingle(),
       ])
-      // Already applied to this session → redirect
+      // Already applied to this session → redirect (unless withdrawn)
       if (existingApp) {
-        navigate('/session/' + id)
-        return
+        if (existingApp.status === 'withdrawn') {
+          // Allow re-apply after cooldown (10 min from withdrawal)
+          const lastTime = new Date(existingApp.created_at)
+          const cooldownEnd = new Date(lastTime.getTime() + 10 * 60 * 1000)
+          if (cooldownEnd > new Date()) {
+            setRateLimitedUntil(cooldownEnd)
+          }
+          // Delete the withdrawn app so a fresh one can be created
+          await supabase.from('applications').delete().eq('applicant_id', uid).eq('session_id', id).eq('status', 'withdrawn')
+        } else {
+          navigate('/session/' + id)
+          return
+        }
       }
       if (prof) {
         setProfile(prof)
@@ -319,6 +365,8 @@ export function useApplyData() {
     guestMode, guestDisplayName, setGuestDisplayName,
     occasionPhotos, setOccasionPhotos, mediaUploading,
     onPickOccasionFile, occasionFileRef, onOccasionFileChange,
+    groupPartners, setGroupPartners,
+    mutualContacts,
     submit,
   }
 }

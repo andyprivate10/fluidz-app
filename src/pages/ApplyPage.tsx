@@ -2,6 +2,7 @@ import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { ArrowLeft } from 'lucide-react'
 import PackStep from '../components/apply/PackStep'
+import GroupStep from '../components/apply/GroupStep'
 import NoteStep from '../components/apply/NoteStep'
 import { useApplyData } from '../hooks/useApplyData'
 
@@ -90,8 +91,8 @@ export default function ApplyPage() {
       )}
 
       {!d.sessionEnded && <div style={{display:'flex',padding:'12px 20px',gap:6}}>
-        {(['pack','note','done'] as const).map((s, i) => (
-          <div key={s} style={{flex:1,height:3,borderRadius:99,background:(['pack','note','done'].indexOf(d.step) >= i) ? S.p : S.bg3,transition:'background 0.3s'}} />
+        {(['pack','group','note','done'] as const).map((s, i) => (
+          <div key={s} style={{flex:1,height:3,borderRadius:99,background:(['pack','group','note','done'].indexOf(d.step) >= i) ? S.p : S.bg3,transition:'background 0.3s'}} />
         ))}
       </div>}
 
@@ -108,7 +109,17 @@ export default function ApplyPage() {
           roles={d.roles} BLOC_PROFIL={d.BLOC_PROFIL} BLOC_ADULTE={d.BLOC_ADULTE}
           SECTION_OCCASION={d.SECTION_OCCASION} ALL_SECTIONS={d.ALL_SECTIONS}
           capacityFull={d.capacityFull} isRateLimited={d.isRateLimited} invalidPseudo={d.invalidPseudo}
-          onContinue={() => d.setStep('note')} navigate={d.navigate}
+          onContinue={() => d.setStep('group')} navigate={d.navigate}
+        />
+      )}
+
+      {!d.sessionEnded && d.step === 'group' && (
+        <GroupStep
+          mutualContacts={d.mutualContacts}
+          groupPartners={d.groupPartners}
+          setGroupPartners={d.setGroupPartners}
+          onBack={() => d.setStep('pack')}
+          onContinue={() => d.setStep('note')}
         />
       )}
 
@@ -121,7 +132,7 @@ export default function ApplyPage() {
           messageToHost={d.messageToHost} setMessageToHost={d.setMessageToHost}
           ALL_SECTIONS={d.ALL_SECTIONS}
           loading={d.loading} isRateLimited={d.isRateLimited}
-          onBack={() => d.setStep('pack')} onSubmit={d.submit}
+          onBack={() => d.setStep('group')} onSubmit={d.submit}
           occasionPhotos={d.occasionPhotos} setOccasionPhotos={d.setOccasionPhotos}
           mediaUploading={d.mediaUploading}
           onPickOccasionFile={d.onPickOccasionFile}

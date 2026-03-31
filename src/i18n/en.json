@@ -332,7 +332,34 @@
     "members_section": "Members",
     "pending_candidates": "Pending candidates",
     "rejected_section": "Rejected",
-    "checked_in": "Checked in"
+    "checked_in": "Checked in",
+    "withdraw_confirm": "Withdraw your application? You can reapply in 10 minutes.",
+    "withdrawn": "Application withdrawn",
+    "status_withdrawn": "Withdrawn",
+    "withdrawn_desc": "You withdrew your application. You can apply again.",
+    "reapply": "Apply again",
+    "not_selected_title": "Not selected this time",
+    "not_selected_body": "You were not selected for \"{{title}}\" — explore other sessions!",
+    "not_selected_dialog_title": "Don't select this candidate",
+    "not_selected_dialog_desc": "{{name}} won't be selected. You can add a message (optional).",
+    "rejection_message_placeholder": "Message to candidate (optional)...",
+    "confirm_not_selected": "Confirm",
+    "status_not_selected": "Not selected",
+    "not_selected_desc": "You were not selected this time. Explore other sessions!",
+    "cooldown_reapply": "You can reapply in {{minutes}} min",
+    "group_apply": "Group application",
+    "add_partners": "Add partners",
+    "add_partners_desc": "Select mutual contacts to apply together",
+    "no_mutual_contacts": "No mutual contacts",
+    "no_mutual_contacts_desc": "Add contacts to your NaughtyBook to apply as a group",
+    "group_mutual_check": "All partners must be mutual with each other",
+    "partner_not_mutual": "{{name}} is not mutual with {{other}}",
+    "group_pending_confirmation": "Waiting for partner confirmation",
+    "group_partner_confirmed": "{{name}} confirmed",
+    "group_partner_waiting": "Waiting for {{name}}",
+    "confirm_group_pack": "Confirm your participation",
+    "confirm_group_pack_desc": "{{name}} invites you to apply together. Choose your pack.",
+    "group_size": "Group of {{count}}"
   },
   "chat": {
     "title": "Messages",
@@ -983,7 +1010,8 @@
     "no_files": "No files in this folder.",
     "no_user": "No user",
     "no_action": "No action taken.",
-    "no_active_session": "No active session."
+    "no_active_session": "No active session.",
+    "continue": "Continue"
   },
   "drawer": {
     "my_space": "My space",
@@ -1111,7 +1139,8 @@
   "host_actions": {
     "sending": "Sending...",
     "send_to_all": "Send to all",
-    "accept": "Accept"
+    "accept": "Accept",
+    "not_selected": "Not selected"
   },
   "status": {
     "pending": "Pending",

@@ -32,6 +32,8 @@ export default function SessionPage() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'session')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [bookmarked, setBookmarked] = useState(false)
+  const [rejectTarget, setRejectTarget] = useState<{ appId: string; name: string } | null>(null)
+  const [rejectMessage, setRejectMessage] = useState('')
 
   // Load bookmark state
   useEffect(() => {
@@ -55,14 +57,56 @@ export default function SessionPage() {
   }, [d.currentUser, d.id, t])
 
   async function handleDecide(appId: string, status: 'accepted' | 'rejected') {
+    if (status === 'rejected') {
+      const app = d.pendingApps.find(a => a.id === appId)
+      setRejectTarget({ appId, name: app?.display_name || '' })
+      return
+    }
+    // Accept flow
     setActionLoading(appId)
     const { error } = await supabase.from('applications').update({ status }).eq('id', appId)
     if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error') }
     else {
-      showToast(status === 'accepted' ? t('host_actions.accepted') : t('host_actions.rejected'), 'success')
+      showToast(t('host_actions.accepted'), 'success')
+      const app = d.pendingApps.find(a => a.id === appId)
+      if (app) {
+        await supabase.from('notifications').insert({
+          user_id: app.applicant_id,
+          session_id: d.id,
+          type: 'application_accepted',
+          title: t('notifications.accepted_title'),
+          body: d.session?.title || '',
+          href: '/session/' + d.id,
+        })
+      }
       d.loadData()
     }
     setActionLoading(null)
+  }
+
+  async function confirmReject() {
+    if (!rejectTarget) return
+    setActionLoading(rejectTarget.appId)
+    const { error } = await supabase.from('applications').update({ status: 'rejected' }).eq('id', rejectTarget.appId)
+    if (error) { showToast(t('errors.error_prefix') + ': ' + error.message, 'error') }
+    else {
+      showToast(t('host_actions.not_selected'), 'success')
+      const app = d.pendingApps.find(a => a.id === rejectTarget.appId)
+      if (app) {
+        await supabase.from('notifications').insert({
+          user_id: app.applicant_id,
+          session_id: d.id,
+          type: 'application_not_selected',
+          title: t('session.not_selected_title'),
+          body: rejectMessage.trim() || t('session.not_selected_body', { title: d.session?.title || '' }),
+          href: '/session/' + d.id,
+        })
+      }
+      d.loadData()
+    }
+    setActionLoading(null)
+    setRejectTarget(null)
+    setRejectMessage('')
   }
 
   // Determine if visitor (not logged in or no application and not host)
@@ -419,9 +463,21 @@ export default function SessionPage() {
           {d.myApp?.status === 'rejected' && (
             <div style={{ background: S.bg1, border: '1px solid ' + S.redbd, borderRadius: 16, padding: 20, textAlign: 'center' }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: S.red, background: S.redbg, border: '1px solid ' + S.redbd, padding: '4px 12px', borderRadius: 99, textTransform: 'uppercase' }}>
-                {t('session.status_rejected')}
+                {t('session.status_not_selected')}
               </span>
-              <p style={{ color: S.tx2, fontSize: 13, marginTop: 12 }}>{t('session.rejected_desc')}</p>
+              <p style={{ color: S.tx2, fontSize: 13, marginTop: 12 }}>{t('session.not_selected_desc')}</p>
+            </div>
+          )}
+          {d.myApp?.status === 'withdrawn' && (
+            <div style={{ background: S.bg1, border: '1px solid ' + S.rule, borderRadius: 16, padding: 20, textAlign: 'center' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule, padding: '4px 12px', borderRadius: 99, textTransform: 'uppercase' }}>
+                {t('session.status_withdrawn')}
+              </span>
+              <p style={{ color: S.tx2, fontSize: 13, marginTop: 12 }}>{t('session.withdrawn_desc')}</p>
+              <button onClick={() => navigate('/session/' + d.id + '/apply')} style={{
+                marginTop: 12, padding: '12px 24px', borderRadius: 14, background: S.p, border: 'none',
+                color: S.tx, fontSize: 14, fontWeight: 700, cursor: 'pointer',
+              }}>{t('session.reapply')}</button>
             </div>
           )}
         </div>
@@ -464,6 +520,29 @@ export default function SessionPage() {
         shareTitle={d.session.title}
         shareSubtitle={d.session.approx_area}
       />
+      {rejectTarget && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div style={{ background: S.bg1, borderRadius: 20, padding: 24, width: '100%', maxWidth: 360, border: '1px solid ' + S.rule }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 8px' }}>{t('session.not_selected_dialog_title')}</h3>
+            <p style={{ fontSize: 13, color: S.tx2, margin: '0 0 16px' }}>{t('session.not_selected_dialog_desc', { name: rejectTarget.name })}</p>
+            <textarea
+              value={rejectMessage}
+              onChange={e => setRejectMessage(e.target.value)}
+              placeholder={t('session.rejection_message_placeholder')}
+              maxLength={200}
+              style={{ width: '100%', minHeight: 80, background: S.bg2, color: S.tx, border: '1px solid ' + S.rule, borderRadius: 12, padding: 12, fontSize: 13, resize: 'vertical', boxSizing: 'border-box' }}
+            />
+            <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+              <button onClick={() => { setRejectTarget(null); setRejectMessage('') }} style={{ flex: 1, padding: 12, borderRadius: 12, background: 'transparent', border: '1px solid ' + S.rule, color: S.tx2, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                {t('common.cancel')}
+              </button>
+              <button onClick={confirmReject} disabled={actionLoading === rejectTarget.appId} style={{ flex: 1, padding: 12, borderRadius: 12, background: S.redbg, border: '1px solid ' + S.redbd, color: S.red, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                {actionLoading === rejectTarget.appId ? '...' : t('session.confirm_not_selected')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <ConfirmDialog {...d.confirmDialogProps} />
     </div>
   )

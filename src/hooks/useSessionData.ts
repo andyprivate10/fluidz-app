@@ -378,10 +378,10 @@ export function useSessionData() {
   }
 
   const cancelApplication = async () => {
-    if (!await confirm({ title: t('session.cancel_confirm') })) return
-    await supabase.from('applications').delete().eq('session_id', id).eq('applicant_id', currentUser!.id)
-    showToast(t('session.cancelled'), 'info')
-    setMyApp(null)
+    if (!await confirm({ title: t('session.withdraw_confirm') })) return
+    await supabase.from('applications').update({ status: 'withdrawn' }).eq('session_id', id).eq('applicant_id', currentUser!.id)
+    showToast(t('session.withdrawn'), 'info')
+    setMyApp({ status: 'withdrawn' })
     loadData()
   }
 
@@ -414,7 +414,7 @@ export function useSessionData() {
     isHost, eventRole, statusLabel,
     handleTouchStart, handleTouchEnd,
     getVoteStats, handleVote, handleCheckIn,
-    cancelApplication, leaveSession, endSession, confirmCheckIn, loadData, refresh: loadData,
+    cancelApplication, withdrawApplication: cancelApplication, leaveSession, endSession, confirmCheckIn, loadData, refresh: loadData,
     checkInRequests,
     confirmDialogProps,
   }

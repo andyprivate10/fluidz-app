@@ -332,7 +332,34 @@
     "members_section": "Membres",
     "pending_candidates": "Candidats en attente",
     "rejected_section": "Rejetés",
-    "checked_in": "Arrivé"
+    "checked_in": "Arrivé",
+    "withdraw_confirm": "Retirer ta candidature ? Tu pourras postuler à nouveau dans 10 minutes.",
+    "withdrawn": "Candidature retirée",
+    "status_withdrawn": "Retirée",
+    "withdrawn_desc": "Tu as retiré ta candidature. Tu peux postuler à nouveau.",
+    "reapply": "Postuler à nouveau",
+    "not_selected_title": "Pas retenu cette fois",
+    "not_selected_body": "Tu n'as pas été retenu pour \"{{title}}\" — explore d'autres sessions !",
+    "not_selected_dialog_title": "Ne pas retenir ce candidat",
+    "not_selected_dialog_desc": "{{name}} ne sera pas retenu. Tu peux ajouter un message (optionnel).",
+    "rejection_message_placeholder": "Message au candidat (optionnel)...",
+    "confirm_not_selected": "Confirmer",
+    "status_not_selected": "Pas retenu",
+    "not_selected_desc": "Tu n'as pas été retenu cette fois. Explore d'autres sessions !",
+    "cooldown_reapply": "Tu pourras postuler à nouveau dans {{minutes}} min",
+    "group_apply": "Candidature de groupe",
+    "add_partners": "Ajouter des partenaires",
+    "add_partners_desc": "Sélectionne des contacts mutuels pour postuler ensemble",
+    "no_mutual_contacts": "Pas de contacts mutuels",
+    "no_mutual_contacts_desc": "Ajoute des contacts dans ton NaughtyBook pour postuler en groupe",
+    "group_mutual_check": "Tous les partenaires doivent être mutuels entre eux",
+    "partner_not_mutual": "{{name}} n'est pas mutuel avec {{other}}",
+    "group_pending_confirmation": "En attente de confirmation des partenaires",
+    "group_partner_confirmed": "{{name}} a confirmé",
+    "group_partner_waiting": "En attente de {{name}}",
+    "confirm_group_pack": "Confirmer ta participation",
+    "confirm_group_pack_desc": "{{name}} t'invite à postuler ensemble. Choisis ton pack.",
+    "group_size": "Groupe de {{count}}"
   },
   "chat": {
     "title": "Messages",
@@ -983,7 +1010,8 @@
     "no_files": "Aucun fichier dans ce dossier.",
     "no_user": "Aucun utilisateur",
     "no_action": "Aucune action effectuée.",
-    "no_active_session": "Aucune session active."
+    "no_active_session": "Aucune session active.",
+    "continue": "Continuer"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -1111,7 +1139,8 @@
   "host_actions": {
     "sending": "Envoi...",
     "send_to_all": "Envoyer a tous",
-    "accept": "Accepter"
+    "accept": "Accepter",
+    "not_selected": "Non retenu"
   },
   "status": {
     "pending": "En attente",
