@@ -36,12 +36,26 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
   )
 }
 
-function Section({ title, badge, children, color }: { title:string; badge?:string; children:React.ReactNode; color?:string }) {
+function VisibilityToggle({ value, onChange }: { value: 'all' | 'naughtybook'; onChange: (v: 'all' | 'naughtybook') => void }) {
+  const isNaughty = value === 'naughtybook'
+  return (
+    <button onClick={() => onChange(isNaughty ? 'all' : 'naughtybook')} style={{
+      display:'flex', alignItems:'center', gap:4, padding:'2px 8px', borderRadius:99,
+      background: isNaughty ? S.lavbg : S.sagebg, border:'1px solid '+(isNaughty ? S.lavbd : S.sagebd),
+      cursor:'pointer', fontSize:9, fontWeight:600, color: isNaughty ? S.lav : S.sage,
+      whiteSpace:'nowrap',
+    }}>
+      {isNaughty ? 'NaughtyBook' : 'Tous'}
+    </button>
+  )
+}
+
+function Section({ title, badge, children, color, sectionKey, visibility, onVisibilityChange }: { title:string; badge?:string; children:React.ReactNode; color?:string; sectionKey?:string; visibility?:'all'|'naughtybook'; onVisibilityChange?:(key:string, v:'all'|'naughtybook')=>void }) {
   const c = color || S.tx3
   return (
     <div style={{ background:'rgba(22,20,31,0.85)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', borderRadius:20, padding:'16px', border:`1px solid ${S.rule2}`, marginBottom:12 }}>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
-        <span style={{ fontSize:10, fontWeight:700, color:c, textTransform:'uppercase', letterSpacing:'0.08em' }}>
+        <span style={{ fontSize:10, fontWeight:700, color:c, textTransform:'uppercase', letterSpacing:'0.08em', flex:1 }}>
           {title}
         </span>
         {badge && (
@@ -49,6 +63,9 @@ function Section({ title, badge, children, color }: { title:string; badge?:strin
             background:S.p2, color:S.p, border:`1px solid ${S.pbd}` }}>
             {badge}
           </span>
+        )}
+        {sectionKey && onVisibilityChange && (
+          <VisibilityToggle value={visibility || 'all'} onChange={(v) => onVisibilityChange(sectionKey, v)} />
         )}
       </div>
       {children}
@@ -68,6 +85,7 @@ export default function MePage() {
     tribes, setTribes, ethnicities, setEthnicities,
     kinks, prep, setPrep, dernierTest, setDernierTest, healthTests, setHealthTests,
     limits, setLimits,
+    sectionVisibility, setSectionVisibility,
     linkedProfiles, setLinkedProfiles, platformProfiles, setPlatformProfiles,
     avatarUrl, photosProfil, photosIntime, videosIntime,
     mediaUploading, cropSrc, setCropSrc, cropCallback, setCropCallback, cropAspect, setCropAspect,
@@ -79,6 +97,10 @@ export default function MePage() {
   } = d
 
   const [activeTab, setActiveTab] = useState<'profil' | 'adulte'>('profil')
+
+  function handleVisibilityChange(key: string, v: 'all' | 'naughtybook') {
+    setSectionVisibility(prev => ({ ...prev, [key]: v }))
+  }
 
   // ── Non connecté ─────────────────────────────────────────────────────────
   if (!user) {
@@ -163,7 +185,7 @@ export default function MePage() {
       {activeTab === 'profil' && (
       <div style={{ padding:'0 20px' }}>
 
-          <Section title={t('profile.public_photos')} color={S.sage}>
+          <Section title={t('profile.public_photos')} color={S.sage} sectionKey="public_photos" visibility={sectionVisibility.public_photos} onVisibilityChange={handleVisibilityChange}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 4px' }}>{t('profile.public_photos_desc')}</p>
             <p style={{ fontSize:10, color:S.tx4, margin:'0 0 10px' }}>{t('profile.public_photos_rules')}</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
@@ -200,7 +222,7 @@ export default function MePage() {
             <p style={{ fontSize:11, color:S.tx3, margin:0 }}>{d.t('profile.photo_count', { count: photosProfil.length })}</p>
           </Section>
 
-          <Section title={t('profile.infos')} color={S.lav}>
+          <Section title={t('profile.infos')} color={S.lav} sectionKey="infos" visibility={sectionVisibility.infos} onVisibilityChange={handleVisibilityChange}>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <label style={{ fontSize:11, fontWeight:600, color:S.tx3, display:'block', marginBottom:6 }}>{t('profile.label_bio')}</label>
@@ -317,7 +339,7 @@ export default function MePage() {
             mediaUploading={mediaUploading}
           />
 
-          <Section title={t('profile.kinks')} color={S.p} badge={kinks.length > 0 ? t('profile.kinks_badge', { count: kinks.length }) : undefined}>
+          <Section title={t('profile.kinks')} color={S.p} badge={kinks.length > 0 ? t('profile.kinks_badge', { count: kinks.length }) : undefined} sectionKey="kinks" visibility={sectionVisibility.kinks} onVisibilityChange={handleVisibilityChange}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {kinkOptions.map(k => (
                 <Chip key={k.label} label={k.label} active={kinks.includes(k.label)} onClick={() => toggleKink(k.label)} />
@@ -325,7 +347,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined}>
+          <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined} sectionKey="health" visibility={sectionVisibility.health} onVisibilityChange={handleVisibilityChange}>
             {/* PrEP */}
             <div style={{ display:'flex', gap:8, marginBottom:12 }}>
               {PREP_OPTIONS.map(p => (
@@ -366,7 +388,7 @@ export default function MePage() {
             </div>
           </Section>
 
-          <Section title={t('profile.limits')} color={S.red}>
+          <Section title={t('profile.limits')} color={S.red} sectionKey="limits" visibility={sectionVisibility.limits} onVisibilityChange={handleVisibilityChange}>
             <textarea
               value={limits} onChange={e => setLimits(e.target.value)}
               placeholder={t('placeholders.limits_placeholder')} rows={3}
@@ -377,12 +399,12 @@ export default function MePage() {
             </p>
           </Section>
 
-          <Section title={t('profile.linked_profiles')} color={S.p}>
+          <Section title={t('profile.linked_profiles')} color={S.p} sectionKey="linked_profiles" visibility={sectionVisibility.linked_profiles} onVisibilityChange={handleVisibilityChange}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.linked_desc')}</p>
             <LinkedProfiles userId={user.id} linkedProfiles={linkedProfiles} onChange={setLinkedProfiles} />
           </Section>
 
-          <Section title={t('profile.platform_profiles')} color={S.p}>
+          <Section title={t('profile.platform_profiles')} color={S.p} sectionKey="platform_profiles" visibility={sectionVisibility.platform_profiles} onVisibilityChange={handleVisibilityChange}>
             <p style={{ fontSize:11, color:S.tx3, margin:'0 0 10px' }}>{t('profile.platform_desc')}</p>
             <PlatformProfiles userId={user.id} linkedProfiles={platformProfiles} onChange={setPlatformProfiles} />
           </Section>

@@ -55,6 +55,7 @@ export function useMeData() {
   const [seroStatus, setSeroStatus] = useState('')
   const [healthTests, setHealthTests] = useState<Record<string, { status: string; date?: string }>>({})
   const [limits, setLimits] = useState('')
+  const [sectionVisibility, setSectionVisibility] = useState<Record<string, 'all' | 'naughtybook'>>({})
   const [dmPrivacy, setDmPrivacy] = useState<'open' | 'profile_required' | 'full_access'>('open')
   const [savedMsgs, setSavedMsgs] = useState<{ id: string; label: string; text: string }[]>([])
   const [newMsgText, setNewMsgText] = useState('')
@@ -203,6 +204,7 @@ export function useMeData() {
       setSeroStatus(h.sero_status || '')
       setHealthTests(h.tests || {})
       setLimits(p.limits || '')
+      setSectionVisibility(p.section_visibility || {})
       setLinkedProfiles(Array.isArray(p.linked_profiles) ? p.linked_profiles : [])
       setPlatformProfiles(Array.isArray(p.platform_profiles) ? p.platform_profiles : [])
       // Load preferences
@@ -243,7 +245,7 @@ export function useMeData() {
     if (!user) return
     setAutoSaveStatus('saving')
     const profile_json = {
-      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dm_privacy: dmPrivacy, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
+      age, bio, location, home_country: homeCountry, home_city: homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dm_privacy: dmPrivacy, section_visibility: sectionVisibility, linked_profiles: linkedProfiles, platform_profiles: platformProfiles,
       avatar_url: photosProfil[0] || avatarUrl || undefined,
       photos_profil: photosProfil,
       photos_intime: photosIntime,
@@ -261,7 +263,7 @@ export function useMeData() {
     })
     setAutoSaveStatus('saved')
     setTimeout(() => setAutoSaveStatus('idle'), 2000)
-  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, linkedProfiles, platformProfiles, dernierTest, seroStatus, healthTests, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos, prefRoles, prefAgeMin, prefAgeMax, prefKinks, prefMorphologies])
+  }, [user, displayName, age, bio, location, homeCountry, homeCity, languages, role, orientation, height, weight, morphology, tribes, ethnicities, kinks, prep, limits, dmPrivacy, sectionVisibility, linkedProfiles, platformProfiles, dernierTest, seroStatus, healthTests, avatarUrl, photosProfil, photosIntime, videosIntime, bodyPartPhotos, prefRoles, prefAgeMin, prefAgeMax, prefKinks, prefMorphologies])
 
   // Auto-save: debounce 1.5s after any field change
   useEffect(() => {
@@ -399,6 +401,8 @@ export function useMeData() {
     prefAgeMax, setPrefAgeMax,
     prefKinks, setPrefKinks,
     prefMorphologies, setPrefMorphologies,
+    // section visibility
+    sectionVisibility, setSectionVisibility,
     // auto-save
     autoSaveStatus,
     // handlers

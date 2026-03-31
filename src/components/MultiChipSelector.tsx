@@ -50,9 +50,11 @@ export default function MultiChipSelector({ items, groupLabels, selected, onChan
         if (groupItems.length === 0) return null
         return (
           <div key={group} style={{ marginBottom: compact ? 6 : 10 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: S.tx4, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
-              {groupLabels[group] || group}
-            </div>
+            {groupLabels[group] ? (
+              <div style={{ fontSize: 10, fontWeight: 700, color: S.tx4, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+                {groupLabels[group]}
+              </div>
+            ) : null}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: compact ? 4 : 6 }}>
               {groupItems.map(item => {
                 const on = selected.includes(item.slug)

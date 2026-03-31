@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { colors, fonts } from '../brand'
 import GhostTimer from './GhostTimer'
 import GhostConvertModal from './GhostConvertModal'
-import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings } from 'lucide-react'
+import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings, Zap } from 'lucide-react'
 
 const S = colors
 
@@ -147,6 +147,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           {menuItem(<Bell size={18} strokeWidth={1.5} />, t('drawer.notifications'), '/notifications', unreadCount)}
           {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.naughty_book'), '/contacts')}
           {menuItem(<Heart size={18} strokeWidth={1.5} />, t('favorites.title'), '/favorites')}
+          {menuItem(<Zap size={18} strokeWidth={1.5} />, t('vibe.menu_label'), '/vibe-score')}
 
           {/* Section: Raccourcis */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '20px 0 4px' }}>{t('shortcuts.title')}</p>
