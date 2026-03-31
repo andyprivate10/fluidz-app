@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { colors, fonts } from '../brand'
+import { Bell } from 'lucide-react'
 import SideDrawer from './SideDrawer'
 
 const S = colors
@@ -184,6 +185,35 @@ export default function BottomNav() {
               </button>
             )
           })}
+
+          {/* Bell notification button */}
+          <button
+            onClick={() => navigate('/notifications')}
+            aria-label={t('drawer.notifications')}
+            style={{
+              flex: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center',
+              justifyContent: 'center', gap: 4,
+              background: 'none', border: 'none', cursor: 'pointer',
+              position: 'relative', padding: '10px 0',
+            }}
+          >
+            <div style={{ position: 'relative' }}>
+              <div style={{ width: 20, height: 20, color: location.pathname === '/notifications' ? S.p : S.tx3, transition: 'color 0.2s' }}>
+                <Bell size={20} strokeWidth={1.5} />
+              </div>
+              {unreadNotifCount > 0 && (
+                <div style={{
+                  position: 'absolute', top: -4, right: -6,
+                  minWidth: 16, height: 16, borderRadius: 99,
+                  background: S.p, border: `2px solid ${S.bg}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 9, fontWeight: 800, color: S.tx,
+                }}>
+                  {unreadNotifCount > 9 ? '9+' : unreadNotifCount}
+                </div>
+              )}
+            </div>
+          </button>
 
           {/* Hamburger menu button */}
           <button
