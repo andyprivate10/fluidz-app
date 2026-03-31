@@ -14,6 +14,7 @@ import SessionVotes from '../components/session/SessionVotes'
 import SessionStatusCard from '../components/session/SessionStatusCard'
 import SessionEndedSection from '../components/session/SessionEndedSection'
 import SessionShareTab from '../components/session/SessionShareTab'
+import SessionStory from '../components/session/SessionStory'
 import ShareToContact from '../components/ShareToContact'
 import { useSessionData } from '../hooks/useSessionData'
 import { useTranslation } from 'react-i18next'
@@ -364,6 +365,11 @@ export default function SessionPage() {
             </div>
           )}
         </div>
+      )}
+
+      {/* ═══ TAB: story ═══ */}
+      {activeTab === 'story' && d.id && (
+        <SessionStory sessionId={d.id} />
       )}
 
       {/* ═══ TAB: share (HOST) ═══ */}
