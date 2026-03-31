@@ -11,6 +11,18 @@ import { showToast } from './Toast'
 const S = colors
 
 const ADULT_SECTION_IDS = ['photos_adulte', 'body_part_photos', 'role', 'pratiques', 'limites', 'sante']
+
+function directDmSessionId(uid1: string, uid2: string): string {
+  const sorted = [uid1, uid2].sort()
+  const combined = sorted.join('-')
+  let hash = 0
+  for (let i = 0; i < combined.length; i++) {
+    hash = ((hash << 5) - hash) + combined.charCodeAt(i)
+    hash |= 0
+  }
+  const hex = Math.abs(hash).toString(16).padStart(8, '0')
+  return `dddd0000-${hex.slice(0, 4)}-${hex.slice(4, 8)}-0000-${sorted[0].slice(0, 12)}`
+}
 const DEFAULT_ENABLED = ['photos_profil', 'basics']
 
 interface InterestPopupProps {
@@ -83,6 +95,20 @@ export default function InterestPopup({ open, onClose, targetUserId, targetName,
         showToast(error.message, 'error')
         return
       }
+      // Create DM session + system message with shared sections
+      const sid = directDmSessionId(user.id, targetUserId)
+      await supabase.from('sessions').upsert({
+        id: sid, host_id: user.id, title: 'DM', status: 'active',
+      }, { onConflict: 'id' })
+      await supabase.from('messages').insert({
+        session_id: sid,
+        sender_id: user.id,
+        text: '[INTEREST_SHARED]' + JSON.stringify(enabled),
+        sender_name: profile?.display_name || '',
+        room_type: 'dm',
+        dm_peer_id: targetUserId,
+        locked: true,
+      })
       showToast(t('interest.sent_toast'), 'success')
       onSent()
       onClose()

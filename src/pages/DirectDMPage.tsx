@@ -23,7 +23,7 @@ import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 
 const S = colors
 
-type Message = { id: string; text: string; sender_id: string; created_at: string; sender_name: string; has_media?: boolean; media_urls?: string[] }
+type Message = { id: string; text: string; sender_id: string; created_at: string; sender_name: string; has_media?: boolean; media_urls?: string[]; locked?: boolean }
 
 
 // Deterministic session ID for direct DMs between two users
@@ -67,6 +67,9 @@ export default function DirectDMPage() {
   const [displayName, setDisplayName] = useState('')
   const [dmBlocked, setDmBlocked] = useState<{ level: DmPrivacyLevel; status: 'need_request' | 'pending' | 'declined' } | null>(null)
   const [showDmRequest, setShowDmRequest] = useState(false)
+  const [interestLocked, setInterestLocked] = useState(false)
+  const [interestRequestId, setInterestRequestId] = useState<string | null>(null)
+  const [showNbSuggest, setShowNbSuggest] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
@@ -111,6 +114,19 @@ export default function DirectDMPage() {
       }
     }
 
+    // Check if chat is locked via interest request
+    const { data: incomingInterest } = await supabase
+      .from('interest_requests')
+      .select('id, status, shared_sections, profile_snapshot')
+      .eq('sender_id', peerId)
+      .eq('receiver_id', user.id)
+      .eq('status', 'pending')
+      .maybeSingle()
+    if (incomingInterest) {
+      setInterestLocked(true)
+      setInterestRequestId(incomingInterest.id)
+    }
+
     // Ensure a "direct DM session" exists (upsert to avoid race condition)
     const sid = directDmSessionId(user.id, peerId!)
     setSessionId(sid)
@@ -127,6 +143,21 @@ export default function DirectDMPage() {
       .order('created_at')
       .limit(100)
     setMessages(msgs || [])
+
+    // Auto-suggest NaughtyBook after 5+ messages exchanged
+    if (msgs && msgs.length >= 5) {
+      const myMsgCount = msgs.filter((m: any) => m.sender_id === user.id).length
+      const peerMsgCount = msgs.filter((m: any) => m.sender_id === peerId).length
+      if (myMsgCount >= 2 && peerMsgCount >= 2) {
+        // Check if not already mutual contacts
+        const { data: contact } = await supabase.from('contacts').select('mutual').eq('user_id', user.id).eq('contact_user_id', peerId).maybeSingle()
+        if (!contact?.mutual) {
+          // Check no pending/accepted NB request
+          const { data: nbReq } = await supabase.from('naughtybook_requests').select('id').or(`and(sender_id.eq.${user.id},receiver_id.eq.${peerId}),and(sender_id.eq.${peerId},receiver_id.eq.${user.id})`).maybeSingle()
+          if (!nbReq) setShowNbSuggest(true)
+        }
+      }
+    }
 
     // Mark direct DM notifications as read
     await supabase.from('notifications')
@@ -336,7 +367,27 @@ export default function DirectDMPage() {
             </div>
           </>
         )}
-        {messages.map(msg => (
+        {messages.map(msg => {
+          // Interest shared system message
+          const isInterestShare = msg.text.startsWith('[INTEREST_SHARED]')
+          if (isInterestShare) {
+            const jsonStr = msg.text.replace('[INTEREST_SHARED]', '').trim()
+            let sections: string[] = []
+            try { sections = JSON.parse(jsonStr) } catch {}
+            return (
+              <div key={msg.id} style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>
+                <div style={{ background: S.p2, border: '1px solid ' + S.pbd, borderRadius: 14, padding: '10px 16px', maxWidth: '85%' }}>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: S.p, margin: '0 0 4px' }}>{t('interest.system_msg')}</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {sections.map((s: string) => (
+                      <span key={s} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: S.bg2, color: S.tx2, fontWeight: 600 }}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          }
+          return (
           <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name })} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
             <div style={{
               padding: msg.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
@@ -415,9 +466,30 @@ export default function DirectDMPage() {
               </div>
             </div>
           </div>
-        ))}
+        )})}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* NaughtyBook suggest banner */}
+      {showNbSuggest && (
+        <div style={{ padding: '8px 16px', background: S.p2, borderTop: '1px solid ' + S.pbd, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ flex: 1 }}>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: S.p }}>{t('naughtybook.suggest_title')}</p>
+            <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx3 }}>{t('naughtybook.suggest_body')}</p>
+          </div>
+          <button onClick={async () => {
+            if (!peerId) return
+            const { error } = await supabase.rpc('rpc_request_naughtybook', { p_receiver_id: peerId })
+            if (!error) { showToast(t('naughtybook.request_sent'), 'success'); setShowNbSuggest(false) }
+            else if (error.message?.includes('Cooldown')) showToast(t('naughtybook.cooldown_toast'), 'error')
+          }} style={{ padding: '8px 14px', borderRadius: 10, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+            {t('naughtybook.request_button')}
+          </button>
+          <button onClick={() => setShowNbSuggest(false)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* Typing indicator */}
       {typingUsers.length > 0 && (
@@ -435,6 +507,30 @@ export default function DirectDMPage() {
         </div>
       )}
       {/* Input */}
+      {interestLocked ? (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10, maxWidth: 480, margin: '0 auto' }}>
+          <div style={{ padding: '12px 16px', background: S.bg1, borderTop: '1px solid ' + S.rule, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontSize: 12, color: S.tx3, textAlign: 'center', margin: 0 }}>{t('interest.locked_hint')}</p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={async () => {
+                if (!interestRequestId) return
+                const { error } = await supabase.rpc('rpc_respond_interest', { p_request_id: interestRequestId, p_action: 'accepted' })
+                if (!error) { setInterestLocked(false); showToast(t('interest.unlocked_toast'), 'success') }
+              }} style={{ flex: 1, padding: 12, borderRadius: 12, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: S.tx, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                {t('interest.unlock')}
+              </button>
+              <button onClick={async () => {
+                if (!interestRequestId) return
+                await supabase.rpc('rpc_respond_interest', { p_request_id: interestRequestId, p_action: 'rejected' })
+                setInterestLocked(false)
+                showToast(t('interest.rejected_toast'), 'info')
+              }} style={{ padding: '12px 16px', borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                {t('interest.reject')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div style={{ background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 12, borderTop: showEmojiBar ? 'none' : '1px solid ' + S.rule, display: 'flex', gap: 8, flexShrink: 0 }}>
         <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
           <Camera size={16} style={{ color: S.tx3 }} />
@@ -456,6 +552,7 @@ export default function DirectDMPage() {
           <Send size={16} style={{ color: newMessage.trim() ? S.tx : S.tx4 }} />
         </button>
       </div>
+      )}
       {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
       {menuMsg && <ChatMessageMenu message={menuMsg} isOwn={menuMsg.sender_id === currentUser?.id} onCopy={() => showToast(t('chat.copied'), 'success')} onReply={() => setReplyTo({ id: menuMsg.id, text: menuMsg.text, sender_name: menuMsg.sender_name })} onDelete={menuMsg.sender_id === currentUser?.id ? () => { supabase.from('messages').delete().eq('id', menuMsg.id); setMessages(prev => prev.filter(m => m.id !== menuMsg.id)) } : undefined} onClose={() => setMenuMsg(null)} labels={{ copy: t('chat.copy_text'), reply: t('chat.reply'), delete: t('chat.delete_msg') }} />}
       {currentUser && (

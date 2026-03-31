@@ -48,6 +48,7 @@ export default function ContactsPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori'>('all')
   const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
+  const [pendingNbRequests, setPendingNbRequests] = useState<{ id: string; sender_id: string; display_name: string; avatar_url?: string; role?: string; created_at: string }[]>([])
 
 
   useEffect(() => {
@@ -56,6 +57,18 @@ export default function ContactsPage() {
       supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle().then(({ data }) => {
         const pj = (data?.profile_json || {}) as Record<string, unknown>
         if (Array.isArray(pj.linked_profiles)) setLinkedProfiles(pj.linked_profiles as { user_id: string; type: string }[])
+      })
+      // Load pending naughtybook requests where I'm the receiver
+      supabase.from('naughtybook_requests').select('id, sender_id, created_at').eq('receiver_id', user.id).eq('status', 'pending').order('created_at', { ascending: false }).then(async ({ data }) => {
+        if (!data || data.length === 0) { setPendingNbRequests([]); return }
+        const senderIds = data.map(r => r.sender_id)
+        const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', senderIds)
+        const profMap = new Map((profiles || []).map(p => [p.id, p]))
+        setPendingNbRequests(data.map(r => {
+          const prof = profMap.get(r.sender_id)
+          const pj = (prof?.profile_json || {}) as Record<string, unknown>
+          return { id: r.id, sender_id: r.sender_id, display_name: prof?.display_name || '?', avatar_url: (pj.avatar_url as string) || undefined, role: (pj.role as string) || undefined, created_at: r.created_at }
+        }))
       })
     }
   }, [user])
@@ -98,6 +111,21 @@ export default function ContactsPage() {
     setLoading(false)
   }, [navigate])
 
+
+  async function acceptNbRequest(requestId: string, senderId: string) {
+    const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'accepted' })
+    if (error) { showToast(error.message, 'error'); return }
+    setPendingNbRequests(prev => prev.filter(r => r.id !== requestId))
+    showToast(t('naughtybook.accepted_toast'), 'success')
+    loadContacts() // Refresh contacts to show new mutual
+  }
+
+  async function rejectNbRequest(requestId: string) {
+    const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'rejected' })
+    if (error) { showToast(error.message, 'error'); return }
+    setPendingNbRequests(prev => prev.filter(r => r.id !== requestId))
+    showToast(t('naughtybook.rejected_toast'), 'info')
+  }
 
   async function updateRelation(contactId: string, level: 'connaissance' | 'close' | 'favori') {
     await supabase.from('contacts').update({ relation_level: level }).eq('id', contactId)
@@ -167,6 +195,30 @@ export default function ContactsPage() {
           })}
         </div>
       </div>
+
+      {/* Pending NaughtyBook requests */}
+      {pendingNbRequests.length > 0 && (
+        <div style={{ padding: '0 20px', marginBottom: 16 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{t('naughtybook.pending_requests')}</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {pendingNbRequests.map(req => (
+              <div key={req.id} style={{ background: S.bg1, border: '1px solid ' + S.pbd, borderRadius: 14, padding: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div onClick={() => navigate('/profile/' + req.sender_id)} style={{ width: 40, height: 40, borderRadius: '28%', overflow: 'hidden', flexShrink: 0, cursor: 'pointer', background: S.bg2 }}>
+                  {req.avatar_url ? <img src={req.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 800, color: S.tx3 }}>{req.display_name[0]}</div>}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: S.tx }}>{req.display_name}</p>
+                  {req.role && <p style={{ margin: 0, fontSize: 11, color: S.p }}>{req.role}</p>}
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <button onClick={() => acceptNbRequest(req.id, req.sender_id)} style={{ padding: '6px 12px', borderRadius: 10, background: S.sagebg, border: '1px solid ' + S.sagebd, color: S.sage, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('naughtybook.accept')}</button>
+                  <button onClick={() => rejectNbRequest(req.id)} style={{ padding: '6px 12px', borderRadius: 10, background: 'transparent', border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{t('naughtybook.reject')}</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Contact list */}
       <div className="stagger-children" style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
