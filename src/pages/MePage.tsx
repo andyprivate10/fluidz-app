@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import PageFadeIn from '../components/PageFadeIn'
 import { Link } from 'react-router-dom'
 import { colors, fonts } from '../brand'
@@ -36,6 +37,7 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
 }
 
 function VisibilityToggle({ value, onChange }: { value: 'all' | 'naughtybook'; onChange: (v: 'all' | 'naughtybook') => void }) {
+  const { t } = useTranslation()
   const isNaughty = value === 'naughtybook'
   return (
     <button onClick={() => onChange(isNaughty ? 'all' : 'naughtybook')} style={{
@@ -44,7 +46,7 @@ function VisibilityToggle({ value, onChange }: { value: 'all' | 'naughtybook'; o
       cursor:'pointer', fontSize:9, fontWeight:600, color: isNaughty ? S.lav : S.sage,
       whiteSpace:'nowrap',
     }}>
-      {isNaughty ? 'NaughtyBook' : 'Tous'}
+      {isNaughty ? t('naughtybook.mutual_badge') : t('profile.visibility_all')}
     </button>
   )
 }

@@ -520,6 +520,7 @@
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
     "in_naughtybook_badge": "NaughtyBook",
+    "visibility_all": "Everyone",
     "dm_request": "Send DM request",
     "dm_direct": "Send DM",
     "dm_pending": "Request pending"
