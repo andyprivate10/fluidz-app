@@ -30,14 +30,14 @@ export default function SessionQuickActions({ sessionId, eventRole, exactAddress
     <div style={{ padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
       {eventRole === 'member' && (
         <>
-          {exactAddress && !isGhost && (
+          {myApp?.status === 'checked_in' && exactAddress && !isGhost && (
             <button aria-label="Open Maps" onClick={() => window.open('https://maps.google.com/?q=' + encodeURIComponent(exactAddress), '_blank')} style={qBtn}>
               <Navigation size={16} strokeWidth={1.5} style={{ color: S.sage }} />
               <span style={qLabel}>{t('session.qa_maps')}</span>
             </button>
           )}
           {!checkInDone && status === 'open' && (
-            <button aria-label="Check-in" onClick={onCheckIn} disabled={checkInLoading} style={{ ...qBtn, borderColor: S.sage, background: S.sagebg, opacity: checkInLoading ? 0.6 : 1 }}>
+            <button aria-label="Je suis là" onClick={onCheckIn} disabled={checkInLoading} style={{ ...qBtn, borderColor: S.sage, background: S.sagebg, opacity: checkInLoading ? 0.6 : 1 }}>
               <UserCheck size={16} strokeWidth={1.5} style={{ color: S.sage }} />
               <span style={{ ...qLabel, color: S.sage }}>{checkInLoading ? '...' : t('session.check_in_action')}</span>
             </button>

@@ -40,7 +40,7 @@ export default function SessionContentCards({ session, myApp, members, memberRol
       })()}
 
       {/* ─── ADDRESS (member only, prominent) ─── */}
-      {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.exact_address && (
+      {myApp?.status === 'checked_in' && session.exact_address && (
         <div style={{ ...glassCard, borderColor: S.sagebd, background: 'rgba(74,222,128,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <MapPin size={16} strokeWidth={1.5} style={{ color: S.sage, flexShrink: 0 }} />
@@ -108,7 +108,7 @@ export default function SessionContentCards({ session, myApp, members, memberRol
         )
       })()}
 
-      {(myApp?.status === 'accepted' || myApp?.status === 'checked_in') && session.lineup_json?.directions?.length ? (
+      {myApp?.status === 'checked_in' && session.lineup_json?.directions?.length ? (
         <div style={glassCard}>
           <div style={{ fontSize: 10, fontWeight: 700, color: S.lav, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_access')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

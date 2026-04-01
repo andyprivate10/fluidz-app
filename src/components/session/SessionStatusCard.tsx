@@ -160,20 +160,7 @@ export default function SessionStatusCard({
           {myApp.status === 'accepted' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />{t('session.accepted')}</span>
-              {session.exact_address && (
-                <div style={{ padding: '10px 12px', background: S.sagebg, borderRadius: 10, border: '1px solid '+S.sagebd }}>
-                  <p style={{ fontSize: 11, color: S.sage, fontWeight: 700, margin: '0 0 2px' }}>{t('session.address_label')}</p>
-                  <p style={{ fontSize: 14, color: S.tx, fontWeight: 600, margin: 0 }}>{session.exact_address}</p>
-                </div>
-              )}
-              {(session as any).approx_lat && (session as any).approx_lng && (
-                <MapView
-                  center={[(session as any).approx_lat, (session as any).approx_lng]}
-                  zoom={15}
-                  height={180}
-                  pins={[{ id: session.id, lat: (session as any).approx_lat, lng: (session as any).approx_lng, label: session.title, type: 'session' }]}
-                />
-              )}
+              <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{t('session.address_after_checkin')}</p>
               <button onClick={() => navigate('/session/' + sessionId + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                 {t('session.open_dm')}
               </button>
