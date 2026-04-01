@@ -283,14 +283,17 @@ export default function ContactsPage() {
           const rel = RELATION_STYLES[contact.relation_level]
           return (
             <div key={contact.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid ' + S.rule2, borderRadius: 16, padding: 14, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
-              {/* Avatar */}
-              <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0 }}>
+              {/* Avatar + online dot */}
+              <div onClick={() => navigate('/contacts/' + contact.contact_user_id)} style={{ cursor: 'pointer', flexShrink: 0, position: 'relative' }}>
                 <CyclingAvatar
                   photos={contact.avatar_url ? [contact.avatar_url] : []}
                   size={44}
                   fallbackLetter={(contact.display_name || '?')[0]}
                   border={'1px solid ' + S.rule}
                 />
+                {contact.last_seen && (Date.now() - new Date(contact.last_seen).getTime()) < 300000 && (
+                  <span style={{ position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid ' + S.bg1, boxShadow: '0 0 6px ' + S.sage }} />
+                )}
               </div>
 
               {/* Info */}
