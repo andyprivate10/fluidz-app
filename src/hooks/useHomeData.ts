@@ -47,7 +47,9 @@ export function useHomeData() {
       const pj = (profData.profile_json || {}) as Record<string, unknown>
       const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!(pj.kinks && (pj.kinks as string[]).length > 0), !!profData.display_name && profData.display_name !== 'Anonymous']
       setProfilePct(Math.round((checks.filter(Boolean).length / checks.length) * 100))
-      const isNewUser = !pj.role && !pj.avatar_url && !pj.onboarding_done
+      const hasProfile = pj.role || pj.avatar_url || pj.bio || pj.onboarding_done || pj.onboarding_complete
+      const hasName = profData.display_name && profData.display_name !== 'Anonymous'
+      const isNewUser = !hasProfile && !hasName
       if (isNewUser) {
         navigate('/onboarding'); return
       }
