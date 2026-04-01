@@ -17,6 +17,7 @@ import SessionShareTab from '../components/session/SessionShareTab'
 import SessionStory from '../components/session/SessionStory'
 import ShareToContact from '../components/ShareToContact'
 import { useSessionData } from '../hooks/useSessionData'
+import PanicButton from '../components/PanicButton'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { showToast } from '../components/Toast'
@@ -242,6 +243,12 @@ export default function SessionPage() {
               setShowShareSheet={d.setShowShareSheet}
             />
           </div>
+          {/* Panic button for members in live session */}
+          {effectiveRole === 'member' && d.session.status !== 'ended' && d.session.host_id && d.id && (
+            <div style={{ padding: '0 16px 8px', display: 'flex', justifyContent: 'flex-end' }}>
+              <PanicButton sessionId={d.id} hostId={d.session.host_id} sessionTitle={d.session.title} />
+            </div>
+          )}
           <SessionEndedSection
             session={d.session}
             sessionId={d.id!}

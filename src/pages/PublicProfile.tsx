@@ -195,14 +195,14 @@ export default function PublicProfile() {
           <OptionsMenu options={[
             { label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: () => setShowReport(true), danger: true },
             { label: t('options.block'), icon: <Ban size={15} strokeWidth={1.5} />, onClick: async () => {
-              if (!user) return
-              await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
+              if (!authUser) return
+              await supabase.from('contacts').upsert({ owner_id: authUser.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
               // Eject from common sessions
               const { data: commonApps } = await supabase.from('applications').select('id, session_id').eq('applicant_id', userId).in('status', ['accepted', 'checked_in', 'pending'])
               if (commonApps) {
                 const mySessionIds = commonApps.map(a => a.session_id)
                 if (mySessionIds.length > 0) {
-                  const { data: mySessions } = await supabase.from('sessions').select('id').in('id', mySessionIds).eq('host_id', user.id)
+                  const { data: mySessions } = await supabase.from('sessions').select('id').in('id', mySessionIds).eq('host_id', authUser.id)
                   if (mySessions) {
                     for (const s of mySessions) {
                       await supabase.from('applications').update({ status: 'ejected' }).eq('session_id', s.id).eq('applicant_id', userId)
@@ -416,8 +416,8 @@ export default function PublicProfile() {
         {/* Block / Report */}
         <div style={{ display: 'flex', gap: 8, marginTop: 16, paddingBottom: 20 }}>
           <button onClick={async () => {
-            if (!user || !await confirm({ title: t('profile.block_confirm'), danger: true })) return
-            await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
+            if (!authUser || !await confirm({ title: t('profile.block_confirm'), danger: true })) return
+            await supabase.from('contacts').upsert({ owner_id: authUser.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
             showToast(t('profile.blocked_toast'), 'success')
             navigate(-1)
           }} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.redbd, background: 'transparent', color: S.red, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
