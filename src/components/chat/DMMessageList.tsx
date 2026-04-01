@@ -5,6 +5,7 @@ import { colors } from '../../brand'
 import { formatMessageTime } from '../../lib/timing'
 import { isAddressMessage, parseAddressMessage } from '../AddressShareSheet'
 import { useTranslation } from 'react-i18next'
+import { stripHtml } from '../../lib/sanitize'
 import { useReactions } from '../../hooks/useReactions'
 import EmojiReactionPicker from './EmojiReactionPicker'
 import ReactionDisplay from './ReactionDisplay'
@@ -81,7 +82,7 @@ const MessageBubble = React.memo(function MessageBubble({ message, isMine, isSee
         </a>
       )
     }
-    return <span>{text}</span>
+    return <span>{stripHtml(text)}</span>
   }
 
   const showText = message.text && message.text !== '\u{1F4F7} Photo' && message.text !== '\u{1F3A4} Audio' && message.text !== '\u{1F3AC} Vid\u00e9o'
@@ -113,7 +114,7 @@ const MessageBubble = React.memo(function MessageBubble({ message, isMine, isSee
     >
       {!isMine && (
         <span style={{ color: S.tx3, fontSize: 11, marginBottom: 2 }}>
-          {message.sender_name}
+          {stripHtml(message.sender_name)}
         </span>
       )}
       <div style={{

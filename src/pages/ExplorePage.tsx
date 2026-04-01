@@ -13,6 +13,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
 import ProfileBadges from '../components/ProfileBadges'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 
@@ -421,7 +422,7 @@ export default function ExplorePage() {
                   <img src={p.avatar_url} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: S.tx }}>
-                    {p.display_name[0]?.toUpperCase()}
+                    {stripHtml(p.display_name)[0]?.toUpperCase()}
                   </div>
                 )}
                 {/* Online dot */}
@@ -448,7 +449,7 @@ export default function ExplorePage() {
                 </button>
                 <div style={{ padding: '8px 8px 10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{p.display_name}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{stripHtml(p.display_name)}</span>
                     {p.age && <span style={{ fontSize: 10, color: S.tx3 }}>{p.age}</span>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2, flexWrap: 'wrap' }}>

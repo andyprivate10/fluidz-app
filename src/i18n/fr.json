@@ -1863,5 +1863,10 @@
     "alert_body": "Alerte reçue pour \"{{title}}\"",
     "admin_title": "Alerte panique envoyée",
     "sent_toast": "Alerte envoyée — aide en route"
+  },
+  "media": {
+    "invalid_type": "Type de fichier invalide. Acceptés : JPG, PNG, WebP, MP4",
+    "image_too_large": "Image trop volumineuse. Maximum 10 Mo",
+    "video_too_large": "Vidéo trop volumineuse. Maximum 50 Mo"
   }
 }

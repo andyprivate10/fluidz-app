@@ -24,6 +24,7 @@ import AddressShareSheet, { encodeAddressMessage, isAddressMessage, parseAddress
 import TemplateShareSheet from '../components/TemplateShareSheet'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
+import { stripHtml, validateMediaFile } from '../lib/sanitize'
 
 const S = colors
 
@@ -230,6 +231,8 @@ export default function DirectDMPage() {
 
   async function handleSendPhoto(file: File) {
     if (!currentUser || !sessionId) return
+    const vErr = validateMediaFile(file)
+    if (vErr) { showToast(t(vErr), 'error'); return }
     setUploading(true)
     try {
       const isVideo = file.type.startsWith('video/')
@@ -520,7 +523,7 @@ export default function DirectDMPage() {
                       </>
                     )
                   }
-                  return <span style={{ color: S.tx }}>{txt}</span>
+                  return <span style={{ color: S.tx }}>{stripHtml(txt)}</span>
                 })()
               )}
               <div style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start', alignItems: 'center', gap: 4, marginTop: 2, padding: msg.has_media ? '0 8px 4px' : 0 }}>

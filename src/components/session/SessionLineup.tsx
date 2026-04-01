@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Star, Check } from 'lucide-react'
 import { colors, glassCard } from '../../brand'
+import { stripHtml } from '../../lib/sanitize'
 
 const S = colors
 
@@ -132,7 +133,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
                 </div>
               )}
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: S.tx }}>{memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'}</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: S.tx }}>{stripHtml(memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name) || 'Anonyme'}</div>
                 {(memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role) && (
                   <span style={{ display: 'inline-block', marginTop: 4, padding: '2px 10px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: 'white', background: S.p }}>
                     {memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role}
@@ -142,8 +143,8 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
             </div>
             {((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio) && (
               <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: '0 0 16px' }}>
-                {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').slice(0, 120)}
-                {String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '').length > 120 ? '…' : ''}
+                {stripHtml(String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '')).slice(0, 120)}
+                {stripHtml(String((sheetMember.eps_json as any)?.profile_snapshot?.bio || (sheetMember.eps_json as any)?.bio || '')).length > 120 ? '…' : ''}
               </p>
             )}
             <button onClick={() => { navigate('/profile/' + sheetMember.applicant_id); setSheetMember(null) }} style={{ width: '100%', padding: 14, borderRadius: 14, fontWeight: 700, fontSize: 15, color: S.tx, background: S.p, border: 'none', cursor: 'pointer' }}>

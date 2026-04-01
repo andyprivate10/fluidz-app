@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useTranslation } from 'react-i18next'
 import { Heart, X, Search, Plus } from 'lucide-react'
 import { colors } from '../brand'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 
@@ -76,11 +77,11 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                     <img src={info.avatar_url} alt="" loading="lazy" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: S.tx }}>
-                      {(info?.display_name || '?')[0].toUpperCase()}
+                      {stripHtml(info?.display_name || '?')[0].toUpperCase()}
                     </div>
                   )}
                   <div>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{info?.display_name || '...'}</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{stripHtml(info?.display_name) || '...'}</p>
                     <p style={{ fontSize: 10, color: S.p, margin: 0 }}>{typeLabel}</p>
                   </div>
                 </button>
@@ -135,9 +136,9 @@ export default function LinkedProfiles({ userId, linkedProfiles, onChange, readO
                       {r.avatar_url ? (
                         <img src={r.avatar_url} alt="" loading="lazy" style={{ width: 24, height: 24, borderRadius: '28%', objectFit: 'cover' }} />
                       ) : (
-                        <div style={{ width: 24, height: 24, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: S.tx }}>{r.display_name[0]?.toUpperCase()}</div>
+                        <div style={{ width: 24, height: 24, borderRadius: '28%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: S.tx }}>{stripHtml(r.display_name)[0]?.toUpperCase()}</div>
                       )}
-                      <span style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{r.display_name}</span>
+                      <span style={{ fontSize: 13, color: S.tx, fontWeight: 600 }}>{stripHtml(r.display_name)}</span>
                     </button>
                   ))}
                 </div>

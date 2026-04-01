@@ -7,6 +7,7 @@ import { colors, fonts } from '../brand'
 import GhostTimer from './GhostTimer'
 import GhostConvertModal from './GhostConvertModal'
 import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings, Zap, Home, Calendar, Search, MessageCircle } from 'lucide-react'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 
@@ -107,12 +108,12 @@ export default function SideDrawer({ open, onClose }: Props) {
               <img src={profile.avatar_url} alt="" loading="lazy" style={{ width: 48, height: 48, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.pbd }} />
             ) : (
               <div style={{ width: 48, height: 48, borderRadius: '28%', background: S.p2, border: '2px solid ' + S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: S.p }}>
-                {(profile?.display_name || '?')[0].toUpperCase()}
+                {stripHtml(profile?.display_name || '?')[0].toUpperCase()}
               </div>
             )}
             <div>
               <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: 0, fontFamily: fonts.hero }}>
-                {profile?.display_name || t('drawer.my_profile')}
+                {stripHtml(profile?.display_name) || t('drawer.my_profile')}
               </p>
               <p style={{ fontSize: 12, color: S.tx2, margin: '2px 0 0' }}>
                 {user?.email || ''}

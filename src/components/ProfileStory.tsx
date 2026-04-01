@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { X, Flame } from 'lucide-react'
 import { colors } from '../brand'
 import { useTranslation } from 'react-i18next'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 const AUTO_DURATION = 4000
@@ -75,11 +76,11 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
   if (!sl) return null
   const d = sl.data
   const pj = profile.profile_json
-  const name = profile.display_name
+  const name = stripHtml(profile.display_name)
   const age = v(pj.age)
   const role = v(pj.role)
   const tribes = Array.isArray(pj.tribes) ? pj.tribes : []
-  const bio = v(pj.bio)
+  const bio = stripHtml(v(pj.bio))
 
   const bgMap: Record<string, string> = {
     intro: 'radial-gradient(ellipse at 30% 50%, #1a0a2e 0%, '+S.bg+' 70%)',

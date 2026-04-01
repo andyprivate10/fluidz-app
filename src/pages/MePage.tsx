@@ -18,6 +18,7 @@ import { monthsAgoCount } from '../lib/timing'
 // MeSettings and MePreferences relocated — removed from profile
 import MeProfileCompleteness from '../components/me/MeProfileCompleteness'
 import MeLoginForm from '../components/me/MeLoginForm'
+import { validateMediaFile } from '../lib/sanitize'
 
 const S = colors
 
@@ -203,9 +204,10 @@ export default function MePage() {
                 </div>
               ))}
               <label style={{ width:80, height:80, borderRadius:12, border:'1px dashed ' + S.rule, background:S.bg2, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                <input type="file" accept="image/*" multiple onChange={async (e) => {
+                <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={async (e) => {
                   const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
                   for (const f of captured) {
+                    const vErr = validateMediaFile(f); if (vErr) { showToast(d.t(vErr), 'error'); continue }
                     const dataUrl = await readFileAsDataUrl(f)
                     setCropAspect(1)
                     setCropSrc(dataUrl)

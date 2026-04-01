@@ -10,6 +10,7 @@ import ChatMessageMenu from '../components/ChatMessageMenu'
 import { useGroupChatData } from '../hooks/useGroupChatData'
 import { useAuth } from '../contexts/AuthContext'
 import GhostBlockedModal from '../components/GhostBlockedModal'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 
@@ -120,10 +121,10 @@ export default function GroupChatPage() {
                   <img src={m.avatar_url} alt="" loading="lazy" style={{ width:18, height:18, borderRadius:'50%', objectFit:'cover' }} />
                 ) : (
                   <div style={{ width:18, height:18, borderRadius:'50%', background:S.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color: S.tx }}>
-                    {m.display_name[0]?.toUpperCase()}
+                    {stripHtml(m.display_name)[0]?.toUpperCase()}
                   </div>
                 )}
-                <span style={{ fontSize:12, color:S.tx2 }}>{m.display_name}</span>
+                <span style={{ fontSize:12, color:S.tx2 }}>{stripHtml(m.display_name)}</span>
                 {(m.status === 'checked_in' || (m.status === 'accepted' && (m as any).checked_in)) && <div style={{ width:6, height:6, borderRadius:'50%', background:S.sage }} />}
               </button>
             ))}
@@ -165,7 +166,7 @@ export default function GroupChatPage() {
           return (
             <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name || t('common.anonymous_fallback') })} style={{ display:'flex', flexDirection:'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginTop: showName ? 8 : 0 }}>
               {showName && (
-                <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.pbd }}>{msg.sender_name}</button>
+                <button type="button" onClick={() => navigate('/profile/' + msg.sender_id)} style={{ margin:'0 0 2px 8px', fontSize:11, color:S.p, fontWeight:600, background:'none', border:'none', padding:0, cursor:'pointer', textDecoration:'underline', textDecorationColor:S.pbd }}>{stripHtml(msg.sender_name)}</button>
               )}
               <div style={{
                 maxWidth:'78%', padding: msg.has_media ? 4 : '8px 12px', borderRadius:18, lineHeight:1.45,
@@ -184,7 +185,7 @@ export default function GroupChatPage() {
                   if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 240, borderRadius: 10, display: 'block' }} />
                   return <img key={mi} src={url} alt="" loading="lazy" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block' }} />
                 })}
-                {msg.text !== '\uD83D\uDCF7 Photo' && msg.text !== '\uD83C\uDFA4 Audio' && msg.text !== '\uD83C\uDFAC Vid\u00e9o' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{msg.text}</p>}
+                {msg.text !== '\uD83D\uDCF7 Photo' && msg.text !== '\uD83C\uDFA4 Audio' && msg.text !== '\uD83C\uDFAC Vid\u00e9o' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{stripHtml(msg.text)}</p>}
                 <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatMessageTime(msg.created_at)}{isMe && <span style={{ color: S.tx4, marginLeft: 3 }}>✓</span>}</p>
               </div>
             </div>

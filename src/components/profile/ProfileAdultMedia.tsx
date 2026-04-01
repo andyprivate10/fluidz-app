@@ -4,6 +4,7 @@ import { Plus, ImagePlus, SmilePlus, Flame, Circle, Maximize } from 'lucide-reac
 import { User as UserIcon, ArrowLeftRight } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { compressImage, readFileAsDataUrl } from '../../lib/media'
+import { validateMediaFile } from '../../lib/sanitize'
 import { showToast } from '../Toast'
 import { colors } from '../../brand'
 import ImageCropModal from '../ImageCropModal'
@@ -57,6 +58,7 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
   function handleZoneUpload(zoneId: string) {
     return async (e: React.ChangeEvent<HTMLInputElement>) => {
       const f = e.target.files?.[0]; if (!f) return; e.target.value = ''
+      const vErr = validateMediaFile(f); if (vErr) { showToast(t(vErr), 'error'); return }
       const isVid = f.type.startsWith('video/')
       if (isVid) {
         const ext = f.name.split('.').pop() || 'mp4'
@@ -103,7 +105,7 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
                     aspectRatio: '3/4', borderRadius: 16,
                     border: '1px dashed ' + S.pbd, background: S.p3,
                   }}>
-                    <input type="file" accept="image/*,video/*" onChange={handleZoneUpload(zone.id)} disabled={mediaUploading} style={{ display: 'none' }} />
+                    <input type="file" accept="image/jpeg,image/png,image/webp,video/mp4" onChange={handleZoneUpload(zone.id)} disabled={mediaUploading} style={{ display: 'none' }} />
                     <div style={{ color: S.p, opacity: 0.7 }}>{ZONE_ICONS[zone.id]}</div>
                     <span style={{ fontSize: 10, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{zone.label}</span>
                     <Plus size={14} strokeWidth={1.5} style={{ color: S.p }} />
@@ -135,7 +137,7 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
                       })}
                       {canAdd && (
                         <label style={{ aspectRatio: '1', borderRadius: 8, border: '1px dashed ' + S.pbd, background: S.p3, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-                          <input type="file" accept="image/*,video/*" onChange={handleZoneUpload(zone.id)} disabled={mediaUploading} style={{ display: 'none' }} />
+                          <input type="file" accept="image/jpeg,image/png,image/webp,video/mp4" onChange={handleZoneUpload(zone.id)} disabled={mediaUploading} style={{ display: 'none' }} />
                           <Plus size={14} strokeWidth={1.5} style={{ color: S.p }} />
                         </label>
                       )}
@@ -168,9 +170,10 @@ export default function ProfileAdultMedia({ userId, bodyPartPhotos, setBodyPartP
             )
           })}
           <label style={{ width: 80, height: 80, borderRadius: 12, border: '1px dashed ' + S.pbd, background: S.p3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: mediaUploading ? 'wait' : 'pointer', opacity: mediaUploading ? 0.5 : 1 }}>
-            <input type="file" accept="image/*,video/*" multiple onChange={async (e) => {
+            <input type="file" accept="image/jpeg,image/png,image/webp,video/mp4" multiple onChange={async (e) => {
               const fileList = e.target.files; if (!fileList) return; const captured = Array.from(fileList); e.target.value = ''
               for (const f of captured) {
+                const vErr = validateMediaFile(f); if (vErr) { showToast(t(vErr), 'error'); continue }
                 if (f.type.startsWith('video/')) {
                   await uploadMedia(f, 'intime', 'video')
                 } else {

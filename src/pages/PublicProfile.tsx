@@ -13,6 +13,7 @@ import { colors, fonts, glassCard } from '../brand'
 import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
 import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, BookOpen, Clock, Link2 } from 'lucide-react'
+import { stripHtml } from '../lib/sanitize'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 import DmPrivacyBadge from '../components/DmPrivacyBadge'
@@ -356,7 +357,7 @@ export default function PublicProfile() {
       <div style={{ padding: '16px 20px 0' }}>
         <div style={{ marginBottom: 12 }}><VibeScoreCard userId={userId!} /></div>
 
-        {p.bio && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>{t('profile.section_bio')}</div><p style={{ fontSize: 14, color: S.tx, lineHeight: 1.7, margin: 0 }}>{p.bio}</p></div>}
+        {p.bio && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>{t('profile.section_bio')}</div><p style={{ fontSize: 14, color: S.tx, lineHeight: 1.7, margin: 0 }}>{stripHtml(p.bio)}</p></div>}
 
         {(p.height || p.weight) && (
           <div style={{ ...glassCard, marginBottom: 12 }}>

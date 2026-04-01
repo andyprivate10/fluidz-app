@@ -1863,5 +1863,10 @@
     "alert_body": "Alert received for \"{{title}}\"",
     "admin_title": "Panic alert sent",
     "sent_toast": "Alert sent — help is on the way"
+  },
+  "media": {
+    "invalid_type": "Invalid file type. Accepted: JPG, PNG, WebP, MP4",
+    "image_too_large": "Image too large. Maximum 10 MB",
+    "video_too_large": "Video too large. Maximum 50 MB"
   }
 }

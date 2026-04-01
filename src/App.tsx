@@ -73,7 +73,7 @@ const routes = [
   { path: '/welcome', element: <WelcomeTutorial /> },
   { path: '/me', element: <RequireAuth><MePage /></RequireAuth> },
   { path: '/contacts', element: <RequireAuth><ContactsPage /></RequireAuth> },
-  { path: '/explore', element: <ExplorePage /> },
+  { path: '/explore', element: <RequireAuth><ExplorePage /></RequireAuth> },
   { path: '/chats', element: <RequireAuth><ChatsHubPage /></RequireAuth> },
   { path: '/dm/:peerId', element: <RequireAuth><DirectDMPage /></RequireAuth> },
   { path: '/addresses', element: <RequireAuth><AddressesPage /></RequireAuth> },

@@ -1,7 +1,15 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import React from 'react'
 import { ChevronRight, ArrowRight } from 'lucide-react'
 import { colors, fonts } from '../../brand'
+
+/** Safe renderer: only allows <em> tags, strips everything else */
+function safeEmph(text: string): React.ReactNode[] {
+  return text.split(/<em>(.*?)<\/em>/g).map((part, i) =>
+    i % 2 === 1 ? React.createElement('em', { key: i }, part) : part
+  )
+}
 
 const S = colors
 const MAX = 960
@@ -51,7 +59,7 @@ export default function LandingPro({ rv }: { rv: RevealRef }) {
         <blockquote style={{
           fontFamily: fonts.hero, fontSize: 'clamp(20px,4vw,32px)', fontWeight: 800,
           letterSpacing: '-0.03em', lineHeight: 1.25, maxWidth: 640, margin: '0 auto 24px',
-        }} dangerouslySetInnerHTML={{ __html: t('landing.vision_quote') }} />
+        }}>{safeEmph(t('landing.vision_quote'))}</blockquote>
         <p style={{ fontSize: 14, color: S.tx2, maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
           {t('landing.vision_body')}
         </p>

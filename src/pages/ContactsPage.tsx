@@ -13,6 +13,7 @@ import OrbLayer from '../components/OrbLayer'
 import CyclingAvatar from '../components/CyclingAvatar'
 import { useTranslation } from 'react-i18next'
 import LinkedProfiles from '../components/LinkedProfiles'
+import { stripHtml } from '../lib/sanitize'
 
 
 const S = colors
@@ -242,10 +243,10 @@ export default function ContactsPage() {
             {pendingNbRequests.map(req => (
               <div key={req.id} style={{ background: S.bg1, border: '1px solid ' + S.pbd, borderRadius: 14, padding: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div onClick={() => navigate('/profile/' + req.sender_id)} style={{ width: 40, height: 40, borderRadius: '28%', overflow: 'hidden', flexShrink: 0, cursor: 'pointer', background: S.bg2 }}>
-                  {req.avatar_url ? <img src={req.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 800, color: S.tx3 }}>{req.display_name[0]}</div>}
+                  {req.avatar_url ? <img src={req.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 800, color: S.tx3 }}>{stripHtml(req.display_name)[0]}</div>}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: S.tx }}>{req.display_name}</p>
+                  <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: S.tx }}>{stripHtml(req.display_name)}</p>
                   {req.role && <p style={{ margin: 0, fontSize: 11, color: S.p }}>{req.role}</p>}
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
@@ -299,7 +300,7 @@ export default function ContactsPage() {
               {/* Info */}
               <div style={{ flex: 1, minWidth: 0 }} onClick={() => navigate('/contacts/' + contact.contact_user_id)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{contact.display_name}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{stripHtml(contact.display_name)}</span>
                   <span style={{ display: 'inline-flex', gap: 1 }}>{[1,2,3].map(n => starIcon(n <= rel.stars, rel.color))}</span>
                   {contact.mutual && <span style={{ fontSize: 9, fontWeight: 700, color: S.sage, background: S.sagebg, padding: '1px 6px', borderRadius: 99, border: '1px solid ' + S.sagebd }}>{t('naughtybook.mutual')}</span>}
                   <VibeScoreBadge userId={contact.contact_user_id} />
@@ -310,7 +311,7 @@ export default function ContactsPage() {
                   const label = mins < 5 ? t('common.online') : mins < 60 ? mins + 'min' : mins < 1440 ? Math.floor(mins / 60) + 'h' : Math.floor(mins / 1440) + 'j'
                   return <p style={{ fontSize: 10, color: mins < 5 ? S.sage : S.tx4, margin: '2px 0 0' }}>{mins < 5 ? '● ' : ''}{label}</p>
                 })()}
-                {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.notes}</p>}
+                {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stripHtml(contact.notes)}</p>}
               </div>
 
               {/* Star cycle */}

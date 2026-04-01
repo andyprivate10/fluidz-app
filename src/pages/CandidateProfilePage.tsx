@@ -15,6 +15,7 @@ import { monthsAgoLabel } from '../lib/timing'
 import ImageLightbox from '../components/ImageLightbox'
 import { SYSTEM_SENDER } from '../lib/constants'
 import { useTranslation } from 'react-i18next'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 
@@ -140,12 +141,12 @@ export default function CandidateProfilePage() {
   const snapshot = eps.profile_snapshot || {}
   const shared = eps.shared_sections || []
 
-  const displayName = profile?.display_name || snapshot.display_name || t('common.anonymous_fallback')
+  const displayName = stripHtml(profile?.display_name || snapshot.display_name) || t('common.anonymous_fallback')
   const role = eps.role || pj.role || snapshot.role || ''
   const orientation = pj.orientation || snapshot.orientation || ''
   const age = pj.age || snapshot.age || ''
   const location = pj.location || snapshot.location || ''
-  const bio = pj.bio || snapshot.bio || ''
+  const bio = stripHtml(pj.bio || snapshot.bio) || ''
   const homeCountry = pj.home_country || snapshot.home_country || ''
   const homeCity = pj.home_city || snapshot.home_city || ''
   const languages: string[] = Array.isArray(pj.languages) ? pj.languages : Array.isArray(snapshot.languages) ? snapshot.languages : []
@@ -156,7 +157,7 @@ export default function CandidateProfilePage() {
   const limits = pj.limits || snapshot.limits || ''
   const health = pj.health || snapshot.health || {}
   const avatarUrl = pj.avatar_url || snapshot.avatar_url || ''
-  const messageText = eps.message || eps.occasion_note || ''
+  const messageText = stripHtml(eps.message || eps.occasion_note) || ''
   // New split albums (backward compat with old selected_photos)
   const photosProfil: string[] = eps.selected_photos_profil || (Array.isArray(pj.photos_profil) ? pj.photos_profil : [])
   const photosAdulte: string[] = eps.selected_photos_adulte || []
@@ -424,7 +425,7 @@ export default function CandidateProfilePage() {
             {eps.occasion_note && eps.occasion_note !== messageText && (
               <div style={{ ...glassCard, borderColor: S.pbd }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px' }}>{t('host.session_note')}</p>
-                <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{eps.occasion_note}</p>
+                <p style={{ fontSize: 13, color: S.tx2, lineHeight: 1.5, margin: 0 }}>{stripHtml(eps.occasion_note)}</p>
               </div>
             )}
 

@@ -12,6 +12,7 @@ import { timeAgo } from '../lib/timing'
 import { getSessionCover } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
 import IntentSelector from '../components/IntentSelector'
+import { stripHtml } from '../lib/sanitize'
 
 const S = colors
 
@@ -184,12 +185,12 @@ export default function ContactDetailPage() {
             <img src={pj.avatar_url as string} alt="" loading="lazy" style={{ width: 56, height: 56, borderRadius: '28%', objectFit: 'cover', border: '2px solid ' + S.rule }} />
           ) : (
             <div style={{ width: 56, height: 56, borderRadius: '28%', background: S.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: S.tx }}>
-              {profile.display_name[0]?.toUpperCase()}
+              {stripHtml(profile.display_name)[0]?.toUpperCase()}
             </div>
           )}
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: 0 }}>{profile.display_name}</h1>
+              <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: 0 }}>{stripHtml(profile.display_name)}</h1>
               <VibeScoreBadge userId={contactUserId!} />
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
@@ -253,7 +254,7 @@ export default function ContactDetailPage() {
             </div>
           ) : (
             <p style={{ fontSize: 13, color: contact?.notes ? S.tx2 : S.tx4, margin: 0, lineHeight: 1.5 }}>
-              {contact?.notes || t('contacts.no_notes')}
+              {stripHtml(contact?.notes) || t('contacts.no_notes')}
             </p>
           )}
         </div>

@@ -10,6 +10,7 @@ import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
+import { validateMediaFile } from '../lib/sanitize'
 
 const S = colors
 
@@ -126,6 +127,7 @@ export default function OnboardingPage() {
     const file = e.target.files?.[0]
     if (!file || !authUser) return
     e.target.value = ''
+    const vErr = validateMediaFile(file); if (vErr) { showToast(t(vErr), 'error'); return }
     const dataUrl = await readFileAsDataUrl(file)
     setCropSrc(dataUrl)
   }
@@ -246,7 +248,7 @@ export default function OnboardingPage() {
             )}
             <label style={{ position: 'absolute', bottom: 0, right: 0, width: 42, height: 42, borderRadius: '50%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
               <Camera size={18} style={{ color: S.tx }} />
-              <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: 'none' }} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileSelect} style={{ display: 'none' }} />
             </label>
           </div>
           {uploading && <p style={{ fontSize: 12, color: S.p, margin: 0 }}>{t('onboarding.uploading')}</p>}
