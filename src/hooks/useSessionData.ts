@@ -93,10 +93,27 @@ export function useSessionData() {
         // Create review queue for all participants
         const { data: endedApps } = await supabase.from('applications').select('applicant_id').eq('session_id', id).in('status', ['accepted', 'checked_in'])
         if (endedApps && endedApps.length > 0) {
-          const queueEntries = [...endedApps.map(a => a.applicant_id), sess.host_id].filter(Boolean).map(uid => ({
+          const allUids = [...endedApps.map(a => a.applicant_id), sess.host_id].filter(Boolean)
+          const queueEntries = allUids.map(uid => ({
             user_id: uid, session_id: id, status: 'pending',
           }))
           await supabase.from('review_queue').upsert(queueEntries, { onConflict: 'user_id,session_id' })
+
+          // Send review notifications 15min after ends_at
+          const msSinceEnd = Date.now() - new Date(sess.ends_at).getTime()
+          if (msSinceEnd >= 15 * 60 * 1000) {
+            const { data: existing } = await supabase.from('notifications')
+              .select('id').eq('session_id', id).eq('type', 'review_reminder').limit(1)
+            if (!existing || existing.length === 0) {
+              const notifs = allUids.map(uid => ({
+                user_id: uid, session_id: id, type: 'review_reminder',
+                title: t('notifications.review_title', { title: sess.title }),
+                body: t('notifications.review_body'),
+                href: `/session/${id}/review`,
+              }))
+              await supabase.from('notifications').insert(notifs)
+            }
+          }
         }
       }
       setSession(sess)

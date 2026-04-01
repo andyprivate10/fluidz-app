@@ -27,7 +27,7 @@ function NotifIcon({ type }: { type: string }) {
     case 'check_in': case 'check_in_confirmed': return <MapPin size={size} strokeWidth={sw} />
     case 'intent_match': return <Heart size={size} strokeWidth={sw} />
     case 'dm_request': case 'direct_dm': return <MessageCircle size={size} strokeWidth={sw} />
-    case 'review_request': case 'review': return <Star size={size} strokeWidth={sw} />
+    case 'review_request': case 'review': case 'review_reminder': return <Star size={size} strokeWidth={sw} />
     case 'naughtybook_added': case 'naughtybook': return <BookOpen size={size} strokeWidth={sw} />
     case 'ejected': return <Ban size={size} strokeWidth={sw} />
     default: return <Bell size={size} strokeWidth={sw} />
