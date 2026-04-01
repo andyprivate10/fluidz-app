@@ -255,6 +255,8 @@
     "section_roles_wanted": "Roles wanted",
     "section_access": "Access",
     "section_lineup": "Lineup",
+    "participants_count": "participants",
+    "lineup_hidden": "Participant profiles are visible after acceptance",
     "section_vote": "Advisory vote",
     "searching_roles": "Looking for: {{roles}}",
     "view_full_profile": "View full profile",

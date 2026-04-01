@@ -255,6 +255,8 @@
     "section_roles_wanted": "Rôles recherchés",
     "section_access": "Accès",
     "section_lineup": "Lineup",
+    "participants_count": "participants",
+    "lineup_hidden": "Les profils des participants sont visibles après acceptation",
     "section_vote": "Vote consultatif",
     "searching_roles": "Recherche : {{roles}}",
     "view_full_profile": "Voir le profil complet",

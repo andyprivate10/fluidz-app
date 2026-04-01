@@ -216,24 +216,36 @@ export default function SessionPage() {
               addressCopied={d.addressCopied}
               copyAddress={d.copyAddress}
             />
-            <SessionLineup
-              members={d.members}
-              memberAvatars={d.memberAvatars}
-              memberNames={d.memberNames}
-              memberRoles={d.memberRoles}
-              hostProfile={d.hostProfile}
-              hostId={d.session.host_id}
-              isMobile={d.isMobile}
-            />
+            {/* Lineup: full details only for host/member, count only for others */}
+            {(effectiveRole === 'host' || effectiveRole === 'member') ? (
+              <SessionLineup
+                members={d.members}
+                memberAvatars={d.memberAvatars}
+                memberNames={d.memberNames}
+                memberRoles={d.memberRoles}
+                hostProfile={d.hostProfile}
+                hostId={d.session.host_id}
+                isMobile={d.isMobile}
+              />
+            ) : d.members.length > 0 ? (
+              <div style={{ background: S.bg2, borderRadius: 16, padding: 16, border: '1px solid ' + S.rule }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: S.sage, textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: 8 }}>{t('session.section_lineup')}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Users size={18} style={{ color: S.tx3 }} />
+                  <span style={{ fontSize: 14, color: S.tx2 }}>{d.members.length + 1} {t('session.participants_count')}</span>
+                </div>
+                <p style={{ fontSize: 12, color: S.tx4, margin: '8px 0 0' }}>{t('session.lineup_hidden')}</p>
+              </div>
+            ) : null}
             <SessionStatusCard
               session={d.session}
               sessionId={d.id!}
               myApp={d.myApp}
               currentUser={d.currentUser}
               checkInDone={d.checkInDone}
-              members={d.members}
-              memberNames={d.memberNames}
-              memberAvatars={d.memberAvatars}
+              members={(effectiveRole === 'host' || effectiveRole === 'member') ? d.members : []}
+              memberNames={(effectiveRole === 'host' || effectiveRole === 'member') ? d.memberNames : {}}
+              memberAvatars={(effectiveRole === 'host' || effectiveRole === 'member') ? d.memberAvatars : {}}
               copied={d.copied}
               copyMessage={d.copyMessage}
               inviteLinkCopied={d.inviteLinkCopied}
