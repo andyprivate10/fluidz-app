@@ -7,7 +7,10 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
 
   if (loading) return null
   if (!user) {
-    return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />
+    // Avoid redirect loop: don't add ?next= if already heading to /login
+    const current = location.pathname + location.search
+    const target = current === '/' || current.startsWith('/login') ? '/login' : `/login?next=${encodeURIComponent(location.pathname)}`
+    return <Navigate to={target} replace />
   }
   return <>{children}</>
 }

@@ -53,7 +53,7 @@ const MessageTemplatesPage = lazy(() => import('./pages/MessageTemplatesPage'))
 function HostRedirect() { const { id } = useParams(); return <Navigate to={`/session/${id}`} replace /> }
 
 const routes = [
-  { path: '/', element: <HomePage /> },
+  { path: '/', element: <RequireAuth><HomePage /></RequireAuth> },
   { path: '/landing', element: <LandingPage /> },
   { path: '/sessions', element: <RequireAuth><SessionsPage /></RequireAuth> },
   { path: '/session/create', element: <RequireAuth><CreateSessionPage /></RequireAuth> },
