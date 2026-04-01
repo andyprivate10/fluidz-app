@@ -12,7 +12,7 @@
 
 ## Stack
 React + TypeScript + Vite + Tailwind + Supabase
-Hosted on Netlify (auto-deploy from GitHub main)
+Hosted on Vercel (auto-deploy from GitHub main)
 Repo: andyprivate10/fluidz-app | Supabase: kxbrfjqxufvskcxmliak
 
 ## Auth
