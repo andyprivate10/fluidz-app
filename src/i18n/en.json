@@ -571,8 +571,8 @@
     "dm_request": "Send DM request",
     "dm_direct": "Send DM",
     "dm_pending": "Request pending",
-    "secret_infos_title": "Secret info",
-    "secret_infos_hint": "This profile has additional info",
+    "secret_infos_title": "Intimate side",
+    "secret_infos_hint": "This profile has additional information",
     "access_request_sent": "Request sent",
     "request_access": "Request access"
   },

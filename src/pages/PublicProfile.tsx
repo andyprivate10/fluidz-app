@@ -12,7 +12,7 @@ import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors, fonts, glassCard } from '../brand'
 import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, Clock, Link2, Star, Lock } from 'lucide-react'
+import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, Clock, Link2, Star, Lock, Globe } from 'lucide-react'
 import { stripHtml } from '../lib/sanitize'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
@@ -266,12 +266,13 @@ export default function PublicProfile() {
         {Array.isArray(p.tribes) && p.tribes.length > 0 && p.tribes.map((slug: string) => {
           const tr = TRIBES.find(t => t.slug === slug)
           const color = tr?.color || S.tx2
-          return <span key={slug} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color, background: color + '18', border: '1px solid ' + color + '44' }}>{t('tribes.' + slug)}</span>
+          const label = t('tribes.' + slug, { defaultValue: slug.replace(/_/g, ' ') })
+          return <span key={slug} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color, background: color + '18', border: '1px solid ' + color + '44' }}>{label}</span>
         })}
         {Array.isArray(p.ethnicities) && p.ethnicities.length > 0 && (
           p.ethnicities.length >= 2
             ? <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.lav, background: S.lavbg, border: '1px solid ' + S.lavbd }}>{t('ethnicities.mixed_label')}</span>
-            : <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{t('ethnicities.' + p.ethnicities[0])}</span>
+            : <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{t('ethnicities.' + p.ethnicities[0], { defaultValue: p.ethnicities[0].replace(/_/g, ' ') })}</span>
         )}
         <ProfileBadges createdAt={profile?.created_at} lastSeen={(p as any).last_seen} prepStatus={p.health?.prep_status || p.prep} />
         {p.morphology && <span style={{ padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: S.tx2, background: S.bg2, border: '1px solid ' + S.rule }}>{p.morphology}</span>}
@@ -285,7 +286,13 @@ export default function PublicProfile() {
         if (p.weight) parts.push(p.weight + 'kg')
         if (p.morphology) parts.push(p.morphology)
         if (Array.isArray(p.ethnicities) && p.ethnicities.length > 0) {
-          parts.push(p.ethnicities.length >= 2 ? t('ethnicities.mixed_label') : t('ethnicities.' + p.ethnicities[0]))
+          if (p.ethnicities.length >= 2) {
+            parts.push(t('ethnicities.mixed_label'))
+          } else {
+            const ethKey = 'ethnicities.' + p.ethnicities[0]
+            const ethLabel = t(ethKey, { defaultValue: p.ethnicities[0].replace(/_/g, ' ') })
+            parts.push(ethLabel)
+          }
         }
         return parts.length > 0 ? <div style={{ fontSize: 12, color: S.tx2, margin: '6px 20px 0' }}>{parts.join(' \u00B7 ')}</div> : null
       })()}
@@ -295,12 +302,23 @@ export default function PublicProfile() {
         </div>
       )}
 
-      {/* Languages */}
+      {/* Languages — avec icône Globe + langue commune highlightée */}
       {Array.isArray(p.languages) && p.languages.length > 0 && (
-        <div style={{ padding: '8px 20px 0', display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {p.languages.map((lang: string) => (
-            <span key={lang} style={{ fontSize: 10, fontWeight: 600, color: S.tx3, padding: '3px 8px', borderRadius: 99, background: S.bg2, border: '1px solid ' + S.rule }}>{lang}</span>
-          ))}
+        <div style={{ padding: '8px 20px 0', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <Globe size={12} strokeWidth={1.5} style={{ color: S.tx4, flexShrink: 0 }} />
+          {p.languages.map((lang: string) => {
+            const myLangs: string[] = Array.isArray((_myProfile as any)?.languages) ? (_myProfile as any).languages : []
+            const isCommon = myLangs.includes(lang)
+            return (
+              <span key={lang} style={{
+                fontSize: 11, fontWeight: isCommon ? 700 : 600,
+                color: isCommon ? S.p : S.tx3,
+                padding: '3px 8px', borderRadius: 99,
+                background: isCommon ? S.p2 : S.bg2,
+                border: '1px solid ' + (isCommon ? S.pbd : S.rule),
+              }}>{lang}</span>
+            )
+          })}
         </div>
       )}
 
