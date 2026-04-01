@@ -1,12 +1,12 @@
 # Fluidz Project Memory
 
 ## Stack
-React + TypeScript + Vite + Tailwind + Supabase, hosted on Netlify
+React + TypeScript + Vite + Tailwind + Supabase, hosted on Vercel
 
 ## Key files
 - src/lib/sessionCover.ts — cover system
 - src/contexts/AuthContext.tsx — shared auth
-- netlify.toml — routing (NO _redirects file!)
+- vercel.json — routing (NO _redirects file!)
 - public/covers/*.svg — 24 template covers
 
 ## Rules

@@ -8,7 +8,7 @@
 
 ## App
 - Dev: localhost:5173
-- Netlify: stalwart-lamington-4d8649.netlify.app
+- Vercel: stalwart-lamington-4d8649.vercel.app
 
 ## Stack
 - React + TypeScript + Vite + Tailwind

@@ -10,7 +10,7 @@
 - [x] F2 — Supabase client + RLS policies
 - [x] F3 — Design tokens (brand.ts centralisé peach raffiné)
 - [x] F4 — Router + BottomNav (Lucide icons, safe area iOS, blur)
-- [x] F5 — Netlify deploy (auto sur push)
+- [x] F5 — Vercel deploy (auto sur push)
 
 ## Epic 2 : Auth + Ghost (partiel) ✅
 - [x] A1 — Magic link + OTP email

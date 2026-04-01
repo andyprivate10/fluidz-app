@@ -7,7 +7,7 @@ Launch 0 fonctionnel. Prochaine etape : Phase 2 features ou premier event reel.
 ## STACK
 - React + TypeScript + Vite + Tailwind (inline styles avec S = {} color tokens)
 - Supabase : project kxbrfjqxufvskcxmliak (fluidz)
-- Netlify : fluidz-app.netlify.app
+- Vercel : fluidz-app.vercel.app
 - Repo : https://github.com/andyprivate10/fluidz-app
 - Font : Plus Jakarta Sans (was Inter)
 

@@ -15,6 +15,7 @@ import SessionStatusCard from '../components/session/SessionStatusCard'
 import SessionEndedSection from '../components/session/SessionEndedSection'
 import SessionShareTab from '../components/session/SessionShareTab'
 import SessionStory from '../components/session/SessionStory'
+import SessionBroadcast from '../components/session/SessionBroadcast'
 import ShareToContact from '../components/ShareToContact'
 import { useSessionData } from '../hooks/useSessionData'
 import PanicButton from '../components/PanicButton'
@@ -208,6 +209,21 @@ export default function SessionPage() {
             />
           )}
           <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {/* Live broadcast announcement */}
+            {d.session.status === 'open' && (
+              <SessionBroadcast sessionId={d.id!} broadcast={d.session.broadcast} isHost={effectiveRole === 'host'} />
+            )}
+            {/* Participant count */}
+            {d.members.length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}>
+                <Users size={14} style={{ color: S.tx3 }} />
+                <span style={{ fontSize: 13, color: S.tx2 }}>
+                  {d.session.max_capacity
+                    ? t('session.participants_display', { count: d.members.length + 1, max: d.session.max_capacity })
+                    : t('session.participants_display_no_max', { count: d.members.length + 1 })}
+                </span>
+              </div>
+            )}
             <SessionContentCards
               session={d.session}
               myApp={d.myApp}

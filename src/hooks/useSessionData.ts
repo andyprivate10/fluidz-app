@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../contexts/AuthContext'
 import type { User } from '@supabase/supabase-js'
 
-export type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; cover_url?: string; template_slug?: string; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number>; host_rules?: string } }
+export type Session = { id: string; title: string; description: string; approx_area: string; exact_address: string | null; status: string; host_id: string; invite_code: string | null; created_at?: string; starts_at?: string; ends_at?: string; max_capacity?: number; tags?: string[]; cover_url?: string; template_slug?: string; broadcast?: string; lineup_json?: { directions?: (string | { text: string; photo_url?: string })[]; roles_wanted?: Record<string, number>; host_rules?: string } }
 export type Member = { applicant_id: string; eps_json: Record<string, string>; status: string }
 export type PendingApplication = { id: string; applicant_id: string; display_name?: string | null; avatar_url?: string | null }
 export type VoteRow = { id: string; applicant_id: string; voter_id: string; vote: 'yes' | 'no'; session_id: string }
@@ -84,7 +84,7 @@ export function useSessionData() {
       const { data: { user } } = await supabase.auth.getUser()
       setCurrentUser(user ?? null)
 
-      const { data: sess, error: sessErr } = await supabase.from('sessions').select('id, title, description, approx_area, exact_address, status, host_id, invite_code, created_at, starts_at, ends_at, max_capacity, tags, cover_url, template_slug, lineup_json, is_public').eq('id', id).single()
+      const { data: sess, error: sessErr } = await supabase.from('sessions').select('id, title, description, approx_area, exact_address, status, host_id, invite_code, created_at, starts_at, ends_at, max_capacity, tags, cover_url, template_slug, lineup_json, is_public, broadcast').eq('id', id).single()
       if (sessErr) throw sessErr
       // Auto-end if ends_at has passed
       if (sess.status === 'open' && sess.ends_at && new Date(sess.ends_at) < new Date()) {

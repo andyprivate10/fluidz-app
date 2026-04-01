@@ -3,7 +3,7 @@
 ## CONTEXTE
 Tu travailles sur Fluidz, une app React+TypeScript+Vite+Tailwind+Supabase.
 Repo: andyprivate10/fluidz-app. Supabase ref: kxbrfjqxufvskcxmliak.
-App live: fluidz-app.netlify.app. Test accounts: marcus/karim/yann@fluidz.test (testpass123).
+App live: fluidz-app.vercel.app. Test accounts: marcus/karim/yann@fluidz.test (testpass123).
 
 ## RÈGLES ABSOLUES
 - `npm run build` DOIT passer AVANT chaque commit (0 erreurs TS)
