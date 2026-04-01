@@ -6,7 +6,7 @@ import { X, Camera } from 'lucide-react'
 import { stripHtml } from '../../lib/sanitize'
 
 const S = colors
-const SLIDE_DURATION = 5000
+const SLIDE_DURATION = 5000 // ms per slide
 
 type Member = {
   id: string
@@ -24,19 +24,26 @@ export default function SessionStory({ sessionId }: Props) {
   const { t } = useTranslation()
   const [members, setMembers] = useState<Member[]>([])
   const [loading, setLoading] = useState(true)
-
-  // Active member index + slide index within that member
-  const [memberIdx, setMemberIdx] = useState(0)
-  const [slideIdx, setSlideIdx] = useState(0)
-  const [progress, setProgress] = useState(0)
   const [visible, setVisible] = useState(false)
+
+  // Flat index into all slides across all members
+  const [globalIdx, setGlobalIdx] = useState(0)
+  const [progress, setProgress] = useState(0)
   const [fadeKey, setFadeKey] = useState(0)
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const t0Ref = useRef(Date.now())
   const swipeRef = useRef<{ x: number; y: number } | null>(null)
+  const membersRef = useRef<Member[]>([])
+  const globalIdxRef = useRef(0)
 
-  // ─── Data Loading ───────────────────────────────────
+  useEffect(() => { membersRef.current = members }, [members])
+  useEffect(() => { globalIdxRef.current = globalIdx }, [globalIdx])
+
+  // ─── Build flat slides list ──────────────────────────
+  const slides = members.flatMap((m, mi) => m.photos.map((photo, si) => ({ mi, si, photo, member: m })))
+
+  // ─── Data Loading ────────────────────────────────────
   useEffect(() => {
     async function load() {
       const { data: apps } = await supabase
@@ -91,10 +98,24 @@ export default function SessionStory({ sessionId }: Props) {
     load()
   }, [sessionId])
 
-  // ─── Timer Logic ────────────────────────────────────
+  // ─── Timer ───────────────────────────────────────────
   const clearTimer = useCallback(() => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
   }, [])
+
+  const goNext = useCallback(() => {
+    const total = membersRef.current.flatMap(m => m.photos).length
+    const next = globalIdxRef.current + 1
+    if (next >= total) {
+      clearTimer()
+      setVisible(false)
+      return
+    }
+    setGlobalIdx(next)
+    setFadeKey(k => k + 1)
+    setProgress(0)
+    t0Ref.current = Date.now()
+  }, [clearTimer])
 
   const startTimer = useCallback(() => {
     clearTimer()
@@ -103,19 +124,23 @@ export default function SessionStory({ sessionId }: Props) {
     timerRef.current = setInterval(() => {
       const pct = Math.min(((Date.now() - t0Ref.current) / SLIDE_DURATION) * 100, 100)
       setProgress(pct)
-      if (pct >= 100) {
-        clearTimer()
-        goNextSlide()
-      }
+      if (pct >= 100) { clearTimer(); goNext() }
     }, 50)
-  }, [clearTimer])
+  }, [clearTimer, goNext])
 
-  useEffect(() => { return clearTimer }, [clearTimer])
+  useEffect(() => () => clearTimer(), [clearTimer])
 
-  // ─── Navigation ─────────────────────────────────────
-  const open = useCallback((mi: number) => {
-    setMemberIdx(mi)
-    setSlideIdx(0)
+  // Restart timer when slide or visibility changes
+  useEffect(() => {
+    if (visible) startTimer()
+    else clearTimer()
+  }, [visible, globalIdx]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ─── Open / Close ────────────────────────────────────
+  const open = useCallback((startMi: number) => {
+    const mems = membersRef.current
+    const startGlobal = mems.slice(0, startMi).reduce((acc, m) => acc + m.photos.length, 0)
+    setGlobalIdx(startGlobal)
     setFadeKey(k => k + 1)
     setVisible(true)
   }, [])
@@ -125,65 +150,17 @@ export default function SessionStory({ sessionId }: Props) {
     setVisible(false)
   }, [clearTimer])
 
-  const goToSlide = useCallback((mi: number, si: number) => {
-    if (mi < 0 || mi >= members.length) { close(); return }
-    const m = members[mi]
-    if (si < 0) {
-      // Go to previous member's last slide
-      if (mi > 0) {
-        const prevM = members[mi - 1]
-        setMemberIdx(mi - 1)
-        setSlideIdx(prevM.photos.length - 1)
-      } else {
-        setSlideIdx(0)
-        t0Ref.current = Date.now()
-        setProgress(0)
-      }
-    } else if (si >= m.photos.length) {
-      // Go to next member
-      if (mi < members.length - 1) {
-        setMemberIdx(mi + 1)
-        setSlideIdx(0)
-      } else {
-        close()
-        return
-      }
-    } else {
-      setMemberIdx(mi)
-      setSlideIdx(si)
-    }
+  // ─── Navigation ──────────────────────────────────────
+  const goPrev = useCallback(() => {
+    const prev = globalIdxRef.current - 1
+    if (prev < 0) return
+    setGlobalIdx(prev)
     setFadeKey(k => k + 1)
-  }, [members, close])
+    setProgress(0)
+    t0Ref.current = Date.now()
+  }, [])
 
-  // Exposed for timer callback
-  const goNextSlide = useCallback(() => {
-    setMemberIdx(mi => {
-      setSlideIdx(si => {
-        const m = members[mi]
-        if (!m) return si
-        if (si < m.photos.length - 1) {
-          setFadeKey(k => k + 1)
-          return si + 1
-        } else if (mi < members.length - 1) {
-          setMemberIdx(mi + 1)
-          setFadeKey(k => k + 1)
-          return 0
-        } else {
-          close()
-          return si
-        }
-        return si
-      })
-      return mi
-    })
-  }, [members, close])
-
-  // Restart timer on slide change
-  useEffect(() => {
-    if (visible) startTimer()
-  }, [memberIdx, slideIdx, visible, startTimer])
-
-  // ─── Touch / Swipe ──────────────────────────────────
+  // ─── Touch / Swipe ───────────────────────────────────
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     swipeRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
   }, [])
@@ -196,29 +173,30 @@ export default function SessionStory({ sessionId }: Props) {
 
     // Horizontal swipe between members
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
-      if (dx < 0 && memberIdx < members.length - 1) {
-        // Swipe left → next member
-        setMemberIdx(memberIdx + 1)
-        setSlideIdx(0)
+      const mems = membersRef.current
+      const curSlide = slides[globalIdxRef.current]
+      if (!curSlide) return
+      if (dx < 0 && curSlide.mi < mems.length - 1) {
+        // Swipe left → jump to next member's first slide
+        const nextMi = curSlide.mi + 1
+        const nextGlobal = mems.slice(0, nextMi).reduce((acc, m) => acc + m.photos.length, 0)
+        setGlobalIdx(nextGlobal)
         setFadeKey(k => k + 1)
-      } else if (dx > 0 && memberIdx > 0) {
-        // Swipe right → prev member
-        setMemberIdx(memberIdx - 1)
-        setSlideIdx(0)
+        setProgress(0)
+        t0Ref.current = Date.now()
+      } else if (dx > 0 && curSlide.mi > 0) {
+        // Swipe right → jump to prev member's first slide
+        const prevMi = curSlide.mi - 1
+        const prevGlobal = mems.slice(0, prevMi).reduce((acc, m) => acc + m.photos.length, 0)
+        setGlobalIdx(prevGlobal)
         setFadeKey(k => k + 1)
+        setProgress(0)
+        t0Ref.current = Date.now()
       }
     }
-  }, [memberIdx, members.length])
+  }, [slides])
 
-  const handleTapLeft = useCallback(() => {
-    goToSlide(memberIdx, slideIdx - 1)
-  }, [memberIdx, slideIdx, goToSlide])
-
-  const handleTapRight = useCallback(() => {
-    goToSlide(memberIdx, slideIdx + 1)
-  }, [memberIdx, slideIdx, goToSlide])
-
-  // ─── Loading / Empty ────────────────────────────────
+  // ─── Loading / Empty ─────────────────────────────────
   if (loading) {
     return (
       <div style={{ padding: 20, display: 'flex', gap: 12, overflowX: 'auto' }}>
@@ -238,8 +216,16 @@ export default function SessionStory({ sessionId }: Props) {
     )
   }
 
-  const curMember = members[memberIdx] || null
-  const curPhoto = curMember ? curMember.photos[slideIdx] : null
+  const curSlide = slides[globalIdx] || null
+  const curMember = curSlide?.member || null
+
+  // Build per-member segments for the progress bar
+  let runningIdx = 0
+  const memberSegments = members.map(m => {
+    const start = runningIdx
+    runningIdx += m.photos.length
+    return { member: m, start, end: runningIdx - 1 }
+  })
 
   return (
     <>
@@ -269,118 +255,98 @@ export default function SessionStory({ sessionId }: Props) {
       </div>
 
       {/* ─── Fullscreen Story Viewer ─────────────────── */}
-      {visible && curMember && curPhoto && (
+      {visible && curMember && curSlide && (
         <div
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            background: '#000',
-          }}
+          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#000' }}
         >
           {/* Photo — full viewport cover */}
           <div
             key={fadeKey}
             style={{
               position: 'absolute', inset: 0,
-              backgroundImage: `url(${curPhoto})`,
+              backgroundImage: `url(${curSlide.photo})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              animation: 'storyFadeIn 0.3s ease',
+              animation: 'storyFadeIn 0.25s ease',
             }}
           />
 
-          {/* Progress bars — segments per member */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0,
-            zIndex: 20, padding: '14px 12px 0',
-          }}>
-            {/* Member-level segments */}
-            <div style={{ display: 'flex', gap: 4 }}>
-              {curMember.photos.map((_, si) => (
-                <div key={si} style={{
-                  flex: 1, height: 2.5,
-                  background: 'rgba(255,255,255,0.25)',
-                  borderRadius: 2, overflow: 'hidden',
-                }}>
-                  <div style={{
-                    height: '100%', borderRadius: 2,
-                    background: '#fff',
-                    width: si < slideIdx ? '100%' : si === slideIdx ? `${progress}%` : '0%',
-                    transition: si === slideIdx ? 'width 0.05s linear' : 'none',
-                  }} />
-                </div>
-              ))}
-            </div>
+          {/* Gradient top */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 100%)', zIndex: 15, pointerEvents: 'none' }} />
+
+          {/* Progress bars — one group per member, segments within */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, padding: '14px 12px 0', display: 'flex', gap: 3 }}>
+            {memberSegments.map(({ member, start, end }) => (
+              <div key={member.id} style={{ flex: end - start + 1, display: 'flex', gap: 2 }}>
+                {member.photos.map((_, localSi) => {
+                  const absIdx = start + localSi
+                  const filled = absIdx < globalIdx
+                  const active = absIdx === globalIdx
+                  return (
+                    <div key={localSi} style={{ flex: 1, height: 2.5, background: 'rgba(255,255,255,0.28)', borderRadius: 2, overflow: 'hidden' }}>
+                      <div style={{
+                        height: '100%', borderRadius: 2, background: '#fff',
+                        width: filled ? '100%' : active ? `${progress}%` : '0%',
+                        transition: active ? 'width 0.05s linear' : 'none',
+                      }} />
+                    </div>
+                  )
+                })}
+              </div>
+            ))}
           </div>
 
-          {/* X close button */}
+          {/* X close */}
           <button
             aria-label={t('common.close')}
             onClick={close}
             style={{
               position: 'absolute', top: 28, right: 14, zIndex: 30,
-              background: 'rgba(0,0,0,0.45)', border: 'none',
+              background: 'rgba(0,0,0,0.5)', border: 'none',
               borderRadius: '50%', width: 36, height: 36,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
             }}
           >
             <X size={18} style={{ color: '#fff' }} />
           </button>
 
-          {/* Tap zones — left prev, right next */}
+          {/* Tap zones */}
           <div
             role="button"
-            aria-label={t('common.previous')}
+            aria-label="previous"
             tabIndex={0}
-            onClick={handleTapLeft}
-            onKeyDown={e => e.key === 'Enter' && handleTapLeft()}
+            onClick={goPrev}
+            onKeyDown={e => e.key === 'Enter' && goPrev()}
             style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: '30%', zIndex: 10 }}
           />
           <div
             role="button"
-            aria-label={t('common.next')}
+            aria-label="next"
             tabIndex={0}
-            onClick={handleTapRight}
-            onKeyDown={e => e.key === 'Enter' && handleTapRight()}
+            onClick={goNext}
+            onKeyDown={e => e.key === 'Enter' && goNext()}
             style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '70%', zIndex: 10 }}
           />
 
-          {/* Bottom overlay — gradient noir 50%, pseudo + role/age */}
+          {/* Bottom overlay */}
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 15,
-            background: 'linear-gradient(to top, rgba(0,0,0,0.50) 0%, transparent 100%)',
-            padding: '80px 20px 36px',
-            pointerEvents: 'none',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)',
+            padding: '80px 20px 40px', pointerEvents: 'none',
           }}>
-            <p style={{
-              fontSize: 22, fontWeight: 800, color: '#fff',
-              fontFamily: fonts.hero,
-              margin: '0 0 4px',
-              textShadow: '0 1px 8px rgba(0,0,0,0.5)',
-            }}>
+            <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', fontFamily: fonts.hero, margin: '0 0 4px', textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}>
               {curMember.name}
             </p>
             {(curMember.role || curMember.age) && (
-              <p style={{
-                fontSize: 14, fontWeight: 500, color: S.tx2,
-                fontFamily: fonts.body,
-                margin: 0,
-                textShadow: '0 1px 4px rgba(0,0,0,0.4)',
-              }}>
+              <p style={{ fontSize: 14, fontWeight: 500, color: 'rgba(255,255,255,0.82)', fontFamily: fonts.body, margin: 0, textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
                 {[curMember.role, curMember.age ? `${curMember.age} ${t('profile.age_years')}` : ''].filter(Boolean).join(' · ')}
               </p>
             )}
           </div>
 
-          {/* Keyframes */}
-          <style>{`
-            @keyframes storyFadeIn {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-          `}</style>
+          <style>{`@keyframes storyFadeIn { from { opacity: 0 } to { opacity: 1 } }`}</style>
         </div>
       )}
     </>

@@ -408,7 +408,7 @@ export default function PublicProfile() {
         {canSee('health') && (p.health?.prep_status || p.health?.dernier_test || p.prep) && (
           <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.sage)}>{t('profile.section_sante')}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ fontSize: 13, fontWeight: 600, color: S.sage, padding: '5px 14px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Shield size={12} strokeWidth={2} />{t('profile.prep_active_badge')}</span>}
-            {p.health?.dernier_test && <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '5px 14px', borderRadius: 99, background: S.bluebg, border: '1px solid ' + S.bluebd }}>Testé il y a {monthsAgoCount(p.health.dernier_test)} mois</span>}
+            {p.health?.dernier_test && <span style={{ fontSize: 13, fontWeight: 600, color: S.blue, padding: '5px 14px', borderRadius: 99, background: S.bluebg, border: '1px solid ' + S.bluebd }}>{t('profile.health_test', { months: monthsAgoCount(p.health.dernier_test) })}</span>}
           </div></div>
         )}
 
