@@ -179,15 +179,15 @@ export default function ExplorePage() {
 
   async function loadNearby(lat: number, lng: number) {
     setLoading(true)
-    // Approximate bounding box (~10km)
-    const delta = 0.1
+    // Approximate bounding box (~55km)
+    const delta = 0.5
     let { data } = await supabase.from('user_profiles')
       .select('id, display_name, profile_json, approx_lat, approx_lng, location_updated_at')
       .eq('location_visible', true)
       .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
       .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
       .neq('id', userId)
-      .limit(20)
+      .limit(60)
 
     // Fallback: if geo query returns few results, load any visible profiles
     if (!data || data.length < 3) {
@@ -195,7 +195,7 @@ export default function ExplorePage() {
         .select('id, display_name, profile_json, approx_lat, approx_lng, location_updated_at')
         .eq('location_visible', true)
         .neq('id', userId)
-        .limit(20)
+        .limit(60)
       if (fallback && fallback.length > (data?.length || 0)) data = fallback
     }
 
@@ -221,21 +221,12 @@ export default function ExplorePage() {
     })
     mapped.sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
 
-    // Pad with demo profiles when fewer than 9 results
-    if (mapped.length < 9) {
-      const demoNames = ['Alex', 'Jordan', 'Sam', 'Chris', 'Morgan', 'Riley', 'Taylor', 'Casey', 'Jamie', 'Avery', 'Quinn']
-      const demoRoles = ['Top', 'Bottom', 'Versa', 'Power bottom', 'Switch']
-      const needed = 9 - mapped.length
-      const existingIds = new Set(mapped.map(p => p.id))
-      for (let i = 0; i < needed; i++) {
-        const demoId = `demo-${i}`
-        if (existingIds.has(demoId)) continue
-        mapped.push({
-          id: demoId,
-          display_name: demoNames[i % demoNames.length],
-          role: demoRoles[i % demoRoles.length],
-          age: 25 + (i * 3) % 15,
-        })
+    // Pad with a few demo profiles if very few results
+    if (mapped.length < 3) {
+      const demoNames = ['Alex', 'Jordan', 'Sam']
+      const demoRoles = ['Top', 'Bottom', 'Versa']
+      for (let i = 0; i < 3 - mapped.length; i++) {
+        mapped.push({ id: `demo-${i}`, display_name: demoNames[i], role: demoRoles[i], age: 25 + i * 3 })
       }
     }
 
