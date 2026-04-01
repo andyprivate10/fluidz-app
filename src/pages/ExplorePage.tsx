@@ -99,60 +99,91 @@ export default function ExplorePage() {
       if (data) {
         setVisible(!!data.location_visible)
         if (data.approx_lat && data.approx_lng) { setMyLat(data.approx_lat); setMyLng(data.approx_lng) }
+        else {
+          // No saved coords — request geo immediately with known userId
+          requestLocation(user.id)
+        }
         const pj = (data as any).profile_json || {}
         if (pj.home_country) setMyHomeCountry(pj.home_country)
         if (pj.search_filters) setSavedFilters(pj.search_filters)
+      } else {
+        // No profile at all — request geo
+        requestLocation(user.id)
       }
     })
   }, [authUser])
 
-  const requestLocation = useCallback(() => {
-    if (!navigator.geolocation) { setGeoError(true); return }
+  // Load profiles without geo coords — fallback when geo is denied or unavailable
+  const loadFallback = useCallback(async (uid?: string | null) => {
+    setLoading(true)
+    const resolvedUid = uid ?? userId
+    const { data: fallback } = await supabase.from('user_profiles')
+      .select('id, display_name, profile_json, approx_lat, approx_lng, location_updated_at')
+      .eq('location_visible', true)
+      .neq('id', resolvedUid)
+      .limit(60)
+    const mapped: NearbyProfile[] = (fallback || []).map((p: any) => {
+      const pj = p.profile_json || {}
+      return {
+        id: p.id,
+        display_name: p.display_name || t('common.anonymous'),
+        avatar_url: pj.avatar_url,
+        role: pj.role,
+        orientation: pj.orientation,
+        age: pj.age,
+        morphology: pj.morphology,
+        distance: undefined,
+        lastSeen: pj.last_seen || p.location_updated_at,
+        home_country: pj.home_country,
+        home_city: pj.home_city,
+        languages: Array.isArray(pj.languages) ? pj.languages : undefined,
+        prep: pj.health?.prep_status || pj.prep,
+        created_at: p.created_at,
+      }
+    })
+    setProfiles(mapped)
+    setLoading(false)
+  }, [userId, t])
+
+  const requestLocation = useCallback((resolvedUserId?: string | null) => {
+    const uid = resolvedUserId ?? userId
+    if (!navigator.geolocation) { setGeoError(true); loadFallback(uid); return }
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const lat = roundCoord(pos.coords.latitude)
         const lng = roundCoord(pos.coords.longitude)
         setMyLat(lat); setMyLng(lng); setGeoError(false)
-        if (userId) {
+        if (uid) {
           await supabase.from('user_profiles').update({
             approx_lat: lat, approx_lng: lng, location_visible: true, location_updated_at: new Date().toISOString(),
-          }).eq('id', userId)
+          }).eq('id', uid)
           setVisible(true)
         }
         loadNearby(lat, lng)
-        // Load public sessions nearby
-        const delta = 0.15
-        const { data: pubSess } = await supabase.from('sessions')
-          .select('id, title, description, approx_area, tags, host_id, approx_lat, approx_lng, created_at, max_capacity, starts_at, ends_at, template_slug')
-          .eq('is_public', true).eq('status', 'open')
-          .gte('approx_lat', lat - delta).lte('approx_lat', lat + delta)
-          .gte('approx_lng', lng - delta).lte('approx_lng', lng + delta)
-          .limit(20)
-        if (pubSess && pubSess.length > 0) {
-          const hIds = [...new Set(pubSess.map((s: any) => s.host_id))]
-          const sIds = pubSess.map((s: any) => s.id)
-          const [{ data: hProfs }, { data: appCounts }] = await Promise.all([
-            supabase.from('user_profiles').select('id, display_name, profile_json').in('id', hIds),
-            supabase.from('applications').select('session_id').in('session_id', sIds).in('status', ['accepted', 'checked_in']),
-          ])
-          const hMap = new Map<string, { name: string; avatar?: string }>()
-          ;(hProfs || []).forEach((p: any) => hMap.set(p.id, { name: p.display_name, avatar: p.profile_json?.avatar_url }))
-          const countMap = new Map<string, number>()
-          ;(appCounts || []).forEach((a: any) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1))
-        }
       },
-      () => { setGeoError(true); setLoading(false) },
+      () => {
+        // Geo denied or failed — still show profiles without distance
+        setGeoError(true)
+        loadFallback(uid)
+      },
       { enableHighAccuracy: false, timeout: 10000 }
     )
-  }, [userId])
+  }, [userId, loadFallback])
 
   useEffect(() => {
     if (myLat && myLng) {
       loadNearby(myLat, myLng)
       loadNearbySessions(myLat, myLng)
     }
-    else requestLocation()
-  }, [myLat, myLng, requestLocation])
+    // Don't auto-request here — handled after userId is resolved below
+  }, [myLat, myLng])
+
+  // Trigger location request only after userId is known (fix race condition)
+  useEffect(() => {
+    if (!userId) return
+    if (myLat && myLng) return // already have coords from DB
+    requestLocation(userId)
+  }, [userId])
 
   async function loadNearbySessions(lat: number, lng: number) {
     const delta = 0.15
@@ -338,11 +369,13 @@ export default function ExplorePage() {
       <div style={{ padding: 12 }}>
       <>
         {geoError && (
-          <div style={{ textAlign: 'center', padding: 32, color: S.tx3 }}>
-            <MapPin size={32} style={{ color: S.tx4, marginBottom: 8 }} />
-            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>{t('explore.geo_needed')}</p>
-            <p style={{ fontSize: 12, margin: '0 0 16px' }}>{t('explore.geo_desc')}</p>
-            <button onClick={requestLocation} style={{ padding: '10px 20px', borderRadius: 12, background: S.p, color: S.tx, border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+          <div style={{ margin: '8px 0 4px', padding: '10px 14px', borderRadius: 12, background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <MapPin size={14} style={{ color: '#FBBF24', flexShrink: 0 }} />
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: '#FBBF24', margin: '0 0 1px' }}>{t('explore.geo_needed')}</p>
+              <p style={{ fontSize: 11, color: S.tx3, margin: 0 }}>{t('explore.geo_desc')}</p>
+            </div>
+            <button onClick={() => requestLocation(userId)} style={{ padding: '5px 10px', borderRadius: 8, background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.3)', color: '#FBBF24', fontSize: 11, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
               {t('explore.enable_geo')}
             </button>
           </div>
@@ -362,7 +395,7 @@ export default function ExplorePage() {
           </div>
         )}
 
-        {!loading && !geoError && filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 20px', color: S.tx3 }}>
             <MapPin size={32} strokeWidth={1.5} style={{ color: S.p, display: 'block', margin: '0 auto 12px' }} />
             <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('explore.nobody')}</p>
