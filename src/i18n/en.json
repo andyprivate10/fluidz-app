@@ -1833,6 +1833,14 @@
     "status_backlog": "Backlog",
     "status_todo": "To Do"
   },
+  "host_badge": {
+    "label": "Host · {{count}} sessions"
+  },
+  "templates": {
+    "save_as_template": "Save as template",
+    "saved_toast": "Template saved!",
+    "already_saved": "This template is already saved"
+  },
   "report": {
     "title": "Report",
     "subtitle": "Report {{name}} — choose a reason",

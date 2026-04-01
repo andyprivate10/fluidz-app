@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Users } from 'lucide-react'
+import { Users, Save } from 'lucide-react'
 import { colors } from '../../brand'
 import { supabase } from '../../lib/supabase'
 import { showToast } from '../Toast'
@@ -65,6 +65,46 @@ export default function SessionEndedSection({ session, sessionId, isHost, curren
               {t('session.leave_review')}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Save as custom template (host only) */}
+      {isHost && (
+        <div style={{ padding: '0 16px 16px' }}>
+          <button
+            onClick={async () => {
+              if (!currentUser) return
+              const { data: pj } = await supabase.from('user_profiles').select('profile_json').eq('id', currentUser.id).maybeSingle()
+              const profileJson = (pj?.profile_json || {}) as Record<string, unknown>
+              const savedTemplates = Array.isArray(profileJson.saved_templates) ? [...profileJson.saved_templates] : []
+              const tpl = {
+                id: sessionId,
+                title: session.title,
+                description: session.description,
+                tags: session.tags || [],
+                approx_area: session.approx_area,
+                lineup_json: session.lineup_json,
+                saved_at: new Date().toISOString(),
+              }
+              // Avoid duplicates
+              if (savedTemplates.some((t: any) => t.id === sessionId)) {
+                showToast(t('templates.already_saved'), 'info')
+                return
+              }
+              savedTemplates.push(tpl)
+              await supabase.from('user_profiles').update({ profile_json: { ...profileJson, saved_templates: savedTemplates } }).eq('id', currentUser.id)
+              showToast(t('templates.saved_toast'), 'success')
+            }}
+            style={{
+              width: '100%', padding: 14, borderRadius: 14, cursor: 'pointer',
+              background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid ' + S.lavbd, color: S.lav,
+              fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            <Save size={16} strokeWidth={1.5} />
+            {t('templates.save_as_template')}
+          </button>
         </div>
       )}
 

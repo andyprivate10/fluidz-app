@@ -795,6 +795,31 @@ export async function seedDemoData(onProgress?: SeedProgress): Promise<void> {
   })
   log('✅ Social interaction requests created')
 
+  // ── Wave 4-7 scenarios ──
+
+  // Alex: rejected application with soft notification
+  await signIn('marcus@fluidz.test')
+  await supabase.from('notifications').upsert({
+    user_id: ids.alex,
+    type: 'application_not_selected',
+    title: 'Pas retenu cette fois',
+    body: 'Tu n\'as pas été retenu pour "Dark Room XIV"',
+    href: '/session/' + (await supabase.from('sessions').select('id').eq('invite_code', 'DARK14').maybeSingle()).data?.id,
+    created_at: hoursAgo(3),
+  }, { onConflict: 'id' })
+
+  // Panic alert notification for Marcus (demo)
+  await supabase.from('notifications').insert({
+    user_id: ids.marcus,
+    type: 'panic_alert',
+    title: 'Alerte de sécurité',
+    body: 'Alerte test reçue',
+    href: '/session/' + (await supabase.from('sessions').select('id').eq('invite_code', 'DARK14').maybeSingle()).data?.id,
+    created_at: hoursAgo(1),
+  })
+
+  log('✅ Wave 4-7 scenarios seeded')
+
   // Done
   await signIn('marcus@fluidz.test')
   log('🎉 All demo data seeded successfully!')

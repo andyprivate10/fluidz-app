@@ -19,6 +19,7 @@ import DmPrivacyBadge from '../components/DmPrivacyBadge'
 import InterestPopup from '../components/InterestPopup'
 import NaughtyBookButton from '../components/NaughtyBookButton'
 import ReportSheet from '../components/ReportSheet'
+import HostBadge from '../components/HostBadge'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -221,6 +222,7 @@ export default function PublicProfile() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
             <VibeScoreBadge userId={userId!} />
+            <HostBadge userId={userId!} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
             {p.age && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>{p.age} ans</span>}

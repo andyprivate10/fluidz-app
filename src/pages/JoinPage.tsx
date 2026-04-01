@@ -39,6 +39,18 @@ export default function JoinPage() {
     if (!sess) { setStatus('error'); return }
     setSession(sess)
 
+    // Dynamic OG meta for deep links
+    document.title = `${sess.title} — Fluidz`
+    const setMeta = (prop: string, content: string) => {
+      let el = document.querySelector(`meta[property="${prop}"]`) as HTMLMetaElement | null
+      if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el) }
+      el.setAttribute('content', content)
+    }
+    setMeta('og:title', sess.title || 'Fluidz')
+    setMeta('og:description', sess.description || sess.approx_area || '')
+    if (sess.cover_url) setMeta('og:image', sess.cover_url)
+    setMeta('og:url', window.location.href)
+
     if (sess.host_id) {
       const { data: hostProf } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', sess.host_id).maybeSingle()
       if (hostProf?.display_name) setHostName(hostProf.display_name)
