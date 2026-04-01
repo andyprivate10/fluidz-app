@@ -141,7 +141,7 @@ export default function ProfileStory({ profile, onClose }: { profile: ProfileDat
             {d.avatar ? <img src={v(d.avatar)} alt="" loading="lazy" style={{ width: 120, height: 120, borderRadius: '28%', objectFit: 'cover', border: '3px solid ' + S.p, marginBottom: 20 }} /> : null}
             <h1 style={{ fontSize: 36, fontWeight: 800, color: S.tx, margin: '0 0 8px' }}>{v(d.name)}</h1>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              {d.age ? <span style={{ fontSize: 18, color: S.tx2 }}>{v(d.age)} ans</span> : null}
+              {d.age ? <span style={{ fontSize: 18, color: S.tx2 }}>{v(d.age)} {t('profile.age_years')}</span> : null}
               {d.location ? <span style={{ fontSize: 18, color: S.tx3 }}>{v(d.location)}</span> : null}
             </div>
           </div>

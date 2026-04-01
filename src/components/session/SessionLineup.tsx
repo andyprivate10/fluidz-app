@@ -102,7 +102,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
         {/* Name links */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
           {members.slice(0, 5).map(m => (
-            <MemberNameLink key={m.applicant_id} member={m} name={memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || 'Anonyme'} role={memberRoles[m.applicant_id]} onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} />
+            <MemberNameLink key={m.applicant_id} member={m} name={memberNames[m.applicant_id] || (m.eps_json as any)?.profile_snapshot?.display_name || t('common.anonymous_fallback')} role={memberRoles[m.applicant_id]} onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} />
           ))}
           {members.length > 5 && <span style={{ fontSize: 12, color: S.tx2 }}>+{members.length - 5}</span>}
         </div>
@@ -112,7 +112,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
         {members.map(m => {
           const eps = m.eps_json || {}
           const role = memberRoles[m.applicant_id] || eps.role
-          const name = memberNames[m.applicant_id] || (eps as any).profile_snapshot?.display_name || eps.displayName || 'Anonyme'
+          const name = memberNames[m.applicant_id] || (eps as any).profile_snapshot?.display_name || eps.displayName || t('common.anonymous_fallback')
           return (
             <MemberRow key={m.applicant_id} member={m} avatarUrl={memberAvatars[m.applicant_id]} name={name} role={role} onClick={() => isMobile ? setSheetMember(m) : navigate('/profile/' + m.applicant_id)} />
           )
@@ -133,7 +133,7 @@ export default function SessionLineup({ members, memberAvatars, memberNames, mem
                 </div>
               )}
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: S.tx }}>{stripHtml(memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name) || 'Anonyme'}</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: S.tx }}>{stripHtml(memberNames[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.profile_snapshot?.display_name) || t('common.anonymous_fallback')}</div>
                 {(memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role) && (
                   <span style={{ display: 'inline-block', marginTop: 4, padding: '2px 10px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: 'white', background: S.p }}>
                     {memberRoles[sheetMember.applicant_id] || (sheetMember.eps_json as any)?.role}

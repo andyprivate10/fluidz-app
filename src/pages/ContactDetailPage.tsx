@@ -194,7 +194,7 @@ export default function ContactDetailPage() {
               <VibeScoreBadge userId={contactUserId!} />
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-              {pj.age ? <span style={{ fontSize: 12, color: S.tx3 }}>{`${pj.age}`} ans</span> : null}
+              {pj.age ? <span style={{ fontSize: 12, color: S.tx3 }}>{`${pj.age}`} {t('profile.age_years')}</span> : null}
               {pj.role ? <span style={{ fontSize: 12, color: S.p, fontWeight: 600 }}>{`${pj.role}`}</span> : null}
             </div>
           </div>
@@ -212,7 +212,7 @@ export default function ContactDetailPage() {
               <Heart size={16} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
             </button>
             <button onClick={() => navigate('/profile/' + contactUserId)} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 12, color: S.tx3, border: '1px solid ' + S.rule, background: 'transparent', cursor: 'pointer' }}>
-              Profil <ChevronRight size={12} style={{ verticalAlign: 'middle' }} />
+              {t('profile.profile')} <ChevronRight size={12} style={{ verticalAlign: 'middle' }} />
             </button>
           </div>
         </div>

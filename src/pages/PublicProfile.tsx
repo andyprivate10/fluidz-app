@@ -226,7 +226,7 @@ export default function PublicProfile() {
             <HostBadge userId={userId!} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
-            {p.age && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>{p.age} ans</span>}
+            {p.age && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>{p.age} {t('profile.age_years')}</span>}
             {p.location && <><span style={{ color: 'rgba(255,255,255,0.4)' }}>·</span><span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', display: 'inline-flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} />{p.location}</span></>}
             {isOnline && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.sage, display: 'inline-block', marginLeft: 4, boxShadow: '0 0 8px ' + S.sage }} />}
           </div>
