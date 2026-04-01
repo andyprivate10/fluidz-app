@@ -395,7 +395,12 @@
     "group_chat_off": "Group chat désactivé",
     "checkin_required": "Accès réservé aux membres après check-in",
     "group_not_enabled": "Group chat pas encore activé",
-    "no_messages_yet": "Pas de messages depuis ton arrivée."
+    "no_messages_yet": "Pas de messages depuis ton arrivée.",
+    "reaction_added": "Réaction ajoutée",
+    "media_preview_title": "Aperçu",
+    "media_send": "Envoyer",
+    "media_cancel": "Annuler",
+    "quoted_message": "Message cité"
   },
   "profile": {
     "account": "Compte",

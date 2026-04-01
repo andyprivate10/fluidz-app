@@ -157,19 +157,8 @@ export default function DirectDMPage() {
       .limit(100)
     setMessages(msgs || [])
 
-    // Load reactions for all messages
-    if (msgs && msgs.length > 0) {
-      const msgIds = msgs.map((m: any) => m.id)
-      const { data: rxns } = await supabase.from('message_reactions').select('message_id, user_id, emoji').in('message_id', msgIds)
-      if (rxns) {
-        const grouped: Record<string, { emoji: string; user_id: string }[]> = {}
-        for (const r of rxns) {
-          if (!grouped[r.message_id]) grouped[r.message_id] = []
-          grouped[r.message_id].push({ emoji: r.emoji, user_id: r.user_id })
-        }
-        setReactions(grouped)
-      }
-    }
+    // Load reactions for all messages — handled by useReactions hook
+    // (removed duplicate manual loading)
 
     // Auto-suggest NaughtyBook after 5+ messages exchanged
     if (msgs && msgs.length >= 5) {
@@ -201,23 +190,6 @@ export default function DirectDMPage() {
         if (msg.room_type !== 'dm') return
         setMessages(prev => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
         if (msg.sender_id !== currentUser?.id) notifyUser('message')
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'message_reactions' }, (payload: any) => {
-        if (payload.eventType === 'INSERT') {
-          const r = payload.new
-          if (r.user_id !== currentUser?.id) {
-            setReactions(prev => ({
-              ...prev,
-              [r.message_id]: [...(prev[r.message_id] || []), { emoji: r.emoji, user_id: r.user_id }]
-            }))
-          }
-        } else if (payload.eventType === 'DELETE') {
-          const r = payload.old
-          setReactions(prev => ({
-            ...prev,
-            [r.message_id]: (prev[r.message_id] || []).filter(x => !(x.emoji === r.emoji && x.user_id === r.user_id))
-          }))
-        }
       })
       .subscribe()
 
@@ -636,7 +608,7 @@ export default function DirectDMPage() {
       <div style={{ background: 'rgba(5,4,10,0.92)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 12, borderTop: showEmojiBar ? 'none' : '1px solid ' + S.rule, display: 'flex', gap: 8, flexShrink: 0 }}>
         <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, cursor: uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: uploading ? 0.5 : 1 }}>
           <Camera size={16} style={{ color: S.tx3 }} />
-          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} />
+          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) setMediaPreview(f); e.target.value = '' }} style={{ display: 'none' }} />
         </label>
         <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width: 40, height: 40, borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? S.tx : S.tx3, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, animation: recording ? 'pulse 1s infinite' : 'none' }}>
           {recording ? '■' : '●'}
@@ -664,6 +636,7 @@ export default function DirectDMPage() {
         />
       )}
       {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
+      <MediaPreviewModal file={mediaPreview} onSend={(f) => { setMediaPreview(null); handleSendPhoto(f) }} onCancel={() => setMediaPreview(null)} />
       {menuMsg && <ChatMessageMenu message={menuMsg} isOwn={menuMsg.sender_id === currentUser?.id} onCopy={() => showToast(t('chat.copied'), 'success')} onReply={() => setReplyTo({ id: menuMsg.id, text: menuMsg.text, sender_name: menuMsg.sender_name })} onDelete={menuMsg.sender_id === currentUser?.id ? () => { supabase.from('messages').delete().eq('id', menuMsg.id); setMessages(prev => prev.filter(m => m.id !== menuMsg.id)) } : undefined} onClose={() => setMenuMsg(null)} labels={{ copy: t('chat.copy_text'), reply: t('chat.reply'), delete: t('chat.delete_msg') }} />}
       {currentUser && (
         <AddressShareSheet

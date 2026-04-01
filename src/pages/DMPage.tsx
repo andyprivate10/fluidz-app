@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { SkeletonChatPage } from '../components/Skeleton'
 import { showToast } from '../components/Toast'
 import { Camera, ArrowLeft, Copy, Map, MapPin, Smile, X, Plus, Shield } from 'lucide-react'
@@ -7,6 +8,7 @@ import ImageLightbox from '../components/ImageLightbox'
 import EmojiBar from '../components/EmojiBar'
 import ChatMessageMenu from '../components/ChatMessageMenu'
 import AddressShareSheet from '../components/AddressShareSheet'
+import MediaPreviewModal from '../components/chat/MediaPreviewModal'
 import DMMessageList from '../components/chat/DMMessageList'
 import { useDMData } from '../hooks/useDMData'
 
@@ -14,6 +16,7 @@ const S = colors
 
 export default function DMPage() {
   const d = useDMData()
+  const [mediaPreview, setMediaPreview] = useState<File | null>(null)
 
   if (d.loading) return <SkeletonChatPage />
 
@@ -177,7 +180,7 @@ export default function DMPage() {
           }}>
             <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: 12, background: S.bg2, border: '1px solid '+S.rule, cursor: d.uploading ? 'not-allowed' : 'pointer', flexShrink: 0, opacity: d.uploading ? 0.5 : 1 }}>
               <Camera size={18} style={{ color: S.tx3 }} />
-              <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) d.handleSendPhoto(f); e.target.value = '' }} style={{ display: 'none' }} disabled={d.uploading} />
+              <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) setMediaPreview(f); e.target.value = '' }} style={{ display: 'none' }} disabled={d.uploading} />
             </label>
             <button type="button" onClick={d.recording ? d.stopRecording : d.startRecording} disabled={d.uploading} style={{ padding: '10px 12px', borderRadius: 12, border: 'none', background: d.recording ? S.red : S.bg2, color: d.recording ? S.tx : S.tx3, cursor: 'pointer', fontSize: 16, animation: d.recording ? 'pulse 1s infinite' : 'none' }}>
               {d.recording ? '\u25A0' : '\u25CF'}
@@ -216,6 +219,7 @@ export default function DMPage() {
         </>
       )}
       {d.chatLightbox && <ImageLightbox images={[d.chatLightbox]} onClose={() => d.setChatLightbox(null)} />}
+      <MediaPreviewModal file={mediaPreview} onSend={(f) => { setMediaPreview(null); d.handleSendPhoto(f) }} onCancel={() => setMediaPreview(null)} />
       {d.menuMsg && <ChatMessageMenu message={d.menuMsg} isOwn={d.menuMsg.sender_id === d.currentUser?.id} onCopy={() => showToast(d.t('chat.copied'), 'success')} onReply={() => d.setReplyTo({ id: d.menuMsg!.id, text: d.menuMsg!.text, sender_name: d.menuMsg!.sender_name })} onDelete={d.menuMsg.sender_id === d.currentUser?.id ? () => { d.handleDeleteMessage(d.menuMsg!.id) } : undefined} onClose={() => d.setMenuMsg(null)} labels={{ copy: d.t('chat.copy_text'), reply: d.t('chat.reply'), delete: d.t('chat.delete_msg') }} />}
       {d.currentUser && (
         <AddressShareSheet

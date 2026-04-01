@@ -395,7 +395,12 @@
     "group_chat_off": "Group chat disabled",
     "checkin_required": "Access restricted to members after check-in",
     "group_not_enabled": "Group chat not yet enabled",
-    "no_messages_yet": "No messages since you joined."
+    "no_messages_yet": "No messages since you joined.",
+    "reaction_added": "Reaction added",
+    "media_preview_title": "Preview",
+    "media_send": "Send",
+    "media_cancel": "Cancel",
+    "quoted_message": "Quoted message"
   },
   "profile": {
     "account": "Account",

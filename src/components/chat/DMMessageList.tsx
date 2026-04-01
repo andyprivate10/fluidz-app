@@ -5,6 +5,10 @@ import { colors } from '../../brand'
 import { formatMessageTime } from '../../lib/timing'
 import { isAddressMessage, parseAddressMessage } from '../AddressShareSheet'
 import { useTranslation } from 'react-i18next'
+// TODO: Wire reactions into message bubbles
+// import { useReactions } from '../../hooks/useReactions'
+// import EmojiReactionPicker from './EmojiReactionPicker'
+// import ReactionDisplay from './ReactionDisplay'
 import type { Message } from '../../hooks/useDMData'
 import type { RefObject } from 'react'
 
