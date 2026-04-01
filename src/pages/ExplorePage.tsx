@@ -62,6 +62,7 @@ export default function ExplorePage() {
   const [roleFilter, setRoleFilter] = useState(t('common.all'))
   const [userId, setUserId] = useState<string | null>(null)
   const [geoError, setGeoError] = useState(false)
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set())
   const [showFilters, setShowFilters] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [myViewCount, setMyViewCount] = useState(0)
@@ -76,6 +77,10 @@ export default function ExplorePage() {
     setUserId(user.id)
     supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).then(({ data }) => {
       if (data) setMyContactIds(new Set(data.map((c: any) => c.contact_user_id)))
+    })
+    // Load blocked user IDs
+    supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).eq('relation_level', 'blocked').then(({ data }) => {
+      if (data) setBlockedIds(new Set(data.map(d => d.contact_user_id)))
     })
     // Unread counts for header badges
     supabase.from('notifications').select('*', { count: 'exact', head: true })
@@ -205,7 +210,7 @@ export default function ExplorePage() {
         age: pj.age,
         morphology: pj.morphology,
         distance: dist ? Math.round(dist * 10) / 10 : undefined,
-        lastSeen: p.location_updated_at,
+        lastSeen: pj.last_seen && (!p.location_updated_at || new Date(pj.last_seen) > new Date(p.location_updated_at)) ? pj.last_seen : p.location_updated_at,
         home_country: pj.home_country,
         home_city: pj.home_city,
         languages: Array.isArray(pj.languages) ? pj.languages : undefined,
@@ -263,6 +268,7 @@ export default function ExplorePage() {
   }
 
   const filtered = profiles.filter(p => {
+    if (blockedIds.has(p.id)) return false
     if (roleFilter !== t('common.all') && p.role !== roleFilter) return false
     if (searchText && !p.display_name.toLowerCase().includes(searchText.toLowerCase())) return false
     return true
@@ -417,6 +423,10 @@ export default function ExplorePage() {
                   <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: S.tx }}>
                     {p.display_name[0]?.toUpperCase()}
                   </div>
+                )}
+                {/* Online dot */}
+                {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 300000 && (
+                  <div style={{ position: 'absolute', top: 8, left: 8, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid rgba(0,0,0,0.4)', boxShadow: '0 0 6px ' + S.sage, zIndex: 2 }} />
                 )}
                 {/* Quick add to NaughtyBook */}
                 <button onClick={async (e) => {

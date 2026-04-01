@@ -933,7 +933,11 @@
     "removed_from_book": "Retiré du carnet",
     "remove_from_book": "Retirer du carnet",
     "delete_confirm": "Retirer ce contact de ton NaughtyBook ?",
-    "deleted": "Contact retiré"
+    "deleted": "Contact retiré",
+    "common_sessions": "Sessions en commun",
+    "history": "Historique",
+    "added": "Ajouté",
+    "events_together": "Events ensemble"
   },
   "settings": {
     "push_active": "Push actives",
@@ -1828,5 +1832,28 @@
     "filter_done": "Terminé",
     "status_backlog": "Backlog",
     "status_todo": "À faire"
+  },
+  "report": {
+    "title": "Signaler",
+    "subtitle": "Signaler {{name}} — choisis une raison",
+    "report_title": "Signalement : {{name}}",
+    "reason_fake_profile": "Faux profil",
+    "reason_inappropriate": "Comportement inapproprié",
+    "reason_harassment": "Harcèlement",
+    "reason_illegal_content": "Contenu illégal",
+    "reason_other": "Autre",
+    "details_placeholder": "Détails supplémentaires (optionnel)...",
+    "submit": "Envoyer le signalement",
+    "sent_toast": "Signalement envoyé"
+  },
+  "panic": {
+    "button_label": "Alerte",
+    "confirm_title": "Envoyer une alerte ?",
+    "confirm_desc": "Le host et l'équipe seront alertés immédiatement.",
+    "send_alert": "Envoyer l'alerte",
+    "alert_title": "Alerte de sécurité",
+    "alert_body": "Alerte reçue pour \"{{title}}\"",
+    "admin_title": "Alerte panique envoyée",
+    "sent_toast": "Alerte envoyée — aide en route"
   }
 }

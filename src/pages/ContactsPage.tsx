@@ -305,7 +305,12 @@ export default function ContactsPage() {
                   <VibeScoreBadge userId={contact.contact_user_id} />
                 </div>
                 {contact.role && <p style={{ fontSize: 12, color: S.p, margin: '2px 0 0' }}>{contact.role}</p>}
-                {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.notes}</p>}
+                {contact.last_seen && (() => {
+                  const mins = Math.floor((Date.now() - new Date(contact.last_seen).getTime()) / 60000)
+                  const label = mins < 5 ? t('common.online') : mins < 60 ? mins + 'min' : mins < 1440 ? Math.floor(mins / 60) + 'h' : Math.floor(mins / 1440) + 'j'
+                  return <p style={{ fontSize: 10, color: mins < 5 ? S.sage : S.tx4, margin: '2px 0 0' }}>{mins < 5 ? '● ' : ''}{label}</p>
+                })()}
+                {contact.notes && <p style={{ fontSize: 11, color: S.tx4, margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.notes}</p>}
               </div>
 
               {/* Star cycle */}

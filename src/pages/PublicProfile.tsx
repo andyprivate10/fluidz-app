@@ -18,6 +18,7 @@ import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 import DmPrivacyBadge from '../components/DmPrivacyBadge'
 import InterestPopup from '../components/InterestPopup'
 import NaughtyBookButton from '../components/NaughtyBookButton'
+import ReportSheet from '../components/ReportSheet'
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -74,6 +75,7 @@ export default function PublicProfile() {
   const [loading, setLoading] = useState(true)
   const [showStory, setShowStory] = useState(false)
   const [showShareSheet, setShowShareSheet] = useState(false)
+  const [showReport, setShowReport] = useState(false)
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null)
   const [_myProfile, setMyProfile] = useState<Record<string,unknown> | null>(null)
   const [allowed, setAllowed] = useState<boolean>(false)
@@ -148,9 +150,10 @@ export default function PublicProfile() {
   const displayName = profile.display_name || t('common.anonymous')
 
   let onlineLabel = ''; let isOnline = false
-  if (profile.location_updated_at) {
-    const mins = Math.floor((Date.now() - new Date(profile.location_updated_at).getTime()) / 60000)
-    isOnline = mins < 30
+  const lastSeenSource = p.last_seen && (!profile.location_updated_at || new Date(p.last_seen) > new Date(profile.location_updated_at)) ? p.last_seen : profile.location_updated_at
+  if (lastSeenSource) {
+    const mins = Math.floor((Date.now() - new Date(lastSeenSource).getTime()) / 60000)
+    isOnline = mins < 5
     onlineLabel = isOnline ? t('common.online') : mins < 60 ? mins + 'min' : mins < 1440 ? Math.floor(mins / 60) + 'h' : Math.floor(mins / 1440) + 'j'
   }
 
@@ -190,16 +193,23 @@ export default function PublicProfile() {
         <button onClick={() => navigate(-1)} style={{ position: 'absolute', top: 14, left: 14, zIndex: 4, width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: 'none', color: S.tx, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowLeft size={18} strokeWidth={2} /></button>
         <div style={{ position: 'absolute', top: 14, right: 14, zIndex: 4 }}>
           <OptionsMenu options={[
-            { label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: async () => {
-              const { data: { user } } = await supabase.auth.getUser()
-              if (!user) return
-              await supabase.from('notifications').insert({ user_id: user.id, type: 'report', title: 'Report: ' + displayName, body: 'User ' + userId + ' reported', href: '/profile/' + userId })
-              showToast(t('profile.reported_toast'), 'info')
-            }, danger: true },
+            { label: t('options.report'), icon: <Flag size={15} strokeWidth={1.5} />, onClick: () => setShowReport(true), danger: true },
             { label: t('options.block'), icon: <Ban size={15} strokeWidth={1.5} />, onClick: async () => {
-              const { data: { user } } = await supabase.auth.getUser()
               if (!user) return
               await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
+              // Eject from common sessions
+              const { data: commonApps } = await supabase.from('applications').select('id, session_id').eq('applicant_id', userId).in('status', ['accepted', 'checked_in', 'pending'])
+              if (commonApps) {
+                const mySessionIds = commonApps.map(a => a.session_id)
+                if (mySessionIds.length > 0) {
+                  const { data: mySessions } = await supabase.from('sessions').select('id').in('id', mySessionIds).eq('host_id', user.id)
+                  if (mySessions) {
+                    for (const s of mySessions) {
+                      await supabase.from('applications').update({ status: 'ejected' }).eq('session_id', s.id).eq('applicant_id', userId)
+                    }
+                  }
+                }
+              }
               showToast(t('profile.blocked_toast'), 'success')
               navigate(-1)
             }, danger: true },
@@ -406,22 +416,14 @@ export default function PublicProfile() {
         {/* Block / Report */}
         <div style={{ display: 'flex', gap: 8, marginTop: 16, paddingBottom: 20 }}>
           <button onClick={async () => {
-            if (!await confirm({ title: t('profile.block_confirm'), danger: true })) return
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) return
+            if (!user || !await confirm({ title: t('profile.block_confirm'), danger: true })) return
             await supabase.from('contacts').upsert({ owner_id: user.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
             showToast(t('profile.blocked_toast'), 'success')
             navigate(-1)
           }} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.redbd, background: 'transparent', color: S.red, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
             <Ban size={13} strokeWidth={1.5} /> {t('profile.block_user')}
           </button>
-          <button onClick={async () => {
-            if (!await confirm({ title: t('profile.report_confirm') })) return
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) return
-            await supabase.from('notifications').insert({ user_id: user.id, type: 'report', title: 'Report: ' + displayName, body: 'User ' + userId + ' reported', href: '/profile/' + userId })
-            showToast(t('profile.reported_toast'), 'info')
-          }} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <button onClick={() => setShowReport(true)} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
             <Flag size={13} strokeWidth={1.5} /> {t('profile.report_user')}
           </button>
         </div>
@@ -437,6 +439,7 @@ export default function PublicProfile() {
       />
       {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
       <ConfirmDialog {...dialogProps} />
+      <ReportSheet open={showReport} onClose={() => setShowReport(false)} targetUserId={userId!} targetName={displayName} context="profile" />
       <InterestPopup
         open={showInterestPopup}
         onClose={() => setShowInterestPopup(false)}

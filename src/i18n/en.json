@@ -933,7 +933,11 @@
     "removed_from_book": "Removed from NaughtyBook",
     "remove_from_book": "Remove from NaughtyBook",
     "delete_confirm": "Remove this contact from your NaughtyBook?",
-    "deleted": "Contact removed"
+    "deleted": "Contact removed",
+    "common_sessions": "Sessions together",
+    "history": "History",
+    "added": "Added",
+    "events_together": "Events together"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -1828,5 +1832,28 @@
     "filter_done": "Done",
     "status_backlog": "Backlog",
     "status_todo": "To Do"
+  },
+  "report": {
+    "title": "Report",
+    "subtitle": "Report {{name}} — choose a reason",
+    "report_title": "Report: {{name}}",
+    "reason_fake_profile": "Fake profile",
+    "reason_inappropriate": "Inappropriate behavior",
+    "reason_harassment": "Harassment",
+    "reason_illegal_content": "Illegal content",
+    "reason_other": "Other",
+    "details_placeholder": "Additional details (optional)...",
+    "submit": "Send report",
+    "sent_toast": "Report sent"
+  },
+  "panic": {
+    "button_label": "Alert",
+    "confirm_title": "Send an alert?",
+    "confirm_desc": "The host and staff will be alerted immediately.",
+    "send_alert": "Send alert",
+    "alert_title": "Safety alert",
+    "alert_body": "Alert received for \"{{title}}\"",
+    "admin_title": "Panic alert sent",
+    "sent_toast": "Alert sent — help is on the way"
   }
 }
