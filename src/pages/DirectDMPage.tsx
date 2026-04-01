@@ -16,6 +16,10 @@ import EmojiBar from '../components/EmojiBar'
 import { notifyUser } from '../lib/feedback'
 import ImageLightbox from '../components/ImageLightbox'
 import ChatMessageMenu from '../components/ChatMessageMenu'
+import EmojiReactionPicker from '../components/chat/EmojiReactionPicker'
+import ReactionDisplay from '../components/chat/ReactionDisplay'
+import MediaPreviewModal from '../components/chat/MediaPreviewModal'
+import { useReactions } from '../hooks/useReactions'
 import AddressShareSheet, { encodeAddressMessage, isAddressMessage, parseAddressMessage } from '../components/AddressShareSheet'
 import TemplateShareSheet from '../components/TemplateShareSheet'
 import DmRequestSheet from '../components/DmRequestSheet'
@@ -71,6 +75,15 @@ export default function DirectDMPage() {
   const [interestRequestId, setInterestRequestId] = useState<string | null>(null)
   const [showNbSuggest, setShowNbSuggest] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  // reactions managed by useReactions hook below
+  const [reactionPicker, setReactionPicker] = useState<{ msgId: string; top: number; left: number } | null>(null)
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const swipeStartX = useRef<Record<string, number>>({})
+  const swipeOffset = useRef<Record<string, number>>({})
+  const [mediaPreview, setMediaPreview] = useState<File | null>(null)
+
+  const messageIds = messages.map(m => m.id)
+  const { reactions: reactionsMap, toggleReaction } = useReactions(messageIds)
 
   const { typingUsers, sendTyping, stopTyping } = useTypingIndicator(
     currentUser?.id && peerId ? `typing:direct:${[currentUser.id, peerId].sort().join(':')}` : '',
@@ -144,6 +157,20 @@ export default function DirectDMPage() {
       .limit(100)
     setMessages(msgs || [])
 
+    // Load reactions for all messages
+    if (msgs && msgs.length > 0) {
+      const msgIds = msgs.map((m: any) => m.id)
+      const { data: rxns } = await supabase.from('message_reactions').select('message_id, user_id, emoji').in('message_id', msgIds)
+      if (rxns) {
+        const grouped: Record<string, { emoji: string; user_id: string }[]> = {}
+        for (const r of rxns) {
+          if (!grouped[r.message_id]) grouped[r.message_id] = []
+          grouped[r.message_id].push({ emoji: r.emoji, user_id: r.user_id })
+        }
+        setReactions(grouped)
+      }
+    }
+
     // Auto-suggest NaughtyBook after 5+ messages exchanged
     if (msgs && msgs.length >= 5) {
       const myMsgCount = msgs.filter((m: any) => m.sender_id === user.id).length
@@ -175,6 +202,23 @@ export default function DirectDMPage() {
         setMessages(prev => [...prev, { id: msg.id, text: msg.text, sender_id: msg.sender_id, created_at: msg.created_at, sender_name: msg.sender_name, has_media: msg.has_media, media_urls: msg.media_urls }])
         if (msg.sender_id !== currentUser?.id) notifyUser('message')
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'message_reactions' }, (payload: any) => {
+        if (payload.eventType === 'INSERT') {
+          const r = payload.new
+          if (r.user_id !== currentUser?.id) {
+            setReactions(prev => ({
+              ...prev,
+              [r.message_id]: [...(prev[r.message_id] || []), { emoji: r.emoji, user_id: r.user_id }]
+            }))
+          }
+        } else if (payload.eventType === 'DELETE') {
+          const r = payload.old
+          setReactions(prev => ({
+            ...prev,
+            [r.message_id]: (prev[r.message_id] || []).filter(x => !(x.emoji === r.emoji && x.user_id === r.user_id))
+          }))
+        }
+      })
       .subscribe()
 
     setLoading(false)
@@ -205,6 +249,11 @@ export default function DirectDMPage() {
     setNewMessage('')
     setReplyTo(null)
     setSending(false)
+  }
+
+  async function handleReaction(messageId: string, emoji: string) {
+    if (!currentUser) return
+    await toggleReaction(messageId, emoji, currentUser.id)
   }
 
   async function handleSendPhoto(file: File) {
@@ -388,7 +437,39 @@ export default function DirectDMPage() {
             )
           }
           return (
-          <div key={msg.id} onDoubleClick={() => setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name })} style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start' }}>
+          <div
+            key={msg.id}
+            style={{
+              display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start',
+              transform: `translateX(${swipeOffset.current[msg.id] || 0}px)`,
+              transition: swipeOffset.current[msg.id] ? 'none' : 'transform 0.2s',
+            }}
+            onTouchStart={(e) => {
+              swipeStartX.current[msg.id] = e.touches[0].clientX
+              longPressTimerRef.current = setTimeout(() => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                setReactionPicker({ msgId: msg.id, top: rect.top, left: rect.left + rect.width / 2 })
+              }, 500)
+            }}
+            onTouchMove={(e) => {
+              if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null }
+              const dx = e.touches[0].clientX - (swipeStartX.current[msg.id] || 0)
+              if (dx > 10) {
+                const clamped = Math.min(dx, 80)
+                e.currentTarget.style.transform = `translateX(${clamped}px)`
+                swipeOffset.current[msg.id] = clamped
+              }
+            }}
+            onTouchEnd={(e) => {
+              if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null }
+              const offset = swipeOffset.current[msg.id] || 0
+              if (offset >= 60) {
+                setReplyTo({ id: msg.id, text: msg.text, sender_name: msg.sender_name })
+              }
+              e.currentTarget.style.transform = 'translateX(0px)'
+              swipeOffset.current[msg.id] = 0
+            }}
+          >
             <div style={{
               padding: msg.has_media ? 4 : '10px 14px', fontSize: 14, maxWidth: '78%', lineHeight: 1.45,
               borderRadius: 16, background: isMe(msg.sender_id) ? 'linear-gradient(135deg, '+S.p+', '+S.pDark+')' : S.bg2,
@@ -454,7 +535,21 @@ export default function DirectDMPage() {
                     )
                   } catch { return <span style={{ color: S.tx }}>{msg.text}</span> }
                 })() :
-                <span style={{ color: S.tx }}>{msg.text}</span>
+                (() => {
+                  const txt = msg.text
+                  const quoteMatch = txt.match(/^> (.+?)\n\n([\s\S]*)$/)
+                  if (quoteMatch) {
+                    return (
+                      <>
+                        <div style={{ borderLeft: '3px solid ' + S.p, padding: '4px 8px', marginBottom: 6, borderRadius: 4, background: S.p3 }}>
+                          <span style={{ fontSize: 11, color: S.tx2, fontStyle: 'italic' }}>{quoteMatch[1]}</span>
+                        </div>
+                        <span style={{ color: S.tx }}>{quoteMatch[2]}</span>
+                      </>
+                    )
+                  }
+                  return <span style={{ color: S.tx }}>{txt}</span>
+                })()
               )}
               <div style={{ display: 'flex', justifyContent: isMe(msg.sender_id) ? 'flex-end' : 'flex-start', alignItems: 'center', gap: 4, marginTop: 2, padding: msg.has_media ? '0 8px 4px' : 0 }}>
                 <span style={{ fontSize: 10, color: S.tx4 }}>{formatMessageTime(msg.created_at)}{isMe(msg.sender_id) && (() => {
@@ -465,6 +560,13 @@ export default function DirectDMPage() {
                 })()}</span>
               </div>
             </div>
+            {currentUser && (
+              <ReactionDisplay
+                reactions={reactionsMap.get(msg.id) || {}}
+                currentUserId={currentUser.id}
+                onToggle={(emoji) => handleReaction(msg.id, emoji)}
+              />
+            )}
           </div>
         )})}
         <div ref={messagesEndRef} />
@@ -552,6 +654,14 @@ export default function DirectDMPage() {
           <Send size={16} style={{ color: newMessage.trim() ? S.tx : S.tx4 }} />
         </button>
       </div>
+      )}
+      {reactionPicker && (
+        <EmojiReactionPicker
+          top={reactionPicker.top}
+          left={reactionPicker.left}
+          onSelect={(emoji) => handleReaction(reactionPicker.msgId, emoji)}
+          onClose={() => setReactionPicker(null)}
+        />
       )}
       {chatLightbox && <ImageLightbox images={[chatLightbox]} onClose={() => setChatLightbox(null)} />}
       {menuMsg && <ChatMessageMenu message={menuMsg} isOwn={menuMsg.sender_id === currentUser?.id} onCopy={() => showToast(t('chat.copied'), 'success')} onReply={() => setReplyTo({ id: menuMsg.id, text: menuMsg.text, sender_name: menuMsg.sender_name })} onDelete={menuMsg.sender_id === currentUser?.id ? () => { supabase.from('messages').delete().eq('id', menuMsg.id); setMessages(prev => prev.filter(m => m.id !== menuMsg.id)) } : undefined} onClose={() => setMenuMsg(null)} labels={{ copy: t('chat.copy_text'), reply: t('chat.reply'), delete: t('chat.delete_msg') }} />}
