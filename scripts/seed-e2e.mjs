@@ -1009,11 +1009,11 @@ async function main() {
   }, { onConflict: 'user_id,session_id' })
   console.log('  ✓ Session 3: review_queue (Marcus+Theo completed, Amine+Romain pending)')
 
+  } catch (e) { console.warn(`  ⚠ Section 12 error: ${e.message}`) }
+
   // ─── Done ─────────────────────────────────────────────────────────────────
   // Sign back in as Marcus
   await signIn('marcus@fluidz.test')
-
-    } catch (e) { console.warn(`  ⚠ Section 12 error: ${e.message}`) }
 
   console.log('\n═══ SEED COMPLETE ═══')
   console.log(`  Users: 10`)
