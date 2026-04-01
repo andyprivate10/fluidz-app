@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, UserPlus, CheckCircle2, Save, Download } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Star, Save, Download } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -69,15 +69,15 @@ export default function ExplorePage() {
   const [myViewCount, setMyViewCount] = useState(0)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [myHomeCountry, setMyHomeCountry] = useState<string | null>(null)
-  const [myContactIds, setMyContactIds] = useState<Set<string>>(new Set())
+  const [myFavoriteIds, setMyFavoriteIds] = useState<Set<string>>(new Set())
   const [savedFilters, setSavedFilters] = useState<{ role?: string } | null>(null)
 
   useEffect(() => {
     if (!authUser) { navigate('/login?next=/explore'); return }
     const user = authUser
     setUserId(user.id)
-    supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).then(({ data }) => {
-      if (data) setMyContactIds(new Set(data.map((c: any) => c.contact_user_id)))
+    supabase.from('favorites').select('target_user_id').eq('user_id', user.id).then(({ data }) => {
+      if (data) setMyFavoriteIds(new Set(data.map((f: any) => f.target_user_id)))
     })
     // Load blocked user IDs
     supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).eq('relation_level', 'blocked').then(({ data }) => {
@@ -453,23 +453,23 @@ export default function ExplorePage() {
                 {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 300000 && (
                   <div style={{ position: 'absolute', top: 8, left: 8, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid rgba(0,0,0,0.4)', boxShadow: '0 0 6px ' + S.sage, zIndex: 2 }} />
                 )}
-                {/* Quick add to NaughtyBook */}
+                {/* Favorite star */}
                 <button onClick={async (e) => {
                   e.stopPropagation()
                   if (!userId) return
-                  if (myContactIds.has(p.id)) {
-                    showToast(t('profile.in_naughtybook'), 'info')
-                    return
+                  if (myFavoriteIds.has(p.id)) {
+                    await supabase.from('favorites').delete().eq('user_id', userId).eq('target_user_id', p.id)
+                    setMyFavoriteIds(prev => { const next = new Set(prev); next.delete(p.id); return next })
+                  } else {
+                    await supabase.from('favorites').upsert({ user_id: userId, target_user_id: p.id }, { onConflict: 'user_id,target_user_id' })
+                    setMyFavoriteIds(prev => new Set([...prev, p.id]))
                   }
-                  await supabase.from('contacts').insert({ user_id: userId, contact_user_id: p.id, relation_level: 'connaissance' })
-                  setMyContactIds(prev => new Set([...prev, p.id]))
-                  showToast(t('profile.added_to_naughtybook'), 'success')
                 }} style={{
                   position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99,
-                  background: myContactIds.has(p.id) ? 'rgba(74,222,128,0.3)' : 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                  background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
                   border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2,
                 }}>
-                  {myContactIds.has(p.id) ? <CheckCircle2 size={13} strokeWidth={1.5} style={{ color: S.sage }} /> : <UserPlus size={13} strokeWidth={1.5} style={{ color: 'rgba(255,255,255,0.8)' }} />}
+                  <Star size={13} strokeWidth={1.5} fill={myFavoriteIds.has(p.id) ? '#E0887A' : 'none'} style={{ color: myFavoriteIds.has(p.id) ? '#E0887A' : 'rgba(255,255,255,0.8)' }} />
                 </button>
                 <div style={{ padding: '8px 8px 10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

@@ -1,6 +1,6 @@
 import OptionsMenu from '../components/OptionsMenu'
 import LazyImage from '../components/LazyImage'
-import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
+// ConfirmDialog removed — block confirm now in OptionsMenu
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -8,19 +8,19 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import AddContactButton from '../components/AddContactButton'
 import ProfileStory from '../components/ProfileStory'
-import { VibeScoreBadge, VibeScoreCard } from '../components/VibeScoreBadge'
+import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { colors, fonts, glassCard } from '../brand'
 import { showToast } from '../components/Toast'
 import OrbLayer from '../components/OrbLayer'
-import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, BookOpen, Clock, Link2 } from 'lucide-react'
+import { MessageCircle, ArrowLeft, Play, Heart, MapPin, Shield, Share2, Ban, Flag, Clock, Link2, Star, Lock } from 'lucide-react'
 import { stripHtml } from '../lib/sanitize'
 import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
-import DmPrivacyBadge from '../components/DmPrivacyBadge'
+// DmPrivacyBadge removed from render
 import InterestPopup from '../components/InterestPopup'
 import NaughtyBookButton from '../components/NaughtyBookButton'
 import ReportSheet from '../components/ReportSheet'
-import HostBadge from '../components/HostBadge'
+// HostBadge removed from hero
 import ShareToContact from '../components/ShareToContact'
 import LinkedProfiles from '../components/LinkedProfiles'
 import PlatformProfiles from '../components/profile/LinkedProfiles'
@@ -91,7 +91,10 @@ export default function PublicProfile() {
   const [showInterestPopup, setShowInterestPopup] = useState(false)
   const [interestSent, setInterestSent] = useState(false)
   const [isMutualNb, setIsMutualNb] = useState(false)
-  const { confirm, dialogProps } = useConfirmDialog()
+  const [canAddToNaughtyBook, setCanAddToNaughtyBook] = useState(false)
+  const [showSecretInfos, setShowSecretInfos] = useState(false)
+  const [accessRequested, setAccessRequested] = useState(false)
+
 
   useEffect(() => {
     if (!userId) { setLoading(false); return }
@@ -113,6 +116,15 @@ export default function PublicProfile() {
         supabase.from('contacts').select('id, mutual').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(({ data }) => { setIsInNaughtyBook(!!data); if (data?.mutual) setIsMutualNb(true) })
         // Check existing interest request
         supabase.from('interest_requests').select('id').eq('sender_id', user.id).eq('receiver_id', userId).maybeSingle().then(({ data }) => { if (data) setInterestSent(true) })
+        // Check if both users have checked_in on a common session
+        supabase.from('applications').select('session_id').eq('applicant_id', user.id).eq('status', 'checked_in').then(async ({ data: myCheckins }) => {
+          if (!myCheckins || myCheckins.length === 0) return
+          const mySessionIds = myCheckins.map(c => c.session_id)
+          const { data: theirCheckins } = await supabase.from('applications').select('session_id').eq('applicant_id', userId).eq('status', 'checked_in').in('session_id', mySessionIds)
+          if (theirCheckins && theirCheckins.length > 0) setCanAddToNaughtyBook(true)
+        })
+        // Check if access_request already sent
+        supabase.from('notifications').select('id').eq('user_id', userId).eq('type', 'access_request').eq('href', '/profile/' + user.id).maybeSingle().then(({ data }) => { if (data) setAccessRequested(true) })
         // Check DM privacy for this peer
         const peerPj = (prof?.profile_json || {}) as Record<string, unknown>
         const privacy = (peerPj.dm_privacy as DmPrivacyLevel) || 'open'
@@ -220,14 +232,28 @@ export default function PublicProfile() {
           ]} />
         </div>
         <div style={{ position: 'absolute', bottom: 16, left: 20, right: 20, zIndex: 3 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
-            <VibeScoreBadge userId={userId!} />
-            <HostBadge userId={userId!} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>{displayName}</h1>
+              <VibeScoreBadge userId={userId!} size="md" />
+              {p.age && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>{p.age}</span>}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <MessageCircle size={22} strokeWidth={1.5} style={{ color: (dmStatus === 'direct' || isMutualNb) ? S.p : S.tx3, cursor: 'pointer' }} onClick={() => { if (dmStatus === 'direct' || isMutualNb) navigate('/dm/' + userId); else setShowDmRequest(true) }} />
+              <Star size={22} strokeWidth={1.5} style={{ color: isFavorite ? S.p : S.tx3, fill: isFavorite ? S.p : 'none', cursor: 'pointer' }} onClick={async () => {
+                if (!myUserId) return
+                if (isFavorite) {
+                  await supabase.from('favorites').delete().eq('user_id', myUserId).eq('target_user_id', userId)
+                  setIsFavorite(false)
+                } else {
+                  await supabase.from('favorites').upsert({ user_id: myUserId, target_user_id: userId }, { onConflict: 'user_id,target_user_id' })
+                  setIsFavorite(true)
+                }
+              }} />
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
-            {p.age && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>{p.age} {t('profile.age_years')}</span>}
-            {p.location && <><span style={{ color: 'rgba(255,255,255,0.4)' }}>·</span><span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', display: 'inline-flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} />{p.location}</span></>}
+            {p.location && <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', display: 'inline-flex', alignItems: 'center', gap: 3 }}><MapPin size={11} strokeWidth={1.5} />{p.location}</span>}
             {isOnline && <span style={{ width: 8, height: 8, borderRadius: '50%', background: S.sage, display: 'inline-block', marginLeft: 4, boxShadow: '0 0 8px ' + S.sage }} />}
           </div>
         </div>
@@ -253,6 +279,16 @@ export default function PublicProfile() {
         {onlineLabel && !isOnline && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, color: S.tx3, background: S.bg2 }}>{onlineLabel}</span>}
         {(p.health?.prep_status || p.prep) === 'Actif' && <span style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700, color: S.sage, background: S.sagebg, border: '1px solid ' + S.sagebd }}><Shield size={10} strokeWidth={2} style={{display:'inline',marginRight:2}} />PrEP</span>}
       </div>
+      {(() => {
+        const parts: string[] = []
+        if (p.height) parts.push(p.height + 'cm')
+        if (p.weight) parts.push(p.weight + 'kg')
+        if (p.morphology) parts.push(p.morphology)
+        if (Array.isArray(p.ethnicities) && p.ethnicities.length > 0) {
+          parts.push(p.ethnicities.length >= 2 ? t('ethnicities.mixed_label') : t('ethnicities.' + p.ethnicities[0]))
+        }
+        return parts.length > 0 ? <div style={{ fontSize: 12, color: S.tx2, margin: '6px 20px 0' }}>{parts.join(' \u00B7 ')}</div> : null
+      })()}
       {Array.isArray(p.linked_profiles) && p.linked_profiles.length > 0 && (
         <div style={{ padding: '4px 20px 0' }}>
           <LinkedProfiles userId={userId!} linkedProfiles={p.linked_profiles} onChange={() => {}} readOnly />
@@ -277,17 +313,6 @@ export default function PublicProfile() {
 
       {/* ═══ ACTIONS ═══ */}
       <div style={{ padding: '16px 20px 0' }}>
-        {/* Badges row: DM privacy + NaughtyBook */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
-          <DmPrivacyBadge level={peerPrivacy} />
-          {isMutualNb && (
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 99, background: S.sagebg, border: '1px solid ' + S.sagebd }}>
-              <BookOpen size={11} strokeWidth={1.5} style={{ color: S.sage }} />
-              <span style={{ fontSize: 11, fontWeight: 700, color: S.sage }}>{t('naughtybook.mutual_badge')}</span>
-            </div>
-          )}
-        </div>
-
         {/* Interest button */}
         {!isMutualNb && (
           interestSent ? (
@@ -329,7 +354,7 @@ export default function PublicProfile() {
 
         {/* NaughtyBook + Favorite + Contact row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
-          <NaughtyBookButton targetUserId={userId!} isMutual={isMutualNb} onStatusChange={s => { if (s === 'mutual') setIsMutualNb(true); else setIsMutualNb(false) }} />
+          {canAddToNaughtyBook && <NaughtyBookButton targetUserId={userId!} isMutual={isMutualNb} onStatusChange={s => { if (s === 'mutual') setIsMutualNb(true); else setIsMutualNb(false) }} />}
           <div style={{ flex: 1 }}><AddContactButton targetUserId={userId!} /></div>
           {myUserId && myUserId !== userId && (
             <button onClick={async () => {
@@ -348,62 +373,11 @@ export default function PublicProfile() {
           )}
         </div>
 
-        <button onClick={() => setShowShareSheet(true)} style={{ marginTop: 8, width: '100%', padding: 10, borderRadius: 12, border: '1px solid ' + (S.lavbd || 'rgba(184,178,204,0.25)'), background: 'transparent', color: S.lav, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Share2 size={13} strokeWidth={1.5} /> {t('share.recommend_profile')}
-        </button>
       </div>
 
       {/* ═══ CARDS ═══ */}
       <div style={{ padding: '16px 20px 0' }}>
-        <div style={{ marginBottom: 12 }}><VibeScoreCard userId={userId!} /></div>
-
         {p.bio && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>{t('profile.section_bio')}</div><p style={{ fontSize: 14, color: S.tx, lineHeight: 1.7, margin: 0 }}>{stripHtml(p.bio)}</p></div>}
-
-        {(p.height || p.weight) && (
-          <div style={{ ...glassCard, marginBottom: 12 }}>
-            <div style={sLabel(S.lav)}>{t('profile.section_physique')}</div>
-            <div style={{ display: 'grid', gridTemplateColumns: p.height && p.weight ? '1fr 1fr' : '1fr', gap: 10 }}>
-              {p.height && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: fonts.hero }}>{p.height}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>cm</div></div>}
-              {p.weight && <div style={{ background: S.bg2, borderRadius: 14, padding: '14px 12px', textAlign: 'center', border: '1px solid ' + S.rule }}><div style={{ fontSize: 26, fontWeight: 800, color: S.tx, fontFamily: fonts.hero }}>{p.weight}</div><div style={{ fontSize: 11, color: S.tx3, fontWeight: 600, marginTop: 2 }}>kg</div></div>}
-            </div>
-          </div>
-        )}
-
-        {/* Zones intimes */}
-        {canSee('adult_zones') && p.body_part_photos && Object.keys(p.body_part_photos).length > 0 && (() => {
-          const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
-          const zones = Object.entries(p.body_part_photos as Record<string, string | string[]>).filter(([, val]) => {
-            const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
-            return urls.length > 0
-          })
-          return zones.length > 0 ? (
-            <div style={{ ...glassCard, marginBottom: 12 }}>
-              <div style={sLabel(S.p)}>{t('profile.section_zones')}</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                {zones.map(([part, val]) => {
-                  const urls = Array.isArray(val) ? val : [val as string]
-                  return (
-                    <div key={part} style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid ' + S.rule2 }}>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.04em', padding: '6px 8px 4px', margin: 0 }}>{labelMap[part] || part}</p>
-                      <div style={{ display: 'grid', gridTemplateColumns: urls.length > 1 ? '1fr 1fr' : '1fr', gap: 2, padding: '0 2px 2px' }}>
-                        {urls.map((url, i) => {
-                          const isVid = typeof url === 'string' && url.match(/\.(mp4|mov|webm|avi)/i)
-                          return isVid ? (
-                            <video key={i} src={url} controls style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
-                          ) : (
-                            <img key={i} src={url as string} alt="" loading="lazy" onClick={() => setLightbox({ images: urls.map(String), index: i })} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'zoom-in' }} />
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          ) : null
-        })()}
-
-        {canSee('kinks') && kinks.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.p)}>{t('profile.pratiques_count', { count: kinks.length })}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}</div></div>}
 
         {canSee('health') && (p.health?.prep_status || p.health?.dernier_test || p.prep) && (
           <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.sage)}>{t('profile.section_sante')}</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -416,20 +390,79 @@ export default function PublicProfile() {
 
         {allVideos.length > 0 && <div style={{ ...glassCard, marginBottom: 12 }}><div style={sLabel(S.lav)}>{t('profile.videos_label')} · {allVideos.length}</div><div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>{allVideos.map((url: string, i: number) => <div key={i} style={{ flexShrink: 0 }}><video src={url} controls style={{ width: 140, height: 180, borderRadius: 14, objectFit: 'cover', border: '1px solid ' + S.rule }} /></div>)}</div></div>}
 
-        {/* Block / Report */}
-        <div style={{ display: 'flex', gap: 8, marginTop: 16, paddingBottom: 20 }}>
-          <button onClick={async () => {
-            if (!authUser || !await confirm({ title: t('profile.block_confirm'), danger: true })) return
-            await supabase.from('contacts').upsert({ owner_id: authUser.id, contact_user_id: userId, relation_level: 'blocked' }, { onConflict: 'owner_id,contact_user_id' })
-            showToast(t('profile.blocked_toast'), 'success')
-            navigate(-1)
-          }} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.redbd, background: 'transparent', color: S.red, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-            <Ban size={13} strokeWidth={1.5} /> {t('profile.block_user')}
-          </button>
-          <button onClick={() => setShowReport(true)} style={{ flex: 1, padding: 10, borderRadius: 12, border: '1px solid ' + S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-            <Flag size={13} strokeWidth={1.5} /> {t('profile.report_user')}
-          </button>
-        </div>
+        {/* Secret Infos */}
+        {(() => {
+          const hasSecretContent = kinks.length > 0 || (p.photos_intime && p.photos_intime.length > 0) || (p.body_part_photos && Object.keys(p.body_part_photos).length > 0)
+          const hasAccess = canSee('kinks') && canSee('adult_zones')
+          if (!hasSecretContent) return null
+          return (
+            <div style={{ ...glassCard, marginBottom: 12 }}>
+              <button onClick={() => { if (hasAccess) setShowSecretInfos(!showSecretInfos) }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: hasAccess ? 'pointer' : 'default', padding: 0 }}>
+                <Lock size={16} strokeWidth={1.5} style={{ color: S.p }} />
+                <span style={{ fontSize: 13, fontWeight: 700, color: S.tx }}>{t('profile.secret_infos_title')}</span>
+              </button>
+              {!hasAccess && !accessRequested && (
+                <div style={{ marginTop: 10 }}>
+                  <p style={{ fontSize: 12, color: S.tx3, margin: '0 0 8px' }}>{t('profile.secret_infos_hint')}</p>
+                  <button onClick={async () => {
+                    if (!myUserId) return
+                    await supabase.from('notifications').insert({ user_id: userId, type: 'access_request', title: t('profile.secret_infos_title'), href: '/profile/' + myUserId })
+                    setAccessRequested(true)
+                  }} style={{ padding: '8px 16px', borderRadius: 10, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                    {t('profile.request_access')}
+                  </button>
+                </div>
+              )}
+              {!hasAccess && accessRequested && (
+                <p style={{ fontSize: 12, color: S.tx3, marginTop: 8 }}>{t('profile.access_request_sent')}</p>
+              )}
+              {hasAccess && showSecretInfos && (
+                <div style={{ marginTop: 10 }}>
+                  {kinks.length > 0 && (
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={sLabel(S.p)}>{t('profile.pratiques_count', { count: kinks.length })}</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {kinks.map((k: string) => { const c = kinkMap[k] || defK; return <span key={k} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 600, color: c.color, background: c.bg, border: '1px solid ' + c.border }}>{k}</span> })}
+                      </div>
+                    </div>
+                  )}
+                  {p.body_part_photos && Object.keys(p.body_part_photos).length > 0 && (() => {
+                    const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
+                    const zones = Object.entries(p.body_part_photos as Record<string, string | string[]>).filter(([, val]) => {
+                      const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
+                      return urls.length > 0
+                    })
+                    return zones.length > 0 ? (
+                      <div>
+                        <div style={sLabel(S.p)}>{t('profile.section_zones')}</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                          {zones.map(([part, val]) => {
+                            const urls = Array.isArray(val) ? val : [val as string]
+                            return (
+                              <div key={part} style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid ' + S.rule2 }}>
+                                <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.04em', padding: '6px 8px 4px', margin: 0 }}>{labelMap[part] || part}</p>
+                                <div style={{ display: 'grid', gridTemplateColumns: urls.length > 1 ? '1fr 1fr' : '1fr', gap: 2, padding: '0 2px 2px' }}>
+                                  {urls.map((url, i) => {
+                                    const isVid = typeof url === 'string' && url.match(/\.(mp4|mov|webm|avi)/i)
+                                    return isVid ? (
+                                      <video key={i} src={url} controls style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
+                                    ) : (
+                                      <img key={i} src={url as string} alt="" loading="lazy" onClick={() => setLightbox({ images: urls.map(String), index: i })} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'zoom-in' }} />
+                                    )
+                                  })}
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    ) : null
+                  })()}
+                </div>
+              )}
+            </div>
+          )
+        })()}
       </div>
 
       {showStory && profile && <ProfileStory profile={{ display_name: displayName, profile_json: p }} onClose={() => setShowStory(false)} />}
@@ -441,7 +474,7 @@ export default function PublicProfile() {
         shareTitle={displayName}
       />
       {lightbox && <ImageLightbox images={lightbox.images} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
-      <ConfirmDialog {...dialogProps} />
+
       <ReportSheet open={showReport} onClose={() => setShowReport(false)} targetUserId={userId!} targetName={displayName} context="profile" />
       <InterestPopup
         open={showInterestPopup}
