@@ -1117,7 +1117,10 @@
     "step_n": "Étape {{n}}",
     "add_step": "+ Ajouter une étape",
     "count": "{{count}} adresse sauvegardée",
-    "count_plural": "{{count}} adresses sauvegardées"
+    "count_plural": "{{count}} adresses sauvegardées",
+    "default_label": "Adresse {{n}}",
+    "name_label": "NOM",
+    "approx_zone": "ZONE APPROXIMATIVE"
   },
   "apply": {
     "sending": "Envoi...",
@@ -1199,7 +1202,8 @@
     "preferred_roles": "Rôles recherchés",
     "age_range": "Tranche d'âge",
     "preferred_kinks": "Pratiques recherchées",
-    "preferred_morphologies": "Morphologies recherchées"
+    "preferred_morphologies": "Morphologies recherchées",
+    "avatar_label": "Photo"
   },
   "host_actions": {
     "sending": "Envoi...",
@@ -1861,7 +1865,10 @@
     "filter_active": "Actif",
     "filter_done": "Terminé",
     "status_backlog": "Backlog",
-    "status_todo": "À faire"
+    "status_todo": "À faire",
+    "tab_users": "Comptes",
+    "tab_config": "Options",
+    "login_required": "Connecte-toi avec un compte admin pour acceder au dashboard."
   },
   "host_badge": {
     "label": "Host · {{count}} sessions"

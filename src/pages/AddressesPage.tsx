@@ -63,7 +63,7 @@ export default function AddressesPage() {
     // Migration: convert old format to new
     const migrated = addrs.map((a: any, i: number) => ({
       id: a.id || `addr_${i}`,
-      label: a.label || a.approx_area || `Adresse ${i + 1}`,
+      label: a.label || a.approx_area || t('addresses.default_label', { n: i + 1 }),
       approx_area: a.approx_area || '',
       exact_address: a.exact_address || '',
       directions: Array.isArray(a.directions) ? a.directions.map((d: any) => typeof d === 'string' ? { text: d } : d) : [],
@@ -240,11 +240,11 @@ export default function AddressesPage() {
             </div>
             <div style={{ display:'flex',flexDirection:'column',gap:12 }}>
               <div>
-                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>NOM</label>
+                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>{t('addresses.name_label')}</label>
                 <input value={label} onChange={e => setLabel(e.target.value)} placeholder={t('placeholders.address_label')} maxLength={40} style={inp} />
               </div>
               <div>
-                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>ZONE APPROXIMATIVE</label>
+                <label style={{ fontSize:11,fontWeight:700,color:S.tx3,marginBottom:4,display:'block' }}>{t('addresses.approx_zone')}</label>
                 <input value={approxArea} onChange={e => setApproxArea(e.target.value)} placeholder={t('placeholders.address_area')} maxLength={60} style={inp} />
               </div>
               <div>

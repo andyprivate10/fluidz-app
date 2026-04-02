@@ -22,20 +22,21 @@ import AdminDevTab from '../components/admin/AdminDevTab'
 const S = colors
 const R = radius
 
-const TABS = [
-  { id: 'auth', label: 'Auth', icon: Zap, color: S.p },
-  { id: 'users', label: 'Comptes', icon: Users, color: S.lav },
-  { id: 'sessions', label: 'Sessions', icon: Calendar, color: S.sage },
-  { id: 'templates', label: 'Templates', icon: LayoutTemplate, color: S.amber },
-  { id: 'config', label: 'Options', icon: Settings, color: S.blue },
-  { id: 'media', label: 'Media', icon: FolderOpen, color: S.violet },
-  { id: 'profiles', label: 'Profiles', icon: Users, color: S.p },
-  { id: 'seed', label: 'Seed', icon: Database, color: S.red },
-  { id: 'stats', label: 'Stats', icon: BarChart3, color: S.emerald },
-  { id: 'dev', label: 'Dev', icon: Code, color: S.lav },
-] as const
+const TAB_IDS = ['auth', 'users', 'sessions', 'templates', 'config', 'media', 'profiles', 'seed', 'stats', 'dev'] as const
+type TabId = typeof TAB_IDS[number]
 
-type TabId = typeof TABS[number]['id']
+const getTabs = (t: (key: string) => string) => [
+  { id: 'auth' as const, label: 'Auth', icon: Zap, color: S.p },
+  { id: 'users' as const, label: t('admin.tab_users'), icon: Users, color: S.lav },
+  { id: 'sessions' as const, label: 'Sessions', icon: Calendar, color: S.sage },
+  { id: 'templates' as const, label: 'Templates', icon: LayoutTemplate, color: S.amber },
+  { id: 'config' as const, label: t('admin.tab_config'), icon: Settings, color: S.blue },
+  { id: 'media' as const, label: 'Media', icon: FolderOpen, color: S.violet },
+  { id: 'profiles' as const, label: 'Profiles', icon: Users, color: S.p },
+  { id: 'seed' as const, label: 'Seed', icon: Database, color: S.red },
+  { id: 'stats' as const, label: 'Stats', icon: BarChart3, color: S.emerald },
+  { id: 'dev' as const, label: 'Dev', icon: Code, color: S.lav },
+]
 
 // Shared styles for admin sub-components
 export const adminStyles = {
@@ -50,6 +51,7 @@ export const adminStyles = {
 export default function AdminPage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const TABS = getTabs(t)
   const { user } = useAuth()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [activeTab, setActiveTab] = useState<TabId>('auth')
@@ -77,7 +79,7 @@ export default function AdminPage() {
       <div style={{ minHeight: '100vh', background: S.bg, position: 'relative', maxWidth: 480, margin: '0 auto', padding: '24px 20px' }}>
         <OrbLayer />
         <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: fonts.hero, color: S.tx, margin: '0 0 8px' }}>Admin Dashboard</h1>
-        <p style={{ color: S.tx3, fontSize: 13, marginBottom: 20 }}>Connecte-toi avec un compte admin pour accéder au dashboard.</p>
+        <p style={{ color: S.tx3, fontSize: 13, marginBottom: 20 }}>{t('admin.login_required')}</p>
         <AdminAuthTab user={user ?? null} setUser={() => {}} />
       </div>
     )

@@ -199,7 +199,7 @@ export default function MePage() {
                   )}
                   <button onClick={() => removePhotoProfil(url)} style={{ position:'absolute', top:-16, left:-16, width:44, height:44, borderRadius:99, background:'transparent', border:'none', color: S.tx, fontSize:12, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1 }}><span style={{ width:20, height:20, borderRadius:99, background:S.red, border:'2px solid ' + S.bg1, display:'flex', alignItems:'center', justifyContent:'center' }}>×</span></button>
                   {avatarUrl !== url && (
-                    <button onClick={() => setAsAvatar(url)} style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color: S.tx, fontSize:9, fontWeight:600, cursor:'pointer', border:'none' }}>avatar</button>
+                    <button onClick={() => setAsAvatar(url)} style={{ position:'absolute', bottom:4, right:4, padding:'2px 6px', borderRadius:6, background:'rgba(0,0,0,0.7)', color: S.tx, fontSize:9, fontWeight:600, cursor:'pointer', border:'none' }}>{t('me.avatar_label')}</button>
                   )}
                 </div>
               ))}
