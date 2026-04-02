@@ -362,9 +362,9 @@ export default function OnboardingPage() {
           <div>
             <label style={{ fontSize: 12, fontWeight: 700, color: S.tx3, marginBottom: 8, display: 'block' }}>{t('onboarding.prep_label')}</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['Actif', 'Non', 'Discute'].map(v => (
-                <button key={v} onClick={() => setPrepStatus(prepStatus === v ? '' : v)}
-                  style={prepStatus === v ? pillActive : pillInactive}>{v}</button>
+              {[{ value: 'Actif', label: t('onboarding.prep_active') }, { value: 'Non', label: t('onboarding.prep_no') }, { value: 'Discute', label: t('onboarding.prep_discuss') }].map(opt => (
+                <button key={opt.value} onClick={() => setPrepStatus(prepStatus === opt.value ? '' : opt.value)}
+                  style={prepStatus === opt.value ? pillActive : pillInactive}>{opt.label}</button>
               ))}
             </div>
           </div>
