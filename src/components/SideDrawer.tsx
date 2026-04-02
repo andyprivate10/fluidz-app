@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { colors, fonts } from '../brand'
 import GhostTimer from './GhostTimer'
 import GhostConvertModal from './GhostConvertModal'
-import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings, Zap, Home, Calendar, Search, MessageCircle } from 'lucide-react'
+import { User, BookOpen, Bell, Shield, LogOut, MapPin, Globe, Eye, ChevronRight, X, Heart, FileText, MessageSquare, Settings, Zap, Home, Calendar, Search, MessageCircle, Clock } from 'lucide-react'
 import { stripHtml } from '../lib/sanitize'
 
 const S = colors
@@ -150,6 +150,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           {/* Section: Mon espace */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>{t('drawer.my_space')}</p>
           {menuItem(<User size={18} strokeWidth={1.5} />, t('drawer.my_profile'), '/me')}
+          {menuItem(<Clock size={18} strokeWidth={1.5} />, t('drawer.activity'), '/activity')}
           {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.contacts_section'), '/contacts')}
           {menuItem(<Heart size={18} strokeWidth={1.5} />, t('favorites.title'), '/favorites')}
           {menuItem(<Zap size={18} strokeWidth={1.5} />, t('vibe.menu_label'), '/vibe-score')}

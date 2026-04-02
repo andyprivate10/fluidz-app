@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { Users, Search, Star } from 'lucide-react'
+import { Users, Search, Star, Trash2 } from 'lucide-react'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
 import { colors, fonts } from '../brand'
@@ -16,6 +16,14 @@ import { stripHtml } from '../lib/sanitize'
 
 
 const S = colors
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+}
 
 type Contact = {
   id: string
@@ -33,6 +41,8 @@ type Contact = {
   kinks?: string[]
   last_seen?: string
   shared_sessions?: number
+  approx_lat?: number
+  approx_lng?: number
 }
 
 export default function ContactsPage() {
@@ -50,15 +60,22 @@ export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori'>('all')
+  const [filter, setFilter] = useState<'all' | 'mutual' | 'connaissance' | 'close' | 'favori' | 'online' | 'nearby'>('all')
   const [linkedProfiles, setLinkedProfiles] = useState<{ user_id: string; type: string }[]>([])
   const [pendingNbRequests, setPendingNbRequests] = useState<{ id: string; sender_id: string; display_name: string; avatar_url?: string; role?: string; created_at: string }[]>([])
   const [roleFilter, setRoleFilter] = useState<string>('')
+  const [myLat, setMyLat] = useState<number | null>(null)
+  const [myLng, setMyLng] = useState<number | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
 
   useEffect(() => {
     if (user) {
       loadContacts()
+      supabase.from('user_profiles').select('approx_lat, approx_lng').eq('id', user.id).maybeSingle().then(({ data }) => {
+        if (data?.approx_lat) setMyLat(data.approx_lat)
+        if (data?.approx_lng) setMyLng(data.approx_lng)
+      })
       supabase.from('user_profiles').select('profile_json').eq('id', user.id).maybeSingle().then(({ data }) => {
         const pj = (data?.profile_json || {}) as Record<string, unknown>
         if (Array.isArray(pj.linked_profiles)) setLinkedProfiles(pj.linked_profiles as { user_id: string; type: string }[])
@@ -93,10 +110,10 @@ export default function ContactsPage() {
     const ids = raw.map(c => c.contact_user_id)
     const { data: profiles } = await supabase
       .from('user_profiles')
-      .select('id, display_name, profile_json')
+      .select('id, display_name, profile_json, approx_lat, approx_lng')
       .in('id', ids)
 
-    const profileMap = new Map<string, { display_name: string; avatar_url?: string; role?: string; tribes?: string[]; kinks?: string[]; last_seen?: string }>()
+    const profileMap = new Map<string, { display_name: string; avatar_url?: string; role?: string; tribes?: string[]; kinks?: string[]; last_seen?: string; approx_lat?: number; approx_lng?: number }>()
     ;(profiles || []).forEach((p: any) => {
       const pj = p.profile_json || {}
       profileMap.set(p.id, {
@@ -106,6 +123,8 @@ export default function ContactsPage() {
         tribes: Array.isArray(pj.tribes) ? pj.tribes : [],
         kinks: Array.isArray(pj.kinks) ? pj.kinks : [],
         last_seen: pj.last_seen,
+        approx_lat: p.approx_lat,
+        approx_lng: p.approx_lng,
       })
     })
 
@@ -119,6 +138,8 @@ export default function ContactsPage() {
         tribes: prof?.tribes,
         kinks: prof?.kinks,
         last_seen: prof?.last_seen,
+        approx_lat: prof?.approx_lat,
+        approx_lng: prof?.approx_lng,
       }
     })
 
@@ -150,7 +171,13 @@ export default function ContactsPage() {
 
 
   const filtered = contacts
-    .filter(c => filter === 'all' ? true : filter === 'mutual' ? c.mutual : c.relation_level === filter)
+    .filter(c => {
+      if (filter === 'all') return true
+      if (filter === 'mutual') return c.mutual
+      if (filter === 'online') return c.last_seen ? (Date.now() - new Date(c.last_seen).getTime()) < 900000 : false
+      if (filter === 'nearby') return !!(myLat && myLng && c.approx_lat && c.approx_lng && haversineKm(myLat, myLng, c.approx_lat, c.approx_lng) < 5)
+      return c.relation_level === filter
+    })
     .filter(c => !search || (c.display_name || '').toLowerCase().includes(search.toLowerCase()))
     .filter(c => !roleFilter || c.role === roleFilter)
 
@@ -198,12 +225,18 @@ export default function ContactsPage() {
 
         {/* Filter tabs */}
         <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
-          {(['all', 'mutual', 'favori', 'close', 'connaissance'] as const).map(f => {
+          {(['all', 'online', 'nearby', 'mutual', 'favori', 'close', 'connaissance'] as const).map(f => {
+            const onlineCount = contacts.filter(c => c.last_seen && (Date.now() - new Date(c.last_seen).getTime()) < 900000).length
+            const nearbyCount = contacts.filter(c => myLat && myLng && c.approx_lat && c.approx_lng && haversineKm(myLat!, myLng!, c.approx_lat, c.approx_lng) < 5).length
             const active = filter === f
             const label = f === 'all'
               ? `${t('common.all')} (${counts.all})`
               : f === 'mutual'
               ? `${t('contacts_section.mutual')} (${counts.mutual})`
+              : f === 'online'
+              ? t('contacts.filter_online') + (onlineCount > 0 ? ' (' + onlineCount + ')' : '')
+              : f === 'nearby'
+              ? t('contacts.filter_nearby') + (nearbyCount > 0 ? ' (' + nearbyCount + ')' : '')
               : `${RELATION_STYLES[f].label} (${counts[f]})`
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
@@ -324,6 +357,21 @@ export default function ContactsPage() {
                 updateRelation(contact.id, next)
               }} style={{ padding: '4px 8px', borderRadius: 8, border: 'none', cursor: 'pointer', background: 'transparent', display: 'flex', gap: 2, flexShrink: 0 }}>
                 {[1,2,3].map(n => <Star key={n} size={14} strokeWidth={1.5} fill={n <= rel.stars ? rel.color : 'none'} style={{ color: n <= rel.stars ? rel.color : S.tx4 }} />)}
+              </button>
+              <button onClick={(e) => {
+                e.stopPropagation()
+                if (deleteConfirm === contact.id) {
+                  supabase.from('contacts').delete().eq('id', contact.id).then(() => {
+                    setContacts(prev => prev.filter(c => c.id !== contact.id))
+                    showToast(t('contacts.removed_toast'), 'info')
+                  })
+                  setDeleteConfirm(null)
+                } else {
+                  setDeleteConfirm(contact.id)
+                  setTimeout(() => setDeleteConfirm(null), 3000)
+                }
+              }} style={{ padding: '6px 8px', borderRadius: 8, border: 'none', cursor: 'pointer', background: deleteConfirm === contact.id ? S.redbg : 'transparent', flexShrink: 0 }}>
+                <Trash2 size={14} strokeWidth={1.5} style={{ color: deleteConfirm === contact.id ? S.red : S.tx4 }} />
               </button>
             </div>
           )

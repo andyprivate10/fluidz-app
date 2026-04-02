@@ -974,7 +974,9 @@
     "suggest_title": "Ajouter au Contacts ?",
     "suggest_body": "Vous avez échangé — ajoute au Contacts pour un accès complet",
     "invite_session": "Inviter en session",
-    "send_message": "Envoyer un message"
+    "send_message": "Envoyer un message",
+    "filter_online": "En ligne",
+    "filter_nearby": "A cote"
   },
   "settings": {
     "push_active": "Push actives",
@@ -1069,7 +1071,8 @@
     "language": "Langue",
     "admin": "Admin",
     "admin_dashboard": "Dashboard admin",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "activity": "Activite"
   },
   "sessions": {
     "empty_hosted": "Aucune session. Crée ta première.",
@@ -1875,5 +1878,20 @@
     "manual_label": "Code QR",
     "confirm": "Confirmer le check-in",
     "error": "Erreur lors du check-in"
+  },
+  "activity": {
+    "title": "Activite",
+    "empty": "Pas encore d'activite",
+    "empty_desc": "Tes interactions et notifications apparaitront ici",
+    "mark_all_read": "Tout marquer comme lu",
+    "today": "Aujourd'hui",
+    "this_week": "Cette semaine",
+    "this_month": "Ce mois",
+    "older": "Plus ancien",
+    "profile_view": "A consulte ton profil",
+    "interest_received": "S'interesse a toi",
+    "tab_all": "Tout",
+    "tab_interactions": "Interactions",
+    "tab_notifications": "Notifications"
   }
 }

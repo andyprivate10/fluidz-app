@@ -974,7 +974,9 @@
     "suggest_title": "Add to Contacts?",
     "suggest_body": "You've been chatting — add to Contacts for full access",
     "invite_session": "Invite to session",
-    "send_message": "Send a message"
+    "send_message": "Send a message",
+    "filter_online": "Online",
+    "filter_nearby": "Nearby"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -1069,7 +1071,8 @@
     "language": "Language",
     "admin": "Admin",
     "admin_dashboard": "Admin dashboard",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "activity": "Activity"
   },
   "sessions": {
     "empty_hosted": "No sessions. Create your first one.",
@@ -1875,5 +1878,20 @@
     "manual_label": "QR code",
     "confirm": "Confirm check-in",
     "error": "Check-in error"
+  },
+  "activity": {
+    "title": "Activity",
+    "empty": "No activity yet",
+    "empty_desc": "Your interactions and notifications will appear here",
+    "mark_all_read": "Mark all as read",
+    "today": "Today",
+    "this_week": "This week",
+    "this_month": "This month",
+    "older": "Older",
+    "profile_view": "Viewed your profile",
+    "interest_received": "Interested in you",
+    "tab_all": "All",
+    "tab_interactions": "Interactions",
+    "tab_notifications": "Notifications"
   }
 }
