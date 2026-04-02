@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { Users } from 'lucide-react'
+import { Users, CheckCircle2, AlertTriangle, Check, X } from 'lucide-react'
 import { colors, fonts } from '../brand'
 import ConfirmDialog from '../components/ConfirmDialog'
 import OrbLayer from '../components/OrbLayer'
@@ -345,7 +345,7 @@ export default function SessionPage() {
                     )}
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: 14, fontWeight: 700, color: S.tx, margin: 0 }}>{name}</p>
-                      {isCheckedIn && <p style={{ fontSize: 11, color: S.sage, margin: '2px 0 0' }}>✓ {t('session.checked_in')}</p>}
+                      {isCheckedIn && <p style={{ fontSize: 11, color: S.sage, margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}><CheckCircle2 size={11} strokeWidth={2} style={{ color: S.sage }} /> {t('session.checked_in')}</p>}
                     </div>
                   </div>
                 )
@@ -377,10 +377,10 @@ export default function SessionPage() {
                           {app.display_name || t('common.anonymous')}
                         </p>
                         <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>
-                          {vs.yesCount > 0 || vs.noCount > 0 ? `${vs.yesCount} ✓ · ${vs.noCount} ✗` : t('host.no_votes_yet')}
+                          {vs.yesCount > 0 || vs.noCount > 0 ? <><span style={{display:'inline-flex',alignItems:'center',gap:2}}>{vs.yesCount} <Check size={10} strokeWidth={2} style={{color:S.sage}} /></span> · <span style={{display:'inline-flex',alignItems:'center',gap:2}}>{vs.noCount} <X size={10} strokeWidth={2} style={{color:S.red}} /></span></> : t('host.no_votes_yet')}
                         </p>
                         {vs.noCount > vs.yesCount && vs.noCount > 0 && (
-                          <p style={{ fontSize: 10, fontWeight: 700, color: S.amber, margin: '2px 0 0' }}>⚠ {t('session.vote_majority_warning')}</p>
+                          <p style={{ fontSize: 10, fontWeight: 700, color: S.amber, margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}><AlertTriangle size={10} strokeWidth={2} style={{ color: S.amber }} /> {t('session.vote_majority_warning')}</p>
                         )}
                       </div>
                     </div>

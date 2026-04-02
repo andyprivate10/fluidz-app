@@ -34,6 +34,7 @@ type NearbyProfile = {
   prep?: string
   created_at?: string
   tribes?: string[]
+  kinks?: string[]
 }
 
 // ROLE_FILTERS built dynamically from admin_config in component
@@ -73,6 +74,7 @@ export default function ExplorePage() {
   const [myFavoriteIds, setMyFavoriteIds] = useState<Set<string>>(new Set())
   const [savedFilters, setSavedFilters] = useState<{ role?: string } | null>(null)
   const [selectedTribes, setSelectedTribes] = useState<string[]>([])
+  const [selectedKinks, setSelectedKinks] = useState<string[]>([])
 
   useEffect(() => {
     if (!authUser) { navigate('/login?next=/explore'); return }
@@ -141,6 +143,7 @@ export default function ExplorePage() {
         languages: Array.isArray(pj.languages) ? pj.languages : undefined,
         prep: pj.health?.prep_status || pj.prep,
         tribes: Array.isArray(pj.tribes) ? pj.tribes : undefined,
+        kinks: Array.isArray(pj.kinks) ? pj.kinks : undefined,
         created_at: p.created_at,
       }
     })
@@ -251,6 +254,7 @@ export default function ExplorePage() {
         languages: Array.isArray(pj.languages) ? pj.languages : undefined,
         prep: pj.health?.prep_status || pj.prep,
         tribes: Array.isArray(pj.tribes) ? pj.tribes : undefined,
+        kinks: Array.isArray(pj.kinks) ? pj.kinks : undefined,
         created_at: p.created_at,
       }
     })
@@ -303,6 +307,7 @@ export default function ExplorePage() {
     if (blockedIds.has(p.id)) return false
     if (roleFilter !== t('common.all') && p.role !== roleFilter) return false
     if (selectedTribes.length > 0 && !selectedTribes.some(s => p.tribes?.includes(s))) return false
+    if (selectedKinks.length > 0 && !selectedKinks.some(k => p.kinks?.includes(k))) return false
     if (searchText && !p.display_name.toLowerCase().includes(searchText.toLowerCase())) return false
     return true
   })
@@ -365,6 +370,25 @@ export default function ExplorePage() {
                 }}>{t('tribes.' + slug, {defaultValue: slug})}</button>
               )
             })}
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: S.tx3, textTransform: 'uppercase' as const, letterSpacing: '0.06em', display: 'block', marginBottom: 6 }}>{t('explore.filter_kinks')}</span>
+            <div style={{ display: 'flex', gap: 6, overflowX: 'auto' }}>
+              {['Câlins','Rimming','Dominant','Soumis','Menottes','Cuir','Fist','SM léger','Groupe','Jeux de rôle','Massage','Exhib','Switch','Spanking'].map(k => {
+                const selected = selectedKinks.includes(k)
+                return (
+                  <button key={k} onClick={() => {
+                    if (selected) setSelectedKinks(prev => prev.filter(s => s !== k))
+                    else if (selectedKinks.length < 3) setSelectedKinks(prev => [...prev, k])
+                  }} style={{
+                    padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+                    border: '1px solid ' + (selected ? S.pbd : S.rule),
+                    background: selected ? S.p2 : 'transparent',
+                    color: selected ? S.p : S.tx3,
+                  }}>{k}</button>
+                )
+              })}
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
             <button onClick={saveCurrentFilters} style={{ padding: '5px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + S.lavbd, background: S.lavbg, color: S.lav, display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -526,6 +550,9 @@ export default function ExplorePage() {
                       const color = tr?.color || S.tx3
                       return <span key={slug} style={{fontSize:8, fontWeight:700, color, background:color+'18', padding:'1px 6px', borderRadius:99}}>{t('tribes.'+slug, {defaultValue:slug})}</span>
                     })}
+                    {p.kinks && p.kinks.length > 0 && (
+                      <span style={{ fontSize: 8, color: S.tx3 }}>{p.kinks.length} kinks</span>
+                    )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                     {p.lastSeen && (() => {

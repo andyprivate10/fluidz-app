@@ -5,7 +5,6 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import { Users, Search, Star } from 'lucide-react'
-import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
 import { colors, fonts } from '../brand'
@@ -307,7 +306,6 @@ export default function ContactsPage() {
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{stripHtml(contact.display_name)}</span>
                   <span style={{ display: 'inline-flex', gap: 1 }}>{[1,2,3].map(n => starIcon(n <= rel.stars, rel.color))}</span>
                   {contact.mutual && <span style={{ fontSize: 9, fontWeight: 700, color: S.sage, background: S.sagebg, padding: '1px 6px', borderRadius: 99, border: '1px solid ' + S.sagebd }}>{t('naughtybook.mutual')}</span>}
-                  <VibeScoreBadge userId={contact.contact_user_id} />
                 </div>
                 {contact.role && <p style={{ fontSize: 12, color: S.p, margin: '2px 0 0' }}>{contact.role}</p>}
                 {contact.last_seen && (() => {

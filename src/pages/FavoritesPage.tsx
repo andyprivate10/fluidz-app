@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import { Heart, ArrowLeft } from 'lucide-react'
+import { Star, ArrowLeft } from 'lucide-react'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { useTranslation } from 'react-i18next'
@@ -60,7 +60,7 @@ export default function FavoritesPage() {
 
         {!loading && favorites.length === 0 && (
           <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 40, color: S.tx3 }}>
-            <Heart size={32} style={{ color: S.tx4, marginBottom: 8 }} />
+            <Star size={32} strokeWidth={1.5} style={{ color: S.tx4, marginBottom: 8 }} />
             <p style={{ fontSize: 14, fontWeight: 600 }}>{t('favorites.empty')}</p>
             <p style={{ fontSize: 12 }}>{t('favorites.empty_desc')}</p>
           </div>
@@ -80,7 +80,7 @@ export default function FavoritesPage() {
               background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
               border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2,
             }}>
-              <Heart size={13} strokeWidth={1.5} fill={S.p} style={{ color: S.p }} />
+              <Star size={13} strokeWidth={1.5} fill={S.p} style={{ color: S.p }} />
             </button>
             <div style={{ padding: '8px 10px' }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: S.tx }}>{fav.name}</span>
