@@ -145,11 +145,11 @@ export default function SideDrawer({ open, onClose }: Props) {
           {menuItem(<Calendar size={18} strokeWidth={1.5} />, t('nav.sessions'), '/sessions')}
           {menuItem(<Search size={18} strokeWidth={1.5} />, t('nav.explore'), '/explore')}
           {menuItem(<MessageCircle size={18} strokeWidth={1.5} />, t('nav.chats'), '/chats')}
+          {menuItem(<Bell size={18} strokeWidth={1.5} />, t('drawer.notifications'), '/notifications', unreadCount)}
 
           {/* Section: Mon espace */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>{t('drawer.my_space')}</p>
           {menuItem(<User size={18} strokeWidth={1.5} />, t('drawer.my_profile'), '/me')}
-          {menuItem(<Bell size={18} strokeWidth={1.5} />, t('drawer.notifications'), '/notifications', unreadCount)}
           {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.naughty_book'), '/contacts')}
           {menuItem(<Heart size={18} strokeWidth={1.5} />, t('favorites.title'), '/favorites')}
           {menuItem(<Zap size={18} strokeWidth={1.5} />, t('vibe.menu_label'), '/vibe-score')}

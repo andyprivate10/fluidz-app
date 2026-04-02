@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
-import { colors, fonts } from '../brand'
+import { colors } from '../brand'
 import { Bell } from 'lucide-react'
 import SideDrawer from './SideDrawer'
 
@@ -138,7 +138,7 @@ export default function BottomNav() {
       }}>
         <div style={{
           display: 'flex', maxWidth: 480, margin: '0 auto',
-          height: 64,
+          height: 52,
         }}>
           {tabs.map(tab => {
             const isActive = tab.id === active
@@ -152,10 +152,10 @@ export default function BottomNav() {
                 aria-label={t(`nav.${tab.id}`)}
                 aria-current={isActive ? 'page' : undefined}
                 style={{
-                  flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  justifyContent: 'center', gap: 4,
+                  flex: 1, display: 'flex', alignItems: 'center',
+                  justifyContent: 'center',
                   background: 'none', border: 'none', cursor: 'pointer',
-                  position: 'relative', padding: '10px 0',
+                  position: 'relative', padding: '6px 0',
                 }}
               >
                 {isActive && (
@@ -181,16 +181,6 @@ export default function BottomNav() {
                     }} />
                   )}
                 </div>
-
-                <span style={{
-                  fontSize: 10, fontWeight: isActive ? 700 : 600,
-                  letterSpacing: '-0.01em',
-                  color: isActive ? S.p : S.tx3,
-                  transition: 'color 0.2s',
-                  fontFamily: fonts.body,
-                }}>
-                  {t(`nav.${tab.id}`)}
-                </span>
               </button>
             )
           })}
@@ -200,10 +190,10 @@ export default function BottomNav() {
             onClick={() => navigate('/notifications')}
             aria-label={t('drawer.notifications')}
             style={{
-              flex: 0.7, display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', gap: 4,
+              flex: 0.7, display: 'flex', alignItems: 'center',
+              justifyContent: 'center',
               background: 'none', border: 'none', cursor: 'pointer',
-              position: 'relative', padding: '10px 0',
+              position: 'relative', padding: '6px 0',
             }}
           >
             <div style={{ position: 'relative' }}>
@@ -230,10 +220,10 @@ export default function BottomNav() {
             aria-label="Menu"
             aria-expanded={drawerOpen}
             style={{
-              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', gap: 4,
+              flex: 1, display: 'flex', alignItems: 'center',
+              justifyContent: 'center',
               background: 'none', border: 'none', cursor: 'pointer',
-              position: 'relative', padding: '10px 0',
+              position: 'relative', padding: '6px 0',
             }}
           >
             <div style={{ position: 'relative' }}>
@@ -262,15 +252,6 @@ export default function BottomNav() {
                 }} />
               ) : null}
             </div>
-            <span style={{
-              fontSize: 10, fontWeight: 600,
-              letterSpacing: '-0.01em',
-              color: drawerOpen ? S.p : S.tx3,
-              transition: 'color 0.2s',
-              fontFamily: fonts.body,
-            }}>
-              {t('nav.menu')}
-            </span>
           </button>
         </div>
       </nav>

@@ -1,10 +1,10 @@
 import PageFadeIn from '../components/PageFadeIn'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Star, Save, Download, RefreshCw } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Save, Download, RefreshCw } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -35,6 +35,7 @@ type NearbyProfile = {
   tribes?: string[]
   kinks?: string[]
   photos_profil?: string[]
+  proxyScore?: number
 }
 
 // ROLE_FILTERS built dynamically from admin_config in component
@@ -51,39 +52,47 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 }
 
-function ExploreCard({ p, isFavorite, onFavToggle, onClick }: {
-  p: NearbyProfile, isFavorite: boolean,
-  onFavToggle: (e: React.MouseEvent) => void,
+function ExploreCard({ p, onClick, isTopProfile, isNew }: {
+  p: NearbyProfile,
   onClick: () => void,
+  isTopProfile?: boolean,
+  isNew?: boolean,
 }) {
   const photos = p.photos_profil && p.photos_profil.length > 0 ? p.photos_profil : p.avatar_url ? [p.avatar_url] : []
   const [photoIdx, setPhotoIdx] = useState(0)
+  const randomOffset = useMemo(() => Math.floor(Math.random() * 3500), [])
 
   useEffect(() => {
     if (photos.length <= 1) return
-    const iv = setInterval(() => setPhotoIdx(i => (i + 1) % photos.length), 3000)
+    const iv = setInterval(() => setPhotoIdx(i => (i + 1) % photos.length), 3000 + randomOffset)
     return () => clearInterval(iv)
-  }, [photos.length])
-
-  const currentPhoto = photos[photoIdx]
+  }, [photos.length, randomOffset])
 
   return (
     <div onClick={onClick} style={{
       background: 'rgba(22,20,31,0.85)', borderRadius: 12, overflow: 'hidden',
-      cursor: 'pointer', border: '1px solid rgba(255,255,255,0.09)', position: 'relative',
+      cursor: 'pointer', position: 'relative',
+      border: isTopProfile ? '1.5px solid rgba(224,136,122,0.5)' : '1px solid rgba(255,255,255,0.09)',
+      boxShadow: isTopProfile ? '0 0 12px rgba(224,136,122,0.12)' : 'none',
     }}>
+      {/* Top profile accent bar */}
+      {isTopProfile && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, #E0887A, transparent)', zIndex: 4, borderRadius: '12px 12px 0 0' }} />
+      )}
       <div style={{ position: 'relative', width: '100%', aspectRatio: '2/3', overflow: 'hidden' }}>
-        {currentPhoto ? (
-          <img key={currentPhoto} src={currentPhoto} alt="" loading="lazy"
+        {photos.length > 0 ? (
+          <img key={photoIdx} src={photos[photoIdx]} alt="" loading="lazy"
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', animation: 'photoFadeIn 0.6s ease-out' }}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', animation: 'smoothFadeIn 0.8s ease-in-out' }}
           />
         ) : (
           <div style={{ width: '100%', height: '100%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: S.tx }}>
             {stripHtml(p.display_name)[0]?.toUpperCase()}
           </div>
         )}
+        {/* Gradient overlay */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '55%', background: 'linear-gradient(to top, rgba(5,4,10,0.92) 0%, rgba(5,4,10,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Name + age + role */}
         <div style={{ position: 'absolute', bottom: 6, left: 7, right: 28, pointerEvents: 'none' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: '#EDE8F5', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
@@ -93,6 +102,7 @@ function ExploreCard({ p, isFavorite, onFavToggle, onClick }: {
           </div>
           {p.role && <span style={{ fontSize: 9, fontWeight: 600, color: S.p, lineHeight: 1 }}>{p.role}</span>}
         </div>
+        {/* Photo dots */}
         {photos.length > 1 && (
           <div style={{ position: 'absolute', top: 5, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 3 }}>
             {photos.map((_, i) => (
@@ -100,12 +110,22 @@ function ExploreCard({ p, isFavorite, onFavToggle, onClick }: {
             ))}
           </div>
         )}
+        {/* Online dot */}
         {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 900000 && (
-          <div style={{ position: 'absolute', top: 6, left: 6, width: 7, height: 7, borderRadius: '50%', background: S.sage, border: '1.5px solid rgba(0,0,0,0.5)' }} />
+          <div style={{ position: 'absolute', top: 6, left: 6, width: 7, height: 7, borderRadius: '50%', background: S.sage, border: '1.5px solid rgba(0,0,0,0.5)', zIndex: 3 }} />
         )}
-        <button onClick={onFavToggle} style={{ position: 'absolute', top: 5, right: 5, width: 24, height: 24, borderRadius: 99, background: 'rgba(0,0,0,0.45)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2 }}>
-          <Star size={11} strokeWidth={1.5} fill={isFavorite ? '#E0887A' : 'none'} style={{ color: isFavorite ? '#E0887A' : 'rgba(255,255,255,0.8)' }} />
-        </button>
+        {/* VibeScore circle */}
+        {p.proxyScore !== undefined && (
+          <div style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: '50%', background: 'rgba(5,4,10,0.7)', backdropFilter: 'blur(8px)', border: '1.5px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}>
+            <span style={{ fontSize: 9, fontWeight: 800, color: p.proxyScore >= 80 ? '#E0887A' : p.proxyScore >= 50 ? 'rgba(237,232,245,0.85)' : 'rgba(237,232,245,0.5)' }}>{p.proxyScore}</span>
+          </div>
+        )}
+        {/* New badge */}
+        {isNew && (
+          <div style={{ position: 'absolute', top: 6, left: 6, zIndex: 3, padding: '2px 6px', borderRadius: 99, background: 'rgba(107,168,136,0.85)', fontSize: 8, fontWeight: 800, color: '#fff', letterSpacing: '0.06em', textTransform: 'uppercase' as const }}>
+            New
+          </div>
+        )}
       </div>
     </div>
   )
@@ -130,7 +150,6 @@ export default function ExplorePage() {
   const [searchText, setSearchText] = useState('')
   const [myViewCount, setMyViewCount] = useState(0)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
-  const [myFavoriteIds, setMyFavoriteIds] = useState<Set<string>>(new Set())
   const [savedFilters, setSavedFilters] = useState<{ role?: string } | null>(null)
   const [selectedTribes, setSelectedTribes] = useState<string[]>([])
   const [selectedKinks, setSelectedKinks] = useState<string[]>([])
@@ -139,9 +158,6 @@ export default function ExplorePage() {
     if (!authUser) { navigate('/login?next=/explore'); return }
     const user = authUser
     setUserId(user.id)
-    supabase.from('favorites').select('target_user_id').eq('user_id', user.id).then(({ data }) => {
-      if (data) setMyFavoriteIds(new Set(data.map((f: any) => f.target_user_id)))
-    })
     // Load blocked user IDs
     supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).eq('relation_level', 'blocked').then(({ data }) => {
       if (data) setBlockedIds(new Set(data.map(d => d.contact_user_id)))
@@ -204,6 +220,17 @@ export default function ExplorePage() {
         kinks: Array.isArray(pj.kinks) ? pj.kinks : undefined,
         photos_profil: Array.isArray(pj.photos_profil) && pj.photos_profil.length > 0 ? pj.photos_profil : pj.avatar_url ? [pj.avatar_url] : [],
         created_at: p.created_at,
+        proxyScore: (() => {
+          let s = 0
+          if (pj.avatar_url || (Array.isArray(pj.photos_profil) && pj.photos_profil.length > 0)) s += 25
+          if (pj.role) s += 20
+          if (pj.age) s += 10
+          if (pj.bio) s += 15
+          if (Array.isArray(pj.tribes) && pj.tribes.length > 0) s += 10
+          if (Array.isArray(pj.kinks) && pj.kinks.length > 0) s += 10
+          if (pj.morphology) s += 10
+          return Math.min(s, 100)
+        })(),
       }
     })
     setProfiles(mapped)
@@ -316,6 +343,17 @@ export default function ExplorePage() {
         kinks: Array.isArray(pj.kinks) ? pj.kinks : undefined,
         photos_profil: Array.isArray(pj.photos_profil) && pj.photos_profil.length > 0 ? pj.photos_profil : pj.avatar_url ? [pj.avatar_url] : [],
         created_at: p.created_at,
+        proxyScore: (() => {
+          let s = 0
+          if (pj.avatar_url || (Array.isArray(pj.photos_profil) && pj.photos_profil.length > 0)) s += 25
+          if (pj.role) s += 20
+          if (pj.age) s += 10
+          if (pj.bio) s += 15
+          if (Array.isArray(pj.tribes) && pj.tribes.length > 0) s += 10
+          if (Array.isArray(pj.kinks) && pj.kinks.length > 0) s += 10
+          if (pj.morphology) s += 10
+          return Math.min(s, 100)
+        })(),
       }
     })
     mapped.sort((a, b) => {
@@ -553,29 +591,25 @@ export default function ExplorePage() {
         )}
 
         {/* Grid */}
-        {!loading && filtered.length > 0 && viewMode === 'grid' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
-            {filtered.map(p => (
-              <ExploreCard
-                key={p.id}
-                p={p}
-                isFavorite={myFavoriteIds.has(p.id)}
-                onFavToggle={async (e) => {
-                  e.stopPropagation()
-                  if (!userId) return
-                  if (myFavoriteIds.has(p.id)) {
-                    await supabase.from('favorites').delete().eq('user_id', userId).eq('target_user_id', p.id)
-                    setMyFavoriteIds(prev => { const next = new Set(prev); next.delete(p.id); return next })
-                  } else {
-                    await supabase.from('favorites').upsert({ user_id: userId, target_user_id: p.id }, { onConflict: 'user_id,target_user_id' })
-                    setMyFavoriteIds(prev => new Set([...prev, p.id]))
-                  }
-                }}
-                onClick={() => navigate('/profile/' + p.id)}
-              />
-            ))}
-          </div>
-        )}
+        {!loading && filtered.length > 0 && viewMode === 'grid' && (() => {
+          const scores = filtered.map(p => p.proxyScore ?? 0)
+          const sortedScores = [...scores].sort((a, b) => b - a)
+          const top20Threshold = sortedScores[Math.floor(sortedScores.length * 0.2)] ?? 80
+          const isNewUser = (p: NearbyProfile) => !!p.created_at && Date.now() - new Date(p.created_at).getTime() < 30 * 86400000
+          return (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+              {filtered.map(p => (
+                <ExploreCard
+                  key={p.id}
+                  p={p}
+                  isTopProfile={(p.proxyScore ?? 0) >= top20Threshold}
+                  isNew={isNewUser(p)}
+                  onClick={() => navigate('/profile/' + p.id)}
+                />
+              ))}
+            </div>
+          )
+        })()}
       </>
       </div>
     </div>
