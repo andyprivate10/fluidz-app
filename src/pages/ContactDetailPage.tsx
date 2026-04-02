@@ -5,9 +5,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
-import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Heart} from 'lucide-react'
+import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Star, Circle, CheckCircle2, Plus, RotateCcw, Square, ArrowUpRight} from 'lucide-react'
 import { colors, fonts } from '../brand'
-import OrbLayer from '../components/OrbLayer'
 import { timeAgo } from '../lib/timing'
 import { getSessionCover } from '../lib/sessionCover'
 import { useTranslation } from 'react-i18next'
@@ -28,17 +27,17 @@ export default function ContactDetailPage() {
   const { user: authUser } = useAuth()
   const { confirm, dialogProps } = useConfirmDialog()
   const RELATIONS = [
-    { level: 'connaissance', label: t('contacts.connaissance'), icon: '○', color: S.tx3 },
-    { level: 'close', label: t('contacts.close'), icon: '◉', color: S.sage },
-    { level: 'favori', label: t('contacts.favori'), icon: '★', color: S.p },
+    { level: 'connaissance', label: t('contacts.connaissance'), icon: <Circle size={12} strokeWidth={1.5} />, color: S.tx3 },
+    { level: 'close', label: t('contacts.close'), icon: <CheckCircle2 size={12} strokeWidth={1.5} />, color: S.sage },
+    { level: 'favori', label: t('contacts.favori'), icon: <Star size={12} strokeWidth={1.5} />, color: S.p },
   ] as const
 
-  const TYPE_LABELS: Record<string, { icon: string; label: string; color: string }> = {
-    co_event: { icon: '◎', label: t('interactions.co_event'), color: S.p },
-    dm: { icon: '↗', label: 'DM', color: S.blue },
-    added_contact: { icon: '+', label: t('interactions.added_contact'), color: S.sage },
-    relation_change: { icon: '⟳', label: t('interactions.relation_change'), color: S.orange },
-    voted: { icon: '▣', label: t('interactions.vote_label'), color: S.tx3 },
+  const TYPE_LABELS: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
+    co_event: { icon: <CheckCircle2 size={12} strokeWidth={1.5} />, label: t('interactions.co_event'), color: S.p },
+    dm: { icon: <ArrowUpRight size={12} strokeWidth={1.5} />, label: 'DM', color: S.blue },
+    added_contact: { icon: <Plus size={12} strokeWidth={1.5} />, label: t('interactions.added_contact'), color: S.sage },
+    relation_change: { icon: <RotateCcw size={12} strokeWidth={1.5} />, label: t('interactions.relation_change'), color: S.orange },
+    voted: { icon: <Square size={12} strokeWidth={1.5} />, label: t('interactions.vote_label'), color: S.tx3 },
   }
 
   const { contactUserId } = useParams<{ contactUserId: string }>()
@@ -209,7 +208,7 @@ export default function ContactDetailPage() {
                 setIsFavorite(true)
               }
             }} style={{ width: 36, height: 36, borderRadius: 10, border: '1px solid ' + (isFavorite ? S.pbd : S.rule), background: isFavorite ? S.p2 : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-              <Heart size={16} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
+              <Star size={16} strokeWidth={1.5} fill={isFavorite ? S.p : 'none'} style={{ color: isFavorite ? S.p : S.tx3 }} />
             </button>
             <button onClick={() => navigate('/profile/' + contactUserId)} style={{ padding: '6px 12px', borderRadius: 10, fontSize: 12, color: S.tx3, border: '1px solid ' + S.rule, background: 'transparent', cursor: 'pointer' }}>
               {t('profile.profile')} <ChevronRight size={12} style={{ verticalAlign: 'middle' }} />
@@ -357,17 +356,16 @@ export default function ContactDetailPage() {
               <div style={{ position: 'absolute', left: 6, top: 4, bottom: 4, width: 2, background: S.rule, borderRadius: 1 }} />
 
               {interactions.slice(0, 20).map((inter, i) => {
-                const t = TYPE_LABELS[inter.type] || { icon: '•', label: inter.type, color: S.tx3 }
+                const tl = TYPE_LABELS[inter.type] || { icon: <Circle size={12} strokeWidth={1.5} />, label: inter.type, color: S.tx3 }
                 return (
                   <div key={inter.id} style={{ display: 'flex', gap: 10, marginBottom: i < interactions.length - 1 ? 14 : 0, position: 'relative' }}>
-      <OrbLayer />
                     {/* Dot */}
-                    <div style={{ position: 'absolute', left: -17, top: 4, width: 10, height: 10, borderRadius: '50%', background: S.bg1, border: '2px solid ' + t.color, zIndex: 1 }} />
+                    <div style={{ position: 'absolute', left: -17, top: 4, width: 10, height: 10, borderRadius: '50%', background: S.bg1, border: '2px solid ' + tl.color, zIndex: 1 }} />
                     {/* Content */}
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12 }}>{t.icon}</span>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: S.tx }}>{t.label}</span>
+                        <span style={{ display: 'flex', alignItems: 'center', color: tl.color }}>{tl.icon}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: S.tx }}>{tl.label}</span>
                       </div>
                       {inter.meta?.session_title && (
                         <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>{inter.meta.session_title}</p>
@@ -392,7 +390,7 @@ export default function ContactDetailPage() {
         {/* Invite to session */}
         {activeSessions.length > 0 && (
           <div style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid '+S.rule2, borderRadius: 16, padding: 16 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inviter à une session</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: S.tx3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('contacts.invite_to_session')}</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
               {activeSessions.map(s => (
                 <button key={s.id} onClick={() => inviteToSession(s.id)} disabled={inviting} style={{
@@ -400,7 +398,7 @@ export default function ContactDetailPage() {
                   border: '1px solid ' + S.pbd, background: S.p2, color: S.p,
                   cursor: inviting ? 'not-allowed' : 'pointer', textAlign: 'left',
                 }}>
-                  Inviter à "{s.title}"
+                  {t('contacts.invite_to', { title: s.title })}
                 </button>
               ))}
             </div>

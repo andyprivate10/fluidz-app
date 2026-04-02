@@ -987,7 +987,9 @@
     "common_sessions": "Sessions together",
     "history": "History",
     "added": "Added",
-    "events_together": "Events together"
+    "events_together": "Events together",
+    "invite_to_session": "Invite to a session",
+    "invite_to": "Invite to \"{{title}}\""
   },
   "settings": {
     "push_active": "Push enabled",
