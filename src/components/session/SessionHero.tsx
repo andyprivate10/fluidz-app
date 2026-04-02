@@ -131,11 +131,11 @@ export default function SessionHero({ session, members, memberAvatars, memberNam
             </div>
             <div>
               <span style={{ fontSize: 12, color: S.tx, fontWeight: 600 }}>{hostProfile.name}</span>
-              <span style={{ fontSize: 10, color: S.tx3, marginLeft: 6 }}>Host</span>
+              <span style={{ fontSize: 10, color: S.tx3, marginLeft: 6 }}>{t('session.host_label')}</span>
             </div>
           </div>
         )}
-        {isHost && <div style={{ marginTop: 8 }}><span style={{ fontSize: 10, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, padding: '2px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Host</span></div>}
+        {isHost && <div style={{ marginTop: 8 }}><span style={{ fontSize: 10, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, padding: '2px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('session.host_label')}</span></div>}
       </div>
     </div>
   )

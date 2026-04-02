@@ -237,6 +237,8 @@
     "copy_share_msg": "Copier message pour Grindr / WhatsApp",
     "msg_copied": "Message copié !",
     "custom_desc": "Crée ton propre vibe",
+    "custom_template": "Personnalisé",
+    "host_label": "Host",
     "publish_in_app": "Publier dans l'app",
     "publish_in_app_desc": "Visible dans les résultats de recherche",
     "keep_secret": "Garder secret",
@@ -1353,7 +1355,11 @@
   },
   "edit": {
     "saving": "Enregistrement...",
-    "save_changes": "Enregistrer les modifications"
+    "save_changes": "Enregistrer les modifications",
+    "title_required": "Titre requis",
+    "start_time": "Debut",
+    "end_time": "Fin",
+    "visible_in_explore": "Visible dans Explore"
   },
   "safety": {
     "tip": "Rappel sécurité : Partage ta localisation avec un ami de confiance. Tu peux quitter à tout moment, sans justification. En cas de problème, contacte le host via ce DM."

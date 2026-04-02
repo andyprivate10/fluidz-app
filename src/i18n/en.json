@@ -237,6 +237,8 @@
     "copy_share_msg": "Copy message for Grindr / WhatsApp",
     "msg_copied": "Message copied!",
     "custom_desc": "Create your own vibe",
+    "custom_template": "Custom",
+    "host_label": "Host",
     "publish_in_app": "Publish in app",
     "publish_in_app_desc": "Visible in search results",
     "keep_secret": "Keep secret",
@@ -1353,7 +1355,11 @@
   },
   "edit": {
     "saving": "Saving...",
-    "save_changes": "Save changes"
+    "save_changes": "Save changes",
+    "title_required": "Title required",
+    "start_time": "Start",
+    "end_time": "End",
+    "visible_in_explore": "Visible in Explore"
   },
   "safety": {
     "tip": "Safety reminder: Share your location with a trusted friend. You can leave at any time, no questions asked. If there is a problem, contact the host via this DM."

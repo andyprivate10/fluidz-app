@@ -155,7 +155,7 @@ export default function GhostSetupPage() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Ghost size={40} style={{ color: S.p, marginBottom: 12 }} />
-          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 6px' }}>{t('ghost.title')} ◌</h1>
+          <h1 style={{ fontSize:24,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 6px' }}>{t('ghost.title')}</h1>
           <p style={{ color: S.tx3, fontSize: 13, margin: 0, lineHeight: 1.5 }}>
             {t('ghost.subtitle')}
           </p>
@@ -246,11 +246,11 @@ export default function GhostSetupPage() {
 
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 16 }}>
                 <div style={{ background: S.bg, borderRadius: 12, padding: '10px 16px', border: '1px solid ' + S.rule }}>
-                  <div style={{ fontSize: 10, color: S.tx4, fontWeight: 600 }}>PSEUDO</div>
+                  <div style={{ fontSize: 10, color: S.tx4, fontWeight: 600 }}>{t('ghost.your_pseudo').toUpperCase()}</div>
                   <div style={{ fontSize: 14, color: S.tx, fontWeight: 700 }}>{displayName}</div>
                 </div>
                 <div style={{ background: S.bg, borderRadius: 12, padding: '10px 16px', border: '1px solid ' + S.rule }}>
-                  <div style={{ fontSize: 10, color: S.tx4, fontWeight: 600 }}>PIN</div>
+                  <div style={{ fontSize: 10, color: S.tx4, fontWeight: 600 }}>{t('ghost.pin_label').toUpperCase()}</div>
                   <div style={{ fontSize: 14, color: S.tx, fontWeight: 700 }}>{'•'.repeat(4)}</div>
                 </div>
               </div>

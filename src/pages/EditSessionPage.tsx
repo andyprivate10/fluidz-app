@@ -67,7 +67,7 @@ export default function EditSessionPage() {
   }
 
   const handleSave = async () => {
-    if (!title.trim()) { showToast('Titre requis', 'error'); return }
+    if (!title.trim()) { showToast(t('edit.title_required'), 'error'); return }
     setSaving(true)
     const directionsFiltered = directions.filter(d => d.text.trim().length > 0 || d.photo_url)
     const { error } = await supabase.from('sessions').update({
@@ -148,7 +148,7 @@ export default function EditSessionPage() {
 
         {/* Directions */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>Directions (étapes d'accès)</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:8 }}>{t('session.directions_label')}</label>
           {directions.map((step, i) => (
             <div key={i} style={{ marginBottom:8, padding:10, background:S.bg, borderRadius:10, border:'1px solid '+S.rule }}>
               <div style={{ display:'flex', gap:8, alignItems:'center' }}>
@@ -165,7 +165,7 @@ export default function EditSessionPage() {
                 </div>
               ) : (
                 <label style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:6, padding:'4px 8px', borderRadius:6, border:'1px solid '+S.rule, background:S.bg2, color:S.tx4, fontSize:10, fontWeight:600, cursor:'pointer' }}>
-                  📷 Photo
+                  {t('session.direction_photo')}
                   <input type="file" accept="image/*" onChange={async (e) => { const f=e.target.files?.[0]; if(!f)return; const{compressImage:ci}=await import('../lib/media'); const c=await ci(f); const{data:{user}}=await supabase.auth.getUser(); if(!user)return; const path=user.id+'/dir_'+Date.now()+'.jpg'; const{error}=await supabase.storage.from('avatars').upload(path,c); if(error)return; const{data:{publicUrl}}=supabase.storage.from('avatars').getPublicUrl(path); const next=[...directions]; next[i]={...next[i],photo_url:publicUrl}; setDirections(next) }} style={{ display:'none' }} />
                 </label>
               )}
@@ -178,11 +178,11 @@ export default function EditSessionPage() {
 
         {/* Timing */}
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}><Clock size={12} style={{display:'inline',marginRight:4}} />Début</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}><Clock size={12} style={{display:'inline',marginRight:4}} />{t('edit.start_time')}</label>
           <input type="datetime-local" value={startsAt} onChange={e => setStartsAt(e.target.value)} style={{...inp, colorScheme:'dark'}} />
         </div>
         <div>
-          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>Fin</label>
+          <label style={{ fontSize:12, fontWeight:700, color:S.tx3, display:'block', marginBottom:6 }}>{t('edit.end_time')}</label>
           <input type="datetime-local" value={endsAt} onChange={e => setEndsAt(e.target.value)} style={{...inp, colorScheme:'dark'}} />
         </div>
         <div>
@@ -194,7 +194,7 @@ export default function EditSessionPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: S.bg2, border: '1px solid ' + S.rule, borderRadius: 12 }}>
           <div>
             <p style={{ fontSize: 13, fontWeight: 600, color: S.tx, margin: 0 }}>{t('session.publish_label')}</p>
-            <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>Visible dans Explore</p>
+            <p style={{ fontSize: 11, color: S.tx3, margin: '2px 0 0' }}>{t('edit.visible_in_explore')}</p>
           </div>
           <button type="button" onClick={() => setIsPublic(!isPublic)} style={{
             width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer', position: 'relative',

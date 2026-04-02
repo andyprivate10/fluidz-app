@@ -29,7 +29,7 @@ export default function CreateStepBasics({ h }: Props) {
               <Sparkles size={28} style={{ color: S.p, opacity: 0.7 }} />
             </div>
             <div style={{ padding: '8px 12px' }}>
-              <p style={{ margin: '0 0 2px', fontSize: 13, fontWeight: 700, color: S.p }}>Custom</p>
+              <p style={{ margin: '0 0 2px', fontSize: 13, fontWeight: 700, color: S.p }}>{h.t('session.custom_template')}</p>
               <p style={{ margin: 0, fontSize: 11, color: S.tx3 }}>{h.t('session.custom_desc')}</p>
             </div>
           </div>

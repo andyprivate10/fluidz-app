@@ -162,7 +162,7 @@ export default function GhostRecoverPage() {
               {Object.keys(ghost.profile_json || {}).length > 0 && (
                 <div style={{ marginTop: 12, display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
                   {ghost.profile_json.role && <span style={{ fontSize: 11, color: S.p, background: S.p2, padding: '2px 8px', borderRadius: 99 }}>{ghost.profile_json.role}</span>}
-                  {ghost.profile_json.age && <span style={{ fontSize: 11, color: S.tx2, background: S.bg2, padding: '2px 8px', borderRadius: 99 }}>{ghost.profile_json.age} ans</span>}
+                  {ghost.profile_json.age && <span style={{ fontSize: 11, color: S.tx2, background: S.bg2, padding: '2px 8px', borderRadius: 99 }}>{ghost.profile_json.age} {t('profile.age_years')}</span>}
                 </div>
               )}
             </div>
