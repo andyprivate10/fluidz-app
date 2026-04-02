@@ -192,7 +192,7 @@ export function useDMData() {
         if (error) { setUploading(false); return }
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
         const name = displayName || u.email || t('common.me')
-        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '\u{1F3A4} Audio', sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id, has_media: true, media_urls: [publicUrl] })
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: t('dm.media_audio_label'), sender_name: name, room_type: 'dm', dm_peer_id: peerIdParam || session?.host_id, has_media: true, media_urls: [publicUrl] })
         setUploading(false)
       }
       mr.start()
@@ -230,7 +230,7 @@ export function useDMData() {
       const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
       await supabase.from('messages').insert({
         session_id: id, sender_id: u.id,
-        text: `\u{1F4CD} ${t('dm.my_position')}\n${mapUrl}`,
+        text: `${t('dm.my_position')}\n${mapUrl}`,
         sender_name: name, room_type: 'dm',
         dm_peer_id: peerIdParam || session?.host_id,
       })
@@ -241,7 +241,7 @@ export function useDMData() {
         const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`
         await supabase.from('messages').insert({
           session_id: id, sender_id: u.id,
-          text: `\u{1F4CD} ${t('dm.position_updated')}\n${mapUrl}`,
+          text: `${t('dm.position_updated')}\n${mapUrl}`,
           sender_name: name, room_type: 'dm',
           dm_peer_id: peerIdParam || session?.host_id,
         })
@@ -290,7 +290,7 @@ export function useDMData() {
       const isVideo = file.type.startsWith('video/')
       let uploadFile: Blob = file
       let ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
-      let label = isVideo ? '\u{1F3AC} Vid\u00e9o' : '\u{1F4F7} Photo'
+      let label = isVideo ? t('dm.media_video_label') : t('dm.media_photo_label')
 
       if (!isVideo) {
         const { compressImage } = await import('../lib/media')
@@ -334,7 +334,7 @@ export function useDMData() {
         user_id: peerId,
         session_id: id,
         type: 'new_dm',
-        title: `\u{1F4AC} ${senderLabel}`,
+        title: senderLabel,
         body: text.length > 60 ? text.slice(0, 60) + '\u2026' : text,
         href: `/session/${id}/dm/${currentUser.id}`,
       })

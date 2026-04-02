@@ -11,7 +11,7 @@ import type { LinkedProfile as PlatformProfile } from '../components/profile/Lin
 
 const S = colors
 
-export const PREP_OPTIONS = ['Actif','Inactif','Non']
+export const PREP_VALUES = ['Actif', 'Inactif', 'Non'] as const
 
 export const inputStyleResolved: React.CSSProperties = {
   width:'100%', background:S.bg2, color:S.tx, borderRadius:14,

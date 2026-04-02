@@ -13,7 +13,7 @@ import PlatformProfiles from '../components/profile/LinkedProfiles'
 import MultiChipSelector from '../components/MultiChipSelector'
 import { TRIBES, TRIBE_CATEGORIES } from '../lib/tribeTypes'
 import { ETHNICITIES, ETHNICITY_REGIONS } from '../lib/ethnicityTypes'
-import { useMeData, PREP_OPTIONS, inputStyleResolved as inputStyle } from '../hooks/useMeData'
+import { useMeData, PREP_VALUES, inputStyleResolved as inputStyle } from '../hooks/useMeData'
 import { monthsAgoCount } from '../lib/timing'
 // MeSettings and MePreferences relocated — removed from profile
 import MeProfileCompleteness from '../components/me/MeProfileCompleteness'
@@ -99,6 +99,11 @@ export default function MePage() {
   } = d
 
   const [activeTab, setActiveTab] = useState<'profil' | 'adulte'>('profil')
+
+  const PREP_OPTIONS = PREP_VALUES.map(v => ({
+    value: v,
+    label: v === 'Actif' ? t('me.prep_actif') : v === 'Inactif' ? t('me.prep_inactif') : t('me.prep_non'),
+  }))
 
   function handleVisibilityChange(key: string, v: 'all' | 'naughtybook') {
     setSectionVisibility(prev => ({ ...prev, [key]: v }))
@@ -355,8 +360,8 @@ export default function MePage() {
           <Section title={t('profile.health')} color={S.sage} badge={prep === 'Actif' ? t('profile.health_badge_prep') : dernierTest ? t('profile.health_badge_test', { months: monthsAgoCount(dernierTest) }) : undefined} sectionKey="health" visibility={sectionVisibility.health} onVisibilityChange={handleVisibilityChange}>
             {/* PrEP */}
             <div style={{ display:'flex', gap:8, marginBottom:12 }}>
-              {PREP_OPTIONS.map(p => (
-                <Chip key={p} label={p} active={prep===p} onClick={() => setPrep(prep===p?'':p)} />
+              {PREP_OPTIONS.map(opt => (
+                <Chip key={opt.value} label={opt.label} active={prep===opt.value} onClick={() => setPrep(prep===opt.value?'':opt.value)} />
               ))}
             </div>
 

@@ -118,22 +118,46 @@ export function useSessionData() {
       }
       setSession(sess)
 
-      // Fetch host profile
-      if (sess?.host_id) {
-        const { data: hp } = await supabase.from('user_profiles').select('display_name, profile_json').eq('id', sess.host_id).maybeSingle()
-        if (hp) setHostProfile({ name: hp.display_name || 'Host', avatar: (hp.profile_json as Record<string, unknown>)?.avatar_url as string | undefined })
+      const isHost = !!(user && sess.host_id === user.id)
+
+      // PHASE 1: all independent queries in parallel
+      const [hostRes, acceptedRes, pendingRes, votesRes, myAppRes] = await Promise.all([
+        sess.host_id ? supabase.from('user_profiles').select('display_name, profile_json').eq('id', sess.host_id).maybeSingle() : Promise.resolve({ data: null }),
+        supabase.from('applications').select('applicant_id, eps_json, status').eq('session_id', id).in('status', ['accepted', 'checked_in']),
+        supabase.from('applications').select('id, applicant_id, status').eq('session_id', id).eq('status', 'pending'),
+        supabase.from('votes').select('id, applicant_id, voter_id, vote, session_id').eq('session_id', id),
+        user ? supabase.from('applications').select('status,checked_in,check_in_requested').eq('session_id', id).eq('applicant_id', user.id).maybeSingle() : Promise.resolve({ data: null }),
+      ])
+
+      // Set host profile
+      if (hostRes.data) {
+        const hp = hostRes.data
+        setHostProfile({ name: hp.display_name || 'Host', avatar: (hp.profile_json as Record<string, unknown>)?.avatar_url as string | undefined })
       }
 
-      const { data: accepted } = await supabase
-        .from('applications')
-        .select('applicant_id, eps_json, status')
-        .eq('session_id', id)
-        .in('status', ['accepted', 'checked_in'])
-      setMembers(accepted ?? [])
+      // Set accepted members
+      const accepted = acceptedRes.data ?? []
+      setMembers(accepted)
 
-      const ids = (accepted ?? []).map((a: { applicant_id: string }) => a.applicant_id)
-      if (ids.length > 0) {
-        const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ids)
+      // Set votes
+      setVotes((votesRes.data as VoteRow[]) || [])
+
+      // Set my app
+      if (myAppRes.data) {
+        const app = myAppRes.data
+        setMyApp(app)
+        if (app.status === 'checked_in') setCheckInDone(true)
+        if ((app.check_in_requested || app.checked_in) && app.status === 'accepted') setCheckInDone(true)
+        if (app.status === 'pending') {
+          setShowPostulerSuccess(true)
+          setTimeout(() => setShowPostulerSuccess(false), 2000)
+        }
+      } else { setMyApp(null) }
+
+      // PHASE 2: member profiles (depends on accepted)
+      const memberIds = accepted.map((a: { applicant_id: string }) => a.applicant_id)
+      if (memberIds.length > 0) {
+        const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', memberIds)
         const avatarMap: Record<string, string> = {}
         const roleMap: Record<string, string> = {}
         const nameMap: Record<string, string> = {}
@@ -147,109 +171,63 @@ export function useSessionData() {
         setMemberNames(nameMap)
       } else { setMemberAvatars({}); setMemberRoles({}); setMemberNames({}) }
 
+      // Process pending apps (enrich with profiles)
+      const pending = pendingRes.data
       let pendingEnriched: PendingApplication[] = []
-      const { data: pending } = await supabase
-        .from('applications')
-        .select('id, applicant_id, status')
-        .eq('session_id', id)
-        .eq('status', 'pending')
       if (pending && pending.length > 0) {
         const pendingIds = pending.map((p: { applicant_id: string }) => p.applicant_id)
-        const { data: pendingProfiles } = await supabase
-          .from('user_profiles')
-          .select('id, display_name, profile_json')
-          .in('id', pendingIds)
-
+        const { data: pendingProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', pendingIds)
         const profileMap: Record<string, { display_name?: string | null; avatar_url?: string | null }> = {}
         ;(pendingProfiles ?? []).forEach((r: { id: string; display_name?: string | null; profile_json?: { avatar_url?: string | null } }) => {
-          profileMap[r.id] = {
-            display_name: r.display_name ?? profileMap[r.id]?.display_name ?? null,
-            avatar_url: r.profile_json?.avatar_url ?? profileMap[r.id]?.avatar_url ?? null,
-          }
+          profileMap[r.id] = { display_name: r.display_name ?? null, avatar_url: r.profile_json?.avatar_url ?? null }
         })
-
         pendingEnriched = pending.map((p: { id: string; applicant_id: string }) => ({
-          id: p.id,
-          applicant_id: p.applicant_id,
+          id: p.id, applicant_id: p.applicant_id,
           display_name: profileMap[p.applicant_id]?.display_name ?? null,
           avatar_url: profileMap[p.applicant_id]?.avatar_url ?? null,
         }))
       }
       setPendingApps(pendingEnriched)
+      setPendingCount(isHost ? (pending?.length ?? 0) : 0)
 
-      // Fetch rejected apps (for host)
-      if (user && sess?.host_id === user.id) {
-        const { data: rejected } = await supabase
-          .from('applications')
-          .select('id, applicant_id')
-          .eq('session_id', id)
-          .eq('status', 'rejected')
+      // PHASE 3: host-only + review (parallel, after critical data is set)
+      if (isHost) {
+        const [rejectedRes, ciReqsRes] = await Promise.all([
+          supabase.from('applications').select('id, applicant_id').eq('session_id', id).eq('status', 'rejected'),
+          supabase.from('applications').select('id, applicant_id, status').eq('session_id', id).eq('check_in_requested', true).eq('status', 'accepted'),
+        ])
+        // Rejected apps
+        const rejected = rejectedRes.data
         if (rejected && rejected.length > 0) {
-          const rejIds = rejected.map(r => r.applicant_id)
+          const rejIds = rejected.map((r: any) => r.applicant_id)
           const { data: rejProfiles } = await supabase.from('user_profiles').select('id, display_name').in('id', rejIds)
           const rejMap: Record<string, string> = {}
           ;(rejProfiles ?? []).forEach((r: { id: string; display_name?: string | null }) => { if (r.display_name) rejMap[r.id] = r.display_name })
-          setRejectedApps(rejected.map(r => ({ id: r.id, applicant_id: r.applicant_id, display_name: rejMap[r.applicant_id] ?? null, avatar_url: null })))
+          setRejectedApps(rejected.map((r: any) => ({ id: r.id, applicant_id: r.applicant_id, display_name: rejMap[r.applicant_id] ?? null, avatar_url: null })))
         } else { setRejectedApps([]) }
-      }
-
-      // Fetch check-in requests (for host)
-      if (user && sess?.host_id === user.id) {
-        const { data: ciReqs } = await supabase
-          .from('applications')
-          .select('id, applicant_id, status')
-          .eq('session_id', id)
-          .eq('check_in_requested', true)
-          .eq('status', 'accepted')
+        // Check-in requests
+        const ciReqs = ciReqsRes.data
         if (ciReqs && ciReqs.length > 0) {
-          const ciIds = ciReqs.map(r => r.applicant_id)
+          const ciIds = ciReqs.map((r: any) => r.applicant_id)
           const { data: ciProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', ciIds)
           const ciMap: Record<string, { display_name?: string | null; avatar_url?: string | null }> = {}
           ;(ciProfiles ?? []).forEach((r: { id: string; display_name?: string | null; profile_json?: Record<string, unknown> }) => {
             ciMap[r.id] = { display_name: r.display_name, avatar_url: (r.profile_json?.avatar_url as string | null) ?? null }
           })
-          setCheckInRequests(ciReqs.map(r => ({
+          setCheckInRequests(ciReqs.map((r: any) => ({
             id: r.id, applicant_id: r.applicant_id,
             display_name: ciMap[r.applicant_id]?.display_name ?? null,
             avatar_url: ciMap[r.applicant_id]?.avatar_url ?? null,
           })))
         } else { setCheckInRequests([]) }
-      } else { setCheckInRequests([]) }
-
-      const { data: voteRows } = await supabase
-        .from('votes')
-        .select('id, applicant_id, voter_id, vote, session_id')
-        .eq('session_id', id)
-      setVotes((voteRows as VoteRow[]) || [])
-
-      if (user) {
-        const { data: app } = await supabase
-          .from('applications')
-          .select('status,checked_in,check_in_requested')
-          .eq('session_id', id)
-          .eq('applicant_id', user.id)
-          .maybeSingle()
-        setMyApp(app)
-        if (app?.status === 'checked_in') setCheckInDone(true)
-        // If check_in_requested or checked_in flag is true but status still accepted → pending confirmation
-        if ((app?.check_in_requested || app?.checked_in) && app?.status === 'accepted') setCheckInDone(true)
-        if (app?.status === 'pending') {
-          setShowPostulerSuccess(true)
-          setTimeout(() => setShowPostulerSuccess(false), 2000)
-        }
+      } else {
+        setRejectedApps([])
+        setCheckInRequests([])
       }
 
-      if (user && sess?.host_id === user.id) {
-        const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).eq('status', 'pending')
-        setPendingCount(count ?? 0)
-      } else setPendingCount(0)
-
-      // Load review summary for ended sessions
-      if (sess?.status === 'ended') {
-        const { data: reviews } = await supabase.from('reviews')
-          .select('rating, vibe_tags')
-          .eq('session_id', id)
-          .is('target_id', null)
+      // Review summary for ended sessions
+      if (sess.status === 'ended') {
+        const { data: reviews } = await supabase.from('reviews').select('rating, vibe_tags').eq('session_id', id).is('target_id', null)
         if (reviews && reviews.length > 0) {
           const avg = reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / reviews.length
           const tagCounts: Record<string, number> = {}

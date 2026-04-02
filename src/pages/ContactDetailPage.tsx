@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
 import ConfirmDialog, { useConfirmDialog } from '../components/ConfirmDialog'
-import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import {ChevronRight, Edit3, Trash2, MessageCircle, ArrowLeft, Star, Circle, CheckCircle2, Plus, RotateCcw, Square, ArrowUpRight} from 'lucide-react'
 import { colors, fonts } from '../brand'
 import { timeAgo } from '../lib/timing'
@@ -190,7 +189,6 @@ export default function ContactDetailPage() {
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: 0 }}>{stripHtml(profile.display_name)}</h1>
-              <VibeScoreBadge userId={contactUserId!} />
             </div>
             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
               {pj.age ? <span style={{ fontSize: 12, color: S.tx3 }}>{`${pj.age}`} {t('profile.age_years')}</span> : null}

@@ -181,7 +181,7 @@ export function useGroupChatData() {
       const isVideo = file.type.startsWith('video/')
       let uploadFile: Blob = file
       let ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
-      let label = isVideo ? '\uD83C\uDFAC Vid\u00e9o' : '\uD83D\uDCF7 Photo'
+      let label = isVideo ? t('dm.media_video_label') : t('dm.media_photo_label')
 
       if (!isVideo) {
         const { compressImage } = await import('../lib/media')
@@ -220,7 +220,7 @@ export function useGroupChatData() {
         const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'audio/webm' })
         if (error) { setUploading(false); return }
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
-        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: '\uD83C\uDFA4 Audio', sender_name: displayName || t('common.anonymous_fallback'), room_type: 'group', has_media: true, media_urls: [publicUrl] })
+        await supabase.from('messages').insert({ session_id: id, sender_id: u.id, text: t('dm.media_audio_label'), sender_name: displayName || t('common.anonymous_fallback'), room_type: 'group', has_media: true, media_urls: [publicUrl] })
         setUploading(false)
       }
       mr.start()

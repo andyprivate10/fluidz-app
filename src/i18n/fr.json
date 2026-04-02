@@ -1203,7 +1203,10 @@
     "age_range": "Tranche d'âge",
     "preferred_kinks": "Pratiques recherchées",
     "preferred_morphologies": "Morphologies recherchées",
-    "avatar_label": "Photo"
+    "avatar_label": "Photo",
+    "prep_actif": "PrEP actif",
+    "prep_inactif": "PrEP inactif",
+    "prep_non": "Non"
   },
   "host_actions": {
     "sending": "Envoi...",

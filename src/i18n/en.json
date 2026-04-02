@@ -1203,7 +1203,10 @@
     "age_range": "Age range",
     "preferred_kinks": "Preferred kinks",
     "preferred_morphologies": "Preferred morphologies",
-    "avatar_label": "Photo"
+    "avatar_label": "Photo",
+    "prep_actif": "PrEP active",
+    "prep_inactif": "PrEP inactive",
+    "prep_non": "No"
   },
   "host_actions": {
     "sending": "Sending...",
