@@ -20,7 +20,7 @@ export function useHomeData() {
   const [latestHost, setLatestHost] = useState<QuickSession | null>(null)
   const [pendingApps, setPendingApps] = useState<{ session_id: string; title: string; tags?: string[]; cover_url?: string; template_slug?: string }[]>([])
   const [inviteCode, setInviteCode] = useState('')
-  const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string; tags?: string[]; cover_url?: string; template_slug?: string }[]>([])
+  const [activeApps, setActiveApps] = useState<{ session_id: string; title: string; status: string; tags?: string[]; cover_url?: string; template_slug?: string; member_count?: number }[]>([])
   const [hostPendingCount, setHostPendingCount] = useState(0)
   const [profilePct, setProfilePct] = useState(100)
   const [recentContacts, setRecentContacts] = useState<{ id: string; name: string; avatar?: string }[]>([])
@@ -74,6 +74,19 @@ export function useHomeData() {
     const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
       .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
     setActiveApps((active || []).map(a => ({ session_id: a.session_id, status: a.status || '', title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
+
+    // Fetch member counts for active sessions
+    if (active && active.length > 0) {
+      const sessionIds = active.map(a => a.session_id)
+      const counts = await Promise.all(sessionIds.map(async sid => {
+        const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', sid).in('status', ['accepted', 'checked_in'])
+        return { sid, count: count || 0 }
+      }))
+      setActiveApps(prev => prev.map(a => {
+        const c = counts.find(x => x.sid === a.session_id)
+        return c ? { ...a, member_count: c.count } : a
+      }))
+    }
 
     // Recent contacts
     const { data: contacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).order('created_at', { ascending: false }).limit(8)

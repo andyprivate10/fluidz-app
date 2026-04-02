@@ -82,6 +82,7 @@
     "nobody": "Nobody nearby",
     "nobody_desc": "Come back later or expand your area",
     "try_map": "Try the map",
+    "refresh": "Refresh",
     "tab_profiles": "Profiles",
     "tab_sessions": "Sessions",
     "no_public_sessions": "No public sessions",

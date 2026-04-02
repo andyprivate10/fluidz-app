@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PageFadeIn from '../components/PageFadeIn'
 import { colors, fonts, radius, typeStyle, glassCard } from '../brand'
 import OrbLayer from '../components/OrbLayer'
-import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X } from 'lucide-react'
+import { Plus, ArrowRight, Flame, Clock, CheckCircle2, Ghost, Bell, MessageCircle, UserPlus, Search, BookOpen, X, Users } from 'lucide-react'
 import { useHomeData } from '../hooks/useHomeData'
 import { useAuth } from '../contexts/AuthContext'
 import GhostConvertModal from '../components/GhostConvertModal'
@@ -294,8 +294,15 @@ export default function HomePage() {
                     {cover.overlay && <div style={{ position: 'absolute', inset: 0, background: cover.overlay }} />}
                   </div>
                   <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{app.title}</p>
-                    <CheckCircle2 size={14} style={{ color: app.status === 'checked_in' ? S.sage : S.tx3 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ ...typeStyle('label'), color: S.tx, margin: 0 }}>{app.title}</p>
+                      {app.member_count !== undefined && app.member_count > 0 && (
+                        <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
+                          <Users size={10} strokeWidth={1.5} />{t('session.member_count', { count: app.member_count })}
+                        </p>
+                      )}
+                    </div>
+                    <CheckCircle2 size={14} style={{ color: app.status === 'checked_in' ? S.sage : S.tx3, flexShrink: 0 }} />
                   </div>
                 </div>
               )

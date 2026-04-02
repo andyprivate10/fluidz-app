@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Star, Save, Download } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Star, Save, Download, RefreshCw } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -254,7 +254,12 @@ export default function ExplorePage() {
         created_at: p.created_at,
       }
     })
-    mapped.sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
+    mapped.sort((a, b) => {
+      const aOnline = a.lastSeen && (Date.now() - new Date(a.lastSeen).getTime()) < 300000 ? 0 : 1
+      const bOnline = b.lastSeen && (Date.now() - new Date(b.lastSeen).getTime()) < 300000 ? 0 : 1
+      if (aOnline !== bOnline) return aOnline - bOnline
+      return (a.distance ?? 999) - (b.distance ?? 999)
+    })
 
     // Pad with a few demo profiles if very few results
     if (mapped.length < 3) {
@@ -404,7 +409,7 @@ export default function ExplorePage() {
           </div>
         )}
 
-        {loading && !geoError && (
+        {loading && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, padding: '0 0 20px' }}>
             {[1,2,3,4,5,6].map(i => (
               <div key={i} style={{ background: 'rgba(22,20,31,0.85)', borderRadius: 14, overflow: 'hidden', border: '1px solid '+S.rule2 }}>
@@ -420,12 +425,19 @@ export default function ExplorePage() {
 
         {!loading && filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 20px', color: S.tx3 }}>
-            <MapPin size={32} strokeWidth={1.5} style={{ color: S.p, display: 'block', margin: '0 auto 12px' }} />
+            <div style={{ width: 72, height: 72, borderRadius: '50%', background: S.p2, border: '1px solid '+S.pbd, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <MapPin size={28} strokeWidth={1.5} style={{ color: S.p }} />
+            </div>
             <p style={{ fontSize: 16, fontWeight: 700, color: S.tx, margin: '0 0 6px' }}>{t('explore.nobody')}</p>
             <p style={{ fontSize: 13, color: S.tx3, margin: '0 0 20px', lineHeight: 1.5 }}>{t('explore.nobody_desc')}</p>
-            <button onClick={() => setViewMode('map')} style={{ padding: '12px 24px', borderRadius: 14, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-              {t('explore.try_map')}
-            </button>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+              <button onClick={() => requestLocation(userId)} style={{ padding: '12px 24px', borderRadius: 14, background: S.p, border: 'none', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <RefreshCw size={14} strokeWidth={1.5} />{t('explore.refresh')}
+              </button>
+              <button onClick={() => setViewMode('map')} style={{ padding: '12px 24px', borderRadius: 14, background: S.p2, border: '1px solid ' + S.pbd, color: S.p, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                {t('explore.try_map')}
+              </button>
+            </div>
           </div>
         )}
 

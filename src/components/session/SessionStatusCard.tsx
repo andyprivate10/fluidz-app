@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Clock, Share2, MessageCircle, Check, Send, UserPlus, QrCode } from 'lucide-react'
+import { Clock, Share2, MessageCircle, Check, Send, UserPlus, QrCode, MapPin } from 'lucide-react'
 import { colors, glassCard } from '../../brand'
 import { useTranslation } from 'react-i18next'
 import MapView from '../MapView'
@@ -160,12 +160,29 @@ export default function SessionStatusCard({
             </div>
           )}
           {myApp.status === 'accepted' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: S.sage, padding: '6px 12px', borderRadius: 99, background: S.sagebg, border: '1px solid '+S.sagebd }}><Check size={12} strokeWidth={2} style={{display:'inline',marginRight:3}} />{t('session.accepted')}</span>
-              <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{t('session.address_after_checkin')}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* Accepted badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 14, background: S.sagebg, border: '1px solid '+S.sagebd }}>
+                <Check size={14} strokeWidth={1.5} style={{ color: S.sage }} />
+                <span style={{ fontSize: 14, fontWeight: 600, color: S.sage }}>{t('session.accepted')}</span>
+              </div>
+              {/* Address hint */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 12, background: S.p2, border: '1px solid '+S.pbd }}>
+                <MapPin size={14} strokeWidth={1.5} style={{ color: S.p, flexShrink: 0 }} />
+                <p style={{ fontSize: 12, color: S.tx2, margin: 0 }}>{t('session.address_after_checkin')}</p>
+              </div>
+              {/* Waiting confirmation state */}
+              {checkInDone && (
+                <div style={{ padding: '14px 16px', borderRadius: 14, background: S.p2, border: '1px solid '+S.pbd, textAlign: 'center' }}>
+                  <div style={{ width: 20, height: 20, border: '2px solid '+S.pbd, borderTopColor: S.p, borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 8px' }} />
+                  <p style={{ fontSize: 13, fontWeight: 600, color: S.p, margin: 0 }}>{t('session.check_in_waiting')}</p>
+                </div>
+              )}
+              {/* DM button */}
               <button onClick={() => navigate('/session/' + sessionId + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                 {t('session.open_dm')}
               </button>
+              {/* QR Code button */}
               <button onClick={() => setShowQR(true)} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.pbd, borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 <QrCode size={16} strokeWidth={1.5} /> {t('session.qr_checkin')}
               </button>
@@ -176,6 +193,7 @@ export default function SessionStatusCard({
                   <button onClick={() => setShowQR(false)} style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, border: '1px solid '+S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{t('common.close')}</button>
                 </div>
               )}
+              {/* Leave */}
               <button onClick={onLeave} style={{ padding: '6px 12px', borderRadius: 10, border: 'none', background: 'transparent', color: S.tx3, fontSize: 11, fontWeight: 600, cursor: 'pointer', textAlign: 'center' }}>
                 {t('session.leave_session')}
               </button>
