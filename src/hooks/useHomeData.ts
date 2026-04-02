@@ -33,108 +33,137 @@ export function useHomeData() {
 
   const loadData = useCallback(async () => {
     try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setLoading(false); return }
-    setUserId(user.id)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setLoading(false); return }
+      setUserId(user.id)
 
-    try {
-      const redirect = localStorage.getItem('auth_redirect')
-      if (redirect) { localStorage.removeItem('auth_redirect'); navigate(redirect); return }
-    } catch (_) {}
+      try {
+        const redirect = localStorage.getItem('auth_redirect')
+        if (redirect) { localStorage.removeItem('auth_redirect'); navigate(redirect); return }
+      } catch (_) {}
 
-    const { data: profData } = await supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle()
-    if (profData?.display_name) {
-      setDisplayName(profData.display_name)
-      const pj = (profData.profile_json || {}) as Record<string, unknown>
-      const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!(pj.kinks && (pj.kinks as string[]).length > 0), !!profData.display_name && profData.display_name !== 'Anonymous']
-      setProfilePct(Math.round((checks.filter(Boolean).length / checks.length) * 100))
-      const hasProfile = pj.role || pj.avatar_url || pj.bio || pj.onboarding_done || pj.onboarding_complete
-      const hasName = profData.display_name && profData.display_name !== 'Anonymous'
-      const isNewUser = !hasProfile && !hasName
-      if (isNewUser) {
-        navigate('/onboarding'); return
+      // ── PHASE 1: Requêtes critiques en parallèle ──────────────────────
+      const [
+        profResult,
+        hostedResult,
+        pendingResult,
+        activeResult,
+      ] = await Promise.all([
+        supabase.from('user_profiles').select('display_name,profile_json').eq('id', user.id).maybeSingle(),
+        supabase.from('sessions').select('id, title, approx_area, status, tags, cover_url, template_slug, starts_at, ends_at, created_at')
+          .eq('host_id', user.id).eq('status', 'open').neq('title', DM_DIRECT_TITLE)
+          .order('created_at', { ascending: false }).limit(1),
+        supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url, tags)')
+          .eq('applicant_id', user.id).eq('status', 'pending'),
+        supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
+          .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
+      ])
+
+      // Profil + onboarding check
+      const profData = profResult.data
+      if (profData?.display_name) {
+        setDisplayName(profData.display_name)
+        const pj = (profData.profile_json || {}) as Record<string, unknown>
+        const checks = [!!pj.avatar_url, !!pj.role, !!pj.age, !!pj.bio, !!(pj.height || pj.weight || pj.morphology), !!(pj.kinks && (pj.kinks as string[]).length > 0), !!profData.display_name && profData.display_name !== 'Anonymous']
+        const pct = Math.round((checks.filter(Boolean).length / checks.length) * 100)
+        setProfilePct(pct)
+        const hasProfile = pj.role || pj.avatar_url || pj.bio || pj.onboarding_done || pj.onboarding_complete
+        const hasName = profData.display_name && profData.display_name !== 'Anonymous'
+        if (!hasProfile && !hasName) { navigate('/onboarding'); return }
+        // Tips: show si profil incomplet ou aucune app (calculé sur données déjà chargées)
+        const pj2 = profData.profile_json as Record<string, unknown> || {}
+        setDismissedTips(Array.isArray(pj2.dismissed_tips) ? pj2.dismissed_tips as string[] : [])
+        setShowTips(pct < 50)
       }
-    }
 
-    const { data: hosted } = await supabase.from('sessions').select('id, title, approx_area, status, tags, cover_url, template_slug, starts_at, ends_at, created_at')
-      .eq('host_id', user.id).eq('status', 'open').neq('title', DM_DIRECT_TITLE)
-      .order('created_at', { ascending: false }).limit(1)
-    const hostSession = Array.isArray(hosted) ? hosted[0] ?? null : hosted ?? null
-    setLatestHost(hostSession)
-    if (hostSession) {
-      const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).eq('status', 'pending')
-      setHostPendingCount(count ?? 0)
-      const { count: mc } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', hostSession.id).in('status', ['accepted', 'checked_in'])
-      if (hostSession) (hostSession as QuickSession).member_count = (mc || 0) + 1
-    }
+      // Session hébergée
+      const hosted = hostedResult.data
+      const hostSession = Array.isArray(hosted) ? hosted[0] ?? null : null
+      setLatestHost(hostSession)
 
-    const { data: pending } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url, tags)')
-      .eq('applicant_id', user.id).eq('status', 'pending')
-    setPendingApps((pending || []).map(a => ({ session_id: a.session_id, title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
+      // Apps pending
+      const pending = pendingResult.data || []
+      setPendingApps(pending.map(a => ({ session_id: a.session_id, title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
 
-    const { data: active } = await supabase.from('applications').select('session_id, status, sessions(title, template_slug, cover_url)')
-      .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
-    setActiveApps((active || []).map(a => ({ session_id: a.session_id, status: a.status || '', title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
+      // Apps actives
+      const active = activeResult.data || []
+      setActiveApps(active.map(a => ({ session_id: a.session_id, status: a.status || '', title: (a.sessions as any)?.title || 'Session', tags: (a.sessions as any)?.tags, cover_url: (a.sessions as any)?.cover_url, template_slug: (a.sessions as any)?.template_slug })))
 
-    // Fetch member counts for active sessions
-    if (active && active.length > 0) {
+      // ── RENDER IMMÉDIAT ───────────────────────────────────────────────
+      setLoading(false)
+
+      // ── PHASE 2: Données secondaires en parallèle (non-bloquantes) ────
       const sessionIds = active.map(a => a.session_id)
-      const counts = await Promise.all(sessionIds.map(async sid => {
-        const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', sid).in('status', ['accepted', 'checked_in'])
-        return { sid, count: count || 0 }
-      }))
-      setActiveApps(prev => prev.map(a => {
-        const c = counts.find(x => x.sid === a.session_id)
-        return c ? { ...a, member_count: c.count } : a
-      }))
-    }
+      const [
+        contactsResult,
+        reviewResult,
+        notifsResult,
+        endedAppsResult,
+        hostCountsResult,
+      ] = await Promise.all([
+        supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).order('created_at', { ascending: false }).limit(8),
+        supabase.from('review_queue').select('session_id, sessions!inner(title)').eq('user_id', user.id).eq('status', 'pending').gte('expires_at', new Date().toISOString()),
+        supabase.from('notifications').select('id, type, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5),
+        supabase.from('applications').select('session_id, sessions!inner(status, ends_at)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
+        hostSession ? Promise.all([
+          supabase.from('applications').select('id', { count: 'exact', head: true }).eq('session_id', hostSession.id).eq('status', 'pending'),
+          supabase.from('applications').select('id', { count: 'exact', head: true }).eq('session_id', hostSession.id).in('status', ['accepted', 'checked_in']),
+          ...(sessionIds.length > 0 ? [Promise.all(sessionIds.map(sid =>
+            supabase.from('applications').select('id', { count: 'exact', head: true }).eq('session_id', sid).in('status', ['accepted', 'checked_in'])
+              .then(r => ({ sid, count: r.count || 0 }))
+          ))] : [Promise.resolve([])]),
+        ]) : Promise.resolve(null),
+      ])
 
-    // Recent contacts
-    const { data: contacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).order('created_at', { ascending: false }).limit(8)
-    if (contacts && contacts.length > 0) {
-      const cIds = contacts.map((c: { contact_user_id: string }) => c.contact_user_id)
-      const { data: cProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', cIds)
-      const ordered = cIds.map(cid => {
-        const p = (cProfiles || []).find((pr: { id: string; display_name?: string; profile_json?: Record<string, unknown> }) => pr.id === cid)
-        return { id: cid, name: p?.display_name || '?', avatar: (p?.profile_json as Record<string, unknown> | undefined)?.avatar_url as string | undefined }
-      })
-      setRecentContacts(ordered)
-    } else { setRecentContacts([]) }
-
-    // Pending reviews
-    const { data: reviewQueue } = await supabase.from('review_queue').select('session_id, sessions!inner(title)').eq('user_id', user.id).eq('status', 'pending').gte('expires_at', new Date().toISOString())
-    setPendingReviews((reviewQueue || []).map(r => ({ session_id: r.session_id, title: (r.sessions as any)?.title || 'Session' })))
-
-    // Recent notifications
-    const { data: notifs } = await supabase.from('notifications').select('id, type, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5)
-    setRecentNotifs(notifs || [])
-
-    // Tips eligibility
-    const { count: cCount } = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
-    const { count: sCount } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('applicant_id', user.id).in('status', ['accepted', 'checked_in', 'pending'])
-    const pj2 = (profData?.profile_json || {}) as Record<string, unknown>
-    setDismissedTips(Array.isArray(pj2.dismissed_tips) ? pj2.dismissed_tips as string[] : [])
-    setShowTips(((cCount ?? 0) === 0 && (sCount ?? 0) === 0) || profilePct < 50)
-
-    // Contact suggestions from recently ended sessions (within 48h)
-    const cutoff48h = new Date(Date.now() - 48 * 3600000).toISOString()
-    const { data: endedApps } = await supabase.from('applications').select('session_id, sessions!inner(status, ends_at)')
-      .eq('applicant_id', user.id).in('status', ['accepted', 'checked_in'])
-    const recentSessionIds = (endedApps || [])
-      .filter(a => (a.sessions as any)?.status === 'ended' && (a.sessions as any)?.ends_at && (a.sessions as any).ends_at > cutoff48h)
-      .map(a => a.session_id)
-    if (recentSessionIds.length > 0) {
-      const { data: coParticipants } = await supabase.from('applications').select('applicant_id')
-        .in('session_id', recentSessionIds).in('status', ['accepted', 'checked_in']).neq('applicant_id', user.id)
-      const { data: myContacts } = await supabase.from('contacts').select('contact_user_id').eq('user_id', user.id)
-      const contactSet = new Set((myContacts || []).map((c: { contact_user_id: string }) => c.contact_user_id))
-      const suggestions = [...new Set((coParticipants || []).map((c: { applicant_id: string }) => c.applicant_id))].filter(id => !contactSet.has(id))
-      if (suggestions.length > 0) {
-        const { data: sProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', suggestions.slice(0, 6))
-        setSessionSuggestions((sProfiles || []).map((p: { id: string; display_name?: string; profile_json?: Record<string, unknown> }) => ({ id: p.id, name: p.display_name || '?', avatar: (p.profile_json?.avatar_url as string | undefined) })))
+      // Contacts récents
+      const contacts = contactsResult.data || []
+      if (contacts.length > 0) {
+        const cIds = contacts.map((c: { contact_user_id: string }) => c.contact_user_id)
+        const { data: cProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', cIds)
+        const ordered = cIds.map(cid => {
+          const p = (cProfiles || []).find((pr: any) => pr.id === cid)
+          return { id: cid, name: p?.display_name || '?', avatar: (p?.profile_json as any)?.avatar_url as string | undefined }
+        })
+        setRecentContacts(ordered)
       }
-    }
-    setLoading(false)
+
+      // Reviews + notifications
+      setPendingReviews((reviewResult.data || []).map((r: any) => ({ session_id: r.session_id, title: (r.sessions as any)?.title || 'Session' })))
+      setRecentNotifs(notifsResult.data || [])
+
+      // Counts host session
+      if (hostCountsResult && hostSession) {
+        const [pendingCnt, memberCnt, memberCounts] = hostCountsResult as any
+        setHostPendingCount(pendingCnt?.count ?? 0)
+        setLatestHost(prev => prev ? { ...prev, member_count: (memberCnt?.count || 0) + 1 } : prev)
+        if (memberCounts && sessionIds.length > 0) {
+          setActiveApps(prev => prev.map(a => {
+            const c = (memberCounts as any[]).find((x: any) => x.sid === a.session_id)
+            return c ? { ...a, member_count: c.count } : a
+          }))
+        }
+      }
+
+      // Suggestions de contacts depuis sessions récentes
+      const cutoff48h = new Date(Date.now() - 48 * 3600000).toISOString()
+      const endedApps = endedAppsResult.data || []
+      const recentSessionIds = endedApps
+        .filter(a => (a.sessions as any)?.status === 'ended' && (a.sessions as any)?.ends_at > cutoff48h)
+        .map(a => a.session_id)
+
+      if (recentSessionIds.length > 0) {
+        const [coParticipantsResult, myContactsResult] = await Promise.all([
+          supabase.from('applications').select('applicant_id').in('session_id', recentSessionIds).in('status', ['accepted', 'checked_in']).neq('applicant_id', user.id),
+          supabase.from('contacts').select('contact_user_id').eq('user_id', user.id),
+        ])
+        const contactSet = new Set((myContactsResult.data || []).map((c: any) => c.contact_user_id))
+        const suggestions = [...new Set((coParticipantsResult.data || []).map((c: any) => c.applicant_id))].filter(id => !contactSet.has(id))
+        if (suggestions.length > 0) {
+          const { data: sProfiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', suggestions.slice(0, 6))
+          setSessionSuggestions((sProfiles || []).map((p: any) => ({ id: p.id, name: p.display_name || '?', avatar: (p.profile_json?.avatar_url as string | undefined) })))
+        }
+      }
+
     } catch (err) {
       console.error('[useHomeData] loadData error:', err)
       setLoading(false)
@@ -170,31 +199,11 @@ export function useHomeData() {
   }
 
   return {
-    navigate,
-    t,
-    loading,
-    sessionTemplates,
-    userId,
-    displayName,
-    latestHost,
-    pendingApps,
-    inviteCode,
-    setInviteCode,
-    activeApps,
-    hostPendingCount,
-    profilePct,
-    recentContacts,
-    recentNotifs,
-    dismissedTips,
-    showTips,
-    sessionSuggestions,
-    pendingReviews,
-    pullHandlers,
-    pullIndicator,
-    handleJoinCode,
-    handleAddSuggestion,
-    dismissTip,
-    getSessionCover,
-    timeAgo,
+    navigate, t, loading, sessionTemplates, userId, displayName,
+    latestHost, pendingApps, inviteCode, setInviteCode, activeApps,
+    hostPendingCount, profilePct, recentContacts, recentNotifs,
+    dismissedTips, showTips, sessionSuggestions, pendingReviews,
+    pullHandlers, pullIndicator, handleJoinCode, handleAddSuggestion,
+    dismissTip, getSessionCover, timeAgo,
   }
 }
