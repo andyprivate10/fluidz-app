@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Star, Save, Download } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors, fonts } from '../brand'
@@ -26,7 +25,7 @@ type NearbyProfile = {
   orientation?: string
   age?: number
   morphology?: string
-  distance?: number // km
+  distance?: number
   lastSeen?: string
   home_country?: string
   home_city?: string
@@ -478,6 +477,7 @@ export default function ExplorePage() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2, flexWrap: 'wrap' }}>
                     {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
+                    {p.morphology && <span style={{ fontSize: 9, color: S.tx3 }}>· {p.morphology}</span>}
                     {p.orientation && <span style={{ fontSize: 10, fontWeight: 600, color: S.lav }}>{p.orientation}</span>}
                     {p.prep === 'Actif' && <Shield size={9} strokeWidth={2} style={{ color: S.sage }} />}
                     {myHomeCountry && p.home_country && p.home_country !== myHomeCountry && (
@@ -497,7 +497,6 @@ export default function ExplorePage() {
                     })()}
                     {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
                     {p.home_city && <span style={{ fontSize: 8, color: S.tx4 }}>{p.home_city}</span>}
-                    <VibeScoreBadge userId={p.id} size="sm" />
                     <ProfileBadges createdAt={p.created_at} lastSeen={p.lastSeen} prepStatus={p.prep} size="sm" />
                   </div>
                 </div>

@@ -913,6 +913,7 @@
   },
   "contacts": {
     "title": "Naughty Book",
+    "count": "{{count}} contact(s)",
     "search": "Search...",
     "all": "All",
     "acquaintance": "Acquaintance",

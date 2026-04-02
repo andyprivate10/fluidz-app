@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { Users, Search } from 'lucide-react'
+import { Users, Search, Star } from 'lucide-react'
 import { VibeScoreBadge } from '../components/VibeScoreBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { SkeletonProfile } from '../components/Skeleton'
@@ -45,7 +45,7 @@ export default function ContactsPage() {
     close: { label: t('contacts.close'), color: S.sage, stars: 2 },
     favori: { label: t('contacts.favori'), color: S.p, stars: 3 },
   }
-  const starIcon = (filled: boolean, color: string) => <span style={{ fontSize: 10, color: filled ? color : S.tx4 }}>★</span>
+  const starIcon = (filled: boolean, color: string) => <Star size={10} strokeWidth={filled ? 2 : 1.5} fill={filled ? color : 'none'} style={{ color: filled ? color : S.tx4 }} />
 
   const navigate = useNavigate()
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -177,7 +177,7 @@ export default function ContactsPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin: '0 0 2px' }}>{t('contacts.title')}</h1>
-            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{contacts.length} contact{contacts.length !== 1 ? 's' : ''}</p>
+            <p style={{ fontSize: 12, color: S.tx3, margin: 0 }}>{t('contacts.count', { count: contacts.length })}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => navigate('/groups')} style={{ padding: '6px 12px', borderRadius: 10, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -201,7 +201,11 @@ export default function ContactsPage() {
         <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
           {(['all', 'mutual', 'favori', 'close', 'connaissance'] as const).map(f => {
             const active = filter === f
-            const label = f === 'all' ? `${t('common.all')} (${counts.all})` : f === 'mutual' ? `♡ ${t('naughtybook.mutual')} (${counts.mutual})` : `${'★'.repeat(RELATION_STYLES[f].stars)} ${RELATION_STYLES[f].label} (${counts[f]})`
+            const label = f === 'all'
+              ? `${t('common.all')} (${counts.all})`
+              : f === 'mutual'
+              ? `${t('naughtybook.mutual')} (${counts.mutual})`
+              : `${RELATION_STYLES[f].label} (${counts[f]})`
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer',
@@ -321,7 +325,7 @@ export default function ContactsPage() {
                 const next = cycle[(idx + 1) % cycle.length]
                 updateRelation(contact.id, next)
               }} style={{ padding: '4px 8px', borderRadius: 8, border: 'none', cursor: 'pointer', background: 'transparent', display: 'flex', gap: 2, flexShrink: 0 }}>
-                {[1,2,3].map(n => <span key={n} style={{ fontSize: 14, color: n <= rel.stars ? rel.color : S.tx4 }}>★</span>)}
+                {[1,2,3].map(n => <Star key={n} size={14} strokeWidth={1.5} fill={n <= rel.stars ? rel.color : 'none'} style={{ color: n <= rel.stars ? rel.color : S.tx4 }} />)}
               </button>
             </div>
           )
