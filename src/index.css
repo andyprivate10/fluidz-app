@@ -14,9 +14,9 @@
 
   /* Text */
   --tx:  #EDE8F5;
-  --tx2: rgba(237,232,245,0.42);
-  --tx3: rgba(237,232,245,0.18);
-  --tx4: rgba(237,232,245,0.07);
+  --tx2: rgba(237,232,245,0.62);
+  --tx3: rgba(237,232,245,0.42);
+  --tx4: rgba(237,232,245,0.18);
 
   /* Accent — peach rose */
   --p:   #E0887A;
@@ -123,6 +123,7 @@ button:active:not(:disabled) { transform: scale(0.97); transition: transform 0.0
 /* Utility */
 .animate-fade-in { animation: fadeIn 0.3s ease-out both; }
 .animate-slide-up { animation: slideUp 0.35s ease-out both; }
+@keyframes photoFadeIn { from { opacity: 0.6 } to { opacity: 1 } }
 .skeleton { background: linear-gradient(90deg, var(--bg2) 25%, var(--bg3) 50%, var(--bg2) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s ease-in-out infinite; border-radius: var(--r-chip); }
 
 .stagger-children > * { animation: fadeIn 0.3s ease-out both; }
@@ -134,6 +135,9 @@ button:active:not(:disabled) { transform: scale(0.97); transition: transform 0.0
 .stagger-children > *:nth-child(6) { animation-delay: 200ms; }
 .stagger-children > *:nth-child(7) { animation-delay: 240ms; }
 .stagger-children > *:nth-child(8) { animation-delay: 280ms; }
+
+@keyframes pageEnter { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+.page-enter { animation: pageEnter 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; will-change: transform, opacity; }
 
 /* Toast */
 .toast-container { position: fixed; top: calc(12px + var(--safe-top)); left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px; }

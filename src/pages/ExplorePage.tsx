@@ -4,14 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Shield, Globe, Star, Save, Download, RefreshCw } from 'lucide-react'
+import { MapPin, Filter, Eye, EyeOff, BookOpen, Map as MapIcon, LayoutGrid, Star, Save, Download, RefreshCw } from 'lucide-react'
 import MapView from '../components/MapView'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
-import ProfileBadges from '../components/ProfileBadges'
 import { TRIBES } from '../lib/tribeTypes'
 import { stripHtml } from '../lib/sanitize'
 
@@ -35,6 +34,7 @@ type NearbyProfile = {
   created_at?: string
   tribes?: string[]
   kinks?: string[]
+  photos_profil?: string[]
 }
 
 // ROLE_FILTERS built dynamically from admin_config in component
@@ -49,6 +49,66 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
   const dLng = (lng2 - lng1) * Math.PI / 180
   const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+}
+
+function ExploreCard({ p, isFavorite, onFavToggle, onClick }: {
+  p: NearbyProfile, isFavorite: boolean,
+  onFavToggle: (e: React.MouseEvent) => void,
+  onClick: () => void,
+}) {
+  const photos = p.photos_profil && p.photos_profil.length > 0 ? p.photos_profil : p.avatar_url ? [p.avatar_url] : []
+  const [photoIdx, setPhotoIdx] = useState(0)
+
+  useEffect(() => {
+    if (photos.length <= 1) return
+    const iv = setInterval(() => setPhotoIdx(i => (i + 1) % photos.length), 3000)
+    return () => clearInterval(iv)
+  }, [photos.length])
+
+  const currentPhoto = photos[photoIdx]
+
+  return (
+    <div onClick={onClick} style={{
+      background: 'rgba(22,20,31,0.85)', borderRadius: 12, overflow: 'hidden',
+      cursor: 'pointer', border: '1px solid rgba(255,255,255,0.09)', position: 'relative',
+    }}>
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '2/3', overflow: 'hidden' }}>
+        {currentPhoto ? (
+          <img key={currentPhoto} src={currentPhoto} alt="" loading="lazy"
+            onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', animation: 'photoFadeIn 0.6s ease-out' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: S.tx }}>
+            {stripHtml(p.display_name)[0]?.toUpperCase()}
+          </div>
+        )}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '55%', background: 'linear-gradient(to top, rgba(5,4,10,0.92) 0%, rgba(5,4,10,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: 6, left: 7, right: 28, pointerEvents: 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#EDE8F5', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>
+              {stripHtml(p.display_name).slice(0, 10)}
+            </span>
+            {p.age && <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(237,232,245,0.85)' }}>{p.age}</span>}
+          </div>
+          {p.role && <span style={{ fontSize: 9, fontWeight: 600, color: S.p, lineHeight: 1 }}>{p.role}</span>}
+        </div>
+        {photos.length > 1 && (
+          <div style={{ position: 'absolute', top: 5, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 3 }}>
+            {photos.map((_, i) => (
+              <div key={i} style={{ width: i === photoIdx ? 12 : 4, height: 3, borderRadius: 99, background: i === photoIdx ? '#fff' : 'rgba(255,255,255,0.4)', transition: 'all 0.4s ease' }} />
+            ))}
+          </div>
+        )}
+        {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 900000 && (
+          <div style={{ position: 'absolute', top: 6, left: 6, width: 7, height: 7, borderRadius: '50%', background: S.sage, border: '1.5px solid rgba(0,0,0,0.5)' }} />
+        )}
+        <button onClick={onFavToggle} style={{ position: 'absolute', top: 5, right: 5, width: 24, height: 24, borderRadius: 99, background: 'rgba(0,0,0,0.45)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2 }}>
+          <Star size={11} strokeWidth={1.5} fill={isFavorite ? '#E0887A' : 'none'} style={{ color: isFavorite ? '#E0887A' : 'rgba(255,255,255,0.8)' }} />
+        </button>
+      </div>
+    </div>
+  )
 }
 
 export default function ExplorePage() {
@@ -70,7 +130,6 @@ export default function ExplorePage() {
   const [searchText, setSearchText] = useState('')
   const [myViewCount, setMyViewCount] = useState(0)
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
-  const [myHomeCountry, setMyHomeCountry] = useState<string | null>(null)
   const [myFavoriteIds, setMyFavoriteIds] = useState<Set<string>>(new Set())
   const [savedFilters, setSavedFilters] = useState<{ role?: string } | null>(null)
   const [selectedTribes, setSelectedTribes] = useState<string[]>([])
@@ -108,7 +167,6 @@ export default function ExplorePage() {
           requestLocation(user.id)
         }
         const pj = (data as any).profile_json || {}
-        if (pj.home_country) setMyHomeCountry(pj.home_country)
         if (pj.search_filters) setSavedFilters(pj.search_filters)
       } else {
         // No profile at all — request geo
@@ -144,6 +202,7 @@ export default function ExplorePage() {
         prep: pj.health?.prep_status || pj.prep,
         tribes: Array.isArray(pj.tribes) ? pj.tribes : undefined,
         kinks: Array.isArray(pj.kinks) ? pj.kinks : undefined,
+        photos_profil: Array.isArray(pj.photos_profil) && pj.photos_profil.length > 0 ? pj.photos_profil : pj.avatar_url ? [pj.avatar_url] : [],
         created_at: p.created_at,
       }
     })
@@ -255,6 +314,7 @@ export default function ExplorePage() {
         prep: pj.health?.prep_status || pj.prep,
         tribes: Array.isArray(pj.tribes) ? pj.tribes : undefined,
         kinks: Array.isArray(pj.kinks) ? pj.kinks : undefined,
+        photos_profil: Array.isArray(pj.photos_profil) && pj.photos_profil.length > 0 ? pj.photos_profil : pj.avatar_url ? [pj.avatar_url] : [],
         created_at: p.created_at,
       }
     })
@@ -434,8 +494,8 @@ export default function ExplorePage() {
         )}
 
         {loading && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, padding: '0 0 20px' }}>
-            {[1,2,3,4,5,6].map(i => (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, padding: '0 0 20px' }}>
+            {[1,2,3,4,5,6,7,8,9].map(i => (
               <div key={i} style={{ background: 'rgba(22,20,31,0.85)', borderRadius: 14, overflow: 'hidden', border: '1px solid '+S.rule2 }}>
                 <div style={{ width: '100%', aspectRatio: '3/4', background: S.bg2, animation: 'pulse 1.5s ease-in-out infinite' }} />
                 <div style={{ padding: 10 }}>
@@ -494,26 +554,13 @@ export default function ExplorePage() {
 
         {/* Grid */}
         {!loading && filtered.length > 0 && viewMode === 'grid' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
             {filtered.map(p => (
-              <div
+              <ExploreCard
                 key={p.id}
-                onClick={() => navigate('/profile/' + p.id)}
-                style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: '1px solid ' + S.rule2, position: 'relative' }}
-              >
-                {p.avatar_url ? (
-                  <img src={p.avatar_url} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: S.tx }}>
-                    {stripHtml(p.display_name)[0]?.toUpperCase()}
-                  </div>
-                )}
-                {/* Online dot */}
-                {p.lastSeen && (Date.now() - new Date(p.lastSeen).getTime()) < 300000 && (
-                  <div style={{ position: 'absolute', top: 8, left: 8, width: 10, height: 10, borderRadius: '50%', background: S.sage, border: '2px solid rgba(0,0,0,0.4)', boxShadow: '0 0 6px ' + S.sage, zIndex: 2 }} />
-                )}
-                {/* Favorite star */}
-                <button onClick={async (e) => {
+                p={p}
+                isFavorite={myFavoriteIds.has(p.id)}
+                onFavToggle={async (e) => {
                   e.stopPropagation()
                   if (!userId) return
                   if (myFavoriteIds.has(p.id)) {
@@ -523,52 +570,9 @@ export default function ExplorePage() {
                     await supabase.from('favorites').upsert({ user_id: userId, target_user_id: p.id }, { onConflict: 'user_id,target_user_id' })
                     setMyFavoriteIds(prev => new Set([...prev, p.id]))
                   }
-                }} style={{
-                  position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99,
-                  background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-                  border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 2,
-                }}>
-                  <Star size={13} strokeWidth={1.5} fill={myFavoriteIds.has(p.id) ? '#E0887A' : 'none'} style={{ color: myFavoriteIds.has(p.id) ? '#E0887A' : 'rgba(255,255,255,0.8)' }} />
-                </button>
-                <div style={{ padding: '8px 8px 10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: S.tx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{stripHtml(p.display_name)}</span>
-                    {p.age && <span style={{ fontSize: 10, color: S.tx3 }}>{p.age}</span>}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2, flexWrap: 'wrap' }}>
-                    {p.role && <span style={{ fontSize: 10, fontWeight: 600, color: S.p }}>{p.role}</span>}
-                    {p.morphology && <span style={{ fontSize: 9, color: S.tx3 }}>· {p.morphology}</span>}
-                    {p.orientation && <span style={{ fontSize: 10, fontWeight: 600, color: S.lav }}>{p.orientation}</span>}
-                    {p.prep === 'Actif' && <Shield size={9} strokeWidth={2} style={{ color: S.sage }} />}
-                    {myHomeCountry && p.home_country && p.home_country !== myHomeCountry && (
-                      <span style={{ fontSize: 8, fontWeight: 700, color: S.lav, background: S.lavbg, padding: '1px 5px', borderRadius: 99, border: '1px solid ' + S.lavbd, display: 'inline-flex', alignItems: 'center', gap: 2 }}>
-                        <Globe size={7} strokeWidth={2} />{t('explore.visitor')}
-                      </span>
-                    )}
-                    {p.tribes?.slice(0,2).map(slug => {
-                      const tr = TRIBES.find(t => t.slug === slug)
-                      const color = tr?.color || S.tx3
-                      return <span key={slug} style={{fontSize:8, fontWeight:700, color, background:color+'18', padding:'1px 6px', borderRadius:99}}>{t('tribes.'+slug, {defaultValue:slug})}</span>
-                    })}
-                    {p.kinks && p.kinks.length > 0 && (
-                      <span style={{ fontSize: 8, color: S.tx3 }}>{p.kinks.length} kinks</span>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                    {p.lastSeen && (() => {
-                      const ago = Date.now() - new Date(p.lastSeen).getTime()
-                      const isOnline = ago < 900000 // 15 min
-                      const isRecent = ago < 3600000 // 1h
-                      if (isOnline) return <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 9, color: S.sage, fontWeight: 600 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: S.sage }} />{t('explore.online')}</span>
-                      if (isRecent) return <span style={{ fontSize: 9, color: S.tx4 }}>{Math.round(ago / 60000)}min</span>
-                      return null
-                    })()}
-                    {p.distance !== undefined && <span style={{ fontSize: 9, color: S.tx4 }}>{p.distance < 1 ? (p.distance * 1000).toFixed(0) + 'm' : p.distance.toFixed(1) + 'km'}</span>}
-                    {p.home_city && <span style={{ fontSize: 8, color: S.tx4 }}>{p.home_city}</span>}
-                    <ProfileBadges createdAt={p.created_at} lastSeen={p.lastSeen} prepStatus={p.prep} size="sm" />
-                  </div>
-                </div>
-              </div>
+                }}
+                onClick={() => navigate('/profile/' + p.id)}
+              />
             ))}
           </div>
         )}

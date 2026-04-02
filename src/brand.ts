@@ -15,9 +15,9 @@ export const colors = {
 
   // Text
   tx:  '#EDE8F5',
-  tx2: 'rgba(237,232,245,0.42)',
-  tx3: 'rgba(237,232,245,0.18)',
-  tx4: 'rgba(237,232,245,0.07)',
+  tx2: 'rgba(237,232,245,0.62)',
+  tx3: 'rgba(237,232,245,0.42)',
+  tx4: 'rgba(237,232,245,0.18)',
 
   // Accent principal — peach rosé (PAS orange)
   p:   '#E0887A',
