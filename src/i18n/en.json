@@ -679,7 +679,8 @@
     "review_body": "Leave an anonymous review to help the community",
     "group_invite_body": "{{host}} invites you via the group \"{{group}}\"",
     "applied_title": "{{name}} applied",
-    "deleted": "Notification deleted"
+    "deleted": "Notification deleted",
+    "unread": "unread"
   },
   "auth": {
     "title": "fluidz",

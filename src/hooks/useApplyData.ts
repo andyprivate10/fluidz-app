@@ -121,8 +121,8 @@ export function useApplyData() {
           }
           setSession(sess ?? null)
           if (sess?.max_capacity) {
-            const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
-            if ((count ?? 0) >= sess.max_capacity) setCapacityFull(true)
+            const { data } = await supabase.from('applications').select('id').eq('session_id', id).in('status', ['accepted', 'checked_in']).limit(200)
+            if ((data?.length ?? 0) >= sess.max_capacity) setCapacityFull(true)
           }
           setDataLoading(false)
         })
@@ -138,8 +138,8 @@ export function useApplyData() {
               if (!mounted) return
               setSession(sess ?? null)
               if (sess?.max_capacity) {
-                const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
-                if ((count ?? 0) >= sess.max_capacity) setCapacityFull(true)
+                const { data } = await supabase.from('applications').select('id').eq('session_id', id).in('status', ['accepted', 'checked_in']).limit(200)
+                if ((data?.length ?? 0) >= sess.max_capacity) setCapacityFull(true)
               }
               setDataLoading(false)
             })
@@ -202,8 +202,8 @@ export function useApplyData() {
       }
       if (sess) setSession(sess)
       if (sess?.max_capacity) {
-        const { count } = await supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', id).in('status', ['accepted', 'checked_in'])
-        if ((count ?? 0) >= sess.max_capacity) setCapacityFull(true)
+        const { data: capData } = await supabase.from('applications').select('id').eq('session_id', id).in('status', ['accepted', 'checked_in']).limit(200)
+        if ((capData?.length ?? 0) >= sess.max_capacity) setCapacityFull(true)
       }
       const lastRow = Array.isArray(lastApp) ? lastApp?.[0] : lastApp
       if (lastRow?.created_at) {

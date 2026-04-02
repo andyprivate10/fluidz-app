@@ -66,12 +66,14 @@ export default function BottomNav() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from('notifications').select('*', { count: 'exact', head: true })
+      supabase.from('notifications').select('id')
         .eq('user_id', user.id).is('read_at', null)
-        .then(({ count }) => setUnreadNotifCount(count ?? 0))
-      supabase.from('notifications').select('*', { count: 'exact', head: true })
+        .limit(99)
+        .then(({ data }) => setUnreadNotifCount(data?.length ?? 0))
+      supabase.from('notifications').select('id')
         .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
-        .then(({ count }) => setUnreadChatCount(count ?? 0))
+        .limit(99)
+        .then(({ data }) => setUnreadChatCount(data?.length ?? 0))
       // Profile completion for pastille
       supabase.from('user_profiles').select('display_name, profile_json').eq('id', user.id).maybeSingle()
         .then(({ data: prof }) => {
@@ -83,9 +85,10 @@ export default function BottomNav() {
       supabase.from('sessions').select('id').eq('host_id', user.id).eq('status', 'open')
         .then(({ data: sessions }) => {
           if (!sessions || sessions.length === 0) return
-          supabase.from('applications').select('id', { count: 'exact', head: true })
+          supabase.from('applications').select('id')
             .in('session_id', sessions.map(s => s.id)).eq('status', 'pending')
-            .then(({ count }) => setHasNewApplication((count ?? 0) > 0))
+            .limit(99)
+            .then(({ data }) => setHasNewApplication((data?.length ?? 0) > 0))
         })
     })
   }, [location.pathname])
@@ -97,12 +100,14 @@ export default function BottomNav() {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, () => {
         supabase.auth.getUser().then(({ data: { user } }) => {
           if (!user) return
-          supabase.from('notifications').select('*', { count: 'exact', head: true })
+          supabase.from('notifications').select('id')
             .eq('user_id', user.id).is('read_at', null)
-            .then(({ count }) => setUnreadNotifCount(count ?? 0))
-          supabase.from('notifications').select('*', { count: 'exact', head: true })
+            .limit(99)
+            .then(({ data }) => setUnreadNotifCount(data?.length ?? 0))
+          supabase.from('notifications').select('id')
             .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
-            .then(({ count }) => setUnreadChatCount(count ?? 0))
+            .limit(99)
+            .then(({ data }) => setUnreadChatCount(data?.length ?? 0))
         })
       })
       .subscribe()
