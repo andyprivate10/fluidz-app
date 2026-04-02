@@ -156,7 +156,7 @@ export default function GroupsPage() {
         <div>
           <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:S.tx3, fontSize:13, cursor:'pointer', padding:0, marginBottom:8 }}><ArrowLeft size={16} strokeWidth={1.5} style={{display:'inline',marginRight:4}} />{t('common.back_label')}</button>
           <h1 style={{ fontSize:22,fontWeight:800,fontFamily:fonts.hero,color:S.tx, margin:0 }}>{t('contacts.groups')}</h1>
-          <p style={{ fontSize:12, color:S.tx3, margin:'2px 0 0' }}>{groups.length} groupe{groups.length !== 1 ? 's' : ''}</p>
+          <p style={{ fontSize:12, color:S.tx3, margin:'2px 0 0' }}>{t('groups.count', { count: groups.length })}</p>
         </div>
         <button onClick={openCreate} style={{ width:40, height:40, borderRadius:12, background:S.grad, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
           <Plus size={20} style={{ color: S.tx }} />
@@ -208,7 +208,7 @@ export default function GroupsPage() {
                   )
                 ))}
                 {group.members.length > 6 && <span style={{ fontSize:11, color:S.tx3, marginLeft:6, alignSelf:'center' }}>+{group.members.length - 6}</span>}
-                <span style={{ fontSize:11, color:S.tx3, marginLeft:8, alignSelf:'center' }}>{group.member_count} membre{group.member_count !== 1 ? 's' : ''}</span>
+                <span style={{ fontSize:11, color:S.tx3, marginLeft:8, alignSelf:'center' }}>{t('groups.member_count', { count: group.member_count })}</span>
               </div>
             )}
             <button onClick={() => navigate('/session/create?group=' + group.id)} style={{ marginTop: 10, width: '100%', padding: '8px 12px', borderRadius: 10, border: '1px solid ' + S.pbd, background: S.p2, color: S.p, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
@@ -230,17 +230,17 @@ export default function GroupsPage() {
 
             <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
               <div>
-                <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:4, display:'block' }}>NOM</label>
+                <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:4, display:'block' }}>{t('groups.label_name')}</label>
                 <input value={newName} onChange={e => setNewName(e.target.value)} placeholder={t('placeholders.group_name')} maxLength={40} style={inp} />
               </div>
               <div>
-                <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:4, display:'block' }}>DESCRIPTION</label>
+                <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:4, display:'block' }}>{t('groups.label_description')}</label>
                 <input value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder={t('placeholders.optional')} maxLength={100} style={inp} />
               </div>
 
               {/* Color picker */}
               <div>
-                <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:6, display:'block' }}>COULEUR</label>
+                <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:6, display:'block' }}>{t('groups.label_color')}</label>
                 <div style={{ display:'flex', gap:8 }}>
                   {GROUP_COLORS.map(c => (
                     <button key={c} onClick={() => setNewColor(c)} style={{
@@ -253,7 +253,7 @@ export default function GroupsPage() {
               {/* Member selection */}
               <div>
                 <label style={{ fontSize:11, fontWeight:700, color:S.tx3, marginBottom:6, display:'block' }}>
-                  MEMBRES ({selectedMembers.length} sélectionné{selectedMembers.length !== 1 ? 's' : ''})
+                  {t('groups.members_selected', { count: selectedMembers.length })}
                 </label>
                 {contacts.length === 0 ? (
                   <p style={{ fontSize:12, color:S.tx4 }}>{t('groups.no_contacts_hint')}</p>
@@ -267,7 +267,6 @@ export default function GroupsPage() {
                           background: on ? newColor + '18' : S.bg2,
                           outline: on ? `1px solid ${newColor}44` : 'none',
                         }}>
-      <OrbLayer />
                           {c.avatar_url ? (
                             <img src={c.avatar_url} alt="" loading="lazy" style={{ width:28, height:28, borderRadius:'50%', objectFit:'cover' }} />
                           ) : (

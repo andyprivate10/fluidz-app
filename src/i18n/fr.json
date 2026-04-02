@@ -1166,7 +1166,12 @@
     "new_group": "Nouveau groupe",
     "confirm_delete": "Supprimer ce groupe ?",
     "no_contacts_hint": "Ajoute des contacts d'abord dans le Naughty Book",
-    "members_selected": "MEMBRES ({{count}} sélectionné(s))"
+    "members_selected": "MEMBRES ({{count}} sélectionné(s))",
+    "label_name": "NOM",
+    "label_description": "DESCRIPTION",
+    "label_color": "COULEUR",
+    "count": "{{count}} groupe(s)",
+    "member_count": "{{count}} membre(s)"
   },
   "me": {
     "sending": "Envoi...",
@@ -1362,6 +1367,9 @@
     "past_sessions": "Tes sessions passees",
     "use_template": "Utiliser ce template",
     "template_shared": "Template partage",
+    "media_video_label": "Video",
+    "media_photo_label": "Photo",
+    "media_audio_label": "Audio",
     "checkin_banner": "Tu as été accepté(e) ! Clique quand tu arrives.",
     "checkin_button": "Je suis là",
     "application_rejected": "Candidature refusée",
@@ -1790,6 +1798,7 @@
     "naughtybook_title": "Le NaughtyBook",
     "naughtybook_desc": "Ajoute des contacts à ton NaughtyBook pour un accès complet aux profils et des DM libres.",
     "ready_title": "Prêt ?",
+    "ready_desc": "Explore les profils autour de toi ou cree ta premiere session.",
     "go_button": "C'est parti !",
     "skip": "Passer"
   },

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { showToast } from '../components/Toast'
-import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat, Shield } from 'lucide-react'
+import { ArrowLeft, Send, Camera, Smile, X, Plus, MapPin, FileText, Repeat, Shield, Mic, Square, Check, CheckCheck } from 'lucide-react'
 import { compressImage } from '../lib/media'
 import { colors, fonts } from '../brand'
 import OrbLayer from '../components/OrbLayer'
@@ -238,7 +238,7 @@ export default function DirectDMPage() {
       const isVideo = file.type.startsWith('video/')
       let uploadFile: Blob = file
       const ext = isVideo ? (file.name.split('.').pop() || 'mp4') : 'jpg'
-      const label = isVideo ? '🎬 Vidéo' : '📷 Photo'
+      const label = isVideo ? t('dm.media_video_label') : t('dm.media_photo_label')
       if (!isVideo) uploadFile = await compressImage(file)
       const path = `${currentUser.id}/ddm_${Date.now()}.${ext}`
       const { error } = await supabase.storage.from('avatars').upload(path, uploadFile, { contentType: isVideo ? file.type : 'image/jpeg' })
@@ -269,7 +269,7 @@ export default function DirectDMPage() {
         if (error) { setUploading(false); return }
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
         await supabase.from('messages').insert({
-          session_id: sessionId, sender_id: currentUser.id, text: '🎤 Audio',
+          session_id: sessionId, sender_id: currentUser.id, text: t('dm.media_audio_label'),
           sender_name: displayName, room_type: 'dm', dm_peer_id: peerId,
           has_media: true, media_urls: [publicUrl],
         })
@@ -461,7 +461,7 @@ export default function DirectDMPage() {
                 if (isVideo) return <video key={mi} controls playsInline src={url} style={{ width: '100%', maxWidth: 260, borderRadius: 10 }} />
                 return <img key={mi} src={url} alt="" loading="lazy" onClick={() => setChatLightbox(url)} style={{ width: '100%', maxWidth: 240, borderRadius: 10, cursor: 'zoom-in' }} />
               })}
-              {msg.text && msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && (
+              {msg.text && msg.text !== '📷 Photo' && msg.text !== '🎤 Audio' && msg.text !== t('dm.media_photo_label') && msg.text !== t('dm.media_audio_label') && (
                 msg.text.startsWith('[INTENT_MATCH]') ? (() => {
                   try {
                     const data = JSON.parse(msg.text.slice(14))
@@ -531,7 +531,7 @@ export default function DirectDMPage() {
                   const peerMsgs = messages.filter(m => !isMe(m.sender_id))
                   const lastPeerTime = peerMsgs.length > 0 ? new Date(peerMsgs[peerMsgs.length - 1].created_at).getTime() : 0
                   const isSeen = lastPeerTime > new Date(msg.created_at).getTime()
-                  return <span style={{ color: isSeen ? S.blue : S.tx4, marginLeft: 3 }}>{isSeen ? '✓✓' : '✓'}</span>
+                  return <span style={{ color: isSeen ? S.blue : S.tx4, marginLeft: 3, display: 'inline-flex' }}>{isSeen ? <CheckCheck size={10} strokeWidth={2} /> : <Check size={10} strokeWidth={2} />}</span>
                 })()}</span>
               </div>
             </div>
@@ -614,7 +614,7 @@ export default function DirectDMPage() {
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files?.[0]; if (f) setMediaPreview(f); e.target.value = '' }} style={{ display: 'none' }} />
         </label>
         <button type="button" onClick={recording ? stopRecording : startRecording} disabled={uploading} style={{ width: 40, height: 40, borderRadius: 12, border: 'none', background: recording ? S.red : S.bg2, color: recording ? S.tx : S.tx3, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, animation: recording ? 'pulse 1s infinite' : 'none' }}>
-          {recording ? '■' : '●'}
+          {recording ? <Square size={14} strokeWidth={1.5} /> : <Mic size={14} strokeWidth={1.5} />}
         </button>
         <style>{'@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}'}</style>
         <button type="button" onClick={() => setShowEmojiBar(!showEmojiBar)} style={{ width: 40, height: 40, borderRadius: 12, background: showEmojiBar ? S.p3 : S.bg2, border: '1px solid ' + (showEmojiBar ? S.pbd : S.rule), display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
