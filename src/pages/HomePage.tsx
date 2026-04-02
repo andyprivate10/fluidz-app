@@ -128,6 +128,12 @@ export default function HomePage() {
               </div>
             )
           })}
+          {recentNotifs.length > 0 && (
+            <div onClick={() => navigate('/activity')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer' }}>
+              <span style={{ fontSize: 12, color: S.tx3 }}>{t('home.see_all_activity')}</span>
+              <ArrowRight size={12} style={{ color: S.tx4 }} />
+            </div>
+          )}
         </div>
       )}
 

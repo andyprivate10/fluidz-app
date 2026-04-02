@@ -8,13 +8,19 @@ import { colors, radius, typeStyle } from '../brand'
 import OrbLayer from '../components/OrbLayer'
 import { sessionTiming } from '../lib/timing'
 import { DM_DIRECT_TITLE } from '../lib/constants'
-import { Plus, Globe, Zap, Sparkles } from 'lucide-react'
+import { Plus, Globe, Zap, Sparkles, Clock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { SkeletonCard } from '../components/Skeleton'
 import SessionInfoCard from '../components/SessionInfoCard'
 
 const S = colors
 const R = radius
+
+function buildRolesSummary(roles: string[]): string {
+  const counts: Record<string, number> = {}
+  for (const r of roles) { if (r) counts[r] = (counts[r] || 0) + 1 }
+  return Object.entries(counts).map(([r, c]) => `${c} ${r}`).join(' · ')
+}
 
 function calcTimeProgress(starts_at?: string, ends_at?: string): { progress: number; remaining: string } | null {
   if (!starts_at || !ends_at) return null
@@ -43,6 +49,7 @@ export default function SessionsPage() {
   const [myRejected, setMyRejected] = useState<AppSession[]>([])
   const [publicSessions, setPublicSessions] = useState<Session[]>([])
   const [memberCounts, setMemberCounts] = useState<Record<string, number>>({})
+  const [sessionRoles, setSessionRoles] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
 
   const loadData = useCallback(async () => {
@@ -59,6 +66,23 @@ export default function SessionsPage() {
         counts[a.session_id] = (counts[a.session_id] || 0) + 1
       }
       setMemberCounts(counts)
+
+      // Load roles for open hosted sessions
+      const openHostedIds = (h || []).filter((s: any) => s.status === 'open').map((s: any) => s.id)
+      if (openHostedIds.length > 0) {
+        const { data: roleApps } = await supabase.from('applications').select('session_id, applicant_id').in('session_id', openHostedIds).in('status', ['accepted', 'checked_in'])
+        if (roleApps && roleApps.length > 0) {
+          const appIds = [...new Set(roleApps.map((a: any) => a.applicant_id))]
+          const { data: profs } = await supabase.from('user_profiles').select('id, profile_json').in('id', appIds)
+          const rm: Record<string, string> = {}
+          ;(profs || []).forEach((p: any) => { if (p.profile_json?.role) rm[p.id] = p.profile_json.role })
+          const srl: Record<string, string[]> = {}
+          roleApps.forEach((a: any) => { if (!srl[a.session_id]) srl[a.session_id] = []; if (rm[a.applicant_id]) srl[a.session_id].push(rm[a.applicant_id]) })
+          const built: Record<string, string> = {}
+          Object.entries(srl).forEach(([sid, roles]) => { built[sid] = buildRolesSummary(roles) })
+          setSessionRoles(built)
+        }
+      }
     }
 
     const { data: apps } = await supabase.from('applications').select('session_id, status, sessions(title, approx_area, tags, cover_url, template_slug, status, created_at, starts_at, ends_at)').eq('applicant_id', user.id).order('created_at', { ascending: false })
@@ -102,6 +126,7 @@ export default function SessionsPage() {
         description={sess.description}
         timeProgress={tp?.progress}
         timeRemaining={tp?.remaining}
+        rolesSummary={sessionRoles[sess.id]}
         endedCta={sess.status === 'ended' ? `${t('sessions.review_session')} →` : undefined}
       />
     )
@@ -218,6 +243,16 @@ export default function SessionsPage() {
               </div>
             )}
             {publicSessions.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
+
+        {/* Link to activity/history */}
+        <div onClick={() => navigate('/activity')} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderRadius: 14, background: 'rgba(22,20,31,0.6)', border: '1px solid rgba(255,255,255,0.07)', cursor: 'pointer', marginTop: 4 }}>
+          <Clock size={16} strokeWidth={1.5} style={{ color: S.tx3, flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: S.tx2 }}>{t('sessions.activity_link')}</p>
+            <p style={{ margin: 0, fontSize: 11, color: S.tx4 }}>{t('sessions.activity_link_desc')}</p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: S.tx4 }}><path d="M9 18l6-6-6-6"/></svg>
+        </div>
       </div>
     </div>
     </PageFadeIn>

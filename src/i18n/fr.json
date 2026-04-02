@@ -63,7 +63,8 @@
     "add_from_session": "AJOUTER DE TA DERNIÈRE SESSION",
     "add_from_session_desc": "Ces personnes étaient avec toi récemment",
     "pending_reviews": "AVIS EN ATTENTE",
-    "review_now": "Donner mon avis →"
+    "review_now": "Donner mon avis →",
+    "see_all_activity": "Voir toute l'activite"
   },
   "explore": {
     "title": "Autour de moi",
@@ -114,6 +115,7 @@
     "draft": "Brouillon",
     "elapsed": "En cours",
     "remaining": "restant",
+    "time_elapsed": "Temps ecoule",
     "members": "Membres",
     "host": "Host",
     "accepted": "Accepte",
@@ -1072,7 +1074,7 @@
     "admin": "Admin",
     "admin_dashboard": "Dashboard admin",
     "logout": "Déconnexion",
-    "activity": "Activite"
+    "activity": "Activite & Historique"
   },
   "sessions": {
     "empty_hosted": "Aucune session. Crée ta première.",
@@ -1094,7 +1096,9 @@
     "my_ended": "Mes sessions terminées",
     "past_participated": "Sessions auxquelles j'ai participé",
     "no_ended": "Pas encore de sessions terminées",
-    "review_session": "Laisser un avis"
+    "review_session": "Laisser un avis",
+    "activity_link": "Sessions terminees & historique",
+    "activity_link_desc": "Retrouve tes soirees passees dans Activite"
   },
   "addresses": {
     "empty": "Aucune adresse",
@@ -1556,7 +1560,9 @@
     "naughtybook_desc": "Sauvegarde tes contacts favoris pour les retrouver facilement",
     "ghost_title": "Mode Ghost",
     "ghost_desc": "Postule anonymement pendant 24h, sans créer de compte",
-    "dismiss": "Fermer"
+    "dismiss": "Fermer",
+    "contacts_title": "Ton Carnet de contacts",
+    "contacts_desc": "Retrouve les profils avec qui tu as ete en session"
   },
   "address": {
     "share_title": "Partager une adresse",

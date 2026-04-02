@@ -63,7 +63,8 @@
     "add_from_session": "ADD FROM YOUR LAST SESSION",
     "add_from_session_desc": "These people were with you recently",
     "pending_reviews": "PENDING REVIEWS",
-    "review_now": "Review now →"
+    "review_now": "Review now →",
+    "see_all_activity": "See all activity"
   },
   "explore": {
     "title": "Around me",
@@ -114,6 +115,7 @@
     "draft": "Draft",
     "elapsed": "In progress",
     "remaining": "remaining",
+    "time_elapsed": "Time elapsed",
     "members": "Members",
     "host": "Host",
     "accepted": "Accepted",
@@ -1072,7 +1074,7 @@
     "admin": "Admin",
     "admin_dashboard": "Admin dashboard",
     "logout": "Sign out",
-    "activity": "Activity"
+    "activity": "Activity & History"
   },
   "sessions": {
     "empty_hosted": "No sessions. Create your first one.",
@@ -1094,7 +1096,9 @@
     "my_ended": "My ended sessions",
     "past_participated": "Sessions I attended",
     "no_ended": "No ended sessions yet",
-    "review_session": "Leave a review"
+    "review_session": "Leave a review",
+    "activity_link": "Ended sessions & history",
+    "activity_link_desc": "Find your past sessions in Activity"
   },
   "addresses": {
     "empty": "No addresses",
@@ -1556,7 +1560,9 @@
     "naughtybook_desc": "Save your favorite contacts to find them easily",
     "ghost_title": "Ghost mode",
     "ghost_desc": "Apply anonymously for 24h, no account needed",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "contacts_title": "Your Contacts",
+    "contacts_desc": "Find profiles you've been in sessions with"
   },
   "address": {
     "share_title": "Share an address",

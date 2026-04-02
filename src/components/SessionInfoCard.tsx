@@ -31,11 +31,12 @@ interface Props {
   description?: string
   timeProgress?: number
   timeRemaining?: string
+  rolesSummary?: string
 }
 
 export default function SessionInfoCard({
   session, memberCount, onClick, compact, showCapacity = true,
-  label, labelColor, timing, endedCta,
+  label, labelColor, timing, endedCta, description, timeProgress, timeRemaining, rolesSummary,
 }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -120,6 +121,17 @@ export default function SessionInfoCard({
           </p>
         )}
 
+        {description && description.trim().length > 0 && (
+          <p style={{
+            ...typeStyle('meta'), color: S.tx2,
+            margin: '4px 0 0', lineHeight: 1.4,
+            overflow: 'hidden', display: '-webkit-box',
+            WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const,
+          }}>
+            {description.slice(0, 100)}{description.length > 100 ? '...' : ''}
+          </p>
+        )}
+
         {!compact && session.tags && session.tags.length > 0 && (
           <div style={{
             display: 'flex', gap: 4, marginTop: 8, flexWrap: 'wrap',
@@ -133,6 +145,12 @@ export default function SessionInfoCard({
               }}>{tag}</span>
             ))}
           </div>
+        )}
+
+        {rolesSummary && (
+          <p style={{ ...typeStyle('meta'), color: S.tx3, margin: '4px 0 0', fontWeight: 600, letterSpacing: '0.02em' }}>
+            {rolesSummary}
+          </p>
         )}
 
         <div style={{
@@ -153,6 +171,18 @@ export default function SessionInfoCard({
             </span>
           )}
         </div>
+
+        {timeProgress !== undefined && timeProgress > 0 && timeProgress < 100 && (
+          <div style={{ marginTop: 10 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+              <span style={{ ...typeStyle('meta'), color: S.tx3, fontWeight: 600 }}>{t('session.time_elapsed')}</span>
+              {timeRemaining && <span style={{ ...typeStyle('meta'), color: S.p, fontWeight: 700 }}>{timeRemaining} {t('session.remaining')}</span>}
+            </div>
+            <div style={{ height: 3, borderRadius: 99, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+              <div style={{ height: '100%', borderRadius: 99, width: `${Math.min(timeProgress, 100)}%`, background: timeProgress > 80 ? `linear-gradient(90deg, ${S.amber}, ${S.red})` : `linear-gradient(90deg, ${S.sage}, ${S.p})`, transition: 'width 1s ease' }} />
+            </div>
+          </div>
+        )}
 
         {isEnded && endedCta && (
           <p style={{
