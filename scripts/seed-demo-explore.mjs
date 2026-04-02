@@ -39,56 +39,56 @@ const PASSWORD = 'testpass123'
 
 // ─── 50 Profiles ────────────────────────────────────────────────────────────
 const PROFILES = [
-  { name: 'Leo', age: 24, role: 'Bottom', morph: 'Mince', eth: 'caucasian', tribes: ['twink'], kinks: ['kissing','cuddling','oral'], dm: 'open' },
-  { name: 'Matteo', age: 29, role: 'Top', morph: 'Athletique', eth: 'caucasian', tribes: ['jock'], kinks: ['domination','bondage','role_play'], dm: 'profile_required' },
-  { name: 'Rayan', age: 27, role: 'Versatile', morph: 'Sportif', eth: 'middle_eastern', tribes: ['otter'], kinks: ['massage','oral','kissing'], dm: 'open' },
-  { name: 'Diego', age: 32, role: 'Top-Versatile', morph: 'Muscle', eth: 'latino', tribes: ['muscle'], kinks: ['domination','spanking','toys'], dm: 'profile_required' },
-  { name: 'Yuki', age: 26, role: 'Bottom', morph: 'Mince', eth: 'east_asian', tribes: ['twink'], kinks: ['cuddling','oral','kissing'], dm: 'open' },
-  { name: 'Theo', age: 35, role: 'Top', morph: 'Ours', eth: 'caucasian', tribes: ['bear','leather','daddy'], kinks: ['leather','domination','fisting'], dm: 'profile_required' },
-  { name: 'Alexis', age: 23, role: 'Versatile', morph: 'Sportif', eth: 'mixed', tribes: ['jock'], kinks: ['oral','massage','kissing'], dm: 'open' },
-  { name: 'Nathan', age: 31, role: 'Bottom-Versatile', morph: 'Athletique', eth: 'black_african', tribes: ['jock'], kinks: ['role_play','cuddling','toys'], dm: 'open' },
-  { name: 'Hugo', age: 28, role: 'Top', morph: 'Moyen', eth: 'caucasian', tribes: [], kinks: ['oral','domination','kissing'], dm: 'open' },
-  { name: 'Samir', age: 33, role: 'Versatile', morph: 'Costaud', eth: 'middle_eastern', tribes: ['bear'], kinks: ['massage','bondage','oral'], dm: 'profile_required' },
-  { name: 'Kenji', age: 25, role: 'Side', morph: 'Mince', eth: 'east_asian', tribes: ['twink'], kinks: ['cuddling','massage','kissing'], dm: 'open' },
-  { name: 'Carlos', age: 30, role: 'Power-Bottom', morph: 'Sportif', eth: 'latino', tribes: ['jock'], kinks: ['group','toys','oral'], dm: 'open' },
-  { name: 'Felix', age: 38, role: 'Top', morph: 'Muscle', eth: 'caucasian', tribes: ['leather','daddy'], kinks: ['leather','domination','fisting'], dm: 'profile_required' },
-  { name: 'Amine', age: 26, role: 'Bottom', morph: 'Athletique', eth: 'middle_eastern', tribes: ['otter'], kinks: ['oral','cuddling','kissing'], dm: 'open' },
-  { name: 'Luca', age: 22, role: 'Versatile', morph: 'Mince', eth: 'caucasian', tribes: ['twink'], kinks: ['kissing','cuddling','massage'], dm: 'open' },
-  { name: 'Brandon', age: 27, role: 'Top-Versatile', morph: 'Athletique', eth: 'black_african', tribes: ['jock'], kinks: ['domination','spanking','oral'], dm: 'profile_required' },
-  { name: 'Julien', age: 34, role: 'Bottom', morph: 'Grassouillet', eth: 'caucasian', tribes: ['bear','cub'], kinks: ['cuddling','oral','group'], dm: 'open' },
-  { name: 'Marco', age: 29, role: 'Top', morph: 'Muscle', eth: 'caucasian', tribes: ['muscle'], kinks: ['domination','bondage','leather'], dm: 'profile_required' },
-  { name: 'Kevin', age: 24, role: 'Versatile', morph: 'Sportif', eth: 'mixed', tribes: ['jock'], kinks: ['oral','kissing','massage'], dm: 'open' },
-  { name: 'Tariq', age: 31, role: 'Power-Bottom', morph: 'Athletique', eth: 'middle_eastern', tribes: ['otter'], kinks: ['group','toys','role_play'], dm: 'open' },
-  { name: 'Jin', age: 28, role: 'Bottom', morph: 'Mince', eth: 'southeast_asian', tribes: ['twink'], kinks: ['cuddling','oral','kissing'], dm: 'open' },
-  { name: 'Roberto', age: 36, role: 'Top', morph: 'Costaud', eth: 'latino', tribes: ['bear','daddy'], kinks: ['domination','leather','fisting'], dm: 'profile_required' },
-  { name: 'Erwan', age: 25, role: 'Versatile', morph: 'Sportif', eth: 'caucasian', tribes: ['jock'], kinks: ['massage','oral','cuddling'], dm: 'open' },
-  { name: 'Milo', age: 21, role: 'Bottom', morph: 'Mince', eth: 'caucasian', tribes: ['twink'], kinks: ['kissing','cuddling','oral'], dm: 'open' },
-  { name: 'Serge', age: 42, role: 'Top', morph: 'Ours', eth: 'caucasian', tribes: ['bear','leather','daddy'], kinks: ['leather','domination','fisting'], dm: 'profile_required' },
-  { name: 'Noam', age: 27, role: 'Versatile', morph: 'Athletique', eth: 'middle_eastern', tribes: ['otter'], kinks: ['oral','massage','cuddling'], dm: 'open' },
-  { name: 'Axel', age: 33, role: 'Top-Versatile', morph: 'Muscle', eth: 'caucasian', tribes: ['muscle'], kinks: ['domination','bondage','spanking'], dm: 'profile_required' },
-  { name: 'Sofiane', age: 29, role: 'Bottom-Versatile', morph: 'Sportif', eth: 'middle_eastern', tribes: ['jock'], kinks: ['oral','cuddling','toys'], dm: 'open' },
-  { name: 'Remi', age: 26, role: 'Bottom', morph: 'Moyen', eth: 'caucasian', tribes: [], kinks: ['kissing','cuddling','oral'], dm: 'open' },
-  { name: 'Paulo', age: 30, role: 'Top', morph: 'Athletique', eth: 'latino', tribes: ['jock'], kinks: ['domination','oral','spanking'], dm: 'profile_required' },
-  { name: 'Arjun', age: 28, role: 'Versatile', morph: 'Sportif', eth: 'south_asian', tribes: ['otter'], kinks: ['massage','kissing','oral'], dm: 'open' },
-  { name: 'Tristan', age: 35, role: 'Power-Bottom', morph: 'Athletique', eth: 'caucasian', tribes: ['leather'], kinks: ['leather','toys','group'], dm: 'profile_required' },
-  { name: 'Sebastien', age: 40, role: 'Top', morph: 'Costaud', eth: 'caucasian', tribes: ['bear','daddy'], kinks: ['domination','leather','fisting'], dm: 'profile_required' },
-  { name: 'Bastien', age: 23, role: 'Bottom', morph: 'Mince', eth: 'caucasian', tribes: ['twink','pup'], kinks: ['cuddling','kissing','puppy_play'], dm: 'open' },
-  { name: 'Ryusei', age: 27, role: 'Versatile', morph: 'Athletique', eth: 'east_asian', tribes: ['jock'], kinks: ['oral','massage','cuddling'], dm: 'open' },
-  { name: 'Mehdi', age: 32, role: 'Top-Versatile', morph: 'Muscle', eth: 'middle_eastern', tribes: ['muscle'], kinks: ['domination','bondage','oral'], dm: 'profile_required' },
-  { name: 'Tom', age: 25, role: 'Side', morph: 'Mince', eth: 'caucasian', tribes: ['twink'], kinks: ['cuddling','massage','kissing'], dm: 'open' },
-  { name: 'Baptiste', age: 31, role: 'Versatile', morph: 'Sportif', eth: 'caucasian', tribes: ['jock'], kinks: ['oral','group','massage'], dm: 'open' },
-  { name: 'Kwame', age: 28, role: 'Top', morph: 'Athletique', eth: 'black_african', tribes: ['jock'], kinks: ['domination','oral','spanking'], dm: 'profile_required' },
-  { name: 'Vincent', age: 37, role: 'Bottom-Versatile', morph: 'Moyen', eth: 'caucasian', tribes: [], kinks: ['cuddling','oral','toys'], dm: 'open' },
-  { name: 'Rafael', age: 26, role: 'Bottom', morph: 'Sportif', eth: 'latino', tribes: ['jock'], kinks: ['oral','cuddling','kissing'], dm: 'open' },
-  { name: 'Soren', age: 29, role: 'Top', morph: 'Athletique', eth: 'caucasian', tribes: ['jock'], kinks: ['domination','bondage','oral'], dm: 'profile_required' },
-  { name: 'Hamza', age: 24, role: 'Versatile', morph: 'Sportif', eth: 'middle_eastern', tribes: ['otter'], kinks: ['massage','oral','kissing'], dm: 'open' },
-  { name: 'Cedric', age: 33, role: 'Top', morph: 'Muscle', eth: 'mixed', tribes: ['daddy'], kinks: ['domination','leather','spanking'], dm: 'profile_required' },
-  { name: 'Loris', age: 22, role: 'Bottom', morph: 'Mince', eth: 'caucasian', tribes: ['twink'], kinks: ['kissing','cuddling','oral'], dm: 'open' },
-  { name: 'TheoB', age: 30, role: 'Power-Bottom', morph: 'Athletique', eth: 'caucasian', tribes: ['leather','pup'], kinks: ['leather','puppy_play','toys'], dm: 'open' },
-  { name: 'Damien', age: 36, role: 'Top-Versatile', morph: 'Costaud', eth: 'caucasian', tribes: ['bear','daddy'], kinks: ['domination','leather','fisting'], dm: 'profile_required' },
-  { name: 'Ivan', age: 28, role: 'Versatile', morph: 'Sportif', eth: 'caucasian', tribes: ['jock'], kinks: ['oral','massage','group'], dm: 'open' },
-  { name: 'Noa', age: 25, role: 'Bottom', morph: 'Mince', eth: 'mixed', tribes: ['drag'], kinks: ['cuddling','kissing','role_play'], dm: 'open' },
-  { name: 'Killian', age: 27, role: 'Top', morph: 'Athletique', eth: 'caucasian', tribes: ['jock'], kinks: ['domination','oral','bondage'], dm: 'profile_required' },
+  { name: 'Leo', age: 24, role: 'Bottom', morph: 'Mince', eth: 'blanc', tribes: ['twink'], kinks: ['Câlins','Rimming'], dm: 'open' },
+  { name: 'Matteo', age: 29, role: 'Top', morph: 'Athletique', eth: 'blanc', tribes: ['jock'], kinks: ['Dominant','Menottes','Jeux de rôle'], dm: 'profile_required' },
+  { name: 'Rayan', age: 27, role: 'Versatile', morph: 'Sportif', eth: 'moyen_oriental', tribes: ['otter'], kinks: ['Massage','Rimming','Câlins'], dm: 'open' },
+  { name: 'Diego', age: 32, role: 'Top-Versatile', morph: 'Muscle', eth: 'latino', tribes: ['muscle_bear'], kinks: ['Dominant','Spanking','Exhib'], dm: 'profile_required' },
+  { name: 'Yuki', age: 26, role: 'Bottom', morph: 'Mince', eth: 'asiatique', tribes: ['twink'], kinks: ['Câlins','Rimming','Câlins'], dm: 'open' },
+  { name: 'Theo', age: 35, role: 'Top', morph: 'Ours', eth: 'blanc', tribes: ['bear','Cuir','daddy'], kinks: ['Cuir','Dominant','Fist'], dm: 'profile_required' },
+  { name: 'Alexis', age: 23, role: 'Versatile', morph: 'Sportif', eth: 'metis', tribes: ['jock'], kinks: ['Rimming','Massage','Câlins'], dm: 'open' },
+  { name: 'Nathan', age: 31, role: 'Bottom-Versatile', morph: 'Athletique', eth: 'noir', tribes: ['jock'], kinks: ['Jeux de rôle','Câlins','Exhib'], dm: 'open' },
+  { name: 'Hugo', age: 28, role: 'Top', morph: 'Moyen', eth: 'blanc', tribes: [], kinks: ['Rimming','Dominant','Câlins'], dm: 'open' },
+  { name: 'Samir', age: 33, role: 'Versatile', morph: 'Costaud', eth: 'moyen_oriental', tribes: ['bear'], kinks: ['Massage','Menottes','Rimming'], dm: 'profile_required' },
+  { name: 'Kenji', age: 25, role: 'Side', morph: 'Mince', eth: 'asiatique', tribes: ['twink'], kinks: ['Câlins','Massage','Câlins'], dm: 'open' },
+  { name: 'Carlos', age: 30, role: 'Power-Bottom', morph: 'Sportif', eth: 'latino', tribes: ['jock'], kinks: ['Groupe','Exhib','Rimming'], dm: 'open' },
+  { name: 'Felix', age: 38, role: 'Top', morph: 'Muscle', eth: 'blanc', tribes: ['Cuir','daddy'], kinks: ['Cuir','Dominant','Fist'], dm: 'profile_required' },
+  { name: 'Amine', age: 26, role: 'Bottom', morph: 'Athletique', eth: 'moyen_oriental', tribes: ['otter'], kinks: ['Rimming','Câlins'], dm: 'open' },
+  { name: 'Luca', age: 22, role: 'Versatile', morph: 'Mince', eth: 'blanc', tribes: ['twink'], kinks: ['Câlins','Massage'], dm: 'open' },
+  { name: 'Brandon', age: 27, role: 'Top-Versatile', morph: 'Athletique', eth: 'noir', tribes: ['jock'], kinks: ['Dominant','Spanking','Rimming'], dm: 'profile_required' },
+  { name: 'Julien', age: 34, role: 'Bottom', morph: 'Grassouillet', eth: 'blanc', tribes: ['bear','cub'], kinks: ['Câlins','Rimming','Groupe'], dm: 'open' },
+  { name: 'Marco', age: 29, role: 'Top', morph: 'Muscle', eth: 'blanc', tribes: ['muscle_bear'], kinks: ['Dominant','Menottes','Cuir'], dm: 'profile_required' },
+  { name: 'Kevin', age: 24, role: 'Versatile', morph: 'Sportif', eth: 'metis', tribes: ['jock'], kinks: ['Rimming','Câlins','Massage'], dm: 'open' },
+  { name: 'Tariq', age: 31, role: 'Power-Bottom', morph: 'Athletique', eth: 'moyen_oriental', tribes: ['otter'], kinks: ['Groupe','Exhib','Jeux de rôle'], dm: 'open' },
+  { name: 'Jin', age: 28, role: 'Bottom', morph: 'Mince', eth: 'asiatique', tribes: ['twink'], kinks: ['Câlins','Rimming','Câlins'], dm: 'open' },
+  { name: 'Roberto', age: 36, role: 'Top', morph: 'Costaud', eth: 'latino', tribes: ['bear','daddy'], kinks: ['Dominant','Cuir','Fist'], dm: 'profile_required' },
+  { name: 'Erwan', age: 25, role: 'Versatile', morph: 'Sportif', eth: 'blanc', tribes: ['jock'], kinks: ['Massage','Rimming','Câlins'], dm: 'open' },
+  { name: 'Milo', age: 21, role: 'Bottom', morph: 'Mince', eth: 'blanc', tribes: ['twink'], kinks: ['Câlins','Rimming'], dm: 'open' },
+  { name: 'Serge', age: 42, role: 'Top', morph: 'Ours', eth: 'blanc', tribes: ['bear','Cuir','daddy'], kinks: ['Cuir','Dominant','Fist'], dm: 'profile_required' },
+  { name: 'Noam', age: 27, role: 'Versatile', morph: 'Athletique', eth: 'moyen_oriental', tribes: ['otter'], kinks: ['Rimming','Massage','Câlins'], dm: 'open' },
+  { name: 'Axel', age: 33, role: 'Top-Versatile', morph: 'Muscle', eth: 'blanc', tribes: ['muscle_bear'], kinks: ['Dominant','Menottes','Spanking'], dm: 'profile_required' },
+  { name: 'Sofiane', age: 29, role: 'Bottom-Versatile', morph: 'Sportif', eth: 'moyen_oriental', tribes: ['jock'], kinks: ['Rimming','Câlins','Exhib'], dm: 'open' },
+  { name: 'Remi', age: 26, role: 'Bottom', morph: 'Moyen', eth: 'blanc', tribes: [], kinks: ['Câlins','Rimming'], dm: 'open' },
+  { name: 'Paulo', age: 30, role: 'Top', morph: 'Athletique', eth: 'latino', tribes: ['jock'], kinks: ['Dominant','Rimming','Spanking'], dm: 'profile_required' },
+  { name: 'Arjun', age: 28, role: 'Versatile', morph: 'Sportif', eth: 'sud_asiatique', tribes: ['otter'], kinks: ['Massage','Câlins','Rimming'], dm: 'open' },
+  { name: 'Tristan', age: 35, role: 'Power-Bottom', morph: 'Athletique', eth: 'blanc', tribes: ['Cuir'], kinks: ['Cuir','Exhib','Groupe'], dm: 'profile_required' },
+  { name: 'Sebastien', age: 40, role: 'Top', morph: 'Costaud', eth: 'blanc', tribes: ['bear','daddy'], kinks: ['Dominant','Cuir','Fist'], dm: 'profile_required' },
+  { name: 'Bastien', age: 23, role: 'Bottom', morph: 'Mince', eth: 'blanc', tribes: ['twink','pup'], kinks: ['Câlins','Switch'], dm: 'open' },
+  { name: 'Ryusei', age: 27, role: 'Versatile', morph: 'Athletique', eth: 'asiatique', tribes: ['jock'], kinks: ['Rimming','Massage','Câlins'], dm: 'open' },
+  { name: 'Mehdi', age: 32, role: 'Top-Versatile', morph: 'Muscle', eth: 'moyen_oriental', tribes: ['muscle_bear'], kinks: ['Dominant','Menottes','Rimming'], dm: 'profile_required' },
+  { name: 'Tom', age: 25, role: 'Side', morph: 'Mince', eth: 'blanc', tribes: ['twink'], kinks: ['Câlins','Massage','Câlins'], dm: 'open' },
+  { name: 'Baptiste', age: 31, role: 'Versatile', morph: 'Sportif', eth: 'blanc', tribes: ['jock'], kinks: ['Rimming','Groupe','Massage'], dm: 'open' },
+  { name: 'Kwame', age: 28, role: 'Top', morph: 'Athletique', eth: 'noir', tribes: ['jock'], kinks: ['Dominant','Rimming','Spanking'], dm: 'profile_required' },
+  { name: 'Vincent', age: 37, role: 'Bottom-Versatile', morph: 'Moyen', eth: 'blanc', tribes: [], kinks: ['Câlins','Rimming','Exhib'], dm: 'open' },
+  { name: 'Rafael', age: 26, role: 'Bottom', morph: 'Sportif', eth: 'latino', tribes: ['jock'], kinks: ['Rimming','Câlins'], dm: 'open' },
+  { name: 'Soren', age: 29, role: 'Top', morph: 'Athletique', eth: 'blanc', tribes: ['jock'], kinks: ['Dominant','Menottes','Rimming'], dm: 'profile_required' },
+  { name: 'Hamza', age: 24, role: 'Versatile', morph: 'Sportif', eth: 'moyen_oriental', tribes: ['otter'], kinks: ['Massage','Rimming','Câlins'], dm: 'open' },
+  { name: 'Cedric', age: 33, role: 'Top', morph: 'Muscle', eth: 'metis', tribes: ['daddy'], kinks: ['Dominant','Cuir','Spanking'], dm: 'profile_required' },
+  { name: 'Loris', age: 22, role: 'Bottom', morph: 'Mince', eth: 'blanc', tribes: ['twink'], kinks: ['Câlins','Rimming'], dm: 'open' },
+  { name: 'TheoB', age: 30, role: 'Power-Bottom', morph: 'Athletique', eth: 'blanc', tribes: ['Cuir','pup'], kinks: ['Cuir','Switch','Exhib'], dm: 'open' },
+  { name: 'Damien', age: 36, role: 'Top-Versatile', morph: 'Costaud', eth: 'blanc', tribes: ['bear','daddy'], kinks: ['Dominant','Cuir','Fist'], dm: 'profile_required' },
+  { name: 'Ivan', age: 28, role: 'Versatile', morph: 'Sportif', eth: 'blanc', tribes: ['jock'], kinks: ['Rimming','Massage','Groupe'], dm: 'open' },
+  { name: 'Noa', age: 25, role: 'Bottom', morph: 'Mince', eth: 'metis', tribes: ['drag_queen'], kinks: ['Câlins','Jeux de rôle'], dm: 'open' },
+  { name: 'Killian', age: 27, role: 'Top', morph: 'Athletique', eth: 'blanc', tribes: ['jock'], kinks: ['Dominant','Rimming','Menottes'], dm: 'profile_required' },
 ]
 
 // ─── Bio templates ──────────────────────────────────────────────────────────
@@ -203,11 +203,12 @@ function buildProfileJson(p, idx) {
 
 // ─── Auth helpers (admin API — bypasses email validation & rate limits) ──────
 async function getOrCreateUser(email, displayName) {
-  // Check if user exists by listing with email filter
-  const { data: listData } = await supabase.auth.admin.listUsers({ perPage: 1, page: 1 })
-  // Try to get user by email via admin getUserByEmail (not available in all versions)
-  // Fallback: try createUser, if it fails with duplicate, get the existing one
+  // First try to find existing user by listing all users
+  const { data: allUsers } = await supabase.auth.admin.listUsers({ perPage: 1000 })
+  const existing = allUsers?.users?.find(u => u.email === email)
+  if (existing) return existing.id
 
+  // Not found — create
   const { data: createData, error: createError } = await supabase.auth.admin.createUser({
     email,
     password: PASSWORD,
@@ -215,17 +216,7 @@ async function getOrCreateUser(email, displayName) {
     user_metadata: { display_name: displayName }
   })
 
-  if (createData?.user) {
-    return createData.user.id
-  }
-
-  // If user already exists, find them
-  if (createError && (createError.message.includes('already') || createError.message.includes('duplicate') || createError.status === 422)) {
-    // List all users and find by email
-    const { data: allUsers } = await supabase.auth.admin.listUsers({ perPage: 1000 })
-    const existing = allUsers?.users?.find(u => u.email === email)
-    if (existing) return existing.id
-  }
+  if (createData?.user) return createData.user.id
 
   console.error(`  Failed to create ${email}:`, createError?.message)
   return null
