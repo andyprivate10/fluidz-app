@@ -92,7 +92,7 @@ export default function HomePage() {
       {recentContacts.length > 0 && (
         <div style={{ position: 'relative', zIndex: 1, padding: '0 24px 8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-            <span style={{ ...typeStyle('micro'), color: S.p }}>{t('home.naughty_book')}</span>
+            <span style={{ ...typeStyle('micro'), color: S.p }}>{t('home.contacts_section')}</span>
             <span onClick={() => navigate('/contacts')} style={{ ...typeStyle('meta'), color: S.tx3, cursor: 'pointer' }}>{t('home.see_all_contacts')}</span>
           </div>
           <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4, scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
@@ -225,7 +225,7 @@ export default function HomePage() {
         {userId && showTips && (() => {
           const tips = [
             { id: 'explore', icon: <Search size={18} strokeWidth={1.5} style={{ color: S.p }} />, title: t('tips.explore_title'), desc: t('tips.explore_desc'), href: '/explore' },
-            { id: 'naughtybook', icon: <BookOpen size={18} strokeWidth={1.5} style={{ color: S.sage }} />, title: t('tips.naughtybook_title'), desc: t('tips.naughtybook_desc'), href: '/contacts' },
+            { id: 'contacts_section', icon: <BookOpen size={18} strokeWidth={1.5} style={{ color: S.sage }} />, title: t('tips.contacts_title'), desc: t('tips.contacts_desc'), href: '/contacts' },
             { id: 'ghost', icon: <Ghost size={18} strokeWidth={1.5} style={{ color: S.lav }} />, title: t('tips.ghost_title'), desc: t('tips.ghost_desc'), href: '/ghost/setup' },
           ].filter(tip => !dismissedTips.includes(tip.id))
           .filter(tip => !(tip.id === 'ghost' && isGhost))

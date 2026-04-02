@@ -12,7 +12,7 @@ const S = colors
 const screens = [
   { icon: Calendar, color: S.p, key: 'sessions' },
   { icon: User, color: S.lav, key: 'profile' },
-  { icon: BookOpen, color: S.sage, key: 'naughtybook' },
+  { icon: BookOpen, color: S.sage, key: 'contacts_section' },
   { icon: Rocket, color: S.p, key: 'ready' },
 ] as const
 

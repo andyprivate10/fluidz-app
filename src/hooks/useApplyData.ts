@@ -56,14 +56,14 @@ export function useApplyData() {
     let cancelled = false
     ;(async () => {
       const { data: myContacts } = await supabase
-        .from('naughtybook_contacts')
+        .from('contacts_section_contacts')
         .select('contact_id')
         .eq('user_id', authUser.id)
       if (cancelled || !myContacts?.length) return
       const contactIds = myContacts.map(c => c.contact_id)
       // Check which contacts also have me
       const { data: mutual } = await supabase
-        .from('naughtybook_contacts')
+        .from('contacts_section_contacts')
         .select('user_id')
         .eq('contact_id', authUser.id)
         .in('user_id', contactIds)

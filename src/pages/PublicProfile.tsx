@@ -18,7 +18,7 @@ import DmRequestSheet from '../components/DmRequestSheet'
 import type { DmPrivacyLevel } from '../lib/dmPrivacy'
 // DmPrivacyBadge removed from render
 import InterestPopup from '../components/InterestPopup'
-import NaughtyBookButton from '../components/NaughtyBookButton'
+import ContactsButton from '../components/NaughtyBookButton'
 import ReportSheet from '../components/ReportSheet'
 // HostBadge removed from hero
 import ShareToContact from '../components/ShareToContact'
@@ -84,14 +84,14 @@ export default function PublicProfile() {
   const [photoIdx, setPhotoIdx] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
   const [myUserId, setMyUserId] = useState<string | null>(null)
-  const [isInNaughtyBook, setIsInNaughtyBook] = useState(false)
+  const [isInContacts, setIsInContacts] = useState(false)
   const [dmStatus, setDmStatus] = useState<'direct' | 'need_request' | 'pending' | 'blocked'>('direct')
   const [peerPrivacy, setPeerPrivacy] = useState<DmPrivacyLevel>('open')
   const [showDmRequest, setShowDmRequest] = useState(false)
   const [showInterestPopup, setShowInterestPopup] = useState(false)
   const [interestSent, setInterestSent] = useState(false)
   const [isMutualNb, setIsMutualNb] = useState(false)
-  const [canAddToNaughtyBook, setCanAddToNaughtyBook] = useState(false)
+  const [canAddToContacts, setCanAddToContacts] = useState(false)
   const [showSecretInfos, setShowSecretInfos] = useState(false)
   const [accessRequested, setAccessRequested] = useState(false)
 
@@ -112,8 +112,8 @@ export default function PublicProfile() {
       if (user.id !== userId) {
         supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: userId, type: 'profile_view' as any, meta: {} }).then(() => {})
         supabase.from('favorites').select('id').eq('user_id', user.id).eq('target_user_id', userId).maybeSingle().then(({ data }) => setIsFavorite(!!data))
-        // Check NaughtyBook contact
-        supabase.from('contacts').select('id, mutual').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(({ data }) => { setIsInNaughtyBook(!!data); if (data?.mutual) setIsMutualNb(true) })
+        // Check Contacts contact
+        supabase.from('contacts').select('id, mutual').eq('user_id', user.id).eq('contact_user_id', userId).maybeSingle().then(({ data }) => { setIsInContacts(!!data); if (data?.mutual) setIsMutualNb(true) })
         // Check existing interest request
         supabase.from('interest_requests').select('id').eq('sender_id', user.id).eq('receiver_id', userId).maybeSingle().then(({ data }) => { if (data) setInterestSent(true) })
         // Check if both users have checked_in on a common session
@@ -121,7 +121,7 @@ export default function PublicProfile() {
           if (!myCheckins || myCheckins.length === 0) return
           const mySessionIds = myCheckins.map(c => c.session_id)
           const { data: theirCheckins } = await supabase.from('applications').select('session_id').eq('applicant_id', userId).eq('status', 'checked_in').in('session_id', mySessionIds)
-          if (theirCheckins && theirCheckins.length > 0) setCanAddToNaughtyBook(true)
+          if (theirCheckins && theirCheckins.length > 0) setCanAddToContacts(true)
         })
         // Check if access_request already sent
         supabase.from('notifications').select('id').eq('user_id', userId).eq('type', 'access_request').eq('href', '/profile/' + user.id).maybeSingle().then(({ data }) => { if (data) setAccessRequested(true) })
@@ -155,7 +155,7 @@ export default function PublicProfile() {
 
   const p = profile.profile_json || {}
   const sv = (p.section_visibility || {}) as Record<string, string>
-  const canSee = (key: string) => !sv[key] || sv[key] === 'all' || isInNaughtyBook
+  const canSee = (key: string) => !sv[key] || sv[key] === 'all' || isInContacts
   const kinkNorm: Record<string, string> = { 'SM leger': 'SM léger', 'Fetichisme': 'Fétichisme', 'Jeux de role': 'Jeux de rôle' }
   const kinks: string[] = Array.from(new Set((p.kinks || []).map((k: string) => kinkNorm[k] || k))) as string[]
   const allPhotos: string[] = [...(Array.isArray(p.photos_profil) ? p.photos_profil : []), ...(Array.isArray(p.photos_intime) ? p.photos_intime : []), ...(Array.isArray(p.photos) ? p.photos : []), ...(!Array.isArray(p.photos_profil) && !Array.isArray(p.photos) && p.avatar_url ? [p.avatar_url] : [])].filter((v, i, a) => a.indexOf(v) === i)
@@ -350,7 +350,7 @@ export default function PublicProfile() {
         <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
           {dmStatus === 'direct' || isMutualNb ? (
             <button onClick={() => navigate('/dm/' + userId)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <MessageCircle size={13} strokeWidth={1.5} /> {isMutualNb ? t('naughtybook.send_message') : t('profile.dm_direct')}
+              <MessageCircle size={13} strokeWidth={1.5} /> {isMutualNb ? t('contacts_section.send_message') : t('profile.dm_direct')}
             </button>
           ) : dmStatus === 'pending' ? (
             <button disabled style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg2, border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, opacity: 0.6 }}>
@@ -370,9 +370,9 @@ export default function PublicProfile() {
           </button>
         </div>
 
-        {/* NaughtyBook + Favorite + Contact row */}
+        {/* Contacts + Favorite + Contact row */}
         <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
-          {canAddToNaughtyBook && <NaughtyBookButton targetUserId={userId!} isMutual={isMutualNb} onStatusChange={s => { if (s === 'mutual') setIsMutualNb(true); else setIsMutualNb(false) }} />}
+          {canAddToContacts && <ContactsButton targetUserId={userId!} isMutual={isMutualNb} onStatusChange={(s: string) => { if (s === 'mutual') setIsMutualNb(true); else setIsMutualNb(false) }} />}
           <div style={{ flex: 1 }}><AddContactButton targetUserId={userId!} /></div>
           {myUserId && myUserId !== userId && (
             <button onClick={async () => {

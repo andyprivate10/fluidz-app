@@ -150,7 +150,7 @@ export default function SideDrawer({ open, onClose }: Props) {
           {/* Section: Mon espace */}
           <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 4px' }}>{t('drawer.my_space')}</p>
           {menuItem(<User size={18} strokeWidth={1.5} />, t('drawer.my_profile'), '/me')}
-          {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.naughty_book'), '/contacts')}
+          {menuItem(<BookOpen size={18} strokeWidth={1.5} />, t('drawer.contacts_section'), '/contacts')}
           {menuItem(<Heart size={18} strokeWidth={1.5} />, t('favorites.title'), '/favorites')}
           {menuItem(<Zap size={18} strokeWidth={1.5} />, t('vibe.menu_label'), '/vibe-score')}
 

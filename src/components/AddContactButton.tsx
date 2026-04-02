@@ -57,8 +57,8 @@ export default function AddContactButton({ targetUserId }: { targetUserId: strin
       // Notify target
       const { data: myProf } = await supabase.from('user_profiles').select('display_name').eq('id', myUserId).maybeSingle()
       await supabase.from('notifications').insert({
-        user_id: targetUserId, type: 'naughtybook_added',
-        title: (myProf?.display_name || t('common.someone')) + ' ' + t('naughtybook.added_you_notif'),
+        user_id: targetUserId, type: 'contacts_section_added',
+        title: (myProf?.display_name || t('common.someone')) + ' ' + t('contacts_section.added_you_notif'),
         href: '/contacts/' + myUserId,
       })
     }

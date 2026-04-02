@@ -161,7 +161,7 @@ export default function DirectDMPage() {
     // Load reactions for all messages — handled by useReactions hook
     // (removed duplicate manual loading)
 
-    // Auto-suggest NaughtyBook after 5+ messages exchanged
+    // Auto-suggest Contacts after 5+ messages exchanged
     if (msgs && msgs.length >= 5) {
       const myMsgCount = msgs.filter((m: any) => m.sender_id === user.id).length
       const peerMsgCount = msgs.filter((m: any) => m.sender_id === peerId).length
@@ -170,7 +170,7 @@ export default function DirectDMPage() {
         const { data: contact } = await supabase.from('contacts').select('mutual').eq('user_id', user.id).eq('contact_user_id', peerId).maybeSingle()
         if (!contact?.mutual) {
           // Check no pending/accepted NB request
-          const { data: nbReq } = await supabase.from('naughtybook_requests').select('id').or(`and(sender_id.eq.${user.id},receiver_id.eq.${peerId}),and(sender_id.eq.${peerId},receiver_id.eq.${user.id})`).maybeSingle()
+          const { data: nbReq } = await supabase.from('contacts_section_requests').select('id').or(`and(sender_id.eq.${user.id},receiver_id.eq.${peerId}),and(sender_id.eq.${peerId},receiver_id.eq.${user.id})`).maybeSingle()
           if (!nbReq) setShowNbSuggest(true)
         }
       }
@@ -544,20 +544,20 @@ export default function DirectDMPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* NaughtyBook suggest banner */}
+      {/* Contacts suggest banner */}
       {showNbSuggest && (
         <div style={{ padding: '8px 16px', background: S.p2, borderTop: '1px solid ' + S.pbd, display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ flex: 1 }}>
-            <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: S.p }}>{t('naughtybook.suggest_title')}</p>
-            <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx3 }}>{t('naughtybook.suggest_body')}</p>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: S.p }}>{t('contacts_section.suggest_title')}</p>
+            <p style={{ margin: '2px 0 0', fontSize: 11, color: S.tx3 }}>{t('contacts_section.suggest_body')}</p>
           </div>
           <button onClick={async () => {
             if (!peerId) return
-            const { error } = await supabase.rpc('rpc_request_naughtybook', { p_receiver_id: peerId })
-            if (!error) { showToast(t('naughtybook.request_sent'), 'success'); setShowNbSuggest(false) }
-            else if (error.message?.includes('Cooldown')) showToast(t('naughtybook.cooldown_toast'), 'error')
+            const { error } = await supabase.rpc('rpc_request_contacts_section', { p_receiver_id: peerId })
+            if (!error) { showToast(t('contacts_section.request_sent'), 'success'); setShowNbSuggest(false) }
+            else if (error.message?.includes('Cooldown')) showToast(t('contacts_section.cooldown_toast'), 'error')
           }} style={{ padding: '8px 14px', borderRadius: 10, background: `linear-gradient(135deg, ${S.p}, #c06868)`, border: 'none', color: S.tx, fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
-            {t('naughtybook.request_button')}
+            {t('contacts_section.request_button')}
           </button>
           <button onClick={() => setShowNbSuggest(false)} style={{ background: 'none', border: 'none', color: S.tx3, cursor: 'pointer', padding: 4 }}>
             <X size={14} />

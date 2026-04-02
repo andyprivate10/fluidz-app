@@ -185,7 +185,7 @@ export function useHomeData() {
     if (!userId) return
     await supabase.from('contacts').insert({ user_id: userId, contact_user_id: s.id, relation_level: 'connaissance' })
     setSessionSuggestions(prev => prev.filter(x => x.id !== s.id))
-    showToast(t('profile.added_to_naughtybook'), 'success')
+    showToast(t('profile.added_to_contacts_section'), 'success')
   }
 
   const dismissTip = async (tipId: string) => {

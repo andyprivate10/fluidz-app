@@ -107,7 +107,7 @@ export default function ReviewVibeScore({
         </div>
       </div>
 
-      {/* Add to NaughtyBook toggle */}
+      {/* Add to Contacts toggle */}
       <div
         role="switch"
         aria-checked={addToBook}

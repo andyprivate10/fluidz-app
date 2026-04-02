@@ -63,8 +63,8 @@ export default function ContactsPage() {
         const pj = (data?.profile_json || {}) as Record<string, unknown>
         if (Array.isArray(pj.linked_profiles)) setLinkedProfiles(pj.linked_profiles as { user_id: string; type: string }[])
       })
-      // Load pending naughtybook requests where I'm the receiver
-      supabase.from('naughtybook_requests').select('id, sender_id, created_at').eq('receiver_id', user.id).eq('status', 'pending').order('created_at', { ascending: false }).then(async ({ data }) => {
+      // Load pending contacts_section requests where I'm the receiver
+      supabase.from('contacts_section_requests').select('id, sender_id, created_at').eq('receiver_id', user.id).eq('status', 'pending').order('created_at', { ascending: false }).then(async ({ data }) => {
         if (!data || data.length === 0) { setPendingNbRequests([]); return }
         const senderIds = data.map(r => r.sender_id)
         const { data: profiles } = await supabase.from('user_profiles').select('id, display_name, profile_json').in('id', senderIds)
@@ -128,18 +128,18 @@ export default function ContactsPage() {
 
 
   async function acceptNbRequest(requestId: string, _senderId: string) {
-    const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'accepted' })
+    const { error } = await supabase.rpc('rpc_respond_contacts_section', { p_request_id: requestId, p_action: 'accepted' })
     if (error) { showToast(error.message, 'error'); return }
     setPendingNbRequests(prev => prev.filter(r => r.id !== requestId))
-    showToast(t('naughtybook.accepted_toast'), 'success')
+    showToast(t('contacts_section.accepted_toast'), 'success')
     loadContacts() // Refresh contacts to show new mutual
   }
 
   async function rejectNbRequest(requestId: string) {
-    const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'rejected' })
+    const { error } = await supabase.rpc('rpc_respond_contacts_section', { p_request_id: requestId, p_action: 'rejected' })
     if (error) { showToast(error.message, 'error'); return }
     setPendingNbRequests(prev => prev.filter(r => r.id !== requestId))
-    showToast(t('naughtybook.rejected_toast'), 'info')
+    showToast(t('contacts_section.rejected_toast'), 'info')
   }
 
   async function updateRelation(contactId: string, level: 'connaissance' | 'close' | 'favori') {
@@ -203,7 +203,7 @@ export default function ContactsPage() {
             const label = f === 'all'
               ? `${t('common.all')} (${counts.all})`
               : f === 'mutual'
-              ? `${t('naughtybook.mutual')} (${counts.mutual})`
+              ? `${t('contacts_section.mutual')} (${counts.mutual})`
               : `${RELATION_STYLES[f].label} (${counts[f]})`
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
@@ -238,10 +238,10 @@ export default function ContactsPage() {
         )}
       </div>
 
-      {/* Pending NaughtyBook requests */}
+      {/* Pending Contacts requests */}
       {pendingNbRequests.length > 0 && (
         <div style={{ padding: '0 20px', marginBottom: 16 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{t('naughtybook.pending_requests')}</p>
+          <p style={{ fontSize: 10, fontWeight: 700, color: S.p, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{t('contacts_section.pending_requests')}</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {pendingNbRequests.map(req => (
               <div key={req.id} style={{ background: S.bg1, border: '1px solid ' + S.pbd, borderRadius: 14, padding: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -253,8 +253,8 @@ export default function ContactsPage() {
                   {req.role && <p style={{ margin: 0, fontSize: 11, color: S.p }}>{req.role}</p>}
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <button onClick={() => acceptNbRequest(req.id, req.sender_id)} style={{ padding: '6px 12px', borderRadius: 10, background: S.sagebg, border: '1px solid ' + S.sagebd, color: S.sage, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('naughtybook.accept')}</button>
-                  <button onClick={() => rejectNbRequest(req.id)} style={{ padding: '6px 12px', borderRadius: 10, background: 'transparent', border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{t('naughtybook.reject')}</button>
+                  <button onClick={() => acceptNbRequest(req.id, req.sender_id)} style={{ padding: '6px 12px', borderRadius: 10, background: S.sagebg, border: '1px solid ' + S.sagebd, color: S.sage, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('contacts_section.accept')}</button>
+                  <button onClick={() => rejectNbRequest(req.id)} style={{ padding: '6px 12px', borderRadius: 10, background: 'transparent', border: '1px solid ' + S.rule, color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{t('contacts_section.reject')}</button>
                 </div>
               </div>
             ))}
@@ -305,7 +305,7 @@ export default function ContactsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: S.tx }}>{stripHtml(contact.display_name)}</span>
                   <span style={{ display: 'inline-flex', gap: 1 }}>{[1,2,3].map(n => starIcon(n <= rel.stars, rel.color))}</span>
-                  {contact.mutual && <span style={{ fontSize: 9, fontWeight: 700, color: S.sage, background: S.sagebg, padding: '1px 6px', borderRadius: 99, border: '1px solid ' + S.sagebd }}>{t('naughtybook.mutual')}</span>}
+                  {contact.mutual && <span style={{ fontSize: 9, fontWeight: 700, color: S.sage, background: S.sagebg, padding: '1px 6px', borderRadius: 99, border: '1px solid ' + S.sagebd }}>{t('contacts_section.mutual')}</span>}
                 </div>
                 {contact.role && <p style={{ fontSize: 12, color: S.p, margin: '2px 0 0' }}>{contact.role}</p>}
                 {contact.last_seen && (() => {

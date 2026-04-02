@@ -55,7 +55,7 @@ export function useMeData() {
   const [seroStatus, setSeroStatus] = useState('')
   const [healthTests, setHealthTests] = useState<Record<string, { status: string; date?: string }>>({})
   const [limits, setLimits] = useState('')
-  const [sectionVisibility, setSectionVisibility] = useState<Record<string, 'all' | 'naughtybook'>>({})
+  const [sectionVisibility, setSectionVisibility] = useState<Record<string, 'all' | 'contacts_section'>>({})
   const [dmPrivacy, setDmPrivacy] = useState<'open' | 'profile_required' | 'full_access'>('open')
   const [savedMsgs, setSavedMsgs] = useState<{ id: string; label: string; text: string }[]>([])
   const [newMsgText, setNewMsgText] = useState('')

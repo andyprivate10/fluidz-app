@@ -1,4 +1,4 @@
-const COACH_MARKS = ['home_create', 'explore_grid', 'naughtybook_empty', 'session_votes'] as const
+const COACH_MARKS = ['home_create', 'explore_grid', 'contacts_section_empty', 'session_votes'] as const
 type CoachMarkId = typeof COACH_MARKS[number]
 
 export function useCoachMarks() {

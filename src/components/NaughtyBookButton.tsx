@@ -10,13 +10,13 @@ const S = colors
 
 type Status = 'none' | 'pending_sent' | 'pending_received' | 'mutual'
 
-interface NaughtyBookButtonProps {
+interface ContactsButtonProps {
   targetUserId: string
   isMutual: boolean
   onStatusChange?: (status: 'none' | 'pending' | 'mutual') => void
 }
 
-export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChange }: NaughtyBookButtonProps) {
+export default function ContactsButton({ targetUserId, isMutual, onStatusChange }: ContactsButtonProps) {
   const { t } = useTranslation()
   const { user } = useAuth()
   const [status, setStatus] = useState<Status>(isMutual ? 'mutual' : 'none')
@@ -30,7 +30,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
     async function fetchStatus() {
       // Check where I'm the sender
       const { data: sent } = await supabase
-        .from('naughtybook_requests')
+        .from('contacts_section_requests')
         .select('id, status')
         .eq('sender_id', user!.id)
         .eq('receiver_id', targetUserId)
@@ -53,7 +53,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
 
       // Check where I'm the receiver
       const { data: received } = await supabase
-        .from('naughtybook_requests')
+        .from('contacts_section_requests')
         .select('id, status')
         .eq('sender_id', targetUserId)
         .eq('receiver_id', user!.id)
@@ -85,11 +85,11 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
   async function handleSendRequest() {
     if (!user || loading) return
     setLoading(true)
-    const { error } = await supabase.rpc('rpc_request_naughtybook', { p_receiver_id: targetUserId })
+    const { error } = await supabase.rpc('rpc_request_contacts_section', { p_receiver_id: targetUserId })
     setLoading(false)
     if (error) {
       if (error.message?.includes('Cooldown active')) {
-        showToast(t('naughtybook.cooldown_toast'), 'error')
+        showToast(t('contacts_section.cooldown_toast'), 'error')
       } else {
         showToast(error.message, 'error')
       }
@@ -97,13 +97,13 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
     }
     setStatus('pending_sent')
     onStatusChange?.('pending')
-    showToast(t('naughtybook.request_sent'), 'success')
+    showToast(t('contacts_section.request_sent'), 'success')
   }
 
   async function handleAccept() {
     if (!requestId || loading) return
     setLoading(true)
-    const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'accepted' })
+    const { error } = await supabase.rpc('rpc_respond_contacts_section', { p_request_id: requestId, p_action: 'accepted' })
     setLoading(false)
     if (error) {
       showToast(error.message, 'error')
@@ -111,13 +111,13 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
     }
     setStatus('mutual')
     onStatusChange?.('mutual')
-    showToast(t('naughtybook.accepted_toast'), 'success')
+    showToast(t('contacts_section.accepted_toast'), 'success')
   }
 
   async function handleReject() {
     if (!requestId || loading) return
     setLoading(true)
-    const { error } = await supabase.rpc('rpc_respond_naughtybook', { p_request_id: requestId, p_action: 'rejected' })
+    const { error } = await supabase.rpc('rpc_respond_contacts_section', { p_request_id: requestId, p_action: 'rejected' })
     setLoading(false)
     if (error) {
       showToast(error.message, 'error')
@@ -130,10 +130,10 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
 
   async function handleRemove() {
     if (!user || loading) return
-    const confirmed = window.confirm(t('naughtybook.remove_confirm'))
+    const confirmed = window.confirm(t('contacts_section.remove_confirm'))
     if (!confirmed) return
     setLoading(true)
-    const { error } = await supabase.rpc('rpc_remove_naughtybook', { p_target_id: targetUserId })
+    const { error } = await supabase.rpc('rpc_remove_contacts_section', { p_target_id: targetUserId })
     setLoading(false)
     if (error) {
       showToast(error.message, 'error')
@@ -142,7 +142,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
     setStatus('none')
     setRequestId(null)
     onStatusChange?.('none')
-    showToast(t('naughtybook.removed_toast'), 'info')
+    showToast(t('contacts_section.removed_toast'), 'info')
   }
 
   const base: React.CSSProperties = {
@@ -166,7 +166,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
         disabled={loading}
       >
         <BookOpen size={14} />
-        {t('naughtybook.request_button')}
+        {t('contacts_section.request_button')}
       </button>
     )
   }
@@ -178,7 +178,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
         disabled
       >
         <Clock size={14} />
-        {t('naughtybook.request_pending')}
+        {t('contacts_section.request_pending')}
       </button>
     )
   }
@@ -192,7 +192,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
           disabled={loading}
         >
           <Check size={14} />
-          {t('naughtybook.accept')}
+          {t('contacts_section.accept')}
         </button>
         <button
           style={{ ...base, background: 'transparent', border: '1px solid ' + S.rule, color: S.tx3 }}
@@ -200,7 +200,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
           disabled={loading}
         >
           <X size={14} />
-          {t('naughtybook.reject')}
+          {t('contacts_section.reject')}
         </button>
       </div>
     )
@@ -214,7 +214,7 @@ export default function NaughtyBookButton({ targetUserId, isMutual, onStatusChan
       disabled={loading}
     >
       <BookOpen size={14} />
-      {t('naughtybook.remove')}
+      {t('contacts_section.remove')}
     </button>
   )
 }

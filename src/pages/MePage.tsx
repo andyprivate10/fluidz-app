@@ -37,22 +37,22 @@ function Chip({ label, active, onClick }: { label:string; active:boolean; onClic
   )
 }
 
-function VisibilityToggle({ value, onChange }: { value: 'all' | 'naughtybook'; onChange: (v: 'all' | 'naughtybook') => void }) {
+function VisibilityToggle({ value, onChange }: { value: 'all' | 'contacts_section'; onChange: (v: 'all' | 'contacts_section') => void }) {
   const { t } = useTranslation()
-  const isNaughty = value === 'naughtybook'
+  const isNaughty = value === 'contacts_section'
   return (
-    <button onClick={() => onChange(isNaughty ? 'all' : 'naughtybook')} style={{
+    <button onClick={() => onChange(isNaughty ? 'all' : 'contacts_section')} style={{
       display:'flex', alignItems:'center', gap:4, padding:'2px 8px', borderRadius:99,
       background: isNaughty ? S.lavbg : S.sagebg, border:'1px solid '+(isNaughty ? S.lavbd : S.sagebd),
       cursor:'pointer', fontSize:9, fontWeight:600, color: isNaughty ? S.lav : S.sage,
       whiteSpace:'nowrap',
     }}>
-      {isNaughty ? t('naughtybook.mutual_badge') : t('profile.visibility_all')}
+      {isNaughty ? t('contacts_section.mutual_badge') : t('profile.visibility_all')}
     </button>
   )
 }
 
-function Section({ title, badge, children, color, sectionKey, visibility, onVisibilityChange }: { title:string; badge?:string; children:React.ReactNode; color?:string; sectionKey?:string; visibility?:'all'|'naughtybook'; onVisibilityChange?:(key:string, v:'all'|'naughtybook')=>void }) {
+function Section({ title, badge, children, color, sectionKey, visibility, onVisibilityChange }: { title:string; badge?:string; children:React.ReactNode; color?:string; sectionKey?:string; visibility?:'all'|'contacts_section'; onVisibilityChange?:(key:string, v:'all'|'contacts_section')=>void }) {
   const c = color || S.tx3
   return (
     <div style={{ background:'rgba(22,20,31,0.85)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', borderRadius:20, padding:'16px', border:`1px solid ${S.rule2}`, marginBottom:12 }}>
@@ -105,7 +105,7 @@ export default function MePage() {
     label: v === 'Actif' ? t('me.prep_actif') : v === 'Inactif' ? t('me.prep_inactif') : t('me.prep_non'),
   }))
 
-  function handleVisibilityChange(key: string, v: 'all' | 'naughtybook') {
+  function handleVisibilityChange(key: string, v: 'all' | 'contacts_section') {
     setSectionVisibility(prev => ({ ...prev, [key]: v }))
   }
 
