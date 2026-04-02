@@ -32,6 +32,7 @@ export function useHomeData() {
   const [loading, setLoading] = useState(true)
 
   const loadData = useCallback(async () => {
+    try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setLoading(false); return }
     setUserId(user.id)
@@ -134,6 +135,10 @@ export function useHomeData() {
       }
     }
     setLoading(false)
+    } catch (err) {
+      console.error('[useHomeData] loadData error:', err)
+      setLoading(false)
+    }
   }, [navigate])
 
   useEffect(() => { loadData() }, [loadData])
