@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Clock, Share2, MessageCircle, Check, Send, UserPlus } from 'lucide-react'
+import { Clock, Share2, MessageCircle, Check, Send, UserPlus, QrCode } from 'lucide-react'
 import { colors, glassCard } from '../../brand'
 import { useTranslation } from 'react-i18next'
 import MapView from '../MapView'
+import { QRCodeSVG } from 'qrcode.react'
 import type { Session, Member } from '../../hooks/useSessionData'
 import type { User } from '@supabase/supabase-js'
 
@@ -35,6 +36,7 @@ export default function SessionStatusCard({
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [directCopied, setDirectCopied] = useState(false)
+  const [showQR, setShowQR] = useState(false)
   const isHost = currentUser?.id === session.host_id
 
   return (
@@ -164,6 +166,16 @@ export default function SessionStatusCard({
               <button onClick={() => navigate('/session/' + sessionId + '/dm')} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.sage, borderRadius: 12, color: S.sage, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
                 {t('session.open_dm')}
               </button>
+              <button onClick={() => setShowQR(true)} style={{ width: '100%', padding: 14, background: S.bg1, border: '1px solid '+S.pbd, borderRadius: 12, color: S.p, fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <QrCode size={16} strokeWidth={1.5} /> {t('session.qr_checkin')}
+              </button>
+              {showQR && (
+                <div style={{ background: S.bg2, borderRadius: 16, padding: 24, border: '1px solid '+S.rule, textAlign: 'center' }}>
+                  <QRCodeSVG value={`fluidz:checkin:${sessionId}:${currentUser?.id}`} size={200} bgColor="transparent" fgColor={S.tx} />
+                  <p style={{ fontSize: 12, color: S.tx3, margin: '12px 0 0' }}>{t('session.qr_hint')}</p>
+                  <button onClick={() => setShowQR(false)} style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, border: '1px solid '+S.rule, background: 'transparent', color: S.tx3, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{t('common.close')}</button>
+                </div>
+              )}
               <button onClick={onLeave} style={{ padding: '6px 12px', borderRadius: 10, border: 'none', background: 'transparent', color: S.tx3, fontSize: 11, fontWeight: 600, cursor: 'pointer', textAlign: 'center' }}>
                 {t('session.leave_session')}
               </button>

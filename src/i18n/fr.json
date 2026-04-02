@@ -293,6 +293,7 @@
     "saved_template": "Ton template",
     "capacity_progress": "Places",
     "capacity_full": "Complet",
+    "qr_checkin": "Mon QR Code",
     "qr_hint": "Scanne ce QR code pour rejoindre",
     "bookmark": "Sauvegarder",
     "bookmarked": "Sauvegardé",
@@ -1150,7 +1151,7 @@
     "profile_saved": "Profil sauvegardé !",
     "my_profile": "MON PROFIL",
     "tab_profil": "Profil",
-    "tab_adulte": "Adulte",
+    "tab_adulte": "Côté intime",
     "pseudo_headline": "Ton pseudo",
     "pseudo_placeholder": "Comment on t'appelle ?",
     "my_preferences": "MES PRÉFÉRENCES",
@@ -1883,5 +1884,17 @@
     "invalid_type": "Type de fichier invalide. Acceptés : JPG, PNG, WebP, MP4",
     "image_too_large": "Image trop volumineuse. Maximum 10 Mo",
     "video_too_large": "Vidéo trop volumineuse. Maximum 50 Mo"
+  },
+  "scan": {
+    "title": "Scanner un QR",
+    "subtitle": "Scannez le QR code d'un participant pour confirmer son arrivee",
+    "invalid_code": "Code QR invalide",
+    "checkin_confirmed": "Check-in confirme pour {{name}}",
+    "success": "Check-in confirme",
+    "scan_another": "Scanner un autre",
+    "manual_hint": "Entrez le code manuellement",
+    "manual_label": "Code QR",
+    "confirm": "Confirmer le check-in",
+    "error": "Erreur lors du check-in"
   }
 }

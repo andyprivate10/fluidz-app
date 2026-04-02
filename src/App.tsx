@@ -48,6 +48,7 @@ const LandingPage = lazy(() => import('./pages/LandingPage'))
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'))
 const VibeScorePage = lazy(() => import('./pages/VibeScorePage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const ScanPage = lazy(() => import('./pages/ScanPage'))
 const MessageTemplatesPage = lazy(() => import('./pages/MessageTemplatesPage'))
 
 function HostRedirect() { const { id } = useParams(); return <Navigate to={`/session/${id}`} replace /> }
@@ -84,6 +85,7 @@ const routes = [
   { path: '/me/addresses', element: <RequireAuth><AddressesPage /></RequireAuth> },
   { path: '/me/messages', element: <RequireAuth><MessageTemplatesPage /></RequireAuth> },
   { path: '/settings', element: <RequireAuth><SettingsPage /></RequireAuth> },
+  { path: '/scan', element: <RequireAuth><ScanPage /></RequireAuth> },
   { path: '/vibe-score', element: <RequireAuth><VibeScorePage /></RequireAuth> },
   { path: '/auth/callback', element: <AuthCallbackPage /> },
   { path: '/notifications', element: <RequireAuth><NotificationsPage /></RequireAuth> },

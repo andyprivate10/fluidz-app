@@ -12,6 +12,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
 import ProfileBadges from '../components/ProfileBadges'
+import { TRIBES } from '../lib/tribeTypes'
 import { stripHtml } from '../lib/sanitize'
 
 const S = colors
@@ -32,6 +33,7 @@ type NearbyProfile = {
   languages?: string[]
   prep?: string
   created_at?: string
+  tribes?: string[]
 }
 
 // ROLE_FILTERS built dynamically from admin_config in component
@@ -70,6 +72,7 @@ export default function ExplorePage() {
   const [myHomeCountry, setMyHomeCountry] = useState<string | null>(null)
   const [myFavoriteIds, setMyFavoriteIds] = useState<Set<string>>(new Set())
   const [savedFilters, setSavedFilters] = useState<{ role?: string } | null>(null)
+  const [selectedTribes, setSelectedTribes] = useState<string[]>([])
 
   useEffect(() => {
     if (!authUser) { navigate('/login?next=/explore'); return }
@@ -137,6 +140,7 @@ export default function ExplorePage() {
         home_city: pj.home_city,
         languages: Array.isArray(pj.languages) ? pj.languages : undefined,
         prep: pj.health?.prep_status || pj.prep,
+        tribes: Array.isArray(pj.tribes) ? pj.tribes : undefined,
         created_at: p.created_at,
       }
     })
@@ -246,6 +250,7 @@ export default function ExplorePage() {
         home_city: pj.home_city,
         languages: Array.isArray(pj.languages) ? pj.languages : undefined,
         prep: pj.health?.prep_status || pj.prep,
+        tribes: Array.isArray(pj.tribes) ? pj.tribes : undefined,
         created_at: p.created_at,
       }
     })
@@ -292,6 +297,7 @@ export default function ExplorePage() {
   const filtered = profiles.filter(p => {
     if (blockedIds.has(p.id)) return false
     if (roleFilter !== t('common.all') && p.role !== roleFilter) return false
+    if (selectedTribes.length > 0 && !selectedTribes.some(s => p.tribes?.includes(s))) return false
     if (searchText && !p.display_name.toLowerCase().includes(searchText.toLowerCase())) return false
     return true
   })
@@ -336,6 +342,24 @@ export default function ExplorePage() {
                 color: roleFilter === r ? S.p : S.tx3,
               }}>{r}</button>
             ))}
+          </div>
+          <div style={{ display: 'flex', gap: 6, marginTop: 8, overflowX: 'auto' }}>
+            {['bear','cub','otter','wolf','muscle_bear','twink','jock','daddy','leather','pup','femboy','circuit_boy'].map(slug => {
+              const tr = TRIBES.find(t => t.slug === slug)
+              const color = tr?.color || S.tx3
+              const selected = selectedTribes.includes(slug)
+              return (
+                <button key={slug} onClick={() => {
+                  if (selected) setSelectedTribes(prev => prev.filter(s => s !== slug))
+                  else if (selectedTribes.length < 3) setSelectedTribes(prev => [...prev, slug])
+                }} style={{
+                  padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+                  border: '1px solid ' + (selected ? color + '44' : S.rule),
+                  background: selected ? color + '18' : 'transparent',
+                  color: selected ? color : S.tx3,
+                }}>{t('tribes.' + slug, {defaultValue: slug})}</button>
+              )
+            })}
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
             <button onClick={saveCurrentFilters} style={{ padding: '5px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: '1px solid ' + S.lavbd, background: S.lavbg, color: S.lav, display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -485,6 +509,11 @@ export default function ExplorePage() {
                         <Globe size={7} strokeWidth={2} />{t('explore.visitor')}
                       </span>
                     )}
+                    {p.tribes?.slice(0,2).map(slug => {
+                      const tr = TRIBES.find(t => t.slug === slug)
+                      const color = tr?.color || S.tx3
+                      return <span key={slug} style={{fontSize:8, fontWeight:700, color, background:color+'18', padding:'1px 6px', borderRadius:99}}>{t('tribes.'+slug, {defaultValue:slug})}</span>
+                    })}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                     {p.lastSeen && (() => {

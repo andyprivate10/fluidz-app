@@ -293,6 +293,7 @@
     "saved_template": "Your template",
     "capacity_progress": "Spots",
     "capacity_full": "Full",
+    "qr_checkin": "My QR Code",
     "qr_hint": "Scan this QR code to join",
     "bookmark": "Save",
     "bookmarked": "Saved",
@@ -1150,7 +1151,7 @@
     "profile_saved": "Profile saved!",
     "my_profile": "MY PROFILE",
     "tab_profil": "Profile",
-    "tab_adulte": "Adult",
+    "tab_adulte": "Intimate side",
     "pseudo_headline": "Your name",
     "pseudo_placeholder": "What should we call you?",
     "my_preferences": "MY PREFERENCES",
@@ -1883,5 +1884,17 @@
     "invalid_type": "Invalid file type. Accepted: JPG, PNG, WebP, MP4",
     "image_too_large": "Image too large. Maximum 10 MB",
     "video_too_large": "Video too large. Maximum 50 MB"
+  },
+  "scan": {
+    "title": "Scan QR",
+    "subtitle": "Scan a participant's QR code to confirm their arrival",
+    "invalid_code": "Invalid QR code",
+    "checkin_confirmed": "Check-in confirmed for {{name}}",
+    "success": "Check-in confirmed",
+    "scan_another": "Scan another",
+    "manual_hint": "Enter the code manually",
+    "manual_label": "QR code",
+    "confirm": "Confirm check-in",
+    "error": "Check-in error"
   }
 }
