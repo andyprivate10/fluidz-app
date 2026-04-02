@@ -11,10 +11,12 @@ import OrbLayer from '../components/OrbLayer'
 import { useAdminConfig } from '../hooks/useAdminConfig'
 import { useTranslation } from 'react-i18next'
 import { validateMediaFile } from '../lib/sanitize'
+import { ETHNICITIES as ETH_LIST } from '../lib/ethnicityTypes'
 
 const S = colors
 
-const ETHNICITIES = ['caucasian', 'black', 'middle_eastern', 'asian', 'latino', 'mixed', 'other'] as const
+// Slugs corrects depuis ethnicityTypes (blanc, noir, maghrebin, ...)
+const ETHNICITIES = ETH_LIST.map(e => e.slug)
 
 const TOTAL_STEPS = 5
 
@@ -183,8 +185,7 @@ export default function OnboardingPage() {
     navigate('/welcome')
   }
 
-  function toggleEthnicity(e: string) {
-    setEthnicities(prev => prev.includes(e) ? prev.filter(x => x !== e) : [...prev, e])
+  function toggleEthnicity(e: string) {    setEthnicities(prev => prev.includes(e) ? prev.filter(x => x !== e) : [...prev, e])
   }
 
   function toggleKink(k: string) {
@@ -305,7 +306,7 @@ export default function OnboardingPage() {
               {ETHNICITIES.map(e => (
                 <button key={e} onClick={() => toggleEthnicity(e)}
                   style={ethnicities.includes(e) ? pillActive : pillInactive}>
-                  {t(`onboarding.ethnicity_${e}`)}
+                  {t('ethnicities.' + e, { defaultValue: e.replace(/_/g, ' ') })}
                 </button>
               ))}
             </div>
