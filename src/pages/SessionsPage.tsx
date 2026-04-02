@@ -16,14 +16,27 @@ import SessionInfoCard from '../components/SessionInfoCard'
 const S = colors
 const R = radius
 
-type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string; cover_url?: string; template_slug?: string }
+function calcTimeProgress(starts_at?: string, ends_at?: string): { progress: number; remaining: string } | null {
+  if (!starts_at || !ends_at) return null
+  const start = new Date(starts_at).getTime()
+  const end = new Date(ends_at).getTime()
+  const now = Date.now()
+  if (now < start || now > end) return null
+  const progress = Math.round(((now - start) / (end - start)) * 100)
+  const remainingMs = end - now
+  const hours = Math.floor(remainingMs / 3600000)
+  const mins = Math.floor((remainingMs % 3600000) / 60000)
+  const remaining = hours > 0 ? `${hours}h${mins > 0 ? mins + 'm' : ''}` : `${mins}min`
+  return { progress, remaining }
+}
+
+type Session = { id: string; title: string; status: string; approx_area: string; created_at: string; host_id: string; tags?: string[]; starts_at?: string; ends_at?: string; cover_url?: string; template_slug?: string; description?: string }
 type AppSession = { session_id: string; status: string; title: string; approx_area: string; tags?: string[]; cover_url?: string; template_slug?: string; session_status?: string; created_at?: string; starts_at?: string; ends_at?: string }
 
 export default function SessionsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const [activeTab, setActiveTab] = useState<'nearby' | 'ended'>('nearby')
   const [myHosted, setMyHosted] = useState<Session[]>([])
   const [myActive, setMyActive] = useState<AppSession[]>([])
   const [myPending, setMyPending] = useState<AppSession[]>([])
@@ -77,16 +90,22 @@ export default function SessionsPage() {
     <p style={{ fontSize: 10, fontWeight: 700, color, textTransform: 'uppercase' as const, letterSpacing: '0.08em', margin: '16px 0 6px' }}>{text}</p>
   )
 
-  const renderSessionCard = (sess: Session, onClick: () => void) => (
-    <SessionInfoCard
-      key={sess.id}
-      session={sess}
-      memberCount={memberCounts[sess.id]}
-      onClick={onClick}
-      timing={sessionTiming(sess)}
-      endedCta={sess.status === 'ended' ? `${t('sessions.review_session')} →` : undefined}
-    />
-  )
+  const renderSessionCard = (sess: Session, onClick: () => void) => {
+    const tp = calcTimeProgress(sess.starts_at, sess.ends_at)
+    return (
+      <SessionInfoCard
+        key={sess.id}
+        session={sess}
+        memberCount={memberCounts[sess.id]}
+        onClick={onClick}
+        timing={sessionTiming(sess)}
+        description={sess.description}
+        timeProgress={tp?.progress}
+        timeRemaining={tp?.remaining}
+        endedCta={sess.status === 'ended' ? `${t('sessions.review_session')} →` : undefined}
+      />
+    )
+  }
 
   const renderAppCard = (app: AppSession, extraBadge?: string) => (
     <SessionInfoCard
@@ -101,40 +120,12 @@ export default function SessionsPage() {
 
   // Derived data
   const hostedOpen = myHosted.filter(s => s.status === 'open')
-  const hostedEnded = myHosted.filter(s => s.status === 'ended')
-  const endedParticipated = myActive.filter(a => a.session_status === 'ended')
-    .concat(myPending.filter(a => a.session_status === 'ended'))
-  // Active sessions (not ended) for "nearby" tab
   const activeParticipating = myActive.filter(a => a.session_status !== 'ended')
   const activePending = myPending.filter(a => a.session_status !== 'ended')
   const activeRejected = myRejected.filter(a => a.session_status !== 'ended')
 
   const hasPinnedSessions = hostedOpen.length > 0 || activeParticipating.length > 0 || activePending.length > 0
-  const hasEndedSessions = hostedEnded.length > 0 || endedParticipated.length > 0
-  const nearbyCount = hostedOpen.length + activeParticipating.length + activePending.length + publicSessions.length
-  const endedCount = hostedEnded.length + endedParticipated.length
 
-  // Tab style
-  const tabBtn = (tab: 'nearby' | 'ended', label: string) => {
-    const active = activeTab === tab
-    return (
-      <button
-        key={tab}
-        onClick={() => setActiveTab(tab)}
-        style={{
-          flex: 1, padding: '9px 0', border: 'none', cursor: 'pointer',
-          borderRadius: R.chip,
-          background: active ? S.p : 'transparent',
-          color: active ? S.tx : S.tx3,
-          ...typeStyle('label'),
-          fontSize: 13, fontWeight: active ? 700 : 500,
-          transition: 'all 0.2s ease',
-        }}
-      >
-        {label}
-      </button>
-    )
-  }
 
   return (
     <PageFadeIn>
@@ -147,13 +138,6 @@ export default function SessionsPage() {
         <h1 style={{ ...typeStyle('title'), color: S.tx, margin: 0 }}>{t('sessions.title')}</h1>
       </div>
 
-      {/* Tabs */}
-      <div style={{ position: 'sticky', top: 73, zIndex: 10, padding: '12px 20px 12px', display: 'flex', gap: 4, background: 'rgba(13,12,22,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: `1px solid ${S.rule}` }}>
-        <div style={{ display: 'flex', width: '100%', gap: 4, background: S.bg2, borderRadius: R.block, padding: 3, border: `1px solid ${S.rule}` }}>
-          {tabBtn('nearby', nearbyCount > 0 ? `${t('sessions.tab_nearby')} (${nearbyCount})` : t('sessions.tab_nearby'))}
-          {tabBtn('ended', endedCount > 0 ? `${t('sessions.tab_ended')} (${endedCount})` : t('sessions.tab_ended'))}
-        </div>
-      </div>
 
       <div className="stagger-children" style={{ position: 'relative', zIndex: 1, padding: '8px 20px', display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 96 }}>
 
@@ -168,9 +152,7 @@ export default function SessionsPage() {
           <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60%', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.10),transparent)', animation: 'shimmer 3s ease-in-out infinite' }} />
         </button>
 
-        {/* ═══ TAB: Autour de moi ═══ */}
-        {activeTab === 'nearby' && (
-          <>
+        {/* ═══ Sessions ═══ */}
             {/* Loading skeleton */}
             {loading && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
@@ -236,49 +218,6 @@ export default function SessionsPage() {
               </div>
             )}
             {publicSessions.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
-          </>
-        )}
-
-        {/* ═══ TAB: Terminées ═══ */}
-        {activeTab === 'ended' && (
-          <>
-            {loading && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-                <SkeletonCard lines={2} /><SkeletonCard lines={2} />
-              </div>
-            )}
-
-            {!loading && !hasEndedSessions && (
-              <div style={{ textAlign: 'center', padding: '40px 16px', color: S.tx3 }}>
-                <Zap size={28} strokeWidth={1.5} style={{ color: S.tx3, display: 'block', margin: '0 auto 10px' }} />
-                <p style={{ ...typeStyle('body'), margin: 0, color: S.tx2 }}>{t('sessions.no_ended')}</p>
-              </div>
-            )}
-
-            {hostedEnded.length > 0 && (
-              <>
-                {sectionLabel(t('sessions.my_ended'), S.p)}
-                {hostedEnded.map(sess => renderSessionCard(sess, () => navigate('/session/' + sess.id)))}
-              </>
-            )}
-
-            {endedParticipated.length > 0 && (
-              <>
-                {sectionLabel(t('sessions.past_participated'), S.tx3)}
-                {endedParticipated.map(app => (
-                  <SessionInfoCard
-                    key={app.session_id}
-                    session={{ id: app.session_id, title: app.title, status: 'ended', approx_area: app.approx_area, tags: app.tags, cover_url: app.cover_url, template_slug: app.template_slug }}
-                    compact
-                    showCapacity={false}
-                    timing={app.created_at ? sessionTiming({ created_at: app.created_at, starts_at: app.starts_at, ends_at: app.ends_at }) : undefined}
-                    endedCta={`${t('sessions.review_session')} →`}
-                  />
-                ))}
-              </>
-            )}
-          </>
-        )}
       </div>
     </div>
     </PageFadeIn>

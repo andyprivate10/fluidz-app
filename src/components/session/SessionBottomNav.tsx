@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Home, Users, MessageCircle, ClipboardList, Eye, Send, Share2, Camera } from 'lucide-react'
+import { ArrowLeft, Home, Users, MessageCircle, ClipboardList, Eye, Send, Share2 } from 'lucide-react'
 import { colors, fonts } from '../../brand'
 
 const S = colors
@@ -34,7 +34,6 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
       backTab,
       { id: 'session', label: t('session_nav.session'), icon: <Home size={20} strokeWidth={1.5} /> },
       { id: 'participants', label: t('session_nav.participants'), icon: <Users size={20} strokeWidth={1.5} />, badge: badges?.candidates },
-      { id: 'story', label: t('session.story_tab'), icon: <Camera size={20} strokeWidth={1.5} /> },
       { id: 'share', label: t('session_nav.share'), icon: <Share2 size={20} strokeWidth={1.5} /> },
       { id: 'chat', label: t('session_nav.chat'), icon: <MessageCircle size={20} strokeWidth={1.5} /> },
     ],
@@ -42,7 +41,6 @@ export default function SessionBottomNav({ role, activeTab, onTabChange, badges,
       backTab,
       { id: 'session', label: t('session_nav.session'), icon: <Home size={20} strokeWidth={1.5} /> },
       { id: 'participants', label: t('session_nav.participants'), icon: <Users size={20} strokeWidth={1.5} /> },
-      { id: 'story', label: t('session.story_tab'), icon: <Camera size={20} strokeWidth={1.5} /> },
       { id: 'chat', label: t('session_nav.chat'), icon: <MessageCircle size={20} strokeWidth={1.5} /> },
     ],
     candidate: [

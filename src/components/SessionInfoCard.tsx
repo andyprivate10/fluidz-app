@@ -28,6 +28,9 @@ interface Props {
   labelColor?: string
   timing?: string
   endedCta?: string
+  description?: string
+  timeProgress?: number
+  timeRemaining?: string
 }
 
 export default function SessionInfoCard({

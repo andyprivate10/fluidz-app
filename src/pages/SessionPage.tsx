@@ -208,6 +208,39 @@ export default function SessionPage() {
               myApp={d.myApp}
             />
           )}
+          {/* Lineup cartouche */}
+          {(d.members.length > 0 || (d.isHost && d.pendingApps.length > 0)) && (
+            <div onClick={() => setActiveTab('participants')} style={{ margin: '0 16px 8px', padding: '10px 14px', borderRadius: 14, background: 'rgba(22,20,31,0.85)', border: '1px solid rgba(255,255,255,0.09)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {d.hostProfile && (
+                  d.hostProfile.avatar ? (
+                    <img src={d.hostProfile.avatar} alt="" loading="lazy" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover', border: '2px solid rgba(5,4,10,0.92)' }} />
+                  ) : (
+                    <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.p, border: '2px solid rgba(5,4,10,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: S.tx }}>{(d.hostProfile.name?.[0] || 'H').toUpperCase()}</div>
+                  )
+                )}
+                {d.members.slice(0, 4).map((m) => {
+                  const av = d.memberAvatars[m.applicant_id]
+                  const nm = d.memberNames[m.applicant_id] || '?'
+                  return av ? (
+                    <img key={m.applicant_id} src={av} alt="" loading="lazy" style={{ width: 28, height: 28, borderRadius: '28%', objectFit: 'cover', border: '2px solid rgba(5,4,10,0.92)', marginLeft: -8 }} />
+                  ) : (
+                    <div key={m.applicant_id} style={{ width: 28, height: 28, borderRadius: '28%', background: S.p, border: '2px solid rgba(5,4,10,0.92)', marginLeft: -8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: S.tx }}>{nm[0]?.toUpperCase()}</div>
+                  )
+                })}
+                {d.members.length > 4 && (
+                  <div style={{ width: 28, height: 28, borderRadius: '28%', background: S.bg2, border: '2px solid rgba(5,4,10,0.92)', marginLeft: -8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: S.tx2 }}>+{d.members.length - 4}</div>
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: S.tx }}>{d.members.length + 1} {t('session.participants_count')}</span>
+                {d.isHost && d.pendingApps.length > 0 && (
+                  <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, color: S.p, background: S.p2, border: '1px solid ' + S.pbd, padding: '2px 7px', borderRadius: 99 }}>{d.pendingApps.length} {t('session.pending_short')}</span>
+                )}
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          )}
           <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {/* Live broadcast announcement */}
             {d.session.status === 'open' && (
@@ -275,6 +308,21 @@ export default function SessionPage() {
           {effectiveRole === 'member' && d.session.status !== 'ended' && d.session.host_id && d.id && (
             <div style={{ padding: '0 16px 8px', display: 'flex', justifyContent: 'flex-end' }}>
               <PanicButton sessionId={d.id} hostId={d.session.host_id} sessionTitle={d.session.title} />
+            </div>
+          )}
+          {(effectiveRole === 'host' || effectiveRole === 'member') && d.session.status !== 'ended' && d.id && (
+            <div style={{ padding: '0 16px 8px' }}>
+              <button onClick={() => setActiveTab('story')} style={{ width: '100%', padding: '12px 16px', background: 'rgba(22,20,31,0.85)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: `conic-gradient(${S.p} 0%, ${S.p} 70%, rgba(255,255,255,0.1) 70%)`, padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: '50%', background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={S.p} strokeWidth="1.5" strokeLinecap="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                  </div>
+                </div>
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: S.tx, margin: 0 }}>{t('session.story_button')}</p>
+                  <p style={{ fontSize: 11, color: S.tx3, margin: '1px 0 0' }}>{t('session.story_button_desc')}</p>
+                </div>
+              </button>
             </div>
           )}
           <SessionEndedSection
