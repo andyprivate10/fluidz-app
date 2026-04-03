@@ -133,10 +133,8 @@ export default function SessionInfoCard({
           <p style={{
             ...typeStyle('meta'), color: S.tx2,
             margin: '4px 0 0', lineHeight: 1.4,
-            overflow: 'hidden', display: '-webkit-box',
-            WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const,
           }}>
-            {description.slice(0, 100)}{description.length > 100 ? '...' : ''}
+            {description.slice(0, 120)}{description.length > 120 ? <>…{' '}<span style={{ color: S.p, fontWeight: 600 }}>{t('common.see_more')}</span></> : ''}
           </p>
         )}
 

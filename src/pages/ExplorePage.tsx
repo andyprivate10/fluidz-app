@@ -52,11 +52,12 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 }
 
-function ExploreCard({ p, onClick, isTopProfile, isNew }: {
+function ExploreCard({ p, onClick, isTopProfile, isNew, priority }: {
   p: NearbyProfile,
   onClick: () => void,
   isTopProfile?: boolean,
   isNew?: boolean,
+  priority?: boolean,
 }) {
   const photos = p.photos_profil && p.photos_profil.length > 0 ? p.photos_profil : p.avatar_url ? [p.avatar_url] : []
   const [photoIdx, setPhotoIdx] = useState(0)
@@ -81,7 +82,7 @@ function ExploreCard({ p, onClick, isTopProfile, isNew }: {
       )}
       <div style={{ position: 'relative', width: '100%', aspectRatio: '2/3', overflow: 'hidden' }}>
         {photos.length > 0 ? (
-          <img key={photoIdx} src={photos[photoIdx]} alt="" loading="lazy"
+          <img key={photoIdx} src={photos[photoIdx]} alt="" loading={priority ? 'eager' : 'lazy'} decoding={priority ? 'sync' : 'async'}
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', animation: 'smoothFadeIn 0.8s ease-in-out' }}
           />
@@ -593,12 +594,13 @@ export default function ExplorePage() {
           const isNewUser = (p: NearbyProfile) => !!p.created_at && Date.now() - new Date(p.created_at).getTime() < 30 * 86400000
           return (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
-              {filtered.map(p => (
+              {filtered.map((p, index) => (
                 <ExploreCard
                   key={p.id}
                   p={p}
                   isTopProfile={(p.proxyScore ?? 0) >= top20Threshold}
                   isNew={isNewUser(p)}
+                  priority={index < 6}
                   onClick={() => navigate('/profile/' + p.id)}
                 />
               ))}
