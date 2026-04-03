@@ -92,8 +92,8 @@ export default function AdminSessionsTab() {
       setApps(prev => ({ ...prev, [sessionId]: [] }))
     }
     // Message count
-    const { count } = await supabase.from('messages').select('id', { count: 'exact', head: true }).eq('session_id', sessionId)
-    setMsgCounts(prev => ({ ...prev, [sessionId]: count || 0 }))
+    const { data: msgData } = await supabase.from('messages').select('id').eq('session_id', sessionId).limit(500)
+    setMsgCounts(prev => ({ ...prev, [sessionId]: msgData?.length || 0 }))
   }
 
   async function saveSession(sessionId: string) {

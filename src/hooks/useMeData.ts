@@ -168,8 +168,8 @@ export function useMeData() {
       setDisplayName(data.display_name || '')
         // Count profile views (last 7 days)
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-        supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', uid).eq('type', 'profile_view').gte('created_at', weekAgo).then(({ count }) => setProfileViews(count ?? 0))
-        supabase.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', uid).eq('type', 'contact_request').is('read_at', null).then(({ count }) => setContactRequests(count ?? 0))
+        supabase.from('interaction_log').select('id').eq('target_user_id', uid).eq('type', 'profile_view').gte('created_at', weekAgo).limit(99).then(({ data }) => setProfileViews(data?.length ?? 0))
+        supabase.from('notifications').select('id').eq('user_id', uid).eq('type', 'contact_request').is('read_at', null).limit(99).then(({ data }) => setContactRequests(data?.length ?? 0))
       const p = data.profile_json || {} as Record<string, any>
       const h = p.health || {}
       setAvatarUrl(p.avatar_url || '')

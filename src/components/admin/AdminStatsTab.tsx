@@ -38,19 +38,19 @@ export default function AdminStatsTab() {
       setLoading(true)
 
       const [sessRes, usersRes, appsRes, msgsRes, reviewsRes] = await Promise.all([
-        supabase.from('sessions').select('*', { count: 'exact', head: true }),
-        supabase.from('user_profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('applications').select('*', { count: 'exact', head: true }),
-        supabase.from('messages').select('*', { count: 'exact', head: true }),
-        supabase.from('reviews').select('*', { count: 'exact', head: true }),
+        supabase.from('sessions').select('id').limit(9999),
+        supabase.from('user_profiles').select('id').limit(9999),
+        supabase.from('applications').select('id').limit(9999),
+        supabase.from('messages').select('id').limit(9999),
+        supabase.from('reviews').select('id').limit(9999),
       ])
 
       setStats([
-        { label: 'Sessions', count: sessRes.count || 0, color: S.sage, bgColor: S.sagebg, borderColor: S.sagebd, icon: Calendar },
-        { label: 'Utilisateurs', count: usersRes.count || 0, color: S.lav, bgColor: S.lavbg, borderColor: S.lavbd, icon: Users },
-        { label: 'Candidatures', count: appsRes.count || 0, color: S.p, bgColor: S.p2, borderColor: S.pbd, icon: FileText },
-        { label: 'Messages', count: msgsRes.count || 0, color: S.blue, bgColor: S.bluebg, borderColor: S.bluebd, icon: MessageSquare },
-        { label: 'Reviews', count: reviewsRes.count || 0, color: S.amber, bgColor: S.amberbg, borderColor: S.amberbd, icon: Star },
+        { label: 'Sessions', count: sessRes.data?.length || 0, color: S.sage, bgColor: S.sagebg, borderColor: S.sagebd, icon: Calendar },
+        { label: 'Utilisateurs', count: usersRes.data?.length || 0, color: S.lav, bgColor: S.lavbg, borderColor: S.lavbd, icon: Users },
+        { label: 'Candidatures', count: appsRes.data?.length || 0, color: S.p, bgColor: S.p2, borderColor: S.pbd, icon: FileText },
+        { label: 'Messages', count: msgsRes.data?.length || 0, color: S.blue, bgColor: S.bluebg, borderColor: S.bluebd, icon: MessageSquare },
+        { label: 'Reviews', count: reviewsRes.data?.length || 0, color: S.amber, bgColor: S.amberbg, borderColor: S.amberbd, icon: Star },
       ])
 
       // Candidatures per day (last 7 days)

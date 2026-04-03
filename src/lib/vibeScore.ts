@@ -53,28 +53,32 @@ export async function calculateVibeScore(userId: string): Promise<VibeScoreData>
   }
 
   // 2. Participation (20%) — number of checked_in events, capped at 10
-  const { count: checkedInCount } = await supabase
+  const { data: checkedInData } = await supabase
     .from('applications')
-    .select('*', { count: 'exact', head: true })
+    .select('id')
     .eq('applicant_id', userId)
     .eq('status', 'checked_in')
+    .limit(50)
+  const checkedInCount = checkedInData?.length ?? 0
   
-  const participationScore = Math.min(20, Math.round(((checkedInCount || 0) / 10) * 20))
+  const participationScore = Math.min(20, Math.round((checkedInCount / 10) * 20))
 
   // 3. No reports (15%) — full score if no reports
   // For now, assume no report system yet = full score
   const noReportsScore = 15
 
   // 4. Check-in rate (15%) — % of accepted where user checked in
-  const { count: acceptedCount } = await supabase
+  const { data: acceptedData } = await supabase
     .from('applications')
-    .select('*', { count: 'exact', head: true })
+    .select('id')
     .eq('applicant_id', userId)
     .in('status', ['accepted', 'checked_in'])
+    .limit(50)
+  const acceptedCount = acceptedData?.length ?? 0
   
   let checkInRateScore = 8 // default for new users
-  if (acceptedCount && acceptedCount > 0) {
-    const rate = (checkedInCount || 0) / acceptedCount
+  if (acceptedCount > 0) {
+    const rate = checkedInCount / acceptedCount
     checkInRateScore = Math.round(rate * 15)
   }
 

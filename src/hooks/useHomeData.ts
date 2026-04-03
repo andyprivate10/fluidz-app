@@ -106,11 +106,13 @@ export function useHomeData() {
         supabase.from('notifications').select('id, type, title, body, href, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(5),
         supabase.from('applications').select('session_id, sessions!inner(status, ends_at)').eq('applicant_id', user.id).in('status', ['accepted', 'checked_in']),
         hostSession ? Promise.all([
-          supabase.from('applications').select('id', { count: 'exact', head: true }).eq('session_id', hostSession.id).eq('status', 'pending'),
-          supabase.from('applications').select('id', { count: 'exact', head: true }).eq('session_id', hostSession.id).in('status', ['accepted', 'checked_in']),
+          supabase.from('applications').select('id').eq('session_id', hostSession.id).eq('status', 'pending').limit(99)
+            .then(r => ({ data: r.data })),
+          supabase.from('applications').select('id').eq('session_id', hostSession.id).in('status', ['accepted', 'checked_in']).limit(99)
+            .then(r => ({ data: r.data })),
           ...(sessionIds.length > 0 ? [Promise.all(sessionIds.map(sid =>
-            supabase.from('applications').select('id', { count: 'exact', head: true }).eq('session_id', sid).in('status', ['accepted', 'checked_in'])
-              .then(r => ({ sid, count: r.count || 0 }))
+            supabase.from('applications').select('id').eq('session_id', sid).in('status', ['accepted', 'checked_in']).limit(99)
+              .then(r => ({ sid, count: r.data?.length || 0 }))
           ))] : [Promise.resolve([])]),
         ]) : Promise.resolve(null),
       ])
@@ -134,8 +136,8 @@ export function useHomeData() {
       // Counts host session
       if (hostCountsResult && hostSession) {
         const [pendingCnt, memberCnt, memberCounts] = hostCountsResult as any
-        setHostPendingCount(pendingCnt?.count ?? 0)
-        setLatestHost(prev => prev ? { ...prev, member_count: (memberCnt?.count || 0) + 1 } : prev)
+        setHostPendingCount(pendingCnt?.data?.length ?? 0)
+        setLatestHost(prev => prev ? { ...prev, member_count: (memberCnt?.data?.length || 0) + 1 } : prev)
         if (memberCounts && sessionIds.length > 0) {
           setActiveApps(prev => prev.map(a => {
             const c = (memberCounts as any[]).find((x: any) => x.sid === a.session_id)

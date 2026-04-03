@@ -17,15 +17,15 @@ export default function HostBadge({ userId }: Props) {
   useEffect(() => {
     let cancelled = false
     async function load() {
-      const { count } = await supabase.from('sessions').select('*', { count: 'exact', head: true }).eq('host_id', userId).in('status', ['open', 'ended', 'ending_soon'])
+      const { data: sessionData } = await supabase.from('sessions').select('id').eq('host_id', userId).in('status', ['open', 'ended', 'ending_soon'])
+      const count = sessionData?.length ?? 0
       if (cancelled) return
-      if (!count || count < 3) { setStats(null); return }
+      if (count < 3) { setStats(null); return }
 
       const { data: reviews } = await supabase.from('reviews').select('rating, session_id').is('target_id', null)
       // Filter reviews for this host's sessions
-      const { data: hostSessions } = await supabase.from('sessions').select('id').eq('host_id', userId)
       if (cancelled) return
-      const sessionIds = new Set((hostSessions || []).map(s => s.id))
+      const sessionIds = new Set((sessionData || []).map(s => s.id))
       const hostReviews = (reviews || []).filter(r => sessionIds.has(r.session_id))
       const avg = hostReviews.length > 0 ? hostReviews.reduce((s, r) => s + r.rating, 0) / hostReviews.length : 0
 

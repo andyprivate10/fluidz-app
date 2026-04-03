@@ -116,11 +116,11 @@ export default function GhostSetupPage() {
     const gId = ghostId || localStorage.getItem('ghost_id') || ''
     if (sessionId) {
       // Check capacity before navigating
-      const [{ data: sess }, { count }] = await Promise.all([
+      const [{ data: sess }, { data: appData }] = await Promise.all([
         supabase.from('sessions').select('max_capacity,template_slug,cover_url').eq('id', sessionId).maybeSingle(),
-        supabase.from('applications').select('*', { count: 'exact', head: true }).eq('session_id', sessionId).in('status', ['accepted', 'checked_in']),
+        supabase.from('applications').select('id').eq('session_id', sessionId).in('status', ['accepted', 'checked_in']).limit(200),
       ])
-      if (sess?.max_capacity && (count ?? 0) + 1 >= sess.max_capacity) {
+      if (sess?.max_capacity && (appData?.length ?? 0) + 1 >= sess.max_capacity) {
         showToast(t('ghost.session_full'), 'error')
         return
       }

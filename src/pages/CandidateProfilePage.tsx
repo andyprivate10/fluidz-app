@@ -89,11 +89,12 @@ export default function CandidateProfilePage() {
     if (decision === 'accepted') {
       if (authUser) {
         const user = authUser
-        const { count } = await supabase.from('messages')
-          .select('*', { count: 'exact', head: true })
+        const { data: systemMsgs } = await supabase.from('messages')
+          .select('id')
           .eq('session_id', sessionId)
           .eq('sender_name', SYSTEM_SENDER)
-        if (!count || count === 0) {
+          .limit(1)
+        if (!systemMsgs || systemMsgs.length === 0) {
           await supabase.from('messages').insert({
             session_id: sessionId,
             sender_id: user.id,

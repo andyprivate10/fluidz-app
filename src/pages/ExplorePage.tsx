@@ -162,17 +162,12 @@ export default function ExplorePage() {
     supabase.from('contacts').select('contact_user_id').eq('user_id', user.id).eq('relation_level', 'blocked').then(({ data }) => {
       if (data) setBlockedIds(new Set(data.map(d => d.contact_user_id)))
     })
-    // Unread counts for header badges
-    supabase.from('notifications').select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id).is('read_at', null)
-    supabase.from('notifications').select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id).eq('type', 'new_message').is('read_at', null)
     // Load current visibility setting
     supabase.from('user_profiles').select('location_visible, approx_lat, approx_lng, profile_json').eq('id', user.id).maybeSingle().then(async (res) => {
       // Also load profile view count
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
-      const { count } = await supabase.from('interaction_log').select('*', { count: 'exact', head: true }).eq('target_user_id', user.id).eq('type', 'profile_view').gte('created_at', weekAgo)
-      setMyViewCount(count ?? 0)
+      const { data: viewData } = await supabase.from('interaction_log').select('id').eq('target_user_id', user.id).eq('type', 'profile_view').gte('created_at', weekAgo).limit(99)
+      setMyViewCount(viewData?.length ?? 0)
       return res
     }).then(({ data }) => {
       if (data) {

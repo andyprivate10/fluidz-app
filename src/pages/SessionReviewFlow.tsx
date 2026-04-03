@@ -51,10 +51,10 @@ export default function SessionReviewFlow() {
       if (!sess) { navigate('/'); return }
 
       // Check if user has ever hosted a session (for co_host question)
-      const { count } = await supabase
-        .from('sessions').select('id', { count: 'exact', head: true })
-        .eq('host_id', u.id)
-      setHasHosted((count ?? 0) > 0)
+      const { data: hostedData } = await supabase
+        .from('sessions').select('id')
+        .eq('host_id', u.id).limit(1)
+      setHasHosted((hostedData?.length ?? 0) > 0)
 
       // Get participants (excluding self)
       const { data: apps } = await supabase

@@ -35,9 +35,9 @@ export default function SideDrawer({ open, onClose }: Props) {
           location_visible: data.location_visible,
         })
       })
-    supabase.from('notifications').select('*', { count: 'exact', head: true })
-      .eq('user_id', authUser.id).is('read_at', null)
-      .then(({ count }) => setUnreadCount(count ?? 0))
+    supabase.from('notifications').select('id')
+      .eq('user_id', authUser.id).is('read_at', null).limit(99)
+      .then(({ data }) => setUnreadCount(data?.length ?? 0))
   }, [open, authUser])
 
   function go(path: string) { onClose(); navigate(path) }
