@@ -35,6 +35,7 @@ export default function HomePage() {
     showTips,
     sessionSuggestions,
     pendingReviews,
+    hostPendingCount,
     pullHandlers,
     pullIndicator,
     handleJoinCode,
@@ -262,6 +263,7 @@ export default function HomePage() {
             onClick={() => navigate('/session/' + latestHost.id)}
             label={t('home.your_session')}
             labelColor={S.p}
+            pendingCount={hostPendingCount}
           />
         )}
 

@@ -32,11 +32,12 @@ interface Props {
   timeProgress?: number
   timeRemaining?: string
   rolesSummary?: string
+  pendingCount?: number
 }
 
 export default function SessionInfoCard({
   session, memberCount, onClick, compact, showCapacity = true,
-  label, labelColor, timing, endedCta, description, timeProgress, timeRemaining, rolesSummary,
+  label, labelColor, timing, endedCta, description, timeProgress, timeRemaining, rolesSummary, pendingCount,
 }: Props) {
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -96,6 +97,13 @@ export default function SessionInfoCard({
             ...typeStyle('section'), color: S.tx,
             margin: 0, flex: 1,
           }}>{session.title}</p>
+          {pendingCount !== undefined && pendingCount > 0 && (
+            <span style={{
+              fontSize: 11, fontWeight: 800, color: '#fff',
+              background: S.red, padding: '2px 8px',
+              borderRadius: 99, marginLeft: 8, flexShrink: 0,
+            }}>{pendingCount}</span>
+          )}
           <span style={{
             ...typeStyle('meta'),
             padding: '3px 10px', borderRadius: R.pill, marginLeft: 8,

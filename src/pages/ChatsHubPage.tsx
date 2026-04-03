@@ -127,6 +127,8 @@ export default function ChatsHubPage() {
     return list
   }, [threads, tab, searchQuery])
 
+  const unreadTotal = useMemo(() => threads.filter(t => t.unread).length, [threads])
+
   function goToThread(t: ChatThread) {
     if (t.type === 'group') navigate(`/session/${t.sessionId}/chat`)
     else if (t.type === 'direct') navigate(`/dm/${t.peerId}`)
@@ -151,14 +153,23 @@ export default function ChatsHubPage() {
         <div style={{ display: 'flex', gap: 6 }}>
           {tabDefs.map(({ k, label }) => {
             const count = k === 'all' ? 0 : threads.filter(t => k === 'direct' ? t.type === 'direct' : k === 'dm' ? t.type === 'dm_session' : t.type === 'group').length
+            const showUnread = k === 'all' && unreadTotal > 0
             return (
               <button key={k} onClick={() => setTab(k)} style={{
                 flex: 1, padding: '7px 4px', borderRadius: R.chip, ...typeStyle('meta'), cursor: 'pointer',
                 border: `1px solid ${tab === k ? S.pbd : S.rule}`,
                 background: tab === k ? S.p2 : 'transparent',
                 color: tab === k ? S.p : S.tx3,
+                position: 'relative',
               }}>
                 {label}{count > 0 ? ` (${count})` : ''}
+                {showUnread && (
+                  <span style={{
+                    position: 'absolute', top: 4, right: 4,
+                    width: 6, height: 6, borderRadius: '50%',
+                    background: S.red, border: `1.5px solid ${S.bg1}`,
+                  }} />
+                )}
               </button>
             )
           })}
