@@ -377,7 +377,8 @@
     "group_partner_waiting": "En attente de {{name}}",
     "confirm_group_pack": "Confirmer ta participation",
     "confirm_group_pack_desc": "{{name}} t'invite à postuler ensemble. Choisis ton pack.",
-    "group_size": "Groupe de {{count}}"
+    "group_size": "Groupe de {{count}}",
+    "status_pending": "En attente"
   },
   "chat": {
     "title": "Messages",
@@ -681,7 +682,8 @@
     "group_invite_body": "{{host}} t'invite via le groupe \"{{group}}\"",
     "applied_title": "{{name}} a postulé",
     "deleted": "Notification supprimée",
-    "unread": "non lu(s)"
+    "unread": "non lu(s)",
+    "accepted_title": "Candidature acceptée"
   },
   "auth": {
     "title": "fluidz",
@@ -1000,7 +1002,17 @@
     "removed_from_book": "Retiré du carnet",
     "save_btn": "Sauvegarder",
     "search": "Rechercher un contact...",
-    "send_dm": "Envoyer un message"
+    "send_dm": "Envoyer un message",
+    "add_to_book": "Ajouter au carnet",
+    "added": "Ajouté",
+    "added_to_book": "Ajouté au carnet",
+    "close": "Proche",
+    "empty_cta": "Explorer des profils",
+    "empty_desc": "Ajoute des contacts depuis les sessions ou l'explorateur",
+    "empty_title": "Pas encore de contacts",
+    "groups": "Groupes",
+    "no_results": "Aucun résultat",
+    "title": "Contacts"
   },
   "settings": {
     "push_active": "Push actives",
@@ -1083,7 +1095,8 @@
     "no_user": "Aucun utilisateur",
     "no_action": "Aucune action effectuée.",
     "no_active_session": "Aucune session active.",
-    "continue": "Continuer"
+    "continue": "Continuer",
+    "maps": "Carte"
   },
   "drawer": {
     "my_space": "Mon espace",
@@ -1227,7 +1240,8 @@
     "sending": "Envoi...",
     "send_to_all": "Envoyer a tous",
     "accept": "Accepter",
-    "not_selected": "Non retenu"
+    "not_selected": "Non retenu",
+    "accepted": "Accepté"
   },
   "status": {
     "pending": "En attente",
@@ -1247,7 +1261,8 @@
     "back": "Dos",
     "butt": "Fesses",
     "sex": "Pénis",
-    "full_body": "Corps entier"
+    "full_body": "Corps entier",
+    "feet": "Pieds"
   },
   "timing": {
     "just_now": "à l'instant",
@@ -1364,7 +1379,8 @@
     "back": "Dos",
     "butt": "Fesses",
     "sex": "Pénis",
-    "full_body": "Corps entier"
+    "full_body": "Corps entier",
+    "feet": "Pieds"
   },
   "interactions": {
     "co_event": "Même event",
@@ -1795,7 +1811,8 @@
     "cooldown": "Patiente avant de renvoyer",
     "dm_badge_open": "Accepte les DM",
     "dm_badge_request": "DM sur demande",
-    "dm_badge_closed": "DM fermé"
+    "dm_badge_closed": "DM fermé",
+    "send_error": "Erreur lors de l'envoi"
   },
   "welcome": {
     "sessions_title": "Crée ou rejoins une session",
@@ -1922,5 +1939,25 @@
     "tab_all": "Tout",
     "tab_interactions": "Interactions",
     "tab_notifications": "Notifications"
+  },
+  "contacts_section": {
+    "accept": "Accepter",
+    "accepted_toast": "Demande acceptée",
+    "added_you_notif": "vous a ajouté",
+    "cooldown_toast": "Patiente un peu avant de renvoyer",
+    "mutual": "Mutuel",
+    "mutual_badge": "Mutuel",
+    "pending_requests": "Demandes en attente",
+    "reject": "Refuser",
+    "rejected_toast": "Demande refusée",
+    "remove": "Retirer",
+    "remove_confirm": "Retirer ce contact ?",
+    "removed_toast": "Contact retiré",
+    "request_button": "Ajouter",
+    "request_pending": "En attente",
+    "request_sent": "Demande envoyée",
+    "send_message": "Envoyer un message",
+    "suggest_body": "Ajoutez-vous mutuellement en contacts",
+    "suggest_title": "Suggestion de contact"
   }
 }

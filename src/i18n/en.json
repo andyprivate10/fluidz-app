@@ -377,7 +377,8 @@
     "group_partner_waiting": "Waiting for {{name}}",
     "confirm_group_pack": "Confirm your participation",
     "confirm_group_pack_desc": "{{name}} invites you to apply together. Choose your pack.",
-    "group_size": "Group of {{count}}"
+    "group_size": "Group of {{count}}",
+    "status_pending": "Pending"
   },
   "chat": {
     "title": "Messages",
@@ -681,7 +682,8 @@
     "group_invite_body": "{{host}} invites you via the group \"{{group}}\"",
     "applied_title": "{{name}} applied",
     "deleted": "Notification deleted",
-    "unread": "unread"
+    "unread": "unread",
+    "accepted_title": "Application accepted"
   },
   "auth": {
     "title": "fluidz",
@@ -1000,7 +1002,17 @@
     "removed_from_book": "Removed from contacts",
     "save_btn": "Save",
     "search": "Search a contact...",
-    "send_dm": "Send a message"
+    "send_dm": "Send a message",
+    "add_to_book": "Add to contacts",
+    "added": "Added",
+    "added_to_book": "Added to contacts",
+    "close": "Close",
+    "empty_cta": "Explore profiles",
+    "empty_desc": "Add contacts from sessions or the explorer",
+    "empty_title": "No contacts yet",
+    "groups": "Groups",
+    "no_results": "No results",
+    "title": "Contacts"
   },
   "settings": {
     "push_active": "Push enabled",
@@ -1083,7 +1095,8 @@
     "no_user": "No user",
     "no_action": "No action taken.",
     "no_active_session": "No active session.",
-    "continue": "Continue"
+    "continue": "Continue",
+    "maps": "Maps"
   },
   "drawer": {
     "my_space": "My space",
@@ -1227,7 +1240,8 @@
     "sending": "Sending...",
     "send_to_all": "Send to all",
     "accept": "Accept",
-    "not_selected": "Not selected"
+    "not_selected": "Not selected",
+    "accepted": "Accepted"
   },
   "status": {
     "pending": "Pending",
@@ -1247,7 +1261,8 @@
     "back": "Back",
     "butt": "Butt",
     "sex": "Penis",
-    "full_body": "Full body"
+    "full_body": "Full body",
+    "feet": "Feet"
   },
   "timing": {
     "just_now": "just now",
@@ -1364,7 +1379,8 @@
     "back": "Back",
     "butt": "Butt",
     "sex": "Penis",
-    "full_body": "Full body"
+    "full_body": "Full body",
+    "feet": "Feet"
   },
   "interactions": {
     "co_event": "Same event",
@@ -1795,7 +1811,8 @@
     "cooldown": "Please wait before sending again",
     "dm_badge_open": "Accepts DMs",
     "dm_badge_request": "DM on request",
-    "dm_badge_closed": "DM closed"
+    "dm_badge_closed": "DM closed",
+    "send_error": "Error sending"
   },
   "welcome": {
     "sessions_title": "Create or join a session",
@@ -1922,5 +1939,25 @@
     "tab_all": "All",
     "tab_interactions": "Interactions",
     "tab_notifications": "Notifications"
+  },
+  "contacts_section": {
+    "accept": "Accept",
+    "accepted_toast": "Request accepted",
+    "added_you_notif": "added you",
+    "cooldown_toast": "Wait a moment before resending",
+    "mutual": "Mutual",
+    "mutual_badge": "Mutual",
+    "pending_requests": "Pending requests",
+    "reject": "Reject",
+    "rejected_toast": "Request rejected",
+    "remove": "Remove",
+    "remove_confirm": "Remove this contact?",
+    "removed_toast": "Contact removed",
+    "request_button": "Add",
+    "request_pending": "Pending",
+    "request_sent": "Request sent",
+    "send_message": "Send a message",
+    "suggest_body": "Add each other as contacts",
+    "suggest_title": "Contact suggestion"
   }
 }
