@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 const S = colors
 
-type Favorite = { id: string; target_user_id: string; name: string; avatar?: string; role?: string }
+type Favorite = { id: string; target_user_id: string; name: string; avatar?: string; role?: string; photos_profil?: string[]; last_seen?: string }
 
 export default function FavoritesPage() {
   const { t } = useTranslation()
@@ -32,7 +32,7 @@ export default function FavoritesPage() {
     const pMap = new Map((profiles || []).map((p: any) => [p.id, p]))
     setFavorites(favs.map(f => {
       const p = pMap.get(f.target_user_id)
-      return { id: f.id, target_user_id: f.target_user_id, name: p?.display_name || '?', avatar: (p?.profile_json as any)?.avatar_url, role: (p?.profile_json as any)?.role }
+      return { id: f.id, target_user_id: f.target_user_id, name: p?.display_name || '?', avatar: (p?.profile_json as any)?.photos_profil?.[0] || (p?.profile_json as any)?.avatar_url, photos_profil: (p?.profile_json as any)?.photos_profil, last_seen: (p?.profile_json as any)?.last_seen, role: (p?.profile_json as any)?.role }
     }))
     setLoading(false)
   }
@@ -53,9 +53,9 @@ export default function FavoritesPage() {
         <p style={{ fontSize: 12, color: S.tx3, margin: '2px 0 0' }}>{favorites.length} {t('favorites.count')}</p>
       </div>
 
-      <div style={{ padding: '12px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-        {loading && [1, 2, 3, 4].map(i => (
-          <div key={i} style={{ height: 160, borderRadius: 14, background: S.bg2, animation: 'pulse 1.5s infinite' }} />
+      <div style={{ padding: '12px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+        {loading && [1, 2, 3, 4, 5, 6].map(i => (
+          <div key={i} style={{ height: 120, borderRadius: 14, background: S.bg2, animation: 'pulse 1.5s infinite' }} />
         ))}
 
         {!loading && favorites.length === 0 && (
@@ -69,11 +69,18 @@ export default function FavoritesPage() {
         {favorites.map(fav => (
           <div key={fav.id} style={{ background: 'rgba(22,20,31,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 14, overflow: 'hidden', border: '1px solid ' + S.rule2, position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/profile/' + fav.target_user_id)}>
             {fav.avatar ? (
-              <img src={fav.avatar} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
+              <img src={fav.avatar} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none' }} style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover' }} />
             ) : (
-              <div style={{ width: '100%', aspectRatio: '3/4', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: S.tx }}>
+              <div style={{ width: '100%', aspectRatio: '2/3', background: S.p, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: S.tx }}>
                 {fav.name[0]?.toUpperCase()}
               </div>
+            )}
+            {fav.last_seen && (Date.now() - new Date(fav.last_seen).getTime()) < 900_000 && (
+              <div style={{
+                position: 'absolute', top: 6, left: 6, width: 8, height: 8,
+                borderRadius: 99, background: '#22c55e',
+                border: '2px solid rgba(22,20,31,0.8)', zIndex: 2,
+              }} />
             )}
             <button onClick={(e) => { e.stopPropagation(); removeFavorite(fav.id) }} style={{
               position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99,
