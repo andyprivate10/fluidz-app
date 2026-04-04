@@ -1,5 +1,5 @@
-const CACHE_NAME = 'fluidz-static-v1'
-const PRECACHE = ['/', '/manifest.json', '/vite.svg']
+const CACHE_NAME = 'fluidz-static-v2'
+const PRECACHE = ['/', '/manifest.json', '/icons/icon-192.svg']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -21,8 +21,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'fluidz'
   const options = {
     body: data.body || '',
-    icon: '/vite.svg',
-    badge: '/vite.svg',
+    icon: '/icons/icon-192.svg',
+    badge: '/icons/icon-192.svg',
     data: { url: data.url || '/' },
     vibrate: [100, 50, 100],
     tag: data.tag || 'fluidz-notif',
