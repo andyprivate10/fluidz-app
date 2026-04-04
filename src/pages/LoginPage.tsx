@@ -25,7 +25,7 @@ export default function LoginPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const next = searchParams.get('next') || '/'
+  const next = searchParams.get('next') || '/home'
   const startSignup = searchParams.get('signup') === '1'
   const isDev = searchParams.get('dev') === '1' || import.meta.env.DEV || window.location.hostname === 'localhost'
 
