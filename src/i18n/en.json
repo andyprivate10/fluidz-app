@@ -782,10 +782,15 @@
     "test_label": "Last test",
     "health_private": "This info is private by default",
     "dm_open": "Open",
+    "dm_open_title": "Open",
     "dm_open_desc": "Anyone can message you directly",
     "dm_request": "On request",
+    "dm_profile_required_title": "On request",
+    "dm_profile_required_desc": "Others must share their profile first",
     "dm_request_desc": "Others must share their profile first",
     "dm_closed": "Closed",
+    "dm_full_access_title": "Full access required",
+    "dm_full_access_desc": "Only mutual contacts and session members",
     "dm_closed_desc": "Only Contacts contacts and session members",
     "back": "Back",
     "step4_title": "Health",
@@ -1253,7 +1258,8 @@
     "closed": "Closed",
     "active": "Active",
     "check_in_confirmed": "Check-in confirmed",
-    "not_retained": "Not retained"
+    "not_retained": "Not retained",
+    "status_withdrawn": "Withdrawn"
   },
   "body_parts": {
     "face": "Face",

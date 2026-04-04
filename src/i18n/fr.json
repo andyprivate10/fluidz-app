@@ -782,10 +782,15 @@
     "test_label": "Dernier test",
     "health_private": "Ces infos sont privées par défaut",
     "dm_open": "Ouvert",
+    "dm_open_title": "Ouvert",
     "dm_open_desc": "Tout le monde peut t'écrire directement",
     "dm_request": "Sur demande",
+    "dm_profile_required_title": "Sur demande",
+    "dm_profile_required_desc": "Les autres doivent partager leur profil d'abord",
     "dm_request_desc": "Les autres doivent partager leur profil d'abord",
     "dm_closed": "Fermé",
+    "dm_full_access_title": "Accès complet requis",
+    "dm_full_access_desc": "Uniquement tes contacts mutuels et membres de session",
     "dm_closed_desc": "Uniquement tes contacts Contacts et membres de session",
     "back": "Retour",
     "step4_title": "Sante",
@@ -1253,7 +1258,8 @@
     "closed": "Fermé",
     "active": "Active",
     "check_in_confirmed": "Check-in confirmé",
-    "not_retained": "Non retenu"
+    "not_retained": "Non retenu",
+    "status_withdrawn": "Retirée"
   },
   "body_parts": {
     "face": "Visage",
