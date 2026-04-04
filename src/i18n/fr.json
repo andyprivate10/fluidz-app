@@ -729,7 +729,7 @@
     "check_email_instructions": "Ouvre {{email}} et clique sur le lien pour te connecter.",
     "resend_cooldown": "Renvoyer dans {{seconds}}s",
     "resend_link": "Renvoyer le lien",
-    "check_spam": "Verifie tes spams si tu ne trouves pas l'email",
+    "check_spam": "Vérifie tes spams si tu ne trouves pas l'email",
     "or_email": "ou par email",
     "signup_success_title": "Compte créé !",
     "signup_confirm_instructions": "Vérifie tes emails ({{email}}) pour confirmer ton compte, puis reviens te connecter.",
@@ -807,7 +807,7 @@
     "valid_24h": "Profil valide 24h. Note ce code pour retrouver ton profil !",
     "recover_title": "Recuperer mon profil",
     "recover_desc": "Entre ton code de session et ton PIN",
-    "found": "Profil retrouve",
+    "found": "Profil retrouvé",
     "hours_left": "{{hours}}h restantes",
     "expires_soon": "Expire bientot",
     "your_pseudo": "Ton pseudo",
@@ -1139,7 +1139,7 @@
     "no_ended": "Pas encore de sessions terminées",
     "review_session": "Laisser un avis",
     "activity_link": "Sessions terminees & historique",
-    "activity_link_desc": "Retrouve tes soirees passees dans Activite"
+    "activity_link_desc": "Retrouve tes soirées passées dans Activité"
   },
   "addresses": {
     "empty": "Aucune adresse",
@@ -1607,7 +1607,7 @@
     "ghost_desc": "Postule anonymement pendant 24h, sans créer de compte",
     "dismiss": "Fermer",
     "contacts_title": "Ton Carnet de contacts",
-    "contacts_desc": "Retrouve les profils avec qui tu as ete en session"
+    "contacts_desc": "Retrouve les profils avec qui tu as été en session"
   },
   "address": {
     "share_title": "Partager une adresse",
