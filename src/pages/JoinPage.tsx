@@ -170,11 +170,12 @@ export default function JoinPage() {
     return null
   }
 
-  const statusLabels: Record<string, { text: string; color: string }> = {
-    pending: { text: 'pending', color: S.orange },
-    accepted: { text: 'accepted', color: S.sage },
-    checked_in: { text: 'check_in_confirmed', color: S.sage },
-    rejected: { text: 'not_retained', color: S.red },
+  const statusLabels: Record<string, { text: string; color: string; bg: string }> = {
+    pending: { text: 'pending', color: S.orange, bg: S.orangebg },
+    accepted: { text: 'accepted', color: S.sage, bg: S.sagebg },
+    checked_in: { text: 'check_in_confirmed', color: S.sage, bg: S.sagebg },
+    rejected: { text: 'not_retained', color: S.red, bg: S.redbg },
+    withdrawn: { text: 'status_withdrawn', color: S.tx3, bg: S.bg2 },
   }
 
   return (
@@ -302,7 +303,7 @@ export default function JoinPage() {
             <div style={{marginTop:16}}>
               <div style={{
                 padding:'14px 20px', borderRadius:14, marginBottom:10,
-                background: statusLabels[myAppStatus]?.color + '14',
+                background: statusLabels[myAppStatus]?.bg || S.bg2,
                 border: '1px solid ' + (statusLabels[myAppStatus]?.color || S.rule) + '44',
               }}>
                 <p style={{margin:0,fontSize:15,fontWeight:700,color:statusLabels[myAppStatus]?.color || S.tx}}>

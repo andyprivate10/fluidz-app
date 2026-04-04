@@ -186,7 +186,10 @@ export default function GroupChatPage() {
                   return <img key={mi} src={url} alt="" loading="lazy" style={{ width:'100%', maxWidth:240, borderRadius:12, display:'block' }} />
                 })}
                 {msg.text !== '\uD83D\uDCF7 Photo' && msg.text !== '\uD83C\uDFA4 Audio' && msg.text !== '\uD83C\uDFAC Vid\u00e9o' && <p style={{ margin:0, fontSize:14, color:S.tx, lineHeight:1.4, padding: msg.has_media ? '4px 8px 6px' : 0 }}>{stripHtml(msg.text)}</p>}
-                <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>{formatMessageTime(msg.created_at)}{isMe && <span style={{ color: S.tx4, marginLeft: 3 }}>✓</span>}</p>
+                <p style={{ margin:'2px 0 0', fontSize:10, color:S.tx4, textAlign: isMe ? 'right' : 'left' }}>
+                  {formatMessageTime(msg.created_at)}
+                  {isMe && <span style={{ color: S.tx3, marginLeft: 3 }}>✓✓</span>}
+                </p>
               </div>
             </div>
           )
