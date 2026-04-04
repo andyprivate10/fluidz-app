@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastProvider from './components/Toast'
 import { AuthProvider } from './contexts/AuthContext'
+import { useAuth } from './contexts/AuthContext'
 const HomePage = lazy(() => import('./pages/HomePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
@@ -54,8 +55,16 @@ const ActivityPage = lazy(() => import('./pages/ActivityPage'))
 
 function HostRedirect() { const { id } = useParams(); return <Navigate to={`/session/${id}`} replace /> }
 
+function RootPage() {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (user) return <Navigate to="/home" replace />
+  return <Suspense fallback={<LazyFallback />}><LandingPage /></Suspense>
+}
+
 const routes = [
-  { path: '/', element: <RequireAuth><HomePage /></RequireAuth> },
+  { path: '/', element: <RootPage /> },
+  { path: '/home', element: <RequireAuth><HomePage /></RequireAuth> },
   { path: '/landing', element: <LandingPage /> },
   { path: '/sessions', element: <RequireAuth><SessionsPage /></RequireAuth> },
   { path: '/session/create', element: <RequireAuth><CreateSessionPage /></RequireAuth> },

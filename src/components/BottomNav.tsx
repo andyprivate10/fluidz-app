@@ -11,7 +11,7 @@ const S = colors
 const tabs = [
   {
     id: 'home',
-    path: '/',
+    path: '/home',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -119,16 +119,16 @@ export default function BottomNav() {
   }, [unreadNotifCount])
 
   // Hide on certain paths (all conditional returns MUST be after all hooks)
-  const hidePaths = ['/login', '/onboarding', '/welcome', '/ghost/setup', '/landing', '/auth/callback']
-  if (hidePaths.some(p => location.pathname.startsWith(p))) return null
+  const hidePaths = ['/login', '/onboarding', '/welcome', '/ghost/setup', '/landing', '/auth/callback', '/']
+  if (hidePaths.some(p => location.pathname === p || (p !== '/' && location.pathname.startsWith(p)))) return null
   if (/\/(dm|chat)/.test(location.pathname) && !location.pathname.startsWith('/chats')) return null
   if (/^\/session\/[a-f0-9-]+/.test(location.pathname)) return null
   if (location.pathname.startsWith('/join/')) return null
 
   const active = tabs.find(t => {
-    if (t.path === '/') return location.pathname === '/'
+    if (t.path === '/home') return location.pathname === '/home' || location.pathname === '/'
     return location.pathname.startsWith(t.path)
-  })?.id || (location.pathname === '/' ? 'home' : '')
+  })?.id || ''
 
   const showMenuDot = unreadNotifCount > 0
 
