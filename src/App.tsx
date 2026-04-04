@@ -2,6 +2,7 @@ import { BrowserRouter, useLocation, useRoutes, Navigate, useParams } from 'reac
 import { lazy, Suspense, useEffect } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastProvider from './components/Toast'
 import { AuthProvider } from './contexts/AuthContext'
@@ -136,6 +137,7 @@ export default function App() {
           <ToastProvider />
           <Suspense fallback={<LazyFallback />}><AnimatedRoutes /></Suspense>
           <BottomNav />
+          <Analytics />
           {/* InstallPrompt and PushPrompt disabled — too early in user journey */}
           {/* <InstallPrompt /> */}
           {/* <PushPrompt /> */}
