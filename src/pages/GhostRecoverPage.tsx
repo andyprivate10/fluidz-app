@@ -181,7 +181,7 @@ export default function GhostRecoverPage() {
                 <input
                   value={convertEmail}
                   onChange={e => setConvertEmail(e.target.value)}
-                  placeholder="ton@email.com"
+                  placeholder="you@email.com"
                   type="email"
                   style={{ ...inp, textAlign: 'left', fontSize: 14, marginBottom: 10 }}
                 />

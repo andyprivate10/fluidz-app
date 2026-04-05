@@ -46,7 +46,7 @@ function ContactRequestButton({ targetUserId, myProfile }: { targetUserId: strin
     if (!user) { setSending(false); return }
     const name = (myProfile as any)?.display_name || user.email || t('common.someone')
     const role = (myProfile as any)?.role || ''
-    await supabase.from('notifications').insert({ user_id: targetUserId, type: 'contact_request', title: name + ' s\'intéresse à toi', body: role ? role + ' · Veut en voir plus' : 'Veut entrer en contact', href: '/profile/' + user.id })
+    await supabase.from('notifications').insert({ user_id: targetUserId, type: 'contact_request', title: t('notifications.interest_title', { name }), body: role ? role + ' · ' + t('interest.want_see_more') : t('interest.want_contact'), href: '/profile/' + user.id })
     await supabase.from('contacts').upsert({ user_id: user.id, contact_user_id: targetUserId, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
     await supabase.from('contacts').upsert({ user_id: targetUserId, contact_user_id: user.id, relation_level: 'connaissance' }, { onConflict: 'user_id,contact_user_id' })
     await supabase.from('interaction_log').insert({ user_id: user.id, target_user_id: targetUserId, type: 'contact_request', meta: { role } })
@@ -366,7 +366,7 @@ export default function PublicProfile() {
             </button>
           )}
           <button onClick={() => setShowStory(true)} style={{ flex: 1, padding: '10px', borderRadius: 12, background: S.bg1, border: '1px solid ' + S.rule, color: S.tx2, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-            <Play size={12} strokeWidth={2} fill={S.tx2} /> Story
+            <Play size={12} strokeWidth={2} fill={S.tx2} /> {t('profile.story')}
           </button>
         </div>
 
@@ -445,7 +445,7 @@ export default function PublicProfile() {
                     </div>
                   )}
                   {p.body_part_photos && Object.keys(p.body_part_photos).length > 0 && (() => {
-                    const labelMap: Record<string, string> = { torso: 'Torse', sex: 'Sex', butt: 'Fessier', feet: 'Pieds', torse: 'Torse', bite: 'Sex', cul: 'Fessier', pieds: 'Pieds' }
+                    const labelMap: Record<string, string> = { torso: t('zones.torso'), sex: t('zones.sex'), butt: t('zones.butt'), feet: t('zones.feet'), torse: t('zones.torso'), bite: t('zones.sex'), cul: t('zones.butt'), pieds: t('zones.feet') }
                     const zones = Object.entries(p.body_part_photos as Record<string, string | string[]>).filter(([, val]) => {
                       const urls = Array.isArray(val) ? val : (typeof val === 'string' && val ? [val] : [])
                       return urls.length > 0
