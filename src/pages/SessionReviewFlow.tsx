@@ -48,7 +48,7 @@ export default function SessionReviewFlow() {
 
       const { data: sess } = await supabase
         .from('sessions').select('title,status').eq('id', id).maybeSingle()
-      if (!sess) { navigate('/'); return }
+      if (!sess) { navigate('/home'); return }
 
       // Check if user has ever hosted a session (for co_host question)
       const { data: hostedData } = await supabase
@@ -153,7 +153,7 @@ export default function SessionReviewFlow() {
       <ReviewSummary
         reviewedCount={reviewedCount}
         addedToBookCount={addedCount}
-        onFinish={() => navigate('/')}
+        onFinish={() => navigate('/home')}
       />
     )
   }
@@ -175,7 +175,7 @@ export default function SessionReviewFlow() {
       <ReviewSummary
         reviewedCount={0}
         addedToBookCount={0}
-        onFinish={() => navigate('/')}
+        onFinish={() => navigate('/home')}
       />
     )
   }

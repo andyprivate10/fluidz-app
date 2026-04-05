@@ -37,7 +37,7 @@ export default function WelcomeTutorial() {
       .maybeSingle()
       .then(({ data }) => {
         const pj = (data?.profile_json || {}) as Record<string, unknown>
-        if (pj.onboarding_complete === true) navigate('/')
+        if (pj.onboarding_complete === true) navigate('/home')
       })
   }, [user, loading, navigate])
 
@@ -54,7 +54,7 @@ export default function WelcomeTutorial() {
       id: user.id,
       profile_json: { ...pj, onboarding_complete: true },
     })
-    navigate('/')
+    navigate('/home')
   }
 
   const handleSkip = () => {

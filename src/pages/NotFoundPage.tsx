@@ -16,7 +16,7 @@ export default function NotFoundPage() {
         <p style={{ ...typeStyle('hero'), color: S.p, margin: '0 0 12px' }}>404</p>
         <p style={{ ...typeStyle('section'), color: S.tx, margin: '0 0 6px' }}>{t('common.not_found')}</p>
         <p style={{ ...typeStyle('body'), color: S.tx2, margin: '0 0 24px' }}>{t('common.not_found_desc')}</p>
-        <button onClick={() => navigate('/')} style={{
+        <button onClick={() => navigate('/home')} style={{
           padding: '12px 24px', borderRadius: radius.btn, background: S.p, border: 'none',
           color: S.tx, ...typeStyle('label'), cursor: 'pointer',
           display: 'inline-flex', alignItems: 'center', gap: 6,

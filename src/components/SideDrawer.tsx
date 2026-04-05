@@ -41,7 +41,7 @@ export default function SideDrawer({ open, onClose }: Props) {
   }, [open, authUser])
 
   function go(path: string) { onClose(); navigate(path) }
-  async function logout() { await supabase.auth.signOut(); onClose(); navigate('/login') }
+  async function logout() { await supabase.auth.signOut(); onClose(); navigate('/') }
   function toggleLang() { i18n.changeLanguage(i18n.language === 'fr' ? 'en' : 'fr') }
   async function toggleVisibility() {
     if (!user) return
