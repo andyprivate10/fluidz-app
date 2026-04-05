@@ -126,7 +126,7 @@ export default function BottomNav() {
   if (location.pathname.startsWith('/join/')) return null
 
   const active = tabs.find(t => {
-    if (t.path === '/home') return location.pathname === '/home' || location.pathname === '/'
+    if (t.path === '/home') return location.pathname === '/home'
     return location.pathname.startsWith(t.path)
   })?.id || ''
 
