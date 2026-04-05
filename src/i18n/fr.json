@@ -216,7 +216,7 @@
     "message_to_host": "Message au host (optionnel)",
     "what_host_sees": "Ce que le host verra",
     "pseudo_required": "Ton pseudo est requis",
-    "your_role": "Votre role",
+    "your_role": "Ton rôle",
     "no_pending": "Aucune candidature en attente de vote pour le moment.",
     "application_pending": "Candidature en attente",
     "choose_template": "Choisis un template",
@@ -683,7 +683,8 @@
     "applied_title": "{{name}} a postulé",
     "deleted": "Notification supprimée",
     "unread": "non lu(s)",
-    "accepted_title": "Candidature acceptée"
+    "accepted_title": "Candidature acceptée",
+    "interest_title": "{{name}} s'intéresse à toi"
   },
   "auth": {
     "title": "fluidz",
@@ -983,7 +984,7 @@
     "no_pending": "Aucune demande en attente",
     "cooldown_toast": "Patiente avant de redemander",
     "suggest_title": "Ajouter au Contacts ?",
-    "suggest_body": "Vous avez échangé — ajoute au Contacts pour un accès complet",
+    "suggest_body": "Tu as échangé — ajoute au Contacts pour un accès complet",
     "invite_session": "Inviter en session",
     "send_message": "Envoyer un message",
     "filter_online": "En ligne",
@@ -1221,7 +1222,7 @@
     "file_too_large": "Fichier trop gros (max {{max}} Mo)",
     "photo_added": "Photo ajoutée",
     "video_added": "Vidéo ajoutée",
-    "guest_warning": "Vous avez une candidature en attente — créer un compte pour la conserver.",
+    "guest_warning": "Tu as une candidature en attente — créer un compte pour la conserver.",
     "guest_warning_desc": "Connecté-toi avec ton email pour récupérer ta candidature.",
     "login_prompt": "Entre ton email pour te connecter",
     "profile_saved": "Profil sauvegardé !",
@@ -1230,8 +1231,6 @@
     "tab_adulte": "Côté intime",
     "pseudo_headline": "Ton pseudo",
     "pseudo_placeholder": "Comment on t'appelle ?",
-    "my_préférences": "MES PRÉFÉRENCES",
-    "préférences_desc": "Ce que tu recherches chez les autres",
     "preferred_roles": "Rôles recherchés",
     "age_range": "Tranche d'âge",
     "preferred_kinks": "Pratiques recherchées",
@@ -1239,7 +1238,9 @@
     "avatar_label": "Photo",
     "prep_actif": "PrEP actif",
     "prep_inactif": "PrEP inactif",
-    "prep_non": "Non"
+    "prep_non": "Non",
+    "my_preferences": "MES PRÉFÉRENCES",
+    "preferences_desc": "Ce que tu recherches chez les autres"
   },
   "host_actions": {
     "sending": "Envoi...",
@@ -1730,7 +1731,7 @@
     "addresses": "Adresses",
     "templates": "Templates",
     "message_types": "Messages types",
-    "préférences": "Préférences"
+    "preferences": "Préférences"
   },
   "templates": {
     "title": "Mes templates",
@@ -1818,7 +1819,9 @@
     "dm_badge_open": "Accepté les DM",
     "dm_badge_request": "DM sur demande",
     "dm_badge_closed": "DM fermé",
-    "send_error": "Erreur lors de l'envoi"
+    "send_error": "Erreur lors de l'envoi",
+    "want_see_more": "Veut en voir plus",
+    "want_contact": "Veut entrer en contact"
   },
   "welcome": {
     "sessions_title": "Crée ou rejoins une session",
@@ -1863,8 +1866,6 @@
     "add_new": "+ Nouvelle",
     "enable_all": "Tout activer",
     "disable_all": "Tout désactiver",
-    "élément": "élément",
-    "éléments": "éléments",
     "profile": "profil",
     "profiles": "profils",
     "member": "membre",
@@ -1886,7 +1887,9 @@
     "status_todo": "À faire",
     "tab_users": "Comptes",
     "tab_config": "Options",
-    "login_required": "Connecté-toi avec un compte admin pour acceder au dashboard."
+    "login_required": "Connecté-toi avec un compte admin pour acceder au dashboard.",
+    "elements": "éléments",
+    "element": "élément"
   },
   "host_badge": {
     "label": "Host · {{count}} sessions"

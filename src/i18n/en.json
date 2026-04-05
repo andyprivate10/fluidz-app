@@ -683,7 +683,8 @@
     "applied_title": "{{name}} applied",
     "deleted": "Notification deleted",
     "unread": "unread",
-    "accepted_title": "Application accepted"
+    "accepted_title": "Application accepted",
+    "interest_title": "{{name}} is interested in you"
   },
   "auth": {
     "title": "fluidz",
@@ -1818,7 +1819,9 @@
     "dm_badge_open": "Accepts DMs",
     "dm_badge_request": "DM on request",
     "dm_badge_closed": "DM closed",
-    "send_error": "Error sending"
+    "send_error": "Error sending",
+    "want_see_more": "Wants to see more",
+    "want_contact": "Wants to get in touch"
   },
   "welcome": {
     "sessions_title": "Create or join a session",
